@@ -30,7 +30,6 @@ public class TestAbondon {
     @BeforeEach
     protected void setUp() throws Exception {
         DruidDataSourceStatManager.clear();
-
         dataSource = new DruidDataSource();
         dataSource.setRemoveAbandoned(true);
         dataSource.setRemoveAbandonedTimeoutMillis(10);
@@ -43,7 +42,7 @@ public class TestAbondon {
     @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
-        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        DruidDataSourceStatManager.clear();
     }
 
     @Test

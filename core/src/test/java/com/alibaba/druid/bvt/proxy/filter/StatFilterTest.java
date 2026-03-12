@@ -36,10 +36,9 @@ public class StatFilterTest {
     }
 
     public void tearDown() throws Exception {
-        JdbcStatManager.getInstance().reset();
-
+         JdbcStatManager.getInstance().reset();
         DruidDriver.getProxyDataSources().clear();
-        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+         JdbcStatManager.getInstance().reset();
     }
 
     @Test

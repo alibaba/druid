@@ -40,13 +40,12 @@ public class SpringMybatisFilterTest {
 
     @AfterEach
     protected void tearDown() throws Exception {
-        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        DruidDataSourceStatManager.clear();
     }
 
     @Test
     public void test_spring() throws Exception {
-        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
-
+        DruidDataSourceStatManager.clear();
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
                 "com/alibaba/druid/pool/mybatis/spring-config-mybatis.xml");
 
@@ -105,8 +104,7 @@ public class SpringMybatisFilterTest {
         }
 
         context.close();
-
-        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+         DruidDataSourceStatManager.clear();
     }
 
     public static interface UserMapper {

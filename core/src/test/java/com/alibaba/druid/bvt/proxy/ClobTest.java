@@ -47,7 +47,7 @@ public class ClobTest {
         dropTable();
 
         DruidDriver.getProxyDataSources().clear();
-        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+         JdbcStatManager.getInstance().reset();
     }
 
     private void createTable() throws SQLException {

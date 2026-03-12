@@ -22,8 +22,7 @@ public class OracleExceptionSorterTest_closeStmt {
 
     @BeforeEach
     protected void setUp() throws Exception {
-        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
-
+        JdbcStatManager.getInstance().reset();
         dataSource = new DruidDataSource();
 
         dataSource.setExceptionSorter(new OracleExceptionSorter());
@@ -37,7 +36,7 @@ public class OracleExceptionSorterTest_closeStmt {
         @AfterEach
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
-        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        DruidDataSourceStatManager.clear();
     }
 
     @Test

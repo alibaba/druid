@@ -24,7 +24,6 @@ public class GlobalStatTest0 {
     @BeforeEach
     protected void setUp() throws Exception {
         JdbcStatManager.getInstance().reset();
-
         dataSourceA = new DruidDataSource();
         dataSourceA.setUrl("jdbc:mock:xx_A");
         dataSourceA.setFilters("stat");
@@ -42,7 +41,7 @@ public class GlobalStatTest0 {
         JdbcUtils.close(dataSourceB);
 
         JdbcDataSourceStat.setGlobal(null);
-        JdbcStatManager.getInstance().reset();
+         JdbcStatManager.getInstance().reset();
     }
 
     @SuppressWarnings("unchecked")

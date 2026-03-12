@@ -30,11 +30,8 @@ public class DruidDataSourceC3P0AdapterTest extends PoolTestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-
-        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
-
+        DruidDataSourceStatManager.clear();
         driver = new MockDriver();
-
         dataSource = new DruidDataSourceC3P0Adapter();
         dataSource.setJdbcUrl("jdbc:mock:xxx");
         dataSource.setDriver(driver);

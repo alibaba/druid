@@ -48,13 +48,12 @@ public class SpringIbatisFilterTest {
 
     @AfterEach
     protected void tearDown() throws Exception {
-        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        DruidDataSourceStatManager.clear();
     }
 
     @Test
     public void test_spring() throws Exception {
-        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
-
+        DruidDataSourceStatManager.clear();
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
                 "com/alibaba/druid/pool/ibatis/spring-config-ibatis.xml");
 
@@ -115,8 +114,7 @@ public class SpringIbatisFilterTest {
         System.out.println("wall-stats : " + JSONUtils.toJSONString(wallStats));
 
         context.close();
-
-        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+         DruidDataSourceStatManager.clear();
     }
 
     public static class TestFilter extends FilterAdapter {

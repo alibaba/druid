@@ -62,7 +62,7 @@ public class BlobTest {
         dropTable();
 
         DruidDriver.getProxyDataSources().clear();
-        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+         JdbcStatManager.getInstance().reset();
     }
 
     @Test

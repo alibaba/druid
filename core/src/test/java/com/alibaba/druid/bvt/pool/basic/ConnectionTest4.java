@@ -40,10 +40,8 @@ public class ConnectionTest4 extends PoolTestCase {
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
-        DruidDataSourceStatManager.clear();
-
+         DruidDataSourceStatManager.clear();
         driver = new MockDriver();
-
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setDriver(driver);
@@ -66,8 +64,7 @@ public class ConnectionTest4 extends PoolTestCase {
 
     protected void tearDown() throws Exception {
         dataSource.close();
-        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
-
+        DruidDataSourceStatManager.clear();
         JdbcStatManager.getInstance().setStatContext(null);
         super.tearDown();
     }

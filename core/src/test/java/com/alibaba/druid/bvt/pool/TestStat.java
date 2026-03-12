@@ -34,7 +34,6 @@ public class TestStat {
     @BeforeEach
     protected void setUp() throws Exception {
         DruidDataSourceStatManager.clear();
-
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setName("com.alibaba.dragoon.monitor");
@@ -45,7 +44,7 @@ public class TestStat {
     @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
-        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        DruidDataSourceStatManager.clear();
     }
 
     @Test

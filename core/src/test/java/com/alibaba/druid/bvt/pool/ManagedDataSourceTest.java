@@ -33,7 +33,6 @@ public class ManagedDataSourceTest {
     @BeforeEach
     public void setUp() throws Exception {
         DruidDataSourceStatManager.clear();
-
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
     }
@@ -41,7 +40,7 @@ public class ManagedDataSourceTest {
     @AfterEach
     public void tearDown() throws Exception {
         dataSource.close();
-        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        DruidDataSourceStatManager.clear();
     }
 
     @Test

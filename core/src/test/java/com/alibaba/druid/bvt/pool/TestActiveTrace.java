@@ -31,7 +31,6 @@ public class TestActiveTrace {
     @BeforeEach
     protected void setUp() throws Exception {
         DruidDataSourceStatManager.clear();
-
         dataSource = new DruidDataSource();
         dataSource.setRemoveAbandoned(true);
         dataSource.setRemoveAbandonedTimeoutMillis(100);

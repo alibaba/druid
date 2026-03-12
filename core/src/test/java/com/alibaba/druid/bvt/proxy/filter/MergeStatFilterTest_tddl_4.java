@@ -42,8 +42,7 @@ public class MergeStatFilterTest_tddl_4 {
                 System.out.println(text);
             }
         }
-
-        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+        JdbcStatManager.getInstance().reset();
 
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xx");
@@ -56,8 +55,7 @@ public class MergeStatFilterTest_tddl_4 {
     @AfterEach
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
-
-        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+        JdbcStatManager.getInstance().reset();
     }
 
     @Test

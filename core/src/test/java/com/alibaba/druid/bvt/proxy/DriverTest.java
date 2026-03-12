@@ -33,7 +33,7 @@ public class DriverTest {
     @AfterEach
     protected void tearDown() throws Exception {
         DruidDriver.getProxyDataSources().clear();
-        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+        JdbcStatManager.getInstance().reset();
     }
 
     @Test

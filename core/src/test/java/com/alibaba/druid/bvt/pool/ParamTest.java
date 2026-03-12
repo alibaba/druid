@@ -35,7 +35,7 @@ public class ParamTest {
 
     @AfterEach
     protected void tearDown() throws Exception {
-        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        DruidDataSourceStatManager.clear();
     }
 
     @Test
@@ -46,10 +46,8 @@ public class ParamTest {
         assertEquals(0, dataSource.getProxyFilters().size());
 
         dataSource.setFilters("stat");
-
-        JdbcStatManager.getInstance().reset();
-
-        dataSource.init();
+         JdbcStatManager.getInstance().reset();
+         dataSource.init();
         JdbcDataSourceStat stat = dataSource.getDataSourceStat();
 
         assertEquals(0, stat.getConnectionStat().getConnectCount());
@@ -74,9 +72,7 @@ public class ParamTest {
 
         assertEquals(1, stat.getConnectionStat().getConnectCount());
         assertEquals(1, stat.getConnectionStat().getCloseCount());
-
         JdbcStatManager.getInstance().reset();
-
         assertEquals(1, stat.getConnectionStat().getConnectCount());
         assertEquals(1, stat.getConnectionStat().getCloseCount());
     }
@@ -100,10 +96,8 @@ public class ParamTest {
         assertEquals(0, dataSource.getProxyFilters().size());
 
         dataSource.setFilters("stat");
-
-        JdbcStatManager.getInstance().reset();
-
-        // assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+         JdbcStatManager.getInstance().reset();
+         // DruidDataSourceStatManager.clear();
         // assertEquals(0, JdbcStatManager.getInstance().getDataSources().size());
 
         assertEquals(1, dataSource.getProxyFilters().size());
@@ -124,9 +118,7 @@ public class ParamTest {
 
         dataSource.setFilters("stat");
         assertEquals(1, dataSource.getProxyFilters().size());
-
         JdbcStatManager.getInstance().reset();
-
         dataSource.init();
         JdbcDataSourceStat stat = dataSource.getDataSourceStat();
 

@@ -21,7 +21,6 @@ public class TestOnBorrowFileAndNameTest {
     @BeforeEach
     protected void setUp() throws Exception {
         DruidDataSourceStatManager.clear();
-
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setName("com.alibaba.dragoon.monitor");

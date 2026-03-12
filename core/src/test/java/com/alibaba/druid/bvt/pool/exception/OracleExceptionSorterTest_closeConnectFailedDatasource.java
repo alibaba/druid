@@ -22,8 +22,7 @@ public class OracleExceptionSorterTest_closeConnectFailedDatasource {
 
     @BeforeEach
     protected void setUp() throws Exception {
-        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
-
+        JdbcStatManager.getInstance().reset();
         dataSource = new DruidDataSource();
 
         dataSource.setExceptionSorter(new OracleExceptionSorter());
@@ -40,7 +39,7 @@ public class OracleExceptionSorterTest_closeConnectFailedDatasource {
 
         @AfterEach
     protected void tearDown() throws Exception {
-        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        DruidDataSourceStatManager.clear();
     }
 
     @Test

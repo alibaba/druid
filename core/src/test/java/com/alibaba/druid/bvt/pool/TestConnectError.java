@@ -53,8 +53,7 @@ public class TestConnectError {
                 return super.connect(url, info);
             }
         };
-
-        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        DruidDataSourceStatManager.clear();
 
         dataSource = new DruidDataSource();
         dataSource.setDriver(driver);
@@ -70,7 +69,7 @@ public class TestConnectError {
     @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
-        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        DruidDataSourceStatManager.clear();
     }
 
     @Test

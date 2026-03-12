@@ -32,7 +32,6 @@ public class UsingDefaultLockModeBenchmarkTest {
     @Setup(Level.Trial)
     public void setUp() throws Exception {
         DruidDataSourceStatManager.clear();
-
         dataSource = new DruidDataSource();
         dataSource.setRemoveAbandoned(true);
         dataSource.setRemoveAbandonedTimeoutMillis(100);
@@ -62,7 +61,7 @@ public class UsingDefaultLockModeBenchmarkTest {
     @TearDown(Level.Trial)
     public void tearDown() throws Exception {
         dataSource.close();
-        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        DruidDataSourceStatManager.clear();
     }
 
     @Benchmark

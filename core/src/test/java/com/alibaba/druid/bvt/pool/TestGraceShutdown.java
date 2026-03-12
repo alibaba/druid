@@ -32,10 +32,8 @@ public class TestGraceShutdown extends PoolTestCase {
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
-        DruidDataSourceStatManager.clear();
-
+         DruidDataSourceStatManager.clear();
         driver = new MockDriver();
-
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setDriver(driver);

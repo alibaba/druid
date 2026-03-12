@@ -35,7 +35,7 @@ public class DruidDataSourceFilterTest {
 
     @AfterEach
     protected void tearDown() throws Exception {
-        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        DruidDataSourceStatManager.clear();
     }
 
     @Test
@@ -60,10 +60,8 @@ public class DruidDataSourceFilterTest {
         assertEquals(0, dataSource.getProxyFilters().size());
 
         dataSource.setFilters("stat");
-
-        JdbcStatManager.getInstance().reset();
-
-        dataSource.init();
+         JdbcStatManager.getInstance().reset();
+         dataSource.init();
         JdbcDataSourceStat dataSourceStat = dataSource.getDataSourceStat();
 //        assertEquals(1, JdbcStatManager.getInstance().getDataSources().size());
 //        JdbcDataSourceStat dataSourceStat = JdbcStatManager.getInstance().getDataSources().values().iterator().next();

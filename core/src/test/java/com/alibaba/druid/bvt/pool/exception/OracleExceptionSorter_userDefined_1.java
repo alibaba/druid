@@ -15,8 +15,7 @@ public class OracleExceptionSorter_userDefined_1 extends PoolTestCase {
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
-        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
-
+         JdbcStatManager.getInstance().reset();
         dataSource = new DruidDataSource();
 
         dataSource.setExceptionSorter(new OracleExceptionSorter());

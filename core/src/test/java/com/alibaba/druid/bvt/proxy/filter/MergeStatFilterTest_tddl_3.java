@@ -33,7 +33,6 @@ public class MergeStatFilterTest_tddl_3 {
     @BeforeEach
     protected void setUp() throws Exception {
         JdbcStatManager.getInstance().reset();
-
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xx");
         dataSource.setFilters("mergeStat");

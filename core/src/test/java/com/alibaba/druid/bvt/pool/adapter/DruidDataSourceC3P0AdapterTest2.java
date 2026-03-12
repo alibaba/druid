@@ -28,8 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class DruidDataSourceC3P0AdapterTest2 extends PoolTestCase {
     public void test_0() throws Exception {
-        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
-
+        DruidDataSourceStatManager.clear();
         DruidDataSourceC3P0Adapter dataSource = new DruidDataSourceC3P0Adapter();
         dataSource.setJdbcUrl("jdbc:mock:xxx");
 

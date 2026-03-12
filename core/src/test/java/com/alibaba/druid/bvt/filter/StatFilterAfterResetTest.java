@@ -82,10 +82,8 @@ public class StatFilterAfterResetTest {
         JdbcStatManager.getInstance().reset();
 
         assertFalse(sqlStat.isRemoved());
-
-        JdbcStatManager.getInstance().reset();
-        assertTrue(sqlStat.isRemoved());
-
+         JdbcStatManager.getInstance().reset();
+         assertTrue(sqlStat.isRemoved());
         {
             Connection conn = dataSource.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql);

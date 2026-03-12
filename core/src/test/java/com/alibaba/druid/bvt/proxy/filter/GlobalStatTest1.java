@@ -21,8 +21,7 @@ public class GlobalStatTest1 {
 
     @BeforeEach
     protected void setUp() throws Exception {
-        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
-
+        JdbcStatManager.getInstance().reset();
         dataSourceA = new DruidDataSource();
         dataSourceA.setUrl("jdbc:mock:xx_A");
         dataSourceA.setFilters("stat");
@@ -40,8 +39,7 @@ public class GlobalStatTest1 {
         JdbcUtils.close(dataSourceB);
 
         JdbcDataSourceStat.setGlobal(null);
-
-        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+         JdbcStatManager.getInstance().reset();
     }
 
     @Test

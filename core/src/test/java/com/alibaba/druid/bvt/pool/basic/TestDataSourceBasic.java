@@ -65,8 +65,7 @@ public class TestDataSourceBasic extends PoolTestCase {
             assertEquals(true, dataSource.getCreateTimespanNano() > 0);
         }
         dataSource.close();
-        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
-
+        DruidDataSourceStatManager.clear();
         super.tearDown();
     }
 

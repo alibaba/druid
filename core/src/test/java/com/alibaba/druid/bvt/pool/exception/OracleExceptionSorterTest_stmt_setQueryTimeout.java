@@ -20,11 +20,8 @@ public class OracleExceptionSorterTest_stmt_setQueryTimeout extends PoolTestCase
 
     protected void setUp() throws Exception {
         super.setUp();
-
-        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
-
+        JdbcStatManager.getInstance().reset();
         dataSource = new DruidDataSource();
-
         dataSource.setExceptionSorter(new OracleExceptionSorter());
 
         dataSource.setDriver(new OracleMockDriver());

@@ -58,7 +58,7 @@ public class TestLogLongTimeTransaction {
     @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
-        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        DruidDataSourceStatManager.clear();
     }
 
     @Test

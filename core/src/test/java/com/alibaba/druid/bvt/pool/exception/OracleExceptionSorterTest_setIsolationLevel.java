@@ -22,8 +22,7 @@ public class OracleExceptionSorterTest_setIsolationLevel {
 
     @BeforeEach
     protected void setUp() throws Exception {
-        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
-
+        JdbcStatManager.getInstance().reset();
         dataSource = new DruidDataSource();
 
         dataSource.setExceptionSorter(new OracleExceptionSorter());

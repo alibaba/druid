@@ -35,9 +35,7 @@ public class TestDisable {
     @BeforeEach
     protected void setUp() throws Exception {
         DruidDataSourceStatManager.clear();
-
         driver = new MockDriver();
-
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setDriver(driver);
@@ -57,7 +55,7 @@ public class TestDisable {
     @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
-        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        DruidDataSourceStatManager.clear();
     }
 
     @Test

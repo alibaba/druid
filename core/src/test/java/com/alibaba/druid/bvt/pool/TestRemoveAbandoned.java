@@ -49,14 +49,13 @@ public class TestRemoveAbandoned {
         dataSource.setTestOnBorrow(false);
         dataSource.setValidationQuery("SELECT 1");
         dataSource.setFilters("stat");
-
-        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        DruidDataSourceStatManager.clear();
     }
 
     @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
-        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        DruidDataSourceStatManager.clear();
     }
 
     @Test

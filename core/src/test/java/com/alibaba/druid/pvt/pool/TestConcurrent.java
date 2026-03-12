@@ -37,7 +37,6 @@ public class TestConcurrent {
     @BeforeEach
     protected void setUp() throws Exception {
         DruidDataSourceStatManager.clear();
-
         driver = new MockDriver();
         driver.setLogExecuteQueryEnable(false);
 
