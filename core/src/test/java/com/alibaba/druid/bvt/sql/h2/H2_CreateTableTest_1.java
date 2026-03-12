@@ -20,6 +20,8 @@ import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class H2_CreateTableTest_1 extends OracleTest {
     public void test_0() throws Exception {
         String sql = //

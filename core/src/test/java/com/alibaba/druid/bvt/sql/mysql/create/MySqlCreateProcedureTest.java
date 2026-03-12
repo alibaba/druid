@@ -23,6 +23,8 @@ import com.alibaba.druid.stat.TableStat;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlCreateProcedureTest extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "create or replace procedure sp_name(level int,age int)" +

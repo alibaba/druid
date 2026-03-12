@@ -5,24 +5,31 @@ import com.alibaba.druid.filter.config.ConfigTools;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidDataSourceFactory;
 import com.alibaba.druid.util.JdbcUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Properties;
 
-public class ConfigFilterTest3 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class ConfigFilterTest3 {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setFilters("config");
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
     }
 
+    @Test
     public void test_0() throws Exception {
         String password = "abcdefg1234";
         String[] keys = ConfigTools.genKeyPair(1024);
@@ -45,6 +52,7 @@ public class ConfigFilterTest3 extends TestCase {
         assertEquals(password, dataSource.getPassword());
     }
 
+    @Test
     public void test_sys_property() throws Exception {
         String password = "abcdefg1234";
         String[] keys = ConfigTools.genKeyPair(1024);

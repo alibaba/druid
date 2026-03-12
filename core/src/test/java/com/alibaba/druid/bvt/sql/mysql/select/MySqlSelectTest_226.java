@@ -24,6 +24,8 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_226 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SELECT sum(`price`) AS aggregate, `aa` \n" +

@@ -17,7 +17,9 @@ package com.alibaba.druid.bvt.filter.wall.sqlserver;
 
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.SQLServerWallProvider;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * SQLServerWallTest
@@ -26,7 +28,8 @@ import junit.framework.TestCase;
  * @version 1.0, 2012-3-18
  * @see
  */
-public class SQLServerWallTest_7 extends TestCase {
+public class SQLServerWallTest_7 {
+    @Test
     public void test_true() throws Exception {
         WallProvider provider = new SQLServerWallProvider();
 

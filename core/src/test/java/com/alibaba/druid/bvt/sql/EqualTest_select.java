@@ -4,11 +4,14 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class EqualTest_select extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class EqualTest_select {
+    @Test
     public void test_eq_select() throws Exception {
         List stmtsA = SQLUtils.parseStatements("select * from a", JdbcConstants.ODPS);
         List stmtsB = SQLUtils.parseStatements("select * from b", JdbcConstants.ODPS);

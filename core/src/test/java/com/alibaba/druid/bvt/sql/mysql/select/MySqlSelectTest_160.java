@@ -13,6 +13,8 @@ import com.alibaba.fastjson2.JSON;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_160 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select quote(\"'abc'\")";

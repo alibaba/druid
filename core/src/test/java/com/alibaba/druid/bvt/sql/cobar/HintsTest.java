@@ -19,9 +19,12 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class HintsTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class HintsTest {
+    @Test
     public void test_hints_0() throws Exception {
         String sql = "CREATE /*!32302 TEMPORARY */ TABLE t (a INT);";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -31,6 +34,7 @@ public class HintsTest extends TestCase {
         assertEquals("CREATE /*!32302 TEMPORARY */ TABLE t (\n\ta INT\n);", output);
     }
 
+    @Test
     public void test_hints_1() throws Exception {
         String sql = "SELECT /*! STRAIGHT_JOIN */ col1 FROM table1,table2";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -40,6 +44,7 @@ public class HintsTest extends TestCase {
         assertEquals("SELECT /*! STRAIGHT_JOIN */ col1\nFROM table1, table2", output);
     }
 
+    @Test
     public void test_hints_none() throws Exception {
         String sql = "SELECT /* STRAIGHT_JOIN */ col1 FROM table1,table2";
         MySqlStatementParser parser = new MySqlStatementParser(sql);

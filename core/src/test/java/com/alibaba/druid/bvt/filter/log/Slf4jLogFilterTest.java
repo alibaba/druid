@@ -1,10 +1,13 @@
 package com.alibaba.druid.bvt.filter.log;
 
 import com.alibaba.druid.filter.logging.Slf4jLogFilter;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 
-public class Slf4jLogFilterTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class Slf4jLogFilterTest {
+    @Test
     public void test_slf4j() throws Exception {
         Slf4jLogFilter filter = new Slf4jLogFilter();
         assertEquals("druid.sql.DataSource", filter.getDataSourceLoggerName());

@@ -18,15 +18,20 @@ package com.alibaba.druid.bvt.pool;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.stat.JdbcStatManager;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-public class TestStat extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class TestStat {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         DruidDataSourceStatManager.clear();
 
@@ -37,11 +42,13 @@ public class TestStat extends TestCase {
         dataSource.setPoolPreparedStatements(false);
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
         assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
+    @Test
     public void test_stat() throws Exception {
         String sql = "SELECT 1";
 

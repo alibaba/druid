@@ -4,9 +4,12 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.odps.parser.OdpsStatementParser;
 import com.alibaba.druid.sql.parser.Token;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class OdpsSetLabelTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OdpsSetLabelTest {
+    @Test
     public void test_odps() throws Exception {
         String sql = "SET LABEL S3 TO USER aliyun$abc@alibaba-inc.com";
         OdpsStatementParser parser = new OdpsStatementParser(sql);

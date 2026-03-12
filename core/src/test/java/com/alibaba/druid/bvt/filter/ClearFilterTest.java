@@ -5,6 +5,8 @@ import com.alibaba.druid.filter.encoding.EncodingConvertFilter;
 import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.pool.DruidDataSource;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class ClearFilterTest extends PoolTestCase {
     public void test_filters() throws Exception {
         DruidDataSource dataSource = new DruidDataSource();

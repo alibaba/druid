@@ -20,11 +20,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class OracleSelectTest131 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OracleSelectTest131 {
+    @Test
     public void test_0() throws Exception {
         String sql = "select * from ( select * from ( \n" +
                 "select bbb . id , bbb . isdel , bbb . dataversion , bbb . lrr_sfzh , bbb . lrsj , bbb . xgr_sfzh , bbb . xgsj , bbb . wszt , bbb . cbqy_bh , bbb . ajbh , bbb . cbdw_bh , bbb . cbdw_mc \n" +

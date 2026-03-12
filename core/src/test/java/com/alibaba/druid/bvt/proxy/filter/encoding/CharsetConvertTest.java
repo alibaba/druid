@@ -16,24 +16,28 @@
 package com.alibaba.druid.bvt.proxy.filter.encoding;
 
 import com.alibaba.druid.filter.encoding.CharsetConvert;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.io.UnsupportedEncodingException;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author gang.su
  */
-public class CharsetConvertTest extends TestCase {
+public class CharsetConvertTest {
     private static final String CLIENT_ENCODEING = "gbk";
     private static final String SERVER_ENCODEING = "utf-8";
     public CharsetConvert charsetConvert = new CharsetConvert(CLIENT_ENCODEING, SERVER_ENCODEING);
 
+    @Test
     public void testIsEmpty() {
         assertTrue(charsetConvert.isEmpty(null));
         assertTrue(charsetConvert.isEmpty(""));
         assertTrue(!charsetConvert.isEmpty("a"));
     }
 
+    @Test
     public void testEncoding() {
         String s = "你好";
         String es = "";

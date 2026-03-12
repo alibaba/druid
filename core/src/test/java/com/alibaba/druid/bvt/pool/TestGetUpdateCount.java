@@ -20,17 +20,22 @@ import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.mock.MockPreparedStatement;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class TestGetUpdateCount extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class TestGetUpdateCount {
     private DruidDataSource dataSource;
     private MockDriver driver;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         driver = new MockDriver() {
             @Override
@@ -49,10 +54,12 @@ public class TestGetUpdateCount extends TestCase {
         dataSource.setMaxOpenPreparedStatements(30);
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
     }
 
+    @Test
     public void test_executeQuery() throws Exception {
         Connection conn = dataSource.getConnection();
 
@@ -72,6 +79,7 @@ public class TestGetUpdateCount extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_execute() throws Exception {
         Connection conn = dataSource.getConnection();
 
@@ -92,6 +100,7 @@ public class TestGetUpdateCount extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_execute_multi() throws Exception {
         MyPreparedStatement myStmtA = null;
         MyPreparedStatement myStmtB = null;

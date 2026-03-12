@@ -2,6 +2,8 @@ package com.alibaba.druid.bvt.sql.mysql.createTable;
 
 import com.alibaba.druid.sql.MysqlTest;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlCreateTableTest159
         extends MysqlTest {
     public void test_0() throws Exception {

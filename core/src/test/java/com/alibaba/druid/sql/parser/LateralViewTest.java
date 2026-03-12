@@ -1,9 +1,11 @@
 package com.alibaba.druid.sql.parser;
 
 import com.alibaba.druid.sql.testutil.ParserTestUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class LateralViewTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class LateralViewTest {
     private static final SQLParserFeature[] FORMAT_DEFAULT_FEATURES = {
             SQLParserFeature.KeepComments,
             SQLParserFeature.EnableSQLBinaryOpExprGroup
@@ -13,6 +15,7 @@ public class LateralViewTest extends TestCase {
         return ParserTestUtils.formatFirstStatement(sql, "hive", FORMAT_DEFAULT_FEATURES);
     }
 
+    @Test
     public void test1() {
         String sql = "SELECT DISTINCT t3 FROM d1.t1 t2 LATERAL VIEW explode( split(c1,',')) l1 AS t3";
         String formatted = "SELECT DISTINCT t3\n" +
@@ -21,6 +24,7 @@ public class LateralViewTest extends TestCase {
         assertEquals(format(sql), formatted);
     }
 
+    @Test
     public void test2() {
         String sql = "SELECT DISTINCT t3 FROM d1.t1 t2 LATERAL VIEW explode( split(c1,',')) AS t3";
         String formatted = "SELECT DISTINCT t3\n" +

@@ -26,6 +26,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class Bug_for_happyday517 extends PoolTestCase {
     private DruidDataSource dataSource;
     private MockDriver driver;

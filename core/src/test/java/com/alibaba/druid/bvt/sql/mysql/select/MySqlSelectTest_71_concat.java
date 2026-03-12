@@ -26,6 +26,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_71_concat extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select 'afdf' \"erwhg\" \"ads\" 'dgs' \"rter\" as tstDiffQuoteConcat;";

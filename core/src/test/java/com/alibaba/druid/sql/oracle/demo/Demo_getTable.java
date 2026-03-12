@@ -5,11 +5,14 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class Demo_getTable extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class Demo_getTable {
+    @Test
     public void test_for_demo() throws Exception {
         String sql = " CREATE TABLE \"ZEUS\".\"ACCOUNTS_DEL_20091231\" \n" +
                 "   (  \"ID\" NUMBER NOT NULL ENABLE, \n" +

@@ -15,10 +15,11 @@
  */
 package com.alibaba.druid.pool;
 
-import junit.framework.TestCase;
 import oracle.jdbc.pool.OracleConnectionPoolDataSource;
+import org.junit.jupiter.api.Test;
 
-public class OracleConnectionPoolDataSourceTest extends TestCase {
+public class OracleConnectionPoolDataSourceTest {
+    @Test
     public void test_oraclePool() throws Exception {
         OracleConnectionPoolDataSource pool = new OracleConnectionPoolDataSource();
     }

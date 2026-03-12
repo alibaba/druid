@@ -24,6 +24,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class Case3 extends PoolTestCase {
     // public void test_0() throws Exception {
     // DruidDataSource dataSource = new DruidDataSource();

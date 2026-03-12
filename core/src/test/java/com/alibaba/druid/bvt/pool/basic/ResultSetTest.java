@@ -18,7 +18,8 @@ package com.alibaba.druid.bvt.pool.basic;
 import com.alibaba.druid.mock.MockResultSet;
 import com.alibaba.druid.pool.DruidPooledResultSet;
 import com.alibaba.druid.pool.DruidPooledStatement;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.InputStream;
 import java.io.Reader;
@@ -30,11 +31,14 @@ import java.sql.Ref;
 import java.sql.SQLException;
 import java.sql.SQLXML;
 
-public class ResultSetTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class ResultSetTest {
     private DruidPooledStatement stmt;
     private MockResultSet raw;
     private DruidPooledResultSet resultSet;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         stmt = new DruidPooledStatement(null, null) {
             protected SQLException checkException(Throwable error) throws SQLException {
@@ -52,6 +56,7 @@ public class ResultSetTest extends TestCase {
     }
 
     @SuppressWarnings("deprecation")
+    @Test
     public void test_get() throws Exception {
         assertTrue(stmt == resultSet.getPoolableStatement());
         assertTrue(raw == resultSet.getRawResultSet());
@@ -96,6 +101,7 @@ public class ResultSetTest extends TestCase {
         resultSet.getBinaryStream("1");
     }
 
+    @Test
     public void test_set() throws Exception {
         long currentMillis = System.currentTimeMillis();
 
@@ -143,6 +149,7 @@ public class ResultSetTest extends TestCase {
         assertEquals(new java.sql.Timestamp(currentMillis), resultSet.getTimestamp(1));
     }
 
+    @Test
     public void test_set_error() throws Exception {
         long currentMillis = System.currentTimeMillis();
 
@@ -290,6 +297,7 @@ public class ResultSetTest extends TestCase {
 
     }
 
+    @Test
     public void test_setByName() throws Exception {
         long currentMillis = System.currentTimeMillis();
 
@@ -337,6 +345,7 @@ public class ResultSetTest extends TestCase {
         assertEquals(new java.sql.Timestamp(currentMillis), resultSet.getTimestamp("1"));
     }
 
+    @Test
     public void test_updateByLabel_error() throws Exception {
         long currentMillis = System.currentTimeMillis();
 
@@ -484,6 +493,7 @@ public class ResultSetTest extends TestCase {
 
     }
 
+    @Test
     public void test_updateBinaryStream() throws Exception {
         resultSet.next();
 
@@ -511,6 +521,7 @@ public class ResultSetTest extends TestCase {
         }
     }
 
+    @Test
     public void test_updateBinaryStream_2() throws Exception {
         resultSet.next();
 
@@ -538,6 +549,7 @@ public class ResultSetTest extends TestCase {
         }
     }
 
+    @Test
     public void test_updateCharacterStream() throws Exception {
         resultSet.next();
 
@@ -565,6 +577,7 @@ public class ResultSetTest extends TestCase {
         }
     }
 
+    @Test
     public void test_update_blob() throws Exception {
         resultSet.next();
 
@@ -592,6 +605,7 @@ public class ResultSetTest extends TestCase {
         }
     }
 
+    @Test
     public void test_update_clob() throws Exception {
         resultSet.next();
 
@@ -619,6 +633,7 @@ public class ResultSetTest extends TestCase {
         }
     }
 
+    @Test
     public void test_update_nclob() throws Exception {
         resultSet.next();
 
@@ -646,6 +661,7 @@ public class ResultSetTest extends TestCase {
         }
     }
 
+    @Test
     public void test_update_nclob_1() throws Exception {
         resultSet.next();
 
@@ -673,6 +689,7 @@ public class ResultSetTest extends TestCase {
         }
     }
 
+    @Test
     public void test_update_clob_1() throws Exception {
         resultSet.next();
 
@@ -700,6 +717,7 @@ public class ResultSetTest extends TestCase {
         }
     }
 
+    @Test
     public void test_update_blob_1() throws Exception {
         resultSet.next();
 
@@ -727,6 +745,7 @@ public class ResultSetTest extends TestCase {
         }
     }
 
+    @Test
     public void test_updateCharacterStream_1() throws Exception {
         resultSet.next();
 
@@ -754,6 +773,7 @@ public class ResultSetTest extends TestCase {
         }
     }
 
+    @Test
     public void test_updateAsciiStream_1() throws Exception {
         resultSet.next();
 
@@ -781,6 +801,7 @@ public class ResultSetTest extends TestCase {
         }
     }
 
+    @Test
     public void test_updateAsciiStream_2() throws Exception {
         resultSet.next();
 
@@ -808,6 +829,7 @@ public class ResultSetTest extends TestCase {
         }
     }
 
+    @Test
     public void test_updateBinaryStream_1() throws Exception {
         resultSet.next();
 
@@ -835,6 +857,7 @@ public class ResultSetTest extends TestCase {
         }
     }
 
+    @Test
     public void test_updateAsciiStream() throws Exception {
         resultSet.next();
 
@@ -862,6 +885,7 @@ public class ResultSetTest extends TestCase {
         }
     }
 
+    @Test
     public void test_updateNCharacterStream() throws Exception {
         resultSet.next();
 
@@ -889,6 +913,7 @@ public class ResultSetTest extends TestCase {
         }
     }
 
+    @Test
     public void test_updateNCharacterStream_1() throws Exception {
         resultSet.next();
 
@@ -916,6 +941,7 @@ public class ResultSetTest extends TestCase {
         }
     }
 
+    @Test
     public void test_updateSQLXML() throws Exception {
         resultSet.next();
 
@@ -943,6 +969,7 @@ public class ResultSetTest extends TestCase {
         }
     }
 
+    @Test
     public void test_get_error() throws Exception {
         {
             SQLException error = null;
@@ -1287,6 +1314,7 @@ public class ResultSetTest extends TestCase {
         }
     }
 
+    @Test
     public void test_getSQLXML() throws Exception {
         resultSet.next();
 
@@ -1314,6 +1342,7 @@ public class ResultSetTest extends TestCase {
         }
     }
 
+    @Test
     public void test_getNClob() throws Exception {
         resultSet.next();
 
@@ -1341,6 +1370,7 @@ public class ResultSetTest extends TestCase {
         }
     }
 
+    @Test
     public void test_getNString() throws Exception {
         resultSet.next();
 
@@ -1368,6 +1398,7 @@ public class ResultSetTest extends TestCase {
         }
     }
 
+    @Test
     public void test_getNCharacterStream() throws Exception {
         resultSet.next();
 
@@ -1395,6 +1426,7 @@ public class ResultSetTest extends TestCase {
         }
     }
 
+    @Test
     public void test_getCharacterStream() throws Exception {
         resultSet.next();
 
@@ -1422,6 +1454,7 @@ public class ResultSetTest extends TestCase {
         }
     }
 
+    @Test
     public void test_updateCharacterStream_2() throws Exception {
         resultSet.next();
 
@@ -1449,6 +1482,7 @@ public class ResultSetTest extends TestCase {
         }
     }
 
+    @Test
     public void test_getURL() throws Exception {
         resultSet.next();
 
@@ -1476,6 +1510,7 @@ public class ResultSetTest extends TestCase {
         }
     }
 
+    @Test
     public void test_getRowId() throws Exception {
         resultSet.next();
 
@@ -1503,6 +1538,7 @@ public class ResultSetTest extends TestCase {
         }
     }
 
+    @Test
     public void test_getObject_1() throws Exception {
         resultSet.next();
 
@@ -1530,6 +1566,7 @@ public class ResultSetTest extends TestCase {
         }
     }
 
+    @Test
     public void test_getTimestamp() throws Exception {
         resultSet.next();
 
@@ -1557,6 +1594,7 @@ public class ResultSetTest extends TestCase {
         }
     }
 
+    @Test
     public void test_getTime() throws Exception {
         resultSet.next();
 
@@ -1584,6 +1622,7 @@ public class ResultSetTest extends TestCase {
         }
     }
 
+    @Test
     public void test_getDate() throws Exception {
         resultSet.next();
 
@@ -1611,6 +1650,7 @@ public class ResultSetTest extends TestCase {
         }
     }
 
+    @Test
     public void test_getArray() throws Exception {
         resultSet.next();
 
@@ -1638,6 +1678,7 @@ public class ResultSetTest extends TestCase {
         }
     }
 
+    @Test
     public void test_getClob() throws Exception {
         resultSet.next();
 
@@ -1665,6 +1706,7 @@ public class ResultSetTest extends TestCase {
         }
     }
 
+    @Test
     public void test_getBlob() throws Exception {
         resultSet.next();
 
@@ -1692,6 +1734,7 @@ public class ResultSetTest extends TestCase {
         }
     }
 
+    @Test
     public void test_getRef() throws Exception {
         resultSet.next();
 
@@ -1719,6 +1762,7 @@ public class ResultSetTest extends TestCase {
         }
     }
 
+    @Test
     public void test_getObject() throws Exception {
         resultSet.next();
 
@@ -1746,6 +1790,7 @@ public class ResultSetTest extends TestCase {
         }
     }
 
+    @Test
     public void test_updateNClob() throws Exception {
         resultSet.next();
 
@@ -1773,6 +1818,7 @@ public class ResultSetTest extends TestCase {
         }
     }
 
+    @Test
     public void test_updateNString() throws Exception {
         resultSet.next();
 
@@ -1800,6 +1846,7 @@ public class ResultSetTest extends TestCase {
         }
     }
 
+    @Test
     public void test_updateRowId() throws Exception {
         resultSet.next();
 
@@ -1827,6 +1874,7 @@ public class ResultSetTest extends TestCase {
         }
     }
 
+    @Test
     public void test_updateArray() throws Exception {
         resultSet.next();
 
@@ -1854,6 +1902,7 @@ public class ResultSetTest extends TestCase {
         }
     }
 
+    @Test
     public void test_updateClob() throws Exception {
         resultSet.next();
 
@@ -1881,6 +1930,7 @@ public class ResultSetTest extends TestCase {
         }
     }
 
+    @Test
     public void test_updateBlob() throws Exception {
         resultSet.next();
 
@@ -1908,6 +1958,7 @@ public class ResultSetTest extends TestCase {
         }
     }
 
+    @Test
     public void test_updateRef() throws Exception {
         resultSet.next();
 
@@ -1935,6 +1986,7 @@ public class ResultSetTest extends TestCase {
         }
     }
 
+    @Test
     public void test_updateObject() throws Exception {
         resultSet.next();
 
@@ -1962,6 +2014,7 @@ public class ResultSetTest extends TestCase {
         }
     }
 
+    @Test
     public void test_updateObject_1() throws Exception {
         resultSet.next();
 

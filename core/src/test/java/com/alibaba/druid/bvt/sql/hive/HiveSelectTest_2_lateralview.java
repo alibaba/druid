@@ -5,9 +5,12 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.testutil.ParserTestUtils;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class HiveSelectTest_2_lateralview extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class HiveSelectTest_2_lateralview {
+    @Test
     public void test_select() throws Exception {
         String sql = "SELECT pageid, adid\n" +
                 "FROM pageAds LATERAL VIEW explode(adid_list) adTable AS adid;";

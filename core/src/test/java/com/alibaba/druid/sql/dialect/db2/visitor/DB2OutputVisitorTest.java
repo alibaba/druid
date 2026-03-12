@@ -4,11 +4,12 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author abomb4 2022-06-19
@@ -38,7 +39,7 @@ public class DB2OutputVisitorTest {
             SQLStatement stmt = parser.parseStatement();
             stmt.accept(visitor);
             String result = builder.toString();
-            Assert.assertEquals(testCase.name, testCase.expected, result);
+            assertEquals(testCase.name, testCase.expected, result);
         }
         System.out.println("DB2 Interval test ok.");
     }

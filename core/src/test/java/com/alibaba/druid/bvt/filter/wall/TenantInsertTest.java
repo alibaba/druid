@@ -24,15 +24,19 @@ import com.alibaba.druid.wall.WallCheckResult;
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author kiki
  */
-public class TenantInsertTest extends TestCase {
+public class TenantInsertTest {
     private WallConfig config = new WallConfig();
     private WallConfig config_callback = new WallConfig();
 
+    @BeforeEach
     protected void setUp() throws Exception {
         config.setTenantTablePattern("*");
         config.setTenantColumn("tenant");
@@ -40,6 +44,7 @@ public class TenantInsertTest extends TestCase {
         config_callback.setTenantCallBack(new TenantTestCallBack());
     }
 
+    @Test
     public void testMySql3() throws Exception {
         String insert_sql = "INSERT INTO orders (ID, NAME) VALUES (1, \"KIKI\")";
         String expect_sql = "INSERT INTO orders (ID, NAME, tenant)\n" +
@@ -65,6 +70,7 @@ public class TenantInsertTest extends TestCase {
 
     }
 
+    @Test
     public void testMySql4() throws Exception {
         String insert_sql = "INSERT INTO orders (ID, NAME) VALUES (1, \"KIKI\"), (1, \"CICI\")";
         String expect_sql = "INSERT INTO orders (ID, NAME, tenant)\n" +
@@ -92,6 +98,7 @@ public class TenantInsertTest extends TestCase {
 
     }
 
+    @Test
     public void testMySql5() throws Exception {
         String insert_sql = "INSERT INTO orders (ID, NAME) SELECT ID, NAME FROM temp WHERE age = 18";
         String expect_sql = "INSERT INTO orders (ID, NAME, tenant)" +
@@ -119,6 +126,7 @@ public class TenantInsertTest extends TestCase {
         }
     }
 
+    @Test
     public void testMySql6() throws Exception {
         String insert_sql = "INSERT INTO orders (ID, NAME) SELECT ID, NAME FROM temp1 WHERE age = 18 UNION SELECT ID, NAME FROM temp2 UNION ALL SELECT ID, NAME FROM temp3";
         String expect_sql = "INSERT INTO orders (ID, NAME, tenant)\n" +

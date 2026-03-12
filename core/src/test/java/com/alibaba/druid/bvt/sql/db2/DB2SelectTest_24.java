@@ -25,6 +25,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class DB2SelectTest_24 extends DB2Test {
     public void test_0() throws Exception {
         String sql = "SELECT BANK_CODE, CONN_LOCATION_TYPE,\n" +

@@ -9,6 +9,8 @@ import com.alibaba.druid.pool.DruidDataSource;
 
 import java.sql.Connection;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class UnwrapTest_filter extends PoolTestCase {
     private DruidDataSource dataSource;
 

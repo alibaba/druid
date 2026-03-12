@@ -15,12 +15,13 @@
  */
 package com.alibaba.druid;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class LockTest extends TestCase {
+public class LockTest {
+    @Test
     public void test_0() throws Exception {
         Lock lock = new ReentrantLock();
 

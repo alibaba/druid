@@ -2,17 +2,22 @@ package com.alibaba.druid.bvt.filter.wall;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.wall.WallFilter;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-public class WallFilterTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class WallFilterTest {
     private DruidDataSource dataSource;
     private WallFilter wallFilter;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
 
@@ -23,10 +28,12 @@ public class WallFilterTest extends TestCase {
         wallFilter = (WallFilter) dataSource.getProxyFilters().get(0);
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
     }
 
+    @Test
     public void test_wallFilter() throws Exception {
         {
             Connection conn = dataSource.getConnection();

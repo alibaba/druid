@@ -5,7 +5,9 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallFilter;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,10 +16,13 @@ import java.sql.Statement;
 import java.util.LinkedList;
 import java.util.List;
 
-public class WallFilterTest3 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class WallFilterTest3 {
     private DruidDataSource dataSource;
     private WallFilter wallFilter;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
 
@@ -38,10 +43,12 @@ public class WallFilterTest3 extends TestCase {
         dataSource.init();
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
     }
 
+    @Test
     public void test_wallFilter() throws Exception {
         assertEquals(JdbcConstants.MARIADB, wallFilter.getDbType());
         assertFalse(wallFilter.isLogViolation());

@@ -1,13 +1,14 @@
 package com.alibaba.druid.stat;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.lang.management.ManagementFactory;
 import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Map;
 
-public class HashMapMemoryTest extends TestCase {
+public class HashMapMemoryTest {
+    @Test
     public void test_0() throws Exception {
         HashMap item = new HashMap();
         gc();

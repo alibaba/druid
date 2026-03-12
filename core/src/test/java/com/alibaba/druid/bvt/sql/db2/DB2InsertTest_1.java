@@ -26,6 +26,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class DB2InsertTest_1 extends DB2Test {
     public void test_0() throws Exception {
         String sql = "INSERT INTO MK.KPI_AREA_SORT_FACT_LATN_ID_MID\n" +

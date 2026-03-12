@@ -2,14 +2,15 @@ package com.alibaba.druid.filter.config;
 
 import com.alibaba.druid.pool.DruidDataSourceFactory;
 import com.alibaba.druid.util.JdbcUtils;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Jonas Yang
@@ -17,7 +18,7 @@ import java.io.PrintWriter;
 public class ConfigFileGenerator {
     protected String filePath;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         PrintWriter out = null;
 
@@ -31,13 +32,13 @@ public class ConfigFileGenerator {
             out.println(DruidDataSourceFactory.PROP_PASSWORD + "=OJfUm6WCHi7EuXqE6aEc+Po2xFrAGBeSNy8O2jWhV2FTG8/5kbRRr2rjNKhptlevm/03Y0048P7h88gdUOXAYg==");
             out.println(DruidDataSourceFactory.PROP_URL + "=jdbc:oracle:thin:@");
         } catch (IOException e) {
-            Assert.assertNull("Failed to init resource.", e);
+            assertNull(e, "Failed to init resource.");
         } finally {
             JdbcUtils.close(out);
         }
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         if (this.filePath == null) {
             return;

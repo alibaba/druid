@@ -4,8 +4,8 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallFilter;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,9 +13,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
-public class PolarDB2WallFilterTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class PolarDB2WallFilterTest {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         String jdbcUrl = "jdbc:polardb2://a.b.c.d:5432/polardb";
         String user = "polardb";
@@ -37,6 +40,7 @@ public class PolarDB2WallFilterTest extends TestCase {
     /*
      * PolarDB-Oracle 2.0 only accepts Oracle style grammar now.
      */
+    @Test
     public void testWallFilter() throws Exception {
         String sql = null;
         Connection connect = dataSource.getConnection();
@@ -79,6 +83,6 @@ public class PolarDB2WallFilterTest extends TestCase {
             pstmt.close();
         }
 
-        Assert.assertTrue(sql_filtered);
+        assertTrue(sql_filtered);
     }
 }

@@ -7,11 +7,12 @@ import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class MySqlInsertBenchmark_2 extends TestCase {
+public class MySqlInsertBenchmark_2 {
     static String sql = "INSERT INTO test_table VALUES (1, '1', '2017-10-10', true, false, '2017-10-10 10:10:10', '10:10:10', 1.111, NULL), (2, '2', '2017-10-10', true, false, '2017-10-10 10:10:10', '10:10:10', 2.222, NULL)" +
             ", (2, '2', '2017-09-09', true, false, '2017-10-10 10:10:10', '10:10:10', 3.333, NULL)" +
             ", (3, '3', '2017-10-10', true, false, '2017-10-10 10:10:10', '11:11:11', 4.333, NULL)" +
@@ -19,12 +20,14 @@ public class MySqlInsertBenchmark_2 extends TestCase {
             ", (5, '5', '2017-10-10', true, false, '2017-10-10 10:10:10', '11:11:11', 4.333, NULL);";
     List<SQLStatement> stmtList;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, JdbcConstants.MYSQL);
         parser.config(SQLParserFeature.KeepInsertValueClauseOriginalString, true);
         stmtList = parser.parseStatementList();
     }
 
+    @Test
     public void test_perf() throws Exception {
         System.out.println(sql);
         for (int i = 0; i < 5; ++i) {

@@ -1,24 +1,31 @@
 package com.alibaba.druid.bvt.pool;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
-public class DruidDataSourceTest1 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class DruidDataSourceTest1 {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setTestOnBorrow(false);
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
     }
 
+    @Test
     public void test_oracle() throws Exception {
         dataSource.setOracle(true);
 
@@ -33,12 +40,14 @@ public class DruidDataSourceTest1 extends TestCase {
         assertNotNull(error);
     }
 
+    @Test
     public void test_transactionQueryTimeout() throws Exception {
         dataSource.setTransactionQueryTimeout(123456);
 
         assertEquals(123456, dataSource.getTransactionQueryTimeout());
     }
 
+    @Test
     public void test_dupCloseLogEnable() throws Exception {
         assertFalse(dataSource.isDupCloseLogEnable());
 
@@ -47,6 +56,7 @@ public class DruidDataSourceTest1 extends TestCase {
         assertTrue(dataSource.isDupCloseLogEnable());
     }
 
+    @Test
     public void test_getClosedPreparedStatementCount() throws Exception {
         assertEquals(0, dataSource.getClosedPreparedStatementCount());
         assertEquals(0, dataSource.getPreparedStatementCount());
@@ -59,18 +69,21 @@ public class DruidDataSourceTest1 extends TestCase {
         assertEquals(1, dataSource.getClosedPreparedStatementCount());
     }
 
+    @Test
     public void test_getDriverMajorVersion() throws Exception {
         assertEquals(-1, dataSource.getDriverMajorVersion());
         dataSource.init();
         assertEquals(0, dataSource.getDriverMajorVersion());
     }
 
+    @Test
     public void test_getDriverMinorVersion() throws Exception {
         assertEquals(-1, dataSource.getDriverMinorVersion());
         dataSource.init();
         assertEquals(0, dataSource.getDriverMinorVersion());
     }
 
+    @Test
     public void test_getExceptionSorterClassName() throws Exception {
         assertNull(dataSource.getExceptionSorterClassName());
     }

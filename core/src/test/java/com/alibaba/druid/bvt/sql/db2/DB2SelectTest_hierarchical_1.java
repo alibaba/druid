@@ -24,6 +24,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class DB2SelectTest_hierarchical_1 extends MysqlTest {
     protected final DbType dbType = JdbcConstants.DB2;
 

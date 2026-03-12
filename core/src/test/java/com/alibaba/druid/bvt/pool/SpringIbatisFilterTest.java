@@ -23,7 +23,9 @@ import com.alibaba.druid.spring.User;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.stat.DruidStatService;
 import com.alibaba.druid.support.json.JSONUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import javax.sql.DataSource;
@@ -36,15 +38,20 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class SpringIbatisFilterTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class SpringIbatisFilterTest {
+    @BeforeEach
     protected void setUp() throws Exception {
         DruidDataSourceStatManager.clear();
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
+    @Test
     public void test_spring() throws Exception {
         assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
 

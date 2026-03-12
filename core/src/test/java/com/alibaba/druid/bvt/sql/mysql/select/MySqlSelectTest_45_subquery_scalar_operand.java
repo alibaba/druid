@@ -23,6 +23,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_45_subquery_scalar_operand extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SELECT (SELECT s1 FROM t2) FROM t1;";

@@ -17,7 +17,9 @@ package com.alibaba.druid.bvt.pool;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.time.LocalDateTime;
@@ -26,9 +28,12 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class TestConnectTimeout extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class TestConnectTimeout {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
 
@@ -44,6 +49,7 @@ public class TestConnectTimeout extends TestCase {
         dataSource.init();
     }
 
+    @Test
     public void testConnectTimeout() throws Exception {
         {
             Connection conn = dataSource.getConnection();
@@ -86,6 +92,7 @@ public class TestConnectTimeout extends TestCase {
         assertEquals(0, errorCount.get());
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
     }

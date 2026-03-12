@@ -18,17 +18,22 @@ package com.alibaba.druid.bvt.pool;
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class TestConnectError extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class TestConnectError {
     private DruidDataSource dataSource;
     private MockDriver driver;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         driver = new MockDriver() {
             private AtomicInteger count = new AtomicInteger();
@@ -62,11 +67,13 @@ public class TestConnectError extends TestCase {
         dataSource.setUrl("jdbc:mock:TestConnectError");
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
         assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
+    @Test
     public void test_connect_error() throws Exception {
         assertEquals(0, dataSource.getCreateErrorCount());
 

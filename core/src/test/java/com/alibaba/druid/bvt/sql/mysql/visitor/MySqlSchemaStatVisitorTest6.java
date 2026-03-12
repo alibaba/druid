@@ -18,11 +18,14 @@ package com.alibaba.druid.bvt.sql.mysql.visitor;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class MySqlSchemaStatVisitorTest6 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlSchemaStatVisitorTest6 {
+    @Test
     public void test_0() throws Exception {
         String sql = "select * from t order by trim(trim(INTERVAL 3 YEAR))";
 

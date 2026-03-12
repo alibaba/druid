@@ -1,16 +1,20 @@
 package com.alibaba.druid;
 
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 import javax.management.openmbean.CompositeData;
 
-public class PoolTestCase extends TestCase {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class PoolTestCase {
+    @BeforeEach
     protected void setUp() throws Exception {
         DruidDataSourceStatManager.clear();
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         int size = DruidDataSourceStatManager.getInstance().getDataSourceList().size();
         String errorInfo = null;
@@ -27,6 +31,6 @@ public class PoolTestCase extends TestCase {
 
             errorInfo = "Name " + name + ", URL " + url + ", initStackTrace=" + initStackTrace;
         }
-        Assert.assertEquals(errorInfo, 0, size);
+        assertEquals(0, size, errorInfo);
     }
 }

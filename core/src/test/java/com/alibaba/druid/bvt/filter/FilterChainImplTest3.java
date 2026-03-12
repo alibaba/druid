@@ -7,7 +7,9 @@ import com.alibaba.druid.mock.MockStatement;
 import com.alibaba.druid.mock.MockStatementBase;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,9 +18,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 
-public class FilterChainImplTest3 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class FilterChainImplTest3 {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
 
@@ -45,10 +50,12 @@ public class FilterChainImplTest3 extends TestCase {
         dataSource.init();
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
     }
 
+    @Test
     public void test_executeQuery() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("select ?");
@@ -58,6 +65,7 @@ public class FilterChainImplTest3 extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_executeQuery_2() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareCall("select ?");
@@ -67,6 +75,7 @@ public class FilterChainImplTest3 extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_executeQuery_3() throws Exception {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
@@ -75,6 +84,7 @@ public class FilterChainImplTest3 extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_execute() throws Exception {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();

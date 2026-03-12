@@ -18,6 +18,8 @@ package com.alibaba.druid.bvt.sql.mysql;
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlError_test_3 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SELECT count(*) AS num FROM sdb_products AS P" +

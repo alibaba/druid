@@ -2,9 +2,12 @@ package com.alibaba.druid.bvt.sql;
 
 import com.alibaba.druid.sql.PagerUtils;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class PagerUtilsTest_hasUnorderedLimit_oracle extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class PagerUtilsTest_hasUnorderedLimit_oracle {
+    @Test
     public void test_false() throws Exception {
         String sql = "SELECT *" +
                 "\nFROM (SELECT XX.*, ROWNUM AS RN" +
@@ -18,11 +21,13 @@ public class PagerUtilsTest_hasUnorderedLimit_oracle extends TestCase {
         assertFalse(PagerUtils.hasUnorderedLimit(sql, JdbcConstants.ORACLE));
     }
 
+    @Test
     public void test_false_1() throws Exception {
         String sql = " select * from test t";
         assertFalse(PagerUtils.hasUnorderedLimit(sql, JdbcConstants.ORACLE));
     }
 
+    @Test
     public void test_true() throws Exception {
         String sql = "SELECT *" +
                 "\nFROM t" +
@@ -30,6 +35,7 @@ public class PagerUtilsTest_hasUnorderedLimit_oracle extends TestCase {
         assertTrue(PagerUtils.hasUnorderedLimit(sql, JdbcConstants.ORACLE));
     }
 
+    @Test
     public void test_true_1() throws Exception {
         String sql = "select * from (select * from t where id > 1 ) where rownum < 1000";
         assertTrue(PagerUtils.hasUnorderedLimit(sql, JdbcConstants.ORACLE));

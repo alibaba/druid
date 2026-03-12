@@ -18,11 +18,12 @@ package com.alibaba.druid.bvt.sql;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class BigOrTest extends TestCase {
+public class BigOrTest {
+    @Test
     public void testBigOr() throws Exception {
         StringBuilder buf = new StringBuilder();
         buf.append("SELECT * FROM T WHERE FID = ?");

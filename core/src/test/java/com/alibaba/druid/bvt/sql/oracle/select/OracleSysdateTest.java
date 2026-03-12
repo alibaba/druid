@@ -21,6 +21,8 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleSysdateExpr;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleSysdateTest extends OracleTest {
     private DbType dbType = JdbcConstants.ORACLE;
 

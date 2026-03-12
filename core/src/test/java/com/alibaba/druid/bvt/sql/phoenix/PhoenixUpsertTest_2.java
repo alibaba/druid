@@ -6,14 +6,17 @@ import com.alibaba.druid.sql.dialect.phoenix.visitor.PhoenixSchemaStatVisitor;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by wenshao on 16/9/13.
  */
-public class PhoenixUpsertTest_2 extends TestCase {
+public class PhoenixUpsertTest_2 {
+    @Test
     public void test_0() throws Exception {
         String sql = "upsert into t_1 (a CHAR(15),b,c) values (?,?,?)";
 

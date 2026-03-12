@@ -8,16 +8,21 @@ import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.test.util.OracleMockDriver;
 import com.alibaba.druid.util.JdbcUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class OracleExceptionSorterTest_stmt_setFetchDirection extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OracleExceptionSorterTest_stmt_setFetchDirection {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
 
@@ -31,12 +36,13 @@ public class OracleExceptionSorterTest_stmt_setFetchDirection extends TestCase {
         dataSource.setMaxOpenPreparedStatements(100);
     }
 
-    @Override
+        @AfterEach
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
         assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
+    @Test
     public void test_connect() throws Exception {
         String sql = "SELECT 1";
         {

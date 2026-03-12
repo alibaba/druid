@@ -2,15 +2,20 @@ package com.alibaba.druid.bvt.pool;
 
 import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.pool.DruidDataSource;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.Savepoint;
 import java.sql.Statement;
 
-public class SavepointTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class SavepointTest {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
@@ -18,10 +23,12 @@ public class SavepointTest extends TestCase {
         dataSource.setInitialSize(1);
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
     }
 
+    @Test
     public void test_multi_savepoint() throws Exception {
         Connection conn = dataSource.getConnection();
         MockConnection physicalConn = conn.unwrap(MockConnection.class);

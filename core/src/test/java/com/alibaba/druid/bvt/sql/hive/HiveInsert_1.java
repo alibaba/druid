@@ -4,11 +4,14 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class HiveInsert_1 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class HiveInsert_1 {
+    @Test
     public void test_select() throws Exception {
         String sql = "FROM page_view_stg pvs\n" +
                 "INSERT OVERWRITE TABLE page_view PARTITION(dt='2008-06-08', country)\n" +

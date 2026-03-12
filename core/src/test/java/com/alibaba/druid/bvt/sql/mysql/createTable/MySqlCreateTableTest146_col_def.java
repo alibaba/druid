@@ -3,9 +3,11 @@ package com.alibaba.druid.bvt.sql.mysql.createTable;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @version 1.0
@@ -28,7 +30,8 @@ import java.util.List;
  * @Author zzy
  * @Date 2019-05-14 10:14
  */
-public class MySqlCreateTableTest146_col_def extends TestCase {
+public class MySqlCreateTableTest146_col_def {
+    @Test
     public void test_0() throws Exception {
         String sql = "create table tb_dxdd (" +
                 "`a` varchar(10) not null default 'val' comment 'hehe' collate utf8_unicode_ci column_format default storage disk references tb_ref (a) match full on delete cascade on update cascade" +
@@ -59,6 +62,7 @@ public class MySqlCreateTableTest146_col_def extends TestCase {
                 ");", stmt.toLowerCaseString());
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "create table tb_xx (a int generated always as (1) virtual not null comment 'xxx');";
 
@@ -77,6 +81,7 @@ public class MySqlCreateTableTest146_col_def extends TestCase {
                 ");", stmt.toLowerCaseString());
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "create table tb_ssx (a varchar(10) collate utf8_general_ci as ('val') stored not null primary key comment 'hh' references tb_ref (a));";
 

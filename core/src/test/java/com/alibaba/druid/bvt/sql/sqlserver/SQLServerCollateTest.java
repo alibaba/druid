@@ -6,12 +6,14 @@ import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerOutputVisitor;
 import com.alibaba.druid.wall.WallCheckResult;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.SQLServerWallProvider;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class SQLServerCollateTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class SQLServerCollateTest {
+    @Test
     public void testCollateWithColumn() {
         String sql = "SELECT name COLLATE Chinese_PRC_CI_AI_WS FROM users";
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
@@ -26,6 +28,7 @@ public class SQLServerCollateTest extends TestCase {
         assertEquals("SELECT name COLLATE Chinese_PRC_CI_AI_WS\nFROM users", out.toString());
     }
 
+    @Test
     public void testCollateWithStringLiteral() {
         String sql = "SELECT 'abc' COLLATE Chinese_PRC_CI_AI_WS";
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
@@ -34,6 +37,7 @@ public class SQLServerCollateTest extends TestCase {
         assertEquals(1, stmtList.size());
     }
 
+    @Test
     public void testCollateInWhereClause() {
         String sql = "SELECT * FROM users WHERE name = '张三' COLLATE Chinese_PRC_CI_AI_WS";
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
@@ -42,6 +46,7 @@ public class SQLServerCollateTest extends TestCase {
         assertEquals(1, stmtList.size());
     }
 
+    @Test
     public void testCollateComplexExpression() {
         String sql = "SELECT id FROM table_a a, table_b b WHERE a.REPORTLINE = b.REPORT_ITEM_ID COLLATE Chinese_PRC_CI_AI_WS AND a.referencedate = ?";
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
@@ -50,6 +55,7 @@ public class SQLServerCollateTest extends TestCase {
         assertEquals(1, stmtList.size());
     }
 
+    @Test
     public void testCollateWithWallFilter() {
         WallProvider provider = new SQLServerWallProvider();
 
@@ -60,9 +66,10 @@ public class SQLServerCollateTest extends TestCase {
         WallCheckResult result = provider.check(sql);
         boolean isValid = result.getViolations().isEmpty();
 
-        Assert.assertTrue("SQL应该通过校验", isValid);
+        assertTrue(isValid, "SQL应该通过校验");
     }
 
+    @Test
     public void testCollateWithStringsAndWallFilter() {
         WallProvider provider = new SQLServerWallProvider();
 
@@ -71,9 +78,10 @@ public class SQLServerCollateTest extends TestCase {
         WallCheckResult result = provider.check(sql);
         boolean isValid = result.getViolations().isEmpty();
 
-        Assert.assertTrue("字符串COLLATE语句应该通过校验", isValid);
+        assertTrue(isValid, "字符串COLLATE语句应该通过校验");
     }
 
+    @Test
     public void testCollateWithColumnsAndWallFilter() {
         WallProvider provider = new SQLServerWallProvider();
 
@@ -82,9 +90,10 @@ public class SQLServerCollateTest extends TestCase {
         WallCheckResult result = provider.check(sql);
         boolean isValid = result.getViolations().isEmpty();
 
-        Assert.assertTrue("列间COLLATE语句应该通过校验", isValid);
+        assertTrue(isValid, "列间COLLATE语句应该通过校验");
     }
 
+    @Test
     public void testValidSqlWithoutCollate() {
         WallProvider provider = new SQLServerWallProvider();
 
@@ -93,6 +102,6 @@ public class SQLServerCollateTest extends TestCase {
         WallCheckResult result = provider.check(sql);
         boolean isValid = result.getViolations().isEmpty();
 
-        Assert.assertTrue("正常SQL应该通过校验", isValid);
+        assertTrue(isValid, "正常SQL应该通过校验");
     }
 }

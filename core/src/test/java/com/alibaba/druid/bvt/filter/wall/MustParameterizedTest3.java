@@ -17,15 +17,20 @@ package com.alibaba.druid.bvt.filter.wall;
 
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class MustParameterizedTest3 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MustParameterizedTest3 {
     private WallConfig config = new WallConfig();
 
+    @BeforeEach
     protected void setUp() throws Exception {
         config.setMustParameterized(true);
     }
 
+    @Test
     public void testMySql() throws Exception {
         assertFalse(WallUtils.isValidateMySql("select * from t where id  = (3 + 5 - 2 - 1)", config));
         assertFalse(WallUtils.isValidateMySql("select * from t where id  != id + 3", config));

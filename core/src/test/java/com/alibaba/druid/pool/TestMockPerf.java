@@ -15,15 +15,17 @@
  */
 package com.alibaba.druid.pool;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.Statement;
 import java.util.concurrent.CountDownLatch;
 
-public class TestMockPerf extends TestCase {
+public class TestMockPerf {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xx");
@@ -35,6 +37,7 @@ public class TestMockPerf extends TestCase {
         dataSource.init();
     }
 
+    @Test
     public void test_perf() throws Exception {
         final CountDownLatch latch = new CountDownLatch(10);
         for (int i = 0; i < 10; ++i) {

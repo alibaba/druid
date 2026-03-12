@@ -16,9 +16,12 @@
 package com.alibaba.druid.bvt.sql.odps;
 
 import com.alibaba.druid.sql.SQLUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class OdpsSelectTest2 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OdpsSelectTest2 {
+    @Test
     public void test_distribute_by() throws Exception {
         String sql = "SELECT user_id,user_flag,cat1_id,wireless_client_type,alipay_num,last_buy_time,md5,my_udf_001('t_datax_odps2ots_resource_tcif_dmp_user_topup_d',md5) AS datax_pt FROM mytable_001 WHERE ds='20150819'  DISTRIBUTE BY cast (datax_pt as BIGINT) SORT BY md5,user_id,user_flag,cat1_id,wireless_client_type";
         assertEquals("SELECT user_id, user_flag, cat1_id, wireless_client_type, alipay_num\n" +

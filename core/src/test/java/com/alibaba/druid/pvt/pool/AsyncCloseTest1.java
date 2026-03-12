@@ -4,10 +4,11 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.Log4jImpl;
 import com.alibaba.druid.support.logging.NoLoggingImpl;
-import junit.framework.TestCase;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.junit.Assert;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
 import java.sql.Connection;
@@ -17,7 +18,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class AsyncCloseTest1 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class AsyncCloseTest1 {
     protected DruidDataSource dataSource;
     private ExecutorService connExecutor;
     private ExecutorService closeExecutor;
@@ -29,6 +32,7 @@ public class AsyncCloseTest1 extends TestCase {
 
     private NoLoggingImpl noLoggingImpl;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         Field logField = DruidDataSource.class.getDeclaredField("LOG");
         logField.setAccessible(true);
@@ -52,6 +56,7 @@ public class AsyncCloseTest1 extends TestCase {
         closeExecutor = Executors.newFixedThreadPool(128);
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
         if (log4jLog != null) {
@@ -61,6 +66,7 @@ public class AsyncCloseTest1 extends TestCase {
         }
     }
 
+    @Test
     public void test_0() throws Exception {
         for (int i = 0; i < 16; ++i) {
             loop();
@@ -92,8 +98,8 @@ public class AsyncCloseTest1 extends TestCase {
 
     protected void loop() throws InterruptedException {
         dataSource.shrink();
-        Assert.assertEquals(0, dataSource.getActiveCount());
-        Assert.assertEquals(0, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getActiveCount());
+        assertEquals(0, dataSource.getPoolingCount());
 
         final int COUNT = 1024 * 128;
         final CountDownLatch closeLatch = new CountDownLatch(COUNT * 2);
@@ -119,7 +125,7 @@ public class AsyncCloseTest1 extends TestCase {
         }
 
         closeLatch.await();
-        Assert.assertEquals(0, dataSource.getActiveCount());
-        Assert.assertEquals(16, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getActiveCount());
+        assertEquals(16, dataSource.getPoolingCount());
     }
 }

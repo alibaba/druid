@@ -19,6 +19,8 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlParameterizedOutputVisitorTest_1 extends MySQLParameterizedTest {
     public void test_0() throws Exception {
         String sql = "SELECT * FROM T WHERE ID IN (?)";

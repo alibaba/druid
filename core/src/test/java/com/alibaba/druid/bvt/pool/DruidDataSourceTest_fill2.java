@@ -1,18 +1,23 @@
 package com.alibaba.druid.bvt.pool;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class DruidDataSourceTest_fill2 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class DruidDataSourceTest_fill2 {
     private DruidDataSource dataSource;
 
     private int maxActive = 100;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
@@ -20,10 +25,12 @@ public class DruidDataSourceTest_fill2 extends TestCase {
         dataSource.setTestOnBorrow(false);
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
     }
 
+    @Test
     public void test_fill() throws Exception {
         final AtomicLong errorCount = new AtomicLong();
 
@@ -78,7 +85,7 @@ public class DruidDataSourceTest_fill2 extends TestCase {
                 break;
             }
         }
-        assertTrue("not full", dataSource.isFull());
-//        assertTrue("fillCount zero", fillCount.get() > 0);
+        assertTrue(dataSource.isFull(), "not full");
+//        assertTrue(fillCount.get() > 0, "fillCount zero");
     }
 }

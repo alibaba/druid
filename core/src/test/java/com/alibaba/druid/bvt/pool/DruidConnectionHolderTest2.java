@@ -9,6 +9,8 @@ import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 
 import java.sql.SQLException;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class DruidConnectionHolderTest2 extends PoolTestCase {
     private DruidDataSource dataSource;
 

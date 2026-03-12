@@ -2,11 +2,12 @@ package com.alibaba.druid.bvt.sql;
 
 import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlExprParser;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class EqualTest_unary_mysql extends TestCase {
+public class EqualTest_unary_mysql {
+    @Test
     public void test_exits() throws Exception {
         String sql = "-a";
         String sql_c = "-(a+1 + +(b+1))";

@@ -10,6 +10,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_170_tddl_hint extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "/*+TDDL({'type':'direct','dbid':'xxx_group'})*/select * from real_table_0;";

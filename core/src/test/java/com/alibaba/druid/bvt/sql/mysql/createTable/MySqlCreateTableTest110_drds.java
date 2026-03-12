@@ -8,6 +8,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlCreateTableTest110_drds extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "create table a (id int(10)) dbpartition by hash(id) dbpartitionS 2 tbpartition by hash(id) tbpartitions 2 ";

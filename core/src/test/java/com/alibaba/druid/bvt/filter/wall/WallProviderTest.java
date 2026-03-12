@@ -4,9 +4,12 @@ import com.alibaba.druid.wall.WallProviderStatValue;
 import com.alibaba.druid.wall.WallSqlStat;
 import com.alibaba.druid.wall.WallTableStat;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class WallProviderTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class WallProviderTest {
+    @Test
     public void test_getSqlStat() throws Exception {
         String whiteSql_1 = "select * from t1 where fid = 1";
         String whiteSql_2 = "select * from t1 where fid = 2";

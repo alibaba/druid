@@ -5,6 +5,8 @@ import com.alibaba.druid.pool.vendor.OracleExceptionSorter;
 
 import java.sql.SQLException;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleExceptionSorter_userDefined extends PoolTestCase {
     protected void setUp() throws Exception {
         super.setUp();

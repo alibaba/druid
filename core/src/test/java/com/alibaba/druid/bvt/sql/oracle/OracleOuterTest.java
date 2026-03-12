@@ -18,9 +18,12 @@ package com.alibaba.druid.bvt.sql.oracle;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class OracleOuterTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OracleOuterTest {
+    @Test
     public void test_oracle() throws Exception {
         String sql = "SELECT employee_id, manager_id\n" + "FROM employees\n"
                 + "WHERE employees.manager_id(+) = employees.employee_id;";

@@ -3,12 +3,15 @@ package com.alibaba.druid.bvt.sql.odps.issues;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Issue4933 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class Issue4933 {
+    @Test
     public void testInsert() {
         String sql = "with \n" +
                 "  a as (select * from src where key is not  null),\n" +

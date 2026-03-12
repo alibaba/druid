@@ -4,13 +4,16 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class SQLUtilsTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class SQLUtilsTest {
+    @Test
     public void test_format() throws Exception {
         String formattedSql = SQLUtils.format("select * from t where id = ?", JdbcConstants.MYSQL,
                 Arrays.<Object>asList("abc"));
@@ -19,6 +22,7 @@ public class SQLUtilsTest extends TestCase {
                 "\nWHERE id = 'abc'", formattedSql);
     }
 
+    @Test
     public void test_format_0() throws Exception {
         String sql = "select \"%\"'温'\"%\" FROM dual;";
         String formattedSql = SQLUtils.formatMySql(sql);
@@ -26,6 +30,7 @@ public class SQLUtilsTest extends TestCase {
                 "FROM dual;", formattedSql);
     }
 
+    @Test
     public void test_format_1() throws Exception {
         String sql = "select * from t where tname LIKE \"%\"'温'\"%\"";
         String formattedSql = SQLUtils.formatMySql(sql);
@@ -34,6 +39,7 @@ public class SQLUtilsTest extends TestCase {
                 "WHERE tname LIKE '%温%'", formattedSql);
     }
 
+    @Test
     public void test_format_2() throws Exception {
         String sql = "begin\n"//
                 + " if (a=10) then\n" + " null;\n" + " else\n" + " null;\n" + " end if;\n" + "end;";
@@ -46,6 +52,7 @@ public class SQLUtilsTest extends TestCase {
                 + "\nEND;", SQLUtils.formatOracle(sql));
     }
 
+    @Test
     public void test_format_3() throws Exception {
         String sql = "select lottery_notice_issue,lottery_notice_date,lottery_notice_result from tb_lottery_notice where lottery_type_id=8 and lottery_notice_issue<=2014066 UNION ALL SELECT NULL, NULL, NULL, NULL, NULL, NULL# and lottery_notice_issue>=2014062 order by lottery_notice_issue desc";
         String formattedSql = SQLUtils.formatMySql(sql);
@@ -59,6 +66,7 @@ public class SQLUtilsTest extends TestCase {
         assertEquals(expected, formattedSql);
     }
 
+    @Test
     public void testAcceptFunctionTest() {
         List<SQLMethodInvokeExpr> functions = new ArrayList<>();
         SQLUtils.acceptFunction(
@@ -70,6 +78,7 @@ public class SQLUtilsTest extends TestCase {
         assertEquals(1, functions.size());
     }
 
+    @Test
     public void testAcceptFunctionTest_1() {
         List<SQLMethodInvokeExpr> functions = new ArrayList<>();
         SQLUtils.acceptAggregateFunction(
@@ -81,6 +90,7 @@ public class SQLUtilsTest extends TestCase {
         assertEquals(1, functions.size());
     }
 
+    @Test
     public void testAcceptFunctionTest_pg() {
         List<SQLMethodInvokeExpr> functions = new ArrayList<>();
         SQLUtils.acceptFunction(
@@ -92,6 +102,7 @@ public class SQLUtilsTest extends TestCase {
         assertEquals(1, functions.size());
     }
 
+    @Test
     public void testAcceptFunctionTest_pg_1() {
         List<SQLMethodInvokeExpr> functions = new ArrayList<>();
         SQLUtils.acceptAggregateFunction(
@@ -103,6 +114,7 @@ public class SQLUtilsTest extends TestCase {
         assertEquals(1, functions.size());
     }
 
+    @Test
     public void testAcceptFunctionTest_oracle() {
         List<SQLMethodInvokeExpr> functions = new ArrayList<>();
         SQLUtils.acceptFunction(
@@ -114,6 +126,7 @@ public class SQLUtilsTest extends TestCase {
         assertEquals(1, functions.size());
     }
 
+    @Test
     public void testAcceptFunctionTest_oracle_1() {
         List<SQLMethodInvokeExpr> functions = new ArrayList<>();
         SQLUtils.acceptAggregateFunction(
@@ -125,6 +138,7 @@ public class SQLUtilsTest extends TestCase {
         assertEquals(1, functions.size());
     }
 
+    @Test
     public void testAcceptFunctionTest_ck() {
         List<SQLMethodInvokeExpr> functions = new ArrayList<>();
         SQLUtils.acceptFunction(
@@ -136,6 +150,7 @@ public class SQLUtilsTest extends TestCase {
         assertEquals(1, functions.size());
     }
 
+    @Test
     public void testAcceptFunctionTest_ck_1() {
         List<SQLMethodInvokeExpr> functions = new ArrayList<>();
         SQLUtils.acceptAggregateFunction(

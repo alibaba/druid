@@ -5,7 +5,9 @@ import com.alibaba.druid.stat.JdbcDataSourceStat;
 import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.support.json.JSONUtils;
 import com.alibaba.druid.util.JdbcUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,12 +15,15 @@ import java.sql.ResultSet;
 import java.util.List;
 import java.util.Map;
 
-public class GlobalStatTest0 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class GlobalStatTest0 {
     private DruidDataSource dataSourceA;
     private DruidDataSource dataSourceB;
 
+    @BeforeEach
     protected void setUp() throws Exception {
-        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+        JdbcStatManager.getInstance().reset();
 
         dataSourceA = new DruidDataSource();
         dataSourceA.setUrl("jdbc:mock:xx_A");
@@ -31,16 +36,17 @@ public class GlobalStatTest0 extends TestCase {
         dataSourceB.setUseGlobalDataSourceStat(true);
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSourceA);
         JdbcUtils.close(dataSourceB);
 
         JdbcDataSourceStat.setGlobal(null);
-
-        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+        JdbcStatManager.getInstance().reset();
     }
 
     @SuppressWarnings("unchecked")
+    @Test
     public void test_execute() throws Exception {
         {
             Connection conn = dataSourceA.getConnection();

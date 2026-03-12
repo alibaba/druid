@@ -16,12 +16,15 @@
 package com.alibaba.druid.pool.dbcp;
 
 import com.alibaba.druid.mock.MockDriver;
-import junit.framework.TestCase;
 import org.apache.commons.dbcp.BasicDataSource;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 
-public class Test0 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class Test0 {
+    @Test
     public void test_idle() throws Exception {
         MockDriver driver = MockDriver.instance;
 
@@ -41,7 +44,7 @@ public class Test0 extends TestCase {
         {
             Connection conn = dataSource.getConnection();
 
-            // Assert.assertEquals(dataSource.getInitialSize(), driver.getConnections().size());
+            // assertEquals(dataSource.getInitialSize(), driver.getConnections().size());
             System.out.println("raw size : " + driver.getConnections().size());
 
             conn.close();
@@ -51,7 +54,7 @@ public class Test0 extends TestCase {
         {
             Connection conn = dataSource.getConnection();
 
-            // Assert.assertEquals(dataSource.getInitialSize(), driver.getConnections().size());
+            // assertEquals(dataSource.getInitialSize(), driver.getConnections().size());
             System.out.println("raw size : " + driver.getConnections().size());
 
             conn.close();

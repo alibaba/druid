@@ -23,6 +23,8 @@ import com.alibaba.druid.stat.TableStat;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleSelectTest4 extends OracleTest {
     public void test_0() throws Exception {
         String sql = "SELECT LPAD(' ',2*(LEVEL-1)) || last_name org_chart, " +

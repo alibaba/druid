@@ -6,6 +6,8 @@ import com.alibaba.druid.sql.ast.expr.SQLBinaryExpr;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGExprParser;
 import com.alibaba.druid.util.JdbcConstants;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class BitStringTest extends PGTest {
     public void test_timestamp() throws Exception {
         String sql = "B'101'";

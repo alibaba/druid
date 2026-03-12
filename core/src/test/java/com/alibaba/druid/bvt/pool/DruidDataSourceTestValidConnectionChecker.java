@@ -7,8 +7,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * 给对象 {@link DruidDataSource} 已经设置了自定义的 validConnectionChecker的情况下,
@@ -37,7 +37,7 @@ public class DruidDataSourceTestValidConnectionChecker {
         String user = "test";
         String password = "test";
 
-        assertTrue("运行此用例之前请先修改上面的连接信息, 并注释此行", false);
+        assertTrue(false, "运行此用例之前请先修改上面的连接信息, 并注释此行");
 
         String driverClass = "com.mysql.jdbc.Driver";
 

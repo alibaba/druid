@@ -2,17 +2,20 @@ package com.alibaba.druid.pvt.pool;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.lang.management.ManagementFactory;
 import java.sql.Connection;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
-public class Large10KTest extends TestCase {
+public class Large10KTest {
     private DruidDataSource[] dataSources;
     private ScheduledExecutorService scheduler;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         long xmx = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getMax() / (1000 * 1000); // m
 
@@ -45,6 +48,7 @@ public class Large10KTest extends TestCase {
         }
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         for (int i = 0; i < dataSources.length; ++i) {
             JdbcUtils.close(dataSources[i]);
@@ -52,6 +56,7 @@ public class Large10KTest extends TestCase {
         scheduler.shutdown();
     }
 
+    @Test
     public void test_large() throws Exception {
         Connection[] connections = new Connection[dataSources.length * 8];
         for (int i = 0; i < dataSources.length; ++i) {

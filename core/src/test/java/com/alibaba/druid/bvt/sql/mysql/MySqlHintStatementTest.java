@@ -16,9 +16,12 @@
 package com.alibaba.druid.bvt.sql.mysql;
 
 import com.alibaba.druid.sql.SQLUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class MySqlHintStatementTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlHintStatementTest {
+    @Test
     public void test() {
         String sql = "DROP TABLE IF EXISTS `item_similarity`;"//
                 + "\n/*!40101 SET @saved_cs_client     = @@character_set_client */;"//
@@ -45,6 +48,7 @@ public class MySqlHintStatementTest extends TestCase {
                 + "\n/*!40101 SET character_set_client = @saved_cs_client */;", rs);
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "update "
                 + "/*MS-MRCHISHUB-MH-MESSAGE-UPDATE*/\n"

@@ -20,11 +20,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class LOAD_XML_Syntax_Test extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class LOAD_XML_Syntax_Test {
+    @Test
     public void test_0() throws Exception {
         String sql = "LOAD XML LOCAL INFILE 'person.xml' INTO TABLE person ROWS IDENTIFIED BY '<person>';";
 

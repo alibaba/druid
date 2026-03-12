@@ -19,12 +19,15 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SQL_Parser_Parameterize_Test extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class SQL_Parser_Parameterize_Test {
+    @Test
     public void test_parameterized() throws Exception {
         final DbType dbType = JdbcConstants.MYSQL;
 
@@ -43,6 +46,7 @@ public class SQL_Parser_Parameterize_Test extends TestCase {
         assertEquals("wenshao", outParameters.get(2));
     }
 
+    @Test
     public void test_parameterized_2() throws Exception {
         final DbType dbType = JdbcConstants.MYSQL;
 
@@ -62,6 +66,7 @@ public class SQL_Parser_Parameterize_Test extends TestCase {
         assertEquals(4, outParameters.get(4));
     }
 
+    @Test
     public void test_parameterized_3() throws Exception {
         final DbType dbType = JdbcConstants.MYSQL;
 

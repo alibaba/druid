@@ -3,9 +3,12 @@ package com.alibaba.druid.bvt.support.profile;
 import com.alibaba.druid.support.profile.ProfileEntryKey;
 import com.alibaba.druid.support.profile.ProfileEntryReqStat;
 import com.alibaba.druid.support.profile.Profiler;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class ProfilerTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class ProfilerTest {
+    @Test
     public void test_profile() throws Exception {
         for (int i = 0; i < 10; ++i) {
             req();

@@ -19,11 +19,14 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class OdpsSelectTest_over_rows extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OdpsSelectTest_over_rows {
+    @Test
     public void test_select() throws Exception {
         String sql = "SELECT sum(c) over(order by ds rows 9999 preceding) s, ds FROM t1";
         assertEquals("SELECT sum(c) OVER (ORDER BY ds ROWS 9999 PRECEDING) AS s, ds\n" +

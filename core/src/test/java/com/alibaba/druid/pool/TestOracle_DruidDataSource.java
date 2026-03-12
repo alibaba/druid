@@ -18,14 +18,14 @@ package com.alibaba.druid.pool;
 import com.alibaba.druid.pool.vendor.OracleExceptionSorter;
 import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.support.json.JSONUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.concurrent.CountDownLatch;
 
-public class TestOracle_DruidDataSource extends TestCase {
+public class TestOracle_DruidDataSource {
     private String jdbcUrl;
     private String user;
     private String password;
@@ -37,6 +37,7 @@ public class TestOracle_DruidDataSource extends TestCase {
         password = "ccbuauto";
     }
 
+    @Test
     public void test_0() throws Exception {
         final String SQL = "SELECT SYSDATE FROM DUAL";
         final DruidDataSource dataSource = new DruidDataSource();

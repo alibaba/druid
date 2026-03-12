@@ -18,7 +18,9 @@ package com.alibaba.druid.bvt.proxy;
 import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.util.JdbcUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.management.openmbean.TabularData;
 
@@ -31,13 +33,16 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class AllStatisticTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class AllStatisticTest {
     String url = "jdbc:wrap-jdbc:filters=default,commonLogging,log4j:name=statTest:jdbc:derby:classpath:petstore-db";
 
     private AtomicLong fetchRowCout = new AtomicLong();
 
     Connection globalConnection;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         JdbcStatManager stat = JdbcStatManager.getInstance();
 
@@ -60,12 +65,14 @@ public class AllStatisticTest extends TestCase {
         globalConnection = DriverManager.getConnection(url);
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         JdbcUtils.close(globalConnection);
         DruidDriver.getProxyDataSources().clear();
         assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
 
+    @Test
     public void test_stmt() throws Exception {
         // ////////////////////////
 

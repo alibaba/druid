@@ -18,22 +18,29 @@ package com.alibaba.druid.bvt.pool;
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.management.ObjectName;
 
 import java.lang.management.ManagementFactory;
 import java.sql.Connection;
 
-public class TestIdle3 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class TestIdle3 {
+    @BeforeEach
     protected void setUp() throws Exception {
         DruidDataSourceStatManager.clear();
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
+    @Test
     public void test_idle2() throws Exception {
         MockDriver driver = new MockDriver();
 

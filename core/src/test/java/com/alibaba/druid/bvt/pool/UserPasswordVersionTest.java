@@ -2,21 +2,26 @@ package com.alibaba.druid.bvt.pool;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
  * 这个场景测试initialSize > maxActive
  *
  * @author wenshao [szujobs@hotmail.com]
  */
-public class UserPasswordVersionTest extends TestCase {
+public class UserPasswordVersionTest {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
@@ -30,10 +35,12 @@ public class UserPasswordVersionTest extends TestCase {
         dataSource.init();
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
     }
 
+    @Test
     public void test_maxWait() throws Exception {
         ExecutorService executor = Executors.newFixedThreadPool(10);
         final CountDownLatch latch0 = new CountDownLatch(1);

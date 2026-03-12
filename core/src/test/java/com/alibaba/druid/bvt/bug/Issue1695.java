@@ -2,9 +2,12 @@ package com.alibaba.druid.bvt.bug;
 
 import com.alibaba.druid.sql.PagerUtils;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class Issue1695 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class Issue1695 {
+    @Test
     public void test_for_mysql() throws Exception {
         String sql = "select ht.* from t_books ht";
         String result = PagerUtils.count(sql, JdbcConstants.MYSQL);
@@ -12,6 +15,7 @@ public class Issue1695 extends TestCase {
                 "FROM t_books ht", result);
     }
 
+    @Test
     public void test_for_pg() throws Exception {
         String sql = "select ht.* from t_books ht";
         String result = PagerUtils.count(sql, JdbcConstants.POSTGRESQL);
@@ -19,6 +23,7 @@ public class Issue1695 extends TestCase {
                 "FROM t_books ht", result);
     }
 
+    @Test
     public void test_for_oracle() throws Exception {
         String sql = "select ht.* from t_books ht";
         String result = PagerUtils.count(sql, JdbcConstants.ORACLE);
@@ -26,6 +31,7 @@ public class Issue1695 extends TestCase {
                 "FROM t_books ht", result);
     }
 
+    @Test
     public void test_for_sqlserver() throws Exception {
         String sql = "select ht.* from t_books ht";
         String result = PagerUtils.count(sql, JdbcConstants.SQL_SERVER);

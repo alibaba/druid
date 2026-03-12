@@ -19,17 +19,22 @@ import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.mock.MockStatement;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class TestLogLongTimeTransaction extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class TestLogLongTimeTransaction {
     private DruidDataSource dataSource;
     private MockDriver driver;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         driver = new MockDriver() {
             protected ResultSet executeQuery(MockStatement stmt, String sql) throws SQLException {
@@ -50,11 +55,13 @@ public class TestLogLongTimeTransaction extends TestCase {
         dataSource.setTransactionThresholdMillis(1);
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
         assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
+    @Test
     public void test_0() throws Exception {
         Connection conn = dataSource.getConnection();
 

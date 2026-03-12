@@ -17,16 +17,19 @@ package com.alibaba.druid.bvt.filter.wall;
 
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * 这个场景，检测可疑的Having条件
  *
  * @author wenshao
  */
-public class WallSelectWhereTest extends TestCase {
+public class WallSelectWhereTest {
     private String sql = "SELECT F1, F2  from t WHERE 1 = 1";
 
+    @Test
     public void testMySql() throws Exception {
         assertFalse(WallUtils.isValidateMySql(sql));
         final WallConfig config = new WallConfig();
@@ -37,6 +40,7 @@ public class WallSelectWhereTest extends TestCase {
         assertFalse(WallUtils.isValidateMySql(sql, config));
     }
 
+    @Test
     public void testORACLE() throws Exception {
         assertFalse(WallUtils.isValidateOracle(sql));
         final WallConfig config = new WallConfig();

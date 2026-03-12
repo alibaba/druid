@@ -25,6 +25,8 @@ import com.alibaba.druid.stat.TableStat.Column;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlCreateViewTest extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "CREATE OR REPLACE VIEW view_name AS\n" +

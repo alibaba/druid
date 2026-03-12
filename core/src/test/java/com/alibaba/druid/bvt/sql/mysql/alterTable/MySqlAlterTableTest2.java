@@ -19,9 +19,12 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class MySqlAlterTableTest2 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlAlterTableTest2 {
+    @Test
     public void test_alter_first() throws Exception {
         String sql = "ALTER TABLE `test`.`tb1` ADD COLUMN `f2` VARCHAR(45) NULL  FIRST ;";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -31,6 +34,7 @@ public class MySqlAlterTableTest2 extends TestCase {
         assertEquals("ALTER TABLE `test`.`tb1`\n\tADD COLUMN `f2` VARCHAR(45) NULL FIRST;", output);
     }
 
+    @Test
     public void test_alter_add_column() throws Exception {
         String sql = "ALTER TABLE `test`.`tb1` ADD COLUMN `f2` VARCHAR(45) NULL  AFTER `fid` , ADD COLUMN `f3` VARCHAR(45) NULL  FIRST `f2`";
         MySqlStatementParser parser = new MySqlStatementParser(sql);

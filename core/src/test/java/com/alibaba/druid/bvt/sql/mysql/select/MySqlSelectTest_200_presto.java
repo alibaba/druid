@@ -23,6 +23,8 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_200_presto extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SELECT TINYINT '1', SMALLINT '1', FLOAT '1.0', DOUBLE '2.0'";

@@ -16,20 +16,24 @@
 package com.alibaba.druid.bvt.filter.wall;
 
 import com.alibaba.druid.wall.WallUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * 测试禁止多条语句执行的场景
  *
  * @author admin
  */
-public class WallMultiStatementTest extends TestCase {
+public class WallMultiStatementTest {
     private String sql = "SELECT email FROM members WHERE email = 'x'; UPDATE members SET email = 'steve@unixwiz.net' WHERE email = 'bob@example.com';";
 
+    @Test
     public void testOracle() throws Exception {
         assertFalse(WallUtils.isValidateOracle(sql));
     }
 
+    @Test
     public void testMySql() throws Exception {
         assertFalse(WallUtils.isValidateMySql(sql));
     }

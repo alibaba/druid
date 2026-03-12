@@ -3,7 +3,7 @@ package com.alibaba.druid.bvt.sql.starrocks.issues;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.dialect.starrocks.parser.StarRocksStatementParser;
 import com.alibaba.druid.sql.parser.SQLCreateTableParser;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @Author: Ekko

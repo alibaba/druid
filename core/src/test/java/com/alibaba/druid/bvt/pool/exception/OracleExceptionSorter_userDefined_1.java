@@ -9,6 +9,8 @@ import com.alibaba.druid.util.JdbcUtils;
 
 import java.sql.SQLException;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleExceptionSorter_userDefined_1 extends PoolTestCase {
     private DruidDataSource dataSource;
 

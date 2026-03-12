@@ -2,7 +2,7 @@ package com.alibaba.druid.bvt.sql.mysql.issues;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLParseAssertUtil;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author lizongbo

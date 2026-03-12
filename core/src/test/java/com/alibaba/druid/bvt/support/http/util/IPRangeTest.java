@@ -17,9 +17,12 @@ package com.alibaba.druid.bvt.support.http.util;
 
 import com.alibaba.druid.support.http.util.IPAddress;
 import com.alibaba.druid.support.http.util.IPRange;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class IPRangeTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class IPRangeTest {
+    @Test
     public void test_ipRange_0() throws Exception {
         IPRange rang = new IPRange("128.242.127.0/24");
 
@@ -33,6 +36,7 @@ public class IPRangeTest extends TestCase {
         rang.toString();
     }
 
+    @Test
     public void test_ipRange_1() throws Exception {
         IPRange rang = new IPRange("128.242.127.0/30");
 
@@ -47,6 +51,7 @@ public class IPRangeTest extends TestCase {
         assertFalse(rang.isIPAddressInRange(new IPAddress("128.242.127.4")));
     }
 
+    @Test
     public void test_ipRange_2() throws Exception {
         IPRange rang = new IPRange("10.16.200.0/24");
 
@@ -54,23 +59,27 @@ public class IPRangeTest extends TestCase {
         assertTrue(rang.isIPAddressInRange(new IPAddress("10.16.200.255")));
     }
 
+    @Test
     public void test_ipRange_3() throws Exception {
         IPRange rang = new IPRange("0.0.0.0/0");
         assertTrue(rang.isIPAddressInRange(new IPAddress("2.16.200.0")));
     }
 
+    @Test
     public void test_ipRange_4() throws Exception {
         IPRange rang = new IPRange("1.1.1.1/0");
 
         assertTrue(rang.isIPAddressInRange(new IPAddress("2.16.200.0")));
     }
 
+    @Test
     public void test_ipRange_5() throws Exception {
         IPRange rang = new IPRange("1.1.1.1");
 
         assertTrue(rang.isIPAddressInRange(new IPAddress("1.1.1.1")));
     }
 
+    @Test
     public void test_ipRange_6() throws Exception {
         IPRange rang = new IPRange("128.242.127.3");
 

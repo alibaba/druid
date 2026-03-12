@@ -2,9 +2,12 @@ package com.alibaba.druid.bvt.support.logging;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.logging.JakartaCommonsLoggingImpl;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class JakartaCommonsLoggingImplTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class JakartaCommonsLoggingImplTest {
+    @Test
     public void test_0() throws Exception {
         JakartaCommonsLoggingImpl impl = new JakartaCommonsLoggingImpl(DruidDataSource.class.getName());
 

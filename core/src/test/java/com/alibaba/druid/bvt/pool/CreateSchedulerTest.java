@@ -7,6 +7,8 @@ import java.sql.Connection;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class CreateSchedulerTest extends PoolTestCase {
     private DruidDataSource dataSource;
     private ScheduledExecutorService createScheduler;

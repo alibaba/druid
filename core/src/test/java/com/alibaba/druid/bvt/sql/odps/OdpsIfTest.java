@@ -1,9 +1,12 @@
 package com.alibaba.druid.bvt.sql.odps;
 
 import com.alibaba.druid.sql.SQLUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class OdpsIfTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OdpsIfTest {
+    @Test
     public void test_if() throws Exception {
         String sql = "select sum(if(a > 0, 1, 0)) from t1";
         assertEquals("SELECT sum(IF(a > 0, 1, 0))"

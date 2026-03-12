@@ -19,15 +19,20 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.JdbcSqlStat;
 import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.util.JdbcUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-public class StatFilterAfterResetTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class StatFilterAfterResetTest {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
 
@@ -37,10 +42,12 @@ public class StatFilterAfterResetTest extends TestCase {
         dataSource.init();
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
     }
 
+    @Test
     public void test_stat() throws Exception {
         final String sql = "SELECT 1";
         assertTrue(dataSource.isInited());
@@ -59,11 +66,11 @@ public class StatFilterAfterResetTest extends TestCase {
             sqlStat = dataSource.getDataSourceStat().getSqlStat(sql);
             assertNotNull(sqlStat);
 
-            assertEquals("first failed", 1, sqlStat.getExecuteAndResultHoldTimeHistogramSum());
+            assertEquals(1, sqlStat.getExecuteAndResultHoldTimeHistogramSum(), "first failed");
 
             rs.close();
 
-            assertEquals("second failed", 1, sqlStat.getExecuteAndResultHoldTimeHistogramSum());
+            assertEquals(1, sqlStat.getExecuteAndResultHoldTimeHistogramSum(), "second failed");
 
             stmt.close();
 

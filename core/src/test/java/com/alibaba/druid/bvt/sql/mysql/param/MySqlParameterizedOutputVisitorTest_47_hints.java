@@ -11,17 +11,20 @@ import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.support.calcite.CalciteMySqlNodeVisitor;
 import com.alibaba.druid.support.calcite.TDDLSqlSelect;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
 import org.apache.calcite.sql.SqlNode;
 import org.apache.calcite.sql.SqlNodeList;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
  * Created by wenshao on 16/8/23.
  */
-public class MySqlParameterizedOutputVisitorTest_47_hints extends TestCase {
+public class MySqlParameterizedOutputVisitorTest_47_hints {
+    @Test
     public void test_for_parameterize() throws Exception {
         final DbType dbType = JdbcConstants.MYSQL;
         String sql = "/* ///d45b1886/ *//*+TDDL({'extra':{'SOCKET_TIMEOUT':'0'}})*/ DELETE FROM page_scores WHERE createdat <= '2017-06-16 00:39:09.1';";
@@ -52,6 +55,7 @@ public class MySqlParameterizedOutputVisitorTest_47_hints extends TestCase {
                 "WHERE createdat <= ?;", psql);
     }
 
+    @Test
     public void test_headHint_2() throws Exception {
         String sql = "/*TDDL : construct()*/ select /*TDDL : add_ms(sort=t.pk, asc=true) add_agg(agg=\"SUM\", group=\"pk\", column=\"c\") add_pj(c=\"c\") add_ts(c, true) */ pk, count(*) c from tb1 where id in(1,2,3,4) group by pk order by pk";
 
@@ -75,6 +79,7 @@ public class MySqlParameterizedOutputVisitorTest_47_hints extends TestCase {
         assertEquals(((SqlNodeList) headHints.get(0)).size(), 1);
     }
 
+    @Test
     public void test_headHint_3() throws Exception {
         String sql = "/*TDDL: node(0)*/ show datasources";
 

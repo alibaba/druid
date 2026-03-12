@@ -17,17 +17,22 @@ package com.alibaba.druid.bvt.filter.wall.mysql;
 
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class MySqlWallPermitTableTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlWallPermitTableTest {
+    @Test
     public void test_default_true() throws Exception {
         assertTrue(WallUtils.isValidateMySql("select * from t union select benchmark( 500000, sha1( 'test' ) ) FROM X"));
     }
 
+    @Test
     public void test_default_false() throws Exception {
         assertFalse(WallUtils.isValidateMySql("select * from t where fid = 1 union select benchmark( 500000, sha1( 'test' ) ) FROM X"));
     }
 
+    @Test
     public void test_allow() throws Exception {
         WallConfig config = new WallConfig();
         config.setTableCheck(false);

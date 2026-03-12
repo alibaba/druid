@@ -1,9 +1,12 @@
 package com.alibaba.druid.bvt.sql.odps;
 
 import com.alibaba.druid.sql.SQLUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class OdpsFormatCommentTest9 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OdpsFormatCommentTest9 {
+    @Test
     public void test_column_comment() throws Exception {
         String sql = "insert overwrite table ttt partition (ds='20150710',hh='07') select tt_split(content, 60) as (f0, f1, f2, f3) from xxx;";
         assertEquals("INSERT OVERWRITE TABLE ttt PARTITION (ds='20150710', hh='07')"

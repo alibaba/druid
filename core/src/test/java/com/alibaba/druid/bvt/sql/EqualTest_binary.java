@@ -3,11 +3,12 @@ package com.alibaba.druid.bvt.sql;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryExpr;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlExprParser;
 import com.alibaba.druid.sql.parser.SQLExprParser;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class EqualTest_binary extends TestCase {
+public class EqualTest_binary {
+    @Test
     public void test_exits() throws Exception {
         String sql = "b'01010'";
         String sql_c = "b'010101'";

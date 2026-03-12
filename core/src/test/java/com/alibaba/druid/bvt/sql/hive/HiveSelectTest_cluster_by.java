@@ -19,12 +19,15 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class HiveSelectTest_cluster_by
-        extends TestCase {
+ {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT a from x cluster by a;";
 

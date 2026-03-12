@@ -2,10 +2,11 @@ package com.alibaba.druid.sql.dialect.hive.parser;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveAddJarStatement;
-import junit.framework.TestCase;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class HiveStatementParserTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class HiveStatementParserTest {
     /**
      * 验证add jar类型SQL可以正常解析
      * 例子： add jar hdfs:///hadoop/parser.h.file

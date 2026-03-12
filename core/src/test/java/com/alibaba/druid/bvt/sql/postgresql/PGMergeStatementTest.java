@@ -9,6 +9,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class PGMergeStatementTest extends PGTest {
     public void testMerge_basic() {
         String sql = "MERGE INTO target t USING source s ON t.id = s.id "

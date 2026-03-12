@@ -8,6 +8,8 @@ import com.alibaba.druid.support.logging.Log;
 
 import java.lang.reflect.Field;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class DruidDataSourceStatLoggerImplTest extends PoolTestCase {
     private DruidDataSource dataSource;
 

@@ -25,6 +25,8 @@ import java.sql.Connection;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class TestGraceShutdown extends PoolTestCase {
     private MockDriver driver;
     private DruidDataSource dataSource;

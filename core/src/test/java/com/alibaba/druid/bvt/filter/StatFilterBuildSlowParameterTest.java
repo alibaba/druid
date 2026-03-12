@@ -25,7 +25,9 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.JdbcSqlStat;
 import com.alibaba.druid.support.json.JSONUtils;
 import com.alibaba.druid.util.JdbcUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.nutz.lang.util.ByteInputStream;
 
 import java.math.BigDecimal;
@@ -39,9 +41,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-public class StatFilterBuildSlowParameterTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class StatFilterBuildSlowParameterTest {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
 
@@ -66,10 +71,12 @@ public class StatFilterBuildSlowParameterTest extends TestCase {
         dataSource.init();
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
     }
 
+    @Test
     public void test_buildSlowSql() throws Exception {
         long currentMillis = System.currentTimeMillis();
         String sql = "select ?, ?, ?, ?, ?";

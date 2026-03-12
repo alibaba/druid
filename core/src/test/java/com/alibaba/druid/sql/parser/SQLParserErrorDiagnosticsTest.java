@@ -1,11 +1,12 @@
 package com.alibaba.druid.sql.parser;
 
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SQLParserErrorDiagnosticsTest {
     private static final Pattern LOCATION_PATTERN = Pattern.compile("pos (\\d+), line (\\d+), column (\\d+)");
@@ -14,11 +15,11 @@ public class SQLParserErrorDiagnosticsTest {
     public void test_notSupportedDiagnostics_includeTokenAndLocationContext() {
         String message = parseFailureMessage("SELECT *\nFORM a");
 
-        Assert.assertTrue(message.startsWith("not supported. "));
-        Assert.assertTrue(message.contains("token IDENTIFIER FORM"));
-        Assert.assertTrue(message.contains("line 2"));
-        Assert.assertTrue(message.contains("column "));
-        Assert.assertNotNull(extractLocation(message));
+        assertTrue(message.startsWith("not supported. "));
+        assertTrue(message.contains("token IDENTIFIER FORM"));
+        assertTrue(message.contains("line 2"));
+        assertTrue(message.contains("column "));
+        assertNotNull(extractLocation(message));
     }
 
     @Test
@@ -29,16 +30,16 @@ public class SQLParserErrorDiagnosticsTest {
         String firstLocation = extractLocation(first);
         String secondLocation = extractLocation(second);
 
-        Assert.assertNotNull(firstLocation);
-        Assert.assertNotNull(secondLocation);
-        Assert.assertEquals(firstLocation, secondLocation);
+        assertNotNull(firstLocation);
+        assertNotNull(secondLocation);
+        assertEquals(firstLocation, secondLocation);
     }
 
     private static String parseFailureMessage(String sql) {
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         try {
             parser.parseStatementList();
-            Assert.fail("expected ParserException");
+            fail("expected ParserException");
             return null;
         } catch (ParserException ex) {
             return ex.getMessage();

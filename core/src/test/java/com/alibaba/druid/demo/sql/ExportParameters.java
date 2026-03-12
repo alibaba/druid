@@ -5,11 +5,12 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlExportParameterVisitor;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class ExportParameters extends TestCase {
+public class ExportParameters {
+    @Test
     public void test_export_parameters() throws Exception {
         String sql = "select * from t where id = 3 and name = 'abc'";
 

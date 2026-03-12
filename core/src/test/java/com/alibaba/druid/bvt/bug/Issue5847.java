@@ -4,13 +4,14 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 /**
  *
  */
-public class Issue5847 extends TestCase {
+public class Issue5847 {
+    @Test
     public void test_for_issue() throws Exception {
         String sql = "-- 执行SQLUtils.format(sql, DbType.dm)结果，外层括号被剔除，该sql在dm库执行失败\n"
             + "SELECT *\n"

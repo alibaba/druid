@@ -1,9 +1,12 @@
 package com.alibaba.druid.bvt.utils;
 
 import com.alibaba.druid.util.Histogram;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class HistogramTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class HistogramTest {
+    @Test
     public void test_histo() throws Exception {
         Histogram histo = Histogram.makeHistogram(4);
 

@@ -19,9 +19,12 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class MySqlAlterTableTest19 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlAlterTableTest19 {
+    @Test
     public void test_alter_add_key() throws Exception {
         String sql = "ALTER TABLE `test`.`tb1` ADD KEY `idx_parent_id` (`parent_id`)";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -31,6 +34,7 @@ public class MySqlAlterTableTest19 extends TestCase {
         assertEquals("ALTER TABLE `test`.`tb1`\n\tADD KEY `idx_parent_id` (`parent_id`)", output);
     }
 
+    @Test
     public void test_alter_add_index() throws Exception {
         String sql = "ALTER TABLE `test`.`tb1` ADD INDEX `idx_parent_id` (`parent_id`)";
         MySqlStatementParser parser = new MySqlStatementParser(sql);

@@ -19,9 +19,12 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class MySqlAlterTableGroupTest_0 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlAlterTableGroupTest_0 {
+    @Test
     public void test_alter_first() throws Exception {
         String sql = "alter tablegroup new_ddl.ddl_test_1 k1=v1";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -31,6 +34,7 @@ public class MySqlAlterTableGroupTest_0 extends TestCase {
         assertEquals("ALTER TABLEGROUP new_ddl.ddl_test_1 k1 = v1", SQLUtils.toMySqlString(stmt));
     }
 
+    @Test
     public void test_alter_2() throws Exception {
         String sql = "alter tablegroup new_ddl.ddl_test_1 k1=123";
         MySqlStatementParser parser = new MySqlStatementParser(sql);

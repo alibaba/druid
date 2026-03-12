@@ -16,7 +16,9 @@
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
 import com.alibaba.druid.wall.WallUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * SQLServerWallTest
@@ -25,17 +27,20 @@ import junit.framework.TestCase;
  * @version 1.0, 2012-3-18
  * @see
  */
-public class MySqlWallTest_having extends TestCase {
+public class MySqlWallTest_having {
+    @Test
     public void test_having() throws Exception {
         assertFalse(WallUtils.isValidateMySql(//
                 "select id, count(*) from t group by id having 1 = 1"));
     }
 
+    @Test
     public void test_having_true_first() throws Exception {
         assertTrue(WallUtils.isValidateMySql(//
                 "select id, count(*) from t group by id having 1 = 1 AND count(*) > 2"));
     }
 
+    @Test
     public void test_having_false() throws Exception {
         assertFalse(WallUtils.isValidateMySql(//
                 "select id, count(*) from t group by id having count(*) > 2 OR 1 = 1"));

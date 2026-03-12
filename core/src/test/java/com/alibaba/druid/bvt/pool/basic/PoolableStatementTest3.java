@@ -17,11 +17,12 @@ package com.alibaba.druid.bvt.pool.basic;
 
 import com.alibaba.druid.mock.MockResultSet;
 import com.alibaba.druid.pool.DruidPooledStatement;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 
-public class PoolableStatementTest3 extends TestCase {
+public class PoolableStatementTest3 {
+    @Test
     public void test_clearResultSetError() throws Exception {
         final MockResultSet rs = new MockResultSet(null) {
             public void close() throws SQLException {

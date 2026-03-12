@@ -18,16 +18,20 @@ package com.alibaba.druid.bvt.filter.wall;
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
 import com.alibaba.druid.wall.spi.OracleWallProvider;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * 这个场景，检测可疑的Having条件
  *
  * @author wenshao
  */
-public class WallReadOnlyTest2 extends TestCase {
+public class WallReadOnlyTest2 {
     private WallConfig config = new WallConfig();
 
+    @BeforeEach
     protected void setUp() throws Exception {
         config.addReadOnlyTable("members");
     }
@@ -37,6 +41,7 @@ public class WallReadOnlyTest2 extends TestCase {
     private String update_sql = "UPDATE members SET FNAME = ? WHERe FID = ?";
     private String delete_sql = "DELETE members WHERE FID = ?";
 
+    @Test
     public void testMySql() throws Exception {
         MySqlWallProvider provider = new MySqlWallProvider(config);
         assertTrue(provider.checkValid(sql));
@@ -46,6 +51,7 @@ public class WallReadOnlyTest2 extends TestCase {
         assertFalse(provider.checkValid(delete_sql));
     }
 
+    @Test
     public void testORACLE() throws Exception {
         OracleWallProvider provider = new OracleWallProvider(config);
         assertTrue(provider.checkValid(sql));

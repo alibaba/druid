@@ -3,8 +3,9 @@ package com.alibaba.druid.sql.parser;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author gfChris
@@ -12,7 +13,8 @@ import org.junit.Assert;
  * @Description
  * @date 2022/8/11 下午4:46
  */
-public class OraclePivotCloneTest extends TestCase {
+public class OraclePivotCloneTest {
+    @Test
     public void testCreateCharset() {
         String sql = "SELECT DEPT_ID, M01, M02, M03, M04\n" +
                 "\t, M05, M06, M07, M08, M09\n" +
@@ -30,6 +32,6 @@ public class OraclePivotCloneTest extends TestCase {
 
         System.out.println(sqlStatement1.toString());
 
-        Assert.assertTrue(sqlStatement1.toString().equals(sql));
+        assertTrue(sqlStatement1.toString().equals(sql));
     }
 }

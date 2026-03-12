@@ -9,6 +9,8 @@ import com.alibaba.druid.util.JdbcUtils;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
  * 测试 TYPE作为别名
  */

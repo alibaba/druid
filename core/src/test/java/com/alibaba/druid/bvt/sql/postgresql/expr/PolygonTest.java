@@ -5,6 +5,8 @@ import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLUnaryOperator;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGExprParser;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class PolygonTest extends PGTest {
     public void test_timestamp() throws Exception {
         String sql = "# '((1,0),(0,1),(-1,0))'";

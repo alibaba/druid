@@ -20,10 +20,12 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitorUtils;
 import com.alibaba.druid.sql.visitor.ParameterizedVisitor;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
-public class ExportAndParameterizedVisitor4db2TestCase extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class ExportAndParameterizedVisitor4db2TestCase {
+    @Test
     public void testParameterizedVisitor() {
         Object[][] sqlAndExpectedCases = {
                  {"select  XMLSERIALIZE(content fld1 as varchar(2000) )  fld1 from test_tab1 where name='1'  ", 1},
@@ -46,7 +48,7 @@ public class ExportAndParameterizedVisitor4db2TestCase extends TestCase {
                 System.out.println("after:" + out);
                 System.out.println("size:" + vistor2.getParameters());
                 final int expectedSize = arr.length > 1 ? (Integer) arr[1] : 0;
-                Assert.assertEquals(expectedSize, vistor2.getParameters().size());
+                assertEquals(expectedSize, vistor2.getParameters().size());
             }
         }
     }

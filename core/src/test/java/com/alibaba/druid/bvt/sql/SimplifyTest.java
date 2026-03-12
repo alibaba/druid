@@ -2,9 +2,12 @@ package com.alibaba.druid.bvt.sql;
 
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class SimplifyTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class SimplifyTest {
+    @Test
     public void test_simplify_column() throws Exception {
         SQLColumnDefinition column = new SQLColumnDefinition();
 

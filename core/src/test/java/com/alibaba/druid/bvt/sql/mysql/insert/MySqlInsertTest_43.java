@@ -19,11 +19,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class MySqlInsertTest_43 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlInsertTest_43 {
+    @Test
     public void test_insert_0() throws Exception {
         String sql = "/*+engine=MPP, mppNativeInsertFromSelect=true*/\n" +
                 "insert into adl_indication_ums_warehouse_ebax_a (sys_pk,sys_ds,sys_biztime,sys_gmt_modified,business_type,parcelled_order_num,warehouse_id)\n" +

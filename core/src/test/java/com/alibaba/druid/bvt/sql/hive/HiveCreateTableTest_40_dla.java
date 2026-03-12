@@ -24,6 +24,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class HiveCreateTableTest_40_dla extends OracleTest {
     public void test_0() throws Exception {
         String sql = "CREATE EXTERNAL TABLE IF NOT EXISTS `customer_case`.`shangjian_6e958954-f2c7-11e8-94b7-0c54159e4818.json.snappy` (\n" +

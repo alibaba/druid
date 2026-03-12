@@ -23,6 +23,8 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlShowTest_18 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SHOW HMSMETA s1.table1";

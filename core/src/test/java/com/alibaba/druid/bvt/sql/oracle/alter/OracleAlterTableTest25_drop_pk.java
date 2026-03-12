@@ -21,9 +21,12 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class OracleAlterTableTest25_drop_pk extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OracleAlterTableTest25_drop_pk {
+    @Test
     public void test_alter_constraint() throws Exception {
         String sql = "alter table supplier drop primary key;";
         OracleStatementParser parser = new OracleStatementParser(sql);

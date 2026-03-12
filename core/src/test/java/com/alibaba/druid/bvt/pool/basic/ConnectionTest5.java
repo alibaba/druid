@@ -29,6 +29,8 @@ import javax.sql.ConnectionEventListener;
 import java.sql.SQLException;
 import java.util.Properties;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class ConnectionTest5 extends PoolTestCase {
     private MockDriver driver;
     private DruidDataSource dataSource;

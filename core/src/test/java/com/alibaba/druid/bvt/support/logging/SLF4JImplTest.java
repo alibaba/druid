@@ -2,9 +2,12 @@ package com.alibaba.druid.bvt.support.logging;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.logging.SLF4JImpl;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class SLF4JImplTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class SLF4JImplTest {
+    @Test
     public void test_0() throws Exception {
         SLF4JImpl impl = new SLF4JImpl(DruidDataSource.class.getName());
 

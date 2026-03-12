@@ -19,11 +19,14 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class OdpsAlterTableChangeColumnTest3 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OdpsAlterTableChangeColumnTest3 {
+    @Test
     public void test_select() throws Exception {
         String sql = "ALTER TABLE table_name CHANGE COLUMN old_col_name new_col_name bigint COMMENT column_comment;";
         assertEquals("ALTER TABLE table_name\n" +

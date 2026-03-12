@@ -3,23 +3,30 @@ package com.alibaba.druid.pool;
 import com.alibaba.druid.pool.vendor.MySqlExceptionSorter;
 import com.alibaba.druid.util.JdbcUtils;
 import com.mysql.jdbc.Driver;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
 import java.sql.SQLException;
 
-public class ExeptionSorterTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class ExeptionSorterTest {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setDriver(new MyDriver());
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
     }
 
+    @Test
     public void test_dataSource() throws Exception {
         Method method = DruidDataSource.class.getDeclaredMethod("initExceptionSorter");
         method.setAccessible(true);

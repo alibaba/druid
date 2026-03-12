@@ -8,6 +8,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class PGFilterClauseTest extends PGTest {
     public void test_filter_count() {
         String sql = "SELECT count(*) FILTER (WHERE x > 0) FROM t";

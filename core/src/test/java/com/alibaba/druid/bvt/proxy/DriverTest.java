@@ -19,19 +19,24 @@ import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
 import com.alibaba.druid.stat.JdbcStatManager;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.util.Properties;
 
-public class DriverTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class DriverTest {
+    @AfterEach
     protected void tearDown() throws Exception {
         DruidDriver.getProxyDataSources().clear();
         assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
 
+    @Test
     public void test_driver() throws Exception {
         String url_0 = "jdbc:wrap-jdbc:filters=default:name=driverTest:jdbc:derby:memory:driverTestDB;create=true";
         String url_1 = "jdbc:wrap-jdbc:filters=counter:name=driverTest:jdbc:derby:memory:driverTestDB;create=true";

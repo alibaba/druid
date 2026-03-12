@@ -16,14 +16,18 @@
 package com.alibaba.druid.bvt.filter.wall.oracle;
 
 import com.alibaba.druid.wall.WallUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class OracleWallPermitSchemaTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OracleWallPermitSchemaTest {
+    @Test
     public void test_true() throws Exception {
         assertTrue(WallUtils.isValidateOracle("select banner from sys.v_$version where rownum=1"));
         assertTrue(WallUtils.isValidateOracle("select banner from sys.v where rownum=1"));
     }
 
+    @Test
     public void test_false() throws Exception {
         assertFalse(WallUtils.isValidateOracle("SELECT * FROM T UNION select banner from sys.v_$version where rownum=1"));
         assertFalse(WallUtils.isValidateOracle("SELECT * FROM T UNION select banner from sys.v where rownum=1"));

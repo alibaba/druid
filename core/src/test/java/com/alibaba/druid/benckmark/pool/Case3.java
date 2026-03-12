@@ -18,9 +18,9 @@ package com.alibaba.druid.benckmark.pool;
 import com.alibaba.druid.TestUtil;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.jolbox.bonecp.BoneCPDataSource;
-import junit.framework.TestCase;
 import org.apache.commons.dbcp.BasicDataSource;
-import org.junit.Assert;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.sql.DataSource;
 
@@ -32,7 +32,9 @@ import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class Case3 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class Case3 {
     private String jdbcUrl;
     private String user;
     private String password;
@@ -52,6 +54,7 @@ public class Case3 extends TestCase {
     private long timeBetweenEvictionRunsMillis = 60000;
     private long minEvictableIdleTimeMillis = 60000;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
         user = "dragoon25";
@@ -65,6 +68,7 @@ public class Case3 extends TestCase {
         // driverClass = "com.mysql.jdbc.Driver";
     }
 
+    @Test
     public void test_perf() throws Exception {
         for (int i = 0; i < 5; ++i) {
             druid();
@@ -198,7 +202,7 @@ public class Case3 extends TestCase {
         long ygc = TestUtil.getYoungGC() - startYGC;
         long fullGC = TestUtil.getFullGC() - startFullGC;
 
-        Assert.assertEquals(LOOP_COUNT * threadCount, count.get());
+        assertEquals(LOOP_COUNT * threadCount, count.get());
         Thread.sleep(1);
 
         System.out.println("thread " + threadCount + " " + name + " millis : "

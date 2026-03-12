@@ -26,6 +26,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class DB2SelectTest_5 extends DB2Test {
     public void test_0() throws Exception {
         String sql = "SELECT * FROM (SELECT TEMP_TAB.*,ROWNUMBER() OVER() AS IDX FROM (SELECT"

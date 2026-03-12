@@ -16,7 +16,9 @@
 package com.alibaba.druid.bvt.filter.wall;
 
 import com.alibaba.druid.wall.WallUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * SQLServerWallTest
@@ -25,12 +27,14 @@ import junit.framework.TestCase;
  * @version 1.0, 2012-3-18
  * @see
  */
-public class TAEWallTest extends TestCase {
+public class TAEWallTest {
+    @Test
     public void test_true() throws Exception {
         assertTrue(WallUtils.isValidateMySql(//
                 "select * from t where 1=1 AND status = 1"));
     }
 
+    @Test
     public void test_false() throws Exception {
         assertFalse(WallUtils.isValidateMySql(//
                 "select * from t where status = 1 OR 1=1"));

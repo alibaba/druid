@@ -1,20 +1,25 @@
 package com.alibaba.druid.bvt.pool;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * 这个场景测试maxActive < 0
  *
  * @author wenshao [szujobs@hotmail.com]
  */
-public class DruidDataSourceTest_notEmptyWait extends TestCase {
+public class DruidDataSourceTest_notEmptyWait {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
@@ -23,10 +28,12 @@ public class DruidDataSourceTest_notEmptyWait extends TestCase {
         dataSource.setMaxActive(1);
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
     }
 
+    @Test
     public void test_error() throws Exception {
         {
             Connection conn = dataSource.getConnection();

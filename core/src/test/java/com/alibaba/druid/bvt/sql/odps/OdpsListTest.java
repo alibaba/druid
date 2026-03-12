@@ -4,9 +4,12 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.odps.parser.OdpsStatementParser;
 import com.alibaba.druid.sql.parser.Token;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class OdpsListTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OdpsListTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "list roles";
         OdpsStatementParser parser = new OdpsStatementParser(sql);
@@ -17,6 +20,7 @@ public class OdpsListTest extends TestCase {
         assertEquals("LIST roles", output);
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "list users";
         OdpsStatementParser parser = new OdpsStatementParser(sql);
@@ -27,6 +31,7 @@ public class OdpsListTest extends TestCase {
         assertEquals("LIST users", output);
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "list functions";
         OdpsStatementParser parser = new OdpsStatementParser(sql);
@@ -37,6 +42,7 @@ public class OdpsListTest extends TestCase {
         assertEquals("LIST functions", output);
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = "list resources";
         OdpsStatementParser parser = new OdpsStatementParser(sql);
@@ -47,6 +53,7 @@ public class OdpsListTest extends TestCase {
         assertEquals("LIST resources", output);
     }
 
+    @Test
     public void test_4() throws Exception {
         String sql = "list accountproviders";
         OdpsStatementParser parser = new OdpsStatementParser(sql);
@@ -57,6 +64,7 @@ public class OdpsListTest extends TestCase {
         assertEquals("LIST accountproviders", output);
     }
 
+    @Test
     public void test_5() throws Exception {
         String sql = "list jobs";
         OdpsStatementParser parser = new OdpsStatementParser(sql);
@@ -67,6 +75,7 @@ public class OdpsListTest extends TestCase {
         assertEquals("LIST jobs", output);
     }
 
+    @Test
     public void test_6() throws Exception {
         String sql = "list trustedprojects";
         OdpsStatementParser parser = new OdpsStatementParser(sql);

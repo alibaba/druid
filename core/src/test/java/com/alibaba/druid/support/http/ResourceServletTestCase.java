@@ -1,7 +1,6 @@
 package com.alibaba.druid.support.http;
 
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockServletConfig;
@@ -9,7 +8,10 @@ import org.springframework.mock.web.MockServletConfig;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-public class ResourceServletTestCase extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class ResourceServletTestCase {
+    @Test
     public void testNotLogin() throws Exception {
         final Field securitySpiFld = getToNotFinal();
         securitySpiFld.set(null, null);
@@ -28,7 +30,7 @@ public class ResourceServletTestCase extends TestCase {
         final MockHttpServletResponse res = new MockHttpServletResponse();
         try {
             servlet.service(req, res);
-            Assert.assertEquals(302, res.getStatus());
+            assertEquals(302, res.getStatus());
         } catch (final Exception ex) {
             ex.printStackTrace();
         }

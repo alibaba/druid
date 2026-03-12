@@ -20,6 +20,8 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_241 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select job_names.job_name from cover_rage_job_org as org RIGHT JOIN (\n" +

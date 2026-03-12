@@ -23,6 +23,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlCreateTable_showColumns_test extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "CREATE TABLE `test1` (\n" +

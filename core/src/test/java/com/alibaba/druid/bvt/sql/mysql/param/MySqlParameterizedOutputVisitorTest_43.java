@@ -10,17 +10,20 @@ import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONArray;
-import junit.framework.TestCase;
 import org.apache.commons.lang.StringUtils;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
  * Created by wenshao on 16/8/23.
  */
-public class MySqlParameterizedOutputVisitorTest_43 extends TestCase {
+public class MySqlParameterizedOutputVisitorTest_43 {
+    @Test
     public void test_for_parameterize() throws Exception {
         final DbType dbType = JdbcConstants.MYSQL;
         String sql = "UPDATE `feel_07`.feed_item_receive SET `attributes` = ?, `gmt_modified` = ?, `lock_version` = ? WHERE `feed_id` = ?";

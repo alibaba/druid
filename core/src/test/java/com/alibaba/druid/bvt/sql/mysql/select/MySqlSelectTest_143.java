@@ -9,6 +9,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_143 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "CREATE TABLE OS_TEST_COMPARE_test008 AS\n" +

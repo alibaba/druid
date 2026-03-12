@@ -21,6 +21,8 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_217_unnest extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select x from unnest(array[1, 2, 3]) t(x)";

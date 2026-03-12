@@ -4,11 +4,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateFunctionStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerOutputVisitor;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class SQLServerCreateFunctionTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class SQLServerCreateFunctionTest {
+    @Test
     public void testCreateScalarFunction() {
         String sql = "CREATE FUNCTION dbo.fn_add (@a INT, @b INT) RETURNS INT AS BEGIN RETURN @a + @b; END";
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
@@ -31,6 +34,7 @@ public class SQLServerCreateFunctionTest extends TestCase {
         assertTrue(result.contains("RETURNS"));
     }
 
+    @Test
     public void testCreateInlineTableFunction() {
         String sql = "CREATE FUNCTION dbo.fn_orders (@customer_id INT) RETURNS TABLE AS RETURN (SELECT * FROM orders WHERE customer_id = @customer_id)";
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
@@ -51,6 +55,7 @@ public class SQLServerCreateFunctionTest extends TestCase {
         assertTrue(result.contains("RETURN"));
     }
 
+    @Test
     public void testCreateOrAlterFunction() {
         String sql = "CREATE OR ALTER FUNCTION dbo.fn_format (@val VARCHAR(100)) RETURNS VARCHAR(200) AS BEGIN RETURN UPPER(@val); END";
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
@@ -69,6 +74,7 @@ public class SQLServerCreateFunctionTest extends TestCase {
         assertTrue(result.contains("CREATE OR ALTER FUNCTION"));
     }
 
+    @Test
     public void testCreateFunctionNoParams() {
         String sql = "CREATE FUNCTION dbo.fn_getdate () RETURNS DATETIME AS BEGIN RETURN GETDATE(); END";
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
@@ -79,6 +85,7 @@ public class SQLServerCreateFunctionTest extends TestCase {
         assertEquals(0, stmt.getParameters().size());
     }
 
+    @Test
     public void testCreateFunctionWithDefaultParam() {
         String sql = "CREATE FUNCTION dbo.fn_test (@x INT = 0) RETURNS INT AS BEGIN RETURN @x + 1; END";
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
@@ -90,6 +97,7 @@ public class SQLServerCreateFunctionTest extends TestCase {
         assertNotNull(stmt.getParameters().get(0).getDefaultValue());
     }
 
+    @Test
     public void testCreateFunctionRoundTrip() {
         String sql = "CREATE FUNCTION dbo.fn_add (@a INT, @b INT) RETURNS INT AS BEGIN RETURN @a + @b; END";
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
@@ -107,6 +115,7 @@ public class SQLServerCreateFunctionTest extends TestCase {
         assertTrue(stmtList2.get(0) instanceof SQLCreateFunctionStatement);
     }
 
+    @Test
     public void testCreateFunctionWithSchemabinding() {
         String sql = "CREATE FUNCTION dbo.fn_test (@x INT) RETURNS INT WITH SCHEMABINDING AS BEGIN RETURN @x; END";
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);

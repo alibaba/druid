@@ -2,9 +2,12 @@ package com.alibaba.druid.bvt.sql.oracle;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class SQLSortTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class SQLSortTest {
+    @Test
     public void test_sort() throws Exception {
         String sql = "CREATE TABLE \"ECC_FND\".\"FORM_URL\" \n" +
                 "   (\t\"FORM_URL_ID\" NUMBER(10,0) NOT NULL ENABLE, \n" +

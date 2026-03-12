@@ -17,9 +17,12 @@ package com.alibaba.druid.bvt.filter.wall;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.wall.spi.WallVisitorUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class WallVisitorUtilsTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class WallVisitorUtilsTest {
+    @Test
     public void test_isTrue() throws Exception {
         assertEquals(Boolean.TRUE, WallVisitorUtils.getValue(SQLUtils.toSQLExpr("1 != 2")));
         assertEquals(Boolean.TRUE, WallVisitorUtils.getValue(SQLUtils.toSQLExpr("1 != 2 AND 2 = 2")));
@@ -53,6 +56,7 @@ public class WallVisitorUtilsTest extends TestCase {
         //
     }
 
+    @Test
     public void test_chr() throws Exception {
         assertEquals("CAT", WallVisitorUtils.getValue(SQLUtils.toSQLExpr("CHR(67)||CHR(65)||CHR(84)")));
         assertEquals(Boolean.TRUE, WallVisitorUtils.getValue(SQLUtils.toSQLExpr("CHR(67)||CHR(65)||CHR(84) = 'CAT'")));

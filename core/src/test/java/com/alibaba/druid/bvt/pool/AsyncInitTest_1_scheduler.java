@@ -6,6 +6,8 @@ import com.alibaba.druid.pool.DruidDataSource;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class AsyncInitTest_1_scheduler extends PoolTestCase {
     private DruidDataSource dataSource;
     private ScheduledExecutorService scheduler;

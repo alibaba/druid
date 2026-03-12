@@ -21,15 +21,19 @@ import com.alibaba.druid.proxy.jdbc.ConnectionProxyImpl;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxyImpl;
 import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.util.Utils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.DriverManager;
 import java.sql.Statement;
 import java.util.Properties;
 
-public class WrapImplTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class WrapImplTest {
     private static String url = "jdbc:wrap-jdbc:filters=default,commonLogging,log4j,encoding,null:name=demo:jdbc:derby:classpath:petstore-db";
 
+    @Test
     public void test_clone() throws Exception {
         Class.forName("com.alibaba.druid.proxy.DruidDriver");
 
@@ -79,6 +83,7 @@ public class WrapImplTest extends TestCase {
         statement.close();
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         DruidDriver.getProxyDataSources().clear();
         assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());

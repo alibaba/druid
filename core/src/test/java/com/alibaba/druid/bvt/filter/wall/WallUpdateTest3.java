@@ -17,23 +17,28 @@ package com.alibaba.druid.bvt.filter.wall;
 
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * 这个场景，检测
  *
  * @author wenshao
  */
-public class WallUpdateTest3 extends TestCase {
+public class WallUpdateTest3 {
     private String sql = "UPDATE T_USER SET FNAME = ? WHERE 1 = 1";
     private String sql2 = "UPDATE T_USER SET FNAME = ? WHERE id = 1 or 1 = 1";
 
     private WallConfig config = new WallConfig();
 
+    @BeforeEach
     protected void setUp() throws Exception {
         config.setUpdateAllow(true);
     }
 
+    @Test
     public void testMySql() throws Exception {
         config.setUpdateWhereAlwayTrueCheck(true);
         config.setConditionAndAlwayTrueAllow(false);
@@ -47,6 +52,7 @@ public class WallUpdateTest3 extends TestCase {
         assertTrue(WallUtils.isValidateMySql(sql, config));
     }
 
+    @Test
     public void testORACLE() throws Exception {
         config.setUpdateWhereAlwayTrueCheck(true);
         config.setConditionAndAlwayTrueAllow(false);

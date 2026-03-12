@@ -20,6 +20,8 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySQLCreateMaterializedViewTest6 extends MysqlTest {
     public void test1() throws Exception {
         String sql = "CREATE MATERIALIZED VIEW mymv (\n" +

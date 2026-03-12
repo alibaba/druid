@@ -4,9 +4,12 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class MySqlAlterTableTest51_table_options extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlAlterTableTest51_table_options {
+    @Test
     public void test_0_options_no_comma_no_eq() {
         String sql = "alter table test001\n" +
                 "auto_increment 1\n" +
@@ -42,6 +45,7 @@ public class MySqlAlterTableTest51_table_options extends TestCase {
                 "\tAUTO_INCREMENT = 1 AVG_ROW_LENGTH = 1 CHARACTER SET = utf8 CHECKSUM = 0 COLLATE = utf8_unicode_ci COMMENT = 'hehe' COMPRESSION = 'LZ4' CONNECTION = 'conn' COLLATE = 'path' DELAY_KEY_WRITE = 1 ENCRYPTION = 'N' ENGINE = innodb INSERT_METHOD = no KEY_BLOCK_SIZE = 32 MAX_ROWS = 999 MIN_ROWS = 1 PACK_KEYS = DEFAULT PASSWORD = 'psw' ROW_FORMAT = dynamic STATS_AUTO_RECALC = DEFAULT STATS_PERSISTENT = DEFAULT STATS_SAMPLE_PAGES = 10 TABLESPACE `tbs_name` STORAGE memory UNION = (tb1, tb2, tb3) AUTO_INCREMENT = 1", SQLUtils.toMySqlString(stmt));
     }
 
+    @Test
     public void test_0_options_comma_eq() {
         String sql = "alter table test001\n" +
                 "auto_increment = 2,\n" +

@@ -4,22 +4,27 @@ import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * 这个场景测试并发初始化
  *
  * @author wenshao [szujobs@hotmail.com]
  */
-public class DruidDataSourceTest3 extends TestCase {
+public class DruidDataSourceTest3 {
     private DruidDataSource dataSource;
     private volatile Exception error;
     private volatile Exception errorB;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
@@ -38,10 +43,12 @@ public class DruidDataSourceTest3 extends TestCase {
         });
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
     }
 
+    @Test
     public void test_error() throws Exception {
         final CountDownLatch startedLatch = new CountDownLatch(1);
         final CountDownLatch endLatch = new CountDownLatch(1);

@@ -7,6 +7,8 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlCreateTableTest132_drds_primaryKey extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "create table gxw_test_87 (id int, name varchar(20),  primary key(id, name)) dbpartition by hash(id);";

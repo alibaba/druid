@@ -27,12 +27,13 @@ import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Demo2 extends TestCase {
+public class Demo2 {
+    @Test
     public void test_0() throws Exception {
         String sql = "select * from user where uid = 2 and uname = ?";
         List<Object> parameters = new ArrayList<Object>();

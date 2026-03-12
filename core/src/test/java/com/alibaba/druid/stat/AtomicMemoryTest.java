@@ -1,12 +1,13 @@
 package com.alibaba.druid.stat;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.lang.management.ManagementFactory;
 import java.text.NumberFormat;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class AtomicMemoryTest extends TestCase {
+public class AtomicMemoryTest {
+    @Test
     public void test_0() throws Exception {
         AtomicLong item = new AtomicLong();
         gc();

@@ -33,17 +33,22 @@ import com.alibaba.druid.proxy.jdbc.ResultSetProxyImpl;
 import com.alibaba.druid.proxy.jdbc.StatementProxy;
 import com.alibaba.druid.proxy.jdbc.StatementProxyImpl;
 import com.alibaba.druid.stat.JdbcStatManager;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.*;
 import java.util.Properties;
 
-public class LogFilterTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class LogFilterTest {
+    @AfterEach
     protected void tearDown() throws Exception {
         DruidDriver.getProxyDataSources().clear();
         assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
 
+    @Test
     public void test_logFilter_0() throws Exception {
         DataSourceProxyConfig config = new DataSourceProxyConfig();
         config.setRawUrl("jdbc:mock:");
@@ -92,6 +97,7 @@ public class LogFilterTest extends TestCase {
         executeSQL(dataSource);
     }
 
+    @Test
     public void test_logFilter_1() throws Exception {
         DataSourceProxyConfig config = new DataSourceProxyConfig();
         config.setRawUrl("jdbc:mock:");
@@ -140,6 +146,7 @@ public class LogFilterTest extends TestCase {
         executeSQL(dataSource);
     }
 
+    @Test
     public void test_logFilter_2() throws Exception {
         DataSourceProxyConfig config = new DataSourceProxyConfig();
         config.setRawUrl("jdbc:mock:");

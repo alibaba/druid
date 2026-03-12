@@ -17,9 +17,12 @@ package com.alibaba.druid.bvt.pool.basic;
 
 import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.pool.PoolableWrapper;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class PoolableWrapperTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class PoolableWrapperTest {
+    @Test
     public void test_isWrapper() throws Exception {
         PoolableWrapper wrapper = new PoolableWrapper(new MockConnection());
 
@@ -28,10 +31,11 @@ public class PoolableWrapperTest extends TestCase {
         assertEquals(true, wrapper.isWrapperFor(MockConnection.class));
     }
 
+    @Test
     public void test_unwrap() throws Exception {
         PoolableWrapper wrapper = new PoolableWrapper(new MockConnection());
 
-        assertEquals(null, wrapper.unwrap(null));
+        assertNull(wrapper.unwrap(null));
         assertEquals(true, wrapper.unwrap(PoolableWrapper.class) != null);
         assertEquals(true, wrapper.unwrap(MockConnection.class) != null);
     }

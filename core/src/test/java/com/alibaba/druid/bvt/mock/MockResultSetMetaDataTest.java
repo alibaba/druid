@@ -18,13 +18,16 @@ package com.alibaba.druid.bvt.mock;
 import com.alibaba.druid.mock.MockResultSetMetaData;
 import com.alibaba.druid.util.jdbc.ResultSetMetaDataBase;
 import com.alibaba.druid.util.jdbc.ResultSetMetaDataBase.ColumnMetaData;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.ResultSetMetaData;
 
-public class MockResultSetMetaDataTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MockResultSetMetaDataTest {
+    @Test
     public void test_resultSet_metadata() throws Exception {
         MockResultSetMetaData meta = new MockResultSetMetaData();
         assertTrue(meta.isWrapperFor(MockResultSetMetaData.class));

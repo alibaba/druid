@@ -3,10 +3,13 @@ package com.alibaba.druid.bvt.proxy.filter;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class StatFilterTest3 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class StatFilterTest3 {
     @SuppressWarnings("deprecation")
+    @Test
     public void test_dbType() throws Exception {
         StatFilter filter = new StatFilter();
 
@@ -21,6 +24,7 @@ public class StatFilterTest3 extends TestCase {
         assertEquals("SELECT ?\nLIMIT ?", filter.mergeSql("select 'x' limit 1"));
     }
 
+    @Test
     public void test_dbType_error() throws Exception {
         StatFilter filter = new StatFilter();
         filter.setDbType("mysql");
@@ -31,6 +35,7 @@ public class StatFilterTest3 extends TestCase {
         assertEquals("sdafawer asf ", filter.mergeSql("sdafawer asf "));
     }
 
+    @Test
     public void test_merge() throws Exception {
         StatFilter filter = new StatFilter();
         filter.setDbType("mysql");
@@ -41,6 +46,7 @@ public class StatFilterTest3 extends TestCase {
         assertEquals("select 'x' limit 1", filter.mergeSql("select 'x' limit 1"));
     }
 
+    @Test
     public void test_merge_pg() throws Exception {
         StatFilter filter = new StatFilter();
         filter.setDbType(JdbcConstants.POSTGRESQL);
@@ -58,6 +64,7 @@ public class StatFilterTest3 extends TestCase {
                 "\tAND site_id = ?;", filter.mergeSql("drop table if exists test_site_data_select_111; create table test_site_data_select_111 AS select * from postman_trace_info_one  where lng>0 and lat>0  and site_id='17814' ;", JdbcConstants.POSTGRESQL));
     }
 
+    @Test
     public void test_merge_oracle() throws Exception {
         StatFilter filter = new StatFilter();
         filter.setDbType(DbType.oceanbase_oracle);
@@ -66,6 +73,7 @@ public class StatFilterTest3 extends TestCase {
         filter.mergeSql("insert into t(f1, f2) values (1, 2)", DbType.oceanbase_oracle);
     }
 
+    @Test
     public void test_merge_nodbtype() throws Exception {
         StatFilter filter = new StatFilter();
 

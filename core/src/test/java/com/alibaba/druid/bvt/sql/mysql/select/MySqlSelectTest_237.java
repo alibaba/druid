@@ -19,6 +19,8 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_237 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select distinct (f1) from t3;";

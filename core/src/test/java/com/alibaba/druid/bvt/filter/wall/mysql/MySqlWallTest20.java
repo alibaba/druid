@@ -16,7 +16,9 @@
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
 import com.alibaba.druid.wall.WallUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * SQLServerWallTest
@@ -25,7 +27,8 @@ import junit.framework.TestCase;
  * @version 1.0, 2012-3-18
  * @see
  */
-public class MySqlWallTest20 extends TestCase {
+public class MySqlWallTest20 {
+    @Test
     public void test_true() throws Exception {
         assertTrue(WallUtils.isValidateMySql(//
                 "SET sql_mode=?,NAMES ?,CHARACTER SET utf8,CHARACTER_SET_RESULTS=utf8,COLLATION_CONNECTION=?"));

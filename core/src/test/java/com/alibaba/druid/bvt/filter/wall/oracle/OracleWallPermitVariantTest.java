@@ -17,14 +17,17 @@ package com.alibaba.druid.bvt.filter.wall.oracle;
 
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * 这个场景测试访问Oracle系统对象
  *
  * @author admin
  */
-public class OracleWallPermitVariantTest extends TestCase {
+public class OracleWallPermitVariantTest {
+    @Test
     public void test_permitTable() throws Exception {
         WallConfig config = new WallConfig();
         config.setVariantCheck(false);

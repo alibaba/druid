@@ -13,6 +13,8 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleExceptionSorterTest_stmt_setQueryTimeout extends PoolTestCase {
     private DruidDataSource dataSource;
 

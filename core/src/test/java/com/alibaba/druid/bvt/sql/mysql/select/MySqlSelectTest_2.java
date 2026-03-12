@@ -24,6 +24,8 @@ import com.alibaba.druid.stat.TableStat.Column;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_2 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SELECT college, region, seed FROM tournament ORDER BY 2, 3;";

@@ -23,6 +23,8 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_98 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "INSERT INTO brand_crm_ship.imp_order_lock (tid, pid, __aid, pv) \n" +

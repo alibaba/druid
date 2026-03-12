@@ -7,13 +7,15 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleExportParameterVisitor
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-public class ExportParameterDotNumberTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class ExportParameterDotNumberTest {
     /**
      * Logger for this class
      */
@@ -21,6 +23,7 @@ public class ExportParameterDotNumberTest extends TestCase {
 
     DbType dbType = JdbcConstants.MYSQL;
 
+    @Test
     public void test_exportParameter() throws Exception {
         String[] sqls = {"INSERT INTO test_tab1 (name) VALUES ( 2.0  )",
                 "INSERT INTO test_tab1 (name) VALUES ( 2  )",

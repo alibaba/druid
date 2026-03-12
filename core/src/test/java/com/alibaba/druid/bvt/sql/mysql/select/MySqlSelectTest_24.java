@@ -23,6 +23,8 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_24 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select * from company where id=1 and not (name='e') and addr='a'";

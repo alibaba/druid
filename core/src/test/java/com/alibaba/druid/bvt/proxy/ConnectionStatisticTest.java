@@ -16,9 +16,12 @@
 package com.alibaba.druid.bvt.proxy;
 
 import com.alibaba.druid.stat.JdbcConnectionStat;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class ConnectionStatisticTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class ConnectionStatisticTest {
+    @Test
     public void test_connection_stat() throws Exception {
         JdbcConnectionStat.Entry stat = new JdbcConnectionStat.Entry(null, 1001L);
         assertEquals(null, stat.getEstablishTime());

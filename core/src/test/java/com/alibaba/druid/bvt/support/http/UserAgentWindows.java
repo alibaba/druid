@@ -16,9 +16,12 @@
 package com.alibaba.druid.bvt.support.http;
 
 import com.alibaba.druid.support.http.stat.WebAppStat;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class UserAgentWindows extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class UserAgentWindows {
+    @Test
     public void test_windows98() throws Exception {
         WebAppStat stat = new WebAppStat("");
 
@@ -51,6 +54,7 @@ public class UserAgentWindows extends TestCase {
         assertEquals(1, stat.getOSWindows98Count());
     }
 
+    @Test
     public void test_windows98_1() throws Exception {
         WebAppStat stat = new WebAppStat("");
 
@@ -83,6 +87,7 @@ public class UserAgentWindows extends TestCase {
         assertEquals(1, stat.getOSWindows98Count());
     }
 
+    @Test
     public void test_windowsXP() throws Exception {
         WebAppStat stat = new WebAppStat("");
 
@@ -116,6 +121,7 @@ public class UserAgentWindows extends TestCase {
         assertEquals(1, stat.getOSWindowsXPCount());
     }
 
+    @Test
     public void test_windowsXP_1() throws Exception {
         WebAppStat stat = new WebAppStat("");
 
@@ -149,6 +155,7 @@ public class UserAgentWindows extends TestCase {
         assertEquals(1, stat.getOSWindowsXPCount());
     }
 
+    @Test
     public void test_windowsXP_IE6() throws Exception {
         WebAppStat stat = new WebAppStat("");
 
@@ -182,6 +189,7 @@ public class UserAgentWindows extends TestCase {
         assertEquals(1, stat.getOSWindowsXPCount());
     }
 
+    @Test
     public void test_windowsXP_IE6_1() throws Exception {
         WebAppStat stat = new WebAppStat("");
 
@@ -215,6 +223,7 @@ public class UserAgentWindows extends TestCase {
         assertEquals(1, stat.getOSWindowsXPCount());
     }
 
+    @Test
     public void test_windowsXP_IE7() throws Exception {
         WebAppStat stat = new WebAppStat("");
 
@@ -248,6 +257,7 @@ public class UserAgentWindows extends TestCase {
         assertEquals(1, stat.getOSWindowsXPCount());
     }
 
+    @Test
     public void test_windowsXP_IE8() throws Exception {
         WebAppStat stat = new WebAppStat("");
 
@@ -281,6 +291,7 @@ public class UserAgentWindows extends TestCase {
         assertEquals(1, stat.getOSWindowsXPCount());
     }
 
+    @Test
     public void test_windowsXP_IE9() throws Exception {
         WebAppStat stat = new WebAppStat("");
 
@@ -314,6 +325,7 @@ public class UserAgentWindows extends TestCase {
         assertEquals(1, stat.getOSWindowsXPCount());
     }
 
+    @Test
     public void test_windowsXP_firefox() throws Exception {
         WebAppStat stat = new WebAppStat("");
 
@@ -347,6 +359,7 @@ public class UserAgentWindows extends TestCase {
         assertEquals(1, stat.getOSWindowsXPCount());
     }
 
+    @Test
     public void test_windows2000_IE5() throws Exception {
         WebAppStat stat = new WebAppStat("");
 
@@ -380,6 +393,7 @@ public class UserAgentWindows extends TestCase {
         assertEquals(1, stat.getOSWindows2000Count());
     }
 
+    @Test
     public void test_windows2000_IE6() throws Exception {
         WebAppStat stat = new WebAppStat("");
 
@@ -413,6 +427,7 @@ public class UserAgentWindows extends TestCase {
         assertEquals(1, stat.getOSWindows2000Count());
     }
 
+    @Test
     public void test_windows2000_IE7() throws Exception {
         WebAppStat stat = new WebAppStat("");
 
@@ -446,6 +461,7 @@ public class UserAgentWindows extends TestCase {
         assertEquals(1, stat.getOSWindows2000Count());
     }
 
+    @Test
     public void test_windows2000_IE8() throws Exception {
         WebAppStat stat = new WebAppStat("");
 
@@ -479,6 +495,7 @@ public class UserAgentWindows extends TestCase {
         assertEquals(1, stat.getOSWindows2000Count());
     }
 
+    @Test
     public void test_windows2000_IE9() throws Exception {
         WebAppStat stat = new WebAppStat("");
 
@@ -512,6 +529,7 @@ public class UserAgentWindows extends TestCase {
         assertEquals(1, stat.getOSWindows2000Count());
     }
 
+    @Test
     public void test_windows2000_firefox() throws Exception {
         WebAppStat stat = new WebAppStat("");
 
@@ -545,6 +563,7 @@ public class UserAgentWindows extends TestCase {
         assertEquals(1, stat.getOSWindows2000Count());
     }
 
+    @Test
     public void test_windows2000_firefox11() throws Exception {
         WebAppStat stat = new WebAppStat("");
 
@@ -578,6 +597,7 @@ public class UserAgentWindows extends TestCase {
         assertEquals(1, stat.getOSWindows2000Count());
     }
 
+    @Test
     public void test_windows2000_chrome() throws Exception {
         WebAppStat stat = new WebAppStat("");
 
@@ -611,6 +631,7 @@ public class UserAgentWindows extends TestCase {
         assertEquals(1, stat.getOSWindows2000Count());
     }
 
+    @Test
     public void test_windowsVista() throws Exception {
         WebAppStat stat = new WebAppStat("");
 
@@ -644,6 +665,7 @@ public class UserAgentWindows extends TestCase {
         assertEquals(1, stat.getOSWindowsVistaCount());
     }
 
+    @Test
     public void test_windows7() throws Exception {
         WebAppStat stat = new WebAppStat("");
 
@@ -677,6 +699,7 @@ public class UserAgentWindows extends TestCase {
         assertEquals(1, stat.getOSWindows7Count());
     }
 
+    @Test
     public void test_windows7_firefox() throws Exception {
         WebAppStat stat = new WebAppStat("");
 
@@ -710,6 +733,7 @@ public class UserAgentWindows extends TestCase {
         assertEquals(1, stat.getOSWindows7Count());
     }
 
+    @Test
     public void test_windows7_chrome() throws Exception {
         WebAppStat stat = new WebAppStat("");
 

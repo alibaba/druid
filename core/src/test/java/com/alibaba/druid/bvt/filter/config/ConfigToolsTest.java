@@ -1,11 +1,14 @@
 package com.alibaba.druid.bvt.filter.config;
 
 import com.alibaba.druid.filter.config.ConfigTools;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.Random;
 
-public class ConfigToolsTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class ConfigToolsTest {
+    @Test
     public void test_0() throws Exception {
         String plainText = "abcdef";
         String cipherText = ConfigTools.encrypt(plainText);
@@ -14,6 +17,7 @@ public class ConfigToolsTest extends TestCase {
         assertEquals(plainText, decipherText);
     }
 
+    @Test
     public void test_genKeys() throws Exception {
         String plainText = Long.toString(new Random().nextLong());
         String[] keys = ConfigTools.genKeyPair(512);
@@ -22,6 +26,7 @@ public class ConfigToolsTest extends TestCase {
         assertEquals(plainText, ConfigTools.decrypt(keys[1], cipherText));
     }
 
+    @Test
     public void test_genKeys1024() throws Exception {
         String plainText = Long.toString(new Random().nextLong());
         String[] keys = ConfigTools.genKeyPair(1024);

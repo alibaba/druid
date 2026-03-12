@@ -16,14 +16,16 @@
 package com.alibaba.druid.mysql;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class MySqlBigTableTest extends TestCase {
+public class MySqlBigTableTest {
     final int COUNT = 800;
 
     private String jdbcUrl;
@@ -33,6 +35,7 @@ public class MySqlBigTableTest extends TestCase {
 
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         jdbcUrl = "jdbc:mysql://a.b.c.d:3306/dragoon_v25_masterdb";
         user = "dragoon_test";
@@ -49,6 +52,7 @@ public class MySqlBigTableTest extends TestCase {
         createTable();
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         try {
             dropTable();
@@ -61,6 +65,7 @@ public class MySqlBigTableTest extends TestCase {
         }
     }
 
+    @Test
     public void test_0() throws Exception {
         StringBuilder ddl = new StringBuilder();
         ddl.append("INSERT INTO t_big (");

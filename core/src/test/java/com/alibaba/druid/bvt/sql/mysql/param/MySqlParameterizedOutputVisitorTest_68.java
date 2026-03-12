@@ -3,12 +3,15 @@ package com.alibaba.druid.bvt.sql.mysql.param;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MySqlParameterizedOutputVisitorTest_68 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlParameterizedOutputVisitorTest_68 {
+    @Test
     public void test_for_parameterize() throws Exception {
         String sql = "select id , name from xxx group by 1,2 order by 1;";
 

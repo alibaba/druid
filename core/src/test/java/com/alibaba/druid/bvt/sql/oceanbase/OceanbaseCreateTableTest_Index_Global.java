@@ -22,6 +22,8 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OceanbaseCreateTableTest_Index_Global extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "CREATE TABLE `test_01` (\n" +

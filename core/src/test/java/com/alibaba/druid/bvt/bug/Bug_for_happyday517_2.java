@@ -20,7 +20,9 @@ import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.mock.MockPreparedStatement;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.DataTruncation;
@@ -28,7 +30,9 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Properties;
 
-public class Bug_for_happyday517_2 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class Bug_for_happyday517_2 {
     private DruidDataSource dataSource;
     private MockDriver driver;
 
@@ -36,6 +40,7 @@ public class Bug_for_happyday517_2 extends TestCase {
 
     private int originalDataSourceCount;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         originalDataSourceCount = DruidDataSourceStatManager.getInstance().getDataSourceList().size();
 
@@ -61,11 +66,13 @@ public class Bug_for_happyday517_2 extends TestCase {
         dataSource.setFilters("stat,trace,log4j,encoding");
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
         assertEquals(originalDataSourceCount, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
+    @Test
     public void test_bug() throws Exception {
         Connection conn = dataSource.getConnection();
 

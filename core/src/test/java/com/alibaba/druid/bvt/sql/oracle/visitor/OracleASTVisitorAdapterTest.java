@@ -21,9 +21,10 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectRestriction.CheckOption;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectRestriction.ReadOnly;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitorAdapter;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class OracleASTVisitorAdapterTest extends TestCase {
+public class OracleASTVisitorAdapterTest {
+    @Test
     public void test_adapter() throws Exception {
         OracleASTVisitorAdapter adapter = new OracleASTVisitorAdapter();
 

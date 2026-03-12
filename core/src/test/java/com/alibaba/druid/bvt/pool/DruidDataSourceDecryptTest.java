@@ -2,11 +2,11 @@ package com.alibaba.druid.bvt.pool;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author Jonas Yang
@@ -23,7 +23,7 @@ public class DruidDataSourceDecryptTest {
 
         try {
             dataSource.init();
-            assertEquals("The password is " + dataSource.getPassword(), "xiaoyu", dataSource.getPassword());
+            assertEquals("xiaoyu", dataSource.getPassword(), "The password is " + dataSource.getPassword());
         } finally {
             JdbcUtils.close(dataSource);
         }

@@ -4,9 +4,12 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.odps.parser.OdpsStatementParser;
 import com.alibaba.druid.sql.parser.Token;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class OdpsCreateTableTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OdpsCreateTableTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "CREATE TABLE IF NOT EXISTS sale_detail("
                 + " shop_name     STRING,"

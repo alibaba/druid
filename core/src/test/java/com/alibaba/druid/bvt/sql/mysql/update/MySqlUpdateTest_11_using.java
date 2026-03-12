@@ -25,6 +25,8 @@ import com.alibaba.druid.wall.WallUtils;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlUpdateTest_11_using extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "update t1, t2, t3 inner join t4 using (col_name1, col_name2)\n" +

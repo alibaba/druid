@@ -16,9 +16,12 @@
 package com.alibaba.druid.bvt.support.http;
 
 import com.alibaba.druid.support.http.stat.WebAppStat;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class UserAgentAndroid_4_1_Test extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class UserAgentAndroid_4_1_Test {
+    @Test
     public void test_mac_firefox() throws Exception {
         WebAppStat stat = new WebAppStat("");
         stat.computeUserAgent("Mozilla/5.0 (Linux; Android 4.1.1; Galaxy Nexus Build/JRO03C) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.166 Mobile Safari/535.19");

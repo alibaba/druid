@@ -16,9 +16,12 @@
 package com.alibaba.druid.bvt.bug;
 
 import com.alibaba.druid.sql.SQLUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class Bug_for_order extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class Bug_for_order {
+    @Test
     public void test_bug_for_xuershan() throws Exception {
         String sql = "select * from order";
         String format = SQLUtils.formatMySql(sql);

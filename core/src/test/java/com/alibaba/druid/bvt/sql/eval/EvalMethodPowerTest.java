@@ -2,15 +2,19 @@ package com.alibaba.druid.bvt.sql.eval;
 
 import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class EvalMethodPowerTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class EvalMethodPowerTest {
+    @Test
     public void test_reverse() throws Exception {
         assertEquals(Math.pow(1, 2), SQLEvalVisitorUtils.evalExpr(JdbcConstants.MYSQL, "power(1, 2)"));
         assertEquals(Math.pow(3, 4), SQLEvalVisitorUtils.evalExpr(JdbcConstants.MYSQL, "power(3, 4)"));
         assertEquals(Math.pow(4, 5), SQLEvalVisitorUtils.evalExpr(JdbcConstants.MYSQL, "pow(4, 5)"));
     }
 
+    @Test
     public void test_error() throws Exception {
         Exception error = null;
         try {
@@ -21,6 +25,7 @@ public class EvalMethodPowerTest extends TestCase {
         assertNotNull(error);
     }
 
+    @Test
     public void test_error_1() throws Exception {
         Exception error = null;
         try {

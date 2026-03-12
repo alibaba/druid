@@ -31,6 +31,8 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.Properties;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class DataSourceTest3 extends PoolTestCase {
     private MockDriver driver;
     private DruidDataSource dataSource;

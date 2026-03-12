@@ -17,7 +17,9 @@ package com.alibaba.druid.bvt.filter.wall.sqlserver;
 
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.SQLServerWallProvider;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * SQLServerWallTest
@@ -26,7 +28,7 @@ import junit.framework.TestCase;
  * @version 1.0, 2012-3-18
  * @see
  */
-public class SQLServerWallTest_0 extends TestCase {
+public class SQLServerWallTest_0 {
     private WallProvider initWallProvider() {
         WallProvider provider = new SQLServerWallProvider();
 
@@ -43,6 +45,7 @@ public class SQLServerWallTest_0 extends TestCase {
         return provider;
     }
 
+    @Test
     public void test_false() {
         WallProvider provider = initWallProvider();
         {
@@ -55,6 +58,7 @@ public class SQLServerWallTest_0 extends TestCase {
         }
     }
 
+    @Test
     public void test_false1() throws Exception {
         WallProvider provider = initWallProvider();
         {
@@ -63,6 +67,7 @@ public class SQLServerWallTest_0 extends TestCase {
         }
     }
 
+    @Test
     public void test_false2() throws Exception {
         WallProvider provider = initWallProvider();
         {
@@ -82,6 +87,7 @@ public class SQLServerWallTest_0 extends TestCase {
         }
     }
 
+    @Test
     public void test_false3() throws Exception {
         WallProvider provider = initWallProvider();
 
@@ -95,6 +101,7 @@ public class SQLServerWallTest_0 extends TestCase {
         }
     }
 
+    @Test
     public void test_true2() throws Exception {
         WallProvider provider = initWallProvider();
         {
@@ -103,6 +110,7 @@ public class SQLServerWallTest_0 extends TestCase {
         }
     }
 
+    @Test
     public void test_true3() throws Exception {
         WallProvider provider = initWallProvider();
         {
@@ -111,6 +119,7 @@ public class SQLServerWallTest_0 extends TestCase {
         }
     }
 
+    @Test
     public void test_true4() throws Exception {
         WallProvider provider = initWallProvider();
         {
@@ -123,6 +132,7 @@ public class SQLServerWallTest_0 extends TestCase {
         }
     }
 
+    @Test
     public void test_true5() throws Exception {
         WallProvider provider = initWallProvider();
         {
@@ -131,6 +141,7 @@ public class SQLServerWallTest_0 extends TestCase {
         }
     }
 
+    @Test
     public void test_true6() throws Exception {
         WallProvider provider = initWallProvider();
         {
@@ -139,6 +150,7 @@ public class SQLServerWallTest_0 extends TestCase {
         }
     }
 
+    @Test
     public void test_true7() throws Exception {
         WallProvider provider = initWallProvider();
         {
@@ -147,6 +159,7 @@ public class SQLServerWallTest_0 extends TestCase {
         }
     }
 
+    @Test
     public void test_true8() throws Exception {
         WallProvider provider = initWallProvider();
         {
@@ -155,6 +168,7 @@ public class SQLServerWallTest_0 extends TestCase {
         }
     }
 
+    @Test
     public void test_true() throws Exception {
         WallProvider provider = initWallProvider();
         {

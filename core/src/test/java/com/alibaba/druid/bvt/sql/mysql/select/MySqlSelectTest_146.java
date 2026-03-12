@@ -10,6 +10,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_146 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select '18015376320243458'=18015376320243459 is  not  NULL from select_base_two_multi_db_multi_tb limit 1;";

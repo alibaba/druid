@@ -20,11 +20,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class OracleSelectTest134 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OracleSelectTest134 {
+    @Test
     public void test_0() throws Exception {
         String sql = "select xu.employee_no\n" +
                 ",xu.user_name\n" +

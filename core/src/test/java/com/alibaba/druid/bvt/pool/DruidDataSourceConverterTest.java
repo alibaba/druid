@@ -1,15 +1,20 @@
 package com.alibaba.druid.bvt.pool;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.osjava.sj.SimpleContext;
 
 import java.sql.Connection;
 import java.util.Properties;
 
-public class DruidDataSourceConverterTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class DruidDataSourceConverterTest {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         String osName = System.getProperty("os.name");
 
@@ -32,10 +37,12 @@ public class DruidDataSourceConverterTest extends TestCase {
         dataSource.init();
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
     }
 
+    @Test
     public void test_conn() throws Exception {
         assertEquals(true, dataSource.isInited());
         Connection conn = dataSource.getConnection();

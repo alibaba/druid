@@ -25,6 +25,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class DB2SelectTest_14 extends DB2Test {
     public void test_0() throws Exception {
         String sql = "SELECT (NEXTVAL FOR TEST_SEQ) FROM SYSIBM.SYSDUMMY1";

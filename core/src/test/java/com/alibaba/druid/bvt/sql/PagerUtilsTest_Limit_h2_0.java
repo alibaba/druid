@@ -2,9 +2,12 @@ package com.alibaba.druid.bvt.sql;
 
 import com.alibaba.druid.sql.PagerUtils;
 import com.alibaba.druid.util.JdbcUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class PagerUtilsTest_Limit_h2_0 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class PagerUtilsTest_Limit_h2_0 {
+    @Test
     public void test_db2_union() throws Exception {
         String sql = "select * from t1 union select * from t2";
         String result = PagerUtils.limit("SELECT * FROM test", JdbcUtils.H2, 0, 10);

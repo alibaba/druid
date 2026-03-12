@@ -4,14 +4,16 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.JdbcUtils;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-public class PolarDB2DbTypeTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class PolarDB2DbTypeTest {
     private String jdbcUrl;
     private String jdbcUrl1;
     private String jdbcUrl2;
@@ -20,6 +22,7 @@ public class PolarDB2DbTypeTest extends TestCase {
     private String validateQuery;
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         jdbcUrl1 = "jdbc:polardb://a.b.c.d:5432/polardb";
         jdbcUrl2 = "jdbc:polardb2://a.b.c.d:5432/polardb";
@@ -40,14 +43,15 @@ public class PolarDB2DbTypeTest extends TestCase {
      * Init datasource without setting DbType and druid will get DbType
      * from jdbc url prefix "jdbc:polardb2".
      */
+    @Test
     public void testDefaultDbType() throws Exception {
         dataSource = new DruidDataSource();
         jdbcUrl = jdbcUrl2;
         configDataSource();
         dataSource.init();
 
-        Assert.assertTrue(JdbcConstants.POLARDB2.equals(DbType.of(dataSource.getDbType())));
-        Assert.assertTrue(JdbcConstants.POLARDB2_DRIVER.equals(dataSource.getDriverClassName()));
+        assertTrue(JdbcConstants.POLARDB2.equals(DbType.of(dataSource.getDbType())));
+        assertTrue(JdbcConstants.POLARDB2_DRIVER.equals(dataSource.getDriverClassName()));
 
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement(validateQuery);
@@ -67,6 +71,7 @@ public class PolarDB2DbTypeTest extends TestCase {
      * for backward compatibility. If the user want to use SQL firewall in this
      * case, set DbType to PolarDB-Oracle 2.0 explicitly.
      */
+    @Test
     public void testSetDbType() throws Exception {
         /*
          * Case 1: set DbType and driver name after initializing data source.
@@ -79,8 +84,8 @@ public class PolarDB2DbTypeTest extends TestCase {
         dataSource.init();
 
         // Driver and DbType are set to PolarDB-Oracle 1.0 automatically
-        Assert.assertTrue(JdbcConstants.POLARDB.equals(DbType.of(dataSource.getDbType())));
-        Assert.assertTrue(JdbcConstants.POLARDB_DRIVER.equals(dataSource.getDriverClassName()));
+        assertTrue(JdbcConstants.POLARDB.equals(DbType.of(dataSource.getDbType())));
+        assertTrue(JdbcConstants.POLARDB_DRIVER.equals(dataSource.getDriverClassName()));
 
         boolean conn_failed = false;
         try {
@@ -91,23 +96,23 @@ public class PolarDB2DbTypeTest extends TestCase {
             e.printStackTrace();
             System.out.println("failed to connect to PolarDB-Oracle 2.0 with PolarDB-Oracle 1.0 DbType and driver");
         }
-        Assert.assertTrue(conn_failed);
+        assertTrue(conn_failed);
 
         // Set new DbType with string
         dataSource.setDbType("polardb2");
-        Assert.assertTrue(JdbcConstants.POLARDB2.equals(DbType.of(dataSource.getDbType())));
+        assertTrue(JdbcConstants.POLARDB2.equals(DbType.of(dataSource.getDbType())));
 
         // Reset
         dataSource.setDbType("polardb");
-        Assert.assertTrue(JdbcConstants.POLARDB.equals(DbType.of(dataSource.getDbType())));
+        assertTrue(JdbcConstants.POLARDB.equals(DbType.of(dataSource.getDbType())));
 
         // Set new DbType with const
         dataSource.setDbType(DbType.polardb2);
-        Assert.assertTrue(JdbcConstants.POLARDB2.equals(DbType.of(dataSource.getDbType())));
+        assertTrue(JdbcConstants.POLARDB2.equals(DbType.of(dataSource.getDbType())));
 
         // Failed to set driver name after init
         // dataSource.setDriverClassName(JdbcConstants.POLARDB2_DRIVER);
-        Assert.assertTrue(JdbcConstants.POLARDB_DRIVER.equals(dataSource.getDriverClassName()));
+        assertTrue(JdbcConstants.POLARDB_DRIVER.equals(dataSource.getDriverClassName()));
 
         dataSource.clone();
 
@@ -123,8 +128,8 @@ public class PolarDB2DbTypeTest extends TestCase {
         dataSource.setDriverClassName(JdbcConstants.POLARDB2_DRIVER);
         dataSource.init();
 
-        Assert.assertTrue(JdbcConstants.POLARDB2.equals(DbType.of(dataSource.getDbType())));
-        Assert.assertTrue(JdbcConstants.POLARDB2_DRIVER.equals(dataSource.getDriverClassName()));
+        assertTrue(JdbcConstants.POLARDB2.equals(DbType.of(dataSource.getDbType())));
+        assertTrue(JdbcConstants.POLARDB2_DRIVER.equals(dataSource.getDriverClassName()));
 
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement(validateQuery);

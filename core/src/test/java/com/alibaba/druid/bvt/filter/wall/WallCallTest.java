@@ -16,22 +16,27 @@
 package com.alibaba.druid.bvt.filter.wall;
 
 import com.alibaba.druid.wall.WallUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * 这个场景，被攻击者用于测试当前SQL拥有多少字段
  *
  * @author wenshao
  */
-public class WallCallTest extends TestCase {
+public class WallCallTest {
+    @Test
     public void testMySql() throws Exception {
         assertTrue(WallUtils.isValidateMySql("{ call INTERFACE_DATA_EXTRACTION.INVOICE_INFO(?,?,?)}"));
     }
 
+    @Test
     public void testOracle() throws Exception {
         assertTrue(WallUtils.isValidateOracle("{ call INTERFACE_DATA_EXTRACTION.INVOICE_INFO(?,?,?)}"));
     }
 
+    @Test
     public void testSqlServer() throws Exception {
         assertTrue(WallUtils.isValidateSqlServer("{ call INTERFACE_DATA_EXTRACTION.INVOICE_INFO(?,?,?)}"));
     }

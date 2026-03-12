@@ -18,16 +18,21 @@ package com.alibaba.druid.bvt.proxy;
 import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.util.JdbcUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.sql.*;
 import java.util.Calendar;
 import java.util.HashMap;
 
-public class BasicTypeTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class BasicTypeTest {
     private static String create_url = "jdbc:wrap-jdbc:filters=default,commonLogging,log4j:name=basicType:jdbc:derby:memory:basicTypeTestDB;create=true";
 
+    @BeforeEach
     protected void setUp() throws Exception {
         Class.forName("com.alibaba.druid.proxy.DruidDriver");
 
@@ -59,6 +64,7 @@ public class BasicTypeTest extends TestCase {
         conn.close();
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dropTable();
 
@@ -67,6 +73,7 @@ public class BasicTypeTest extends TestCase {
     }
 
     @SuppressWarnings("deprecation")
+    @Test
     public void test_basicType() throws Exception {
         Connection conn = null;
         PreparedStatement pstmt = null;

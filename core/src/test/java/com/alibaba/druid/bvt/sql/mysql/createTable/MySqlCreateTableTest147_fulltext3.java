@@ -3,11 +3,14 @@ package com.alibaba.druid.bvt.sql.mysql.createTable;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class MySqlCreateTableTest147_fulltext3 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlCreateTableTest147_fulltext3 {
+    @Test
     public void test_0() throws Exception {
         String sql = "CREATE TABLE tbl_custom_analyzer2 (\n" +
                 "  `id` int COMMENT '',   \n" +
@@ -31,6 +34,7 @@ public class MySqlCreateTableTest147_fulltext3 extends TestCase {
                 "DISTRIBUTE BY HASH(`id`);", stmt.toString());
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "CREATE TABLE tbl_custom_analyzer2 (\n" +
                 "  `id` int COMMENT '',   \n" +
@@ -55,6 +59,7 @@ public class MySqlCreateTableTest147_fulltext3 extends TestCase {
                 "DISTRIBUTE BY HASH(`id`);", stmt.toString());
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "CREATE TABLE tbl_custom_analyzer2 (\n" +
                 "  `id` int COMMENT '',   \n" +
@@ -79,6 +84,7 @@ public class MySqlCreateTableTest147_fulltext3 extends TestCase {
                 "DISTRIBUTE BY HASH(`id`);", stmt.toString());
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = "CREATE TABLE tbl_custom_analyzer2 (\n" +
                 "  `id` int COMMENT '',   \n" +

@@ -22,6 +22,8 @@ import com.alibaba.druid.sql.parser.SQLParserFeature;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleSelectTest109 extends OracleTest {
     public void test_0() throws Exception {
         String sql = "/* No SQL_REDO for temporary tables */";

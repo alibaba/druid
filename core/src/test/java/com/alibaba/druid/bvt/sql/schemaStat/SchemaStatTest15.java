@@ -9,9 +9,12 @@ import com.alibaba.druid.sql.repository.SchemaObjectType;
 import com.alibaba.druid.sql.repository.SchemaRepository;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class SchemaStatTest15 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class SchemaStatTest15 {
+    @Test
     public void test_schemaStat() throws Exception {
         SchemaRepository repository = new SchemaRepository(JdbcConstants.MYSQL);
         repository.acceptDDL("create table table1 (fid bigint, f1 varchar(100), f2 varchar(100))");
@@ -44,6 +47,7 @@ public class SchemaStatTest15 extends TestCase {
         assertTrue(statVisitor.containsColumn("UNKNOWN", "f3"));
     }
 
+    @Test
     public void test_schemaStat_2() throws Exception {
         SchemaRepository repository = new SchemaRepository(JdbcConstants.MYSQL);
         repository.acceptDDL("create table table1 (fid bigint, f1 varchar(100), f2 varchar(100));");

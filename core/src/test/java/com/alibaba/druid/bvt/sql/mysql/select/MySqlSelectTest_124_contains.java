@@ -8,6 +8,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_124_contains extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select shid from alitrip_htl_realtime.hotel_real_time_inventory where rate_sale_status = 1 and rate_tags contains ('520') " +

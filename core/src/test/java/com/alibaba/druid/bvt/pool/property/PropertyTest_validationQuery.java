@@ -4,6 +4,8 @@ import com.alibaba.druid.PoolTestCase;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class PropertyTest_validationQuery extends PoolTestCase {
     private DruidDataSource dataSource;
 

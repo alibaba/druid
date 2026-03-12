@@ -21,6 +21,8 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_223_jdbc_fn extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SELECT CAST({fn TRUNCATE(EXTRACT(YEAR FROM (`calcs`.`date0` + ((-{fn DAYOFWEEK(`calcs`.`date0`)}) + 1) * INTERVAL '1' DAY)),0)} AS INTEGER) AS `TEMP(Test)(1308221269)(0)`\n" +

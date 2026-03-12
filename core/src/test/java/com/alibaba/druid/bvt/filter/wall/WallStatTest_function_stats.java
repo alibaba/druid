@@ -5,19 +5,26 @@ import com.alibaba.druid.wall.WallFunctionStat;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.WallTableStat;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class WallStatTest_function_stats extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class WallStatTest_function_stats {
     private String sql = "select len(fname), len(fdesc) from t";
 
+    @BeforeEach
     protected void setUp() throws Exception {
         WallContext.clearContext();
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         WallContext.clearContext();
     }
 
+    @Test
     public void testMySql() throws Exception {
         WallProvider provider = new MySqlWallProvider();
         assertTrue(provider.checkValid(sql));

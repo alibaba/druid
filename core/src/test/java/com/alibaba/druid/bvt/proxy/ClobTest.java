@@ -19,14 +19,19 @@ import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.proxy.jdbc.ClobProxy;
 import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.util.JdbcUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.StringReader;
 import java.sql.*;
 
-public class ClobTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class ClobTest {
     private static String create_url = "jdbc:wrap-jdbc:filters=default,commonLogging,log4j:name=clobTest:jdbc:derby:memory:clobTestDB;create=true";
 
+    @BeforeEach
     protected void setUp() throws Exception {
         Class.forName("com.alibaba.druid.proxy.DruidDriver");
 
@@ -37,6 +42,7 @@ public class ClobTest extends TestCase {
         conn.close();
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dropTable();
 
@@ -60,6 +66,7 @@ public class ClobTest extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_clob() throws Exception {
         Connection conn = null;
         PreparedStatement pstmt = null;

@@ -21,6 +21,8 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_218_jdbc extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select {d '2018-07-24'}, {t '12:34:56'}, {ts '2018-07-24 12:34:56'}";

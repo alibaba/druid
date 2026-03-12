@@ -18,15 +18,20 @@ package com.alibaba.druid.bvt.proxy;
 import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.util.JdbcUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.InputStream;
 import java.io.Reader;
 import java.sql.*;
 
-public class PrecallTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class PrecallTest {
     private static String create_url = "jdbc:wrap-jdbc:filters=default,commonLogging,log4j:name=preCallTest:jdbc:derby:memory:preCallDB;create=true";
 
+    @BeforeEach
     protected void setUp() throws Exception {
         Class.forName("com.alibaba.druid.proxy.DruidDriver");
 
@@ -53,6 +58,7 @@ public class PrecallTest extends TestCase {
         conn.close();
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dropTable();
 
@@ -60,6 +66,7 @@ public class PrecallTest extends TestCase {
         assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
 
+    @Test
     public void test_precall() throws Exception {
         Connection conn = null;
         CallableStatement cstmt = null;

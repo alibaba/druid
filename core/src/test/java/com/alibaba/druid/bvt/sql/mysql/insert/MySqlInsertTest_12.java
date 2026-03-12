@@ -24,6 +24,8 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlInsertTest_12 extends MysqlTest {
     public void test_insert_rollback_on_fail() throws Exception {
         String sql = "insert into t1 values('A\\0\\0\\0B')";

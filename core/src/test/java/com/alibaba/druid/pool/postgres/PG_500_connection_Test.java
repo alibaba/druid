@@ -3,8 +3,9 @@ package com.alibaba.druid.pool.postgres;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.vendor.PGValidConnectionChecker;
 import com.alibaba.druid.util.JdbcUtils;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -14,14 +15,17 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
  * 这个场景测试minIdle > maxActive
  *
  * @author wenshao [szujobs@hotmail.com]
  */
-public class PG_500_connection_Test extends TestCase {
+public class PG_500_connection_Test {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:postgresql://192.168.199.231:5432/druid_test_db");
@@ -38,14 +42,16 @@ public class PG_500_connection_Test extends TestCase {
         dataSource.setFilters("stat");
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
     }
 
+    @Test
     public void test_conect_500() throws Exception {
         dataSource.init();
-        Assert.assertFalse(dataSource.isOracle());
-        Assert.assertTrue(dataSource.getValidConnectionChecker() instanceof PGValidConnectionChecker);
+        assertFalse(dataSource.isOracle());
+        assertTrue(dataSource.getValidConnectionChecker() instanceof PGValidConnectionChecker);
 
         int taskCount = 1000 * 100;
         final CountDownLatch endLatch = new CountDownLatch(taskCount);

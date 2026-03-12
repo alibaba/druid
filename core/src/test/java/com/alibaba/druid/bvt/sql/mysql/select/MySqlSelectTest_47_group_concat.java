@@ -23,6 +23,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_47_group_concat extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SELECT student_name,\n" +

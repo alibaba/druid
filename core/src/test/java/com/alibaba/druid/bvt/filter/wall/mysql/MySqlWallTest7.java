@@ -16,7 +16,9 @@
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
 import com.alibaba.druid.wall.WallUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * SQLServerWallTest
@@ -25,7 +27,8 @@ import junit.framework.TestCase;
  * @version 1.0, 2012-3-18
  * @see
  */
-public class MySqlWallTest7 extends TestCase {
+public class MySqlWallTest7 {
+    @Test
     public void test_stuff() throws Exception {
         assertTrue(WallUtils.isValidateMySql(//
                 "SELECT a.* FROM vote_info a where a.id<10 and (id <5 or 1=1) limit 1,10")); // 部分永真

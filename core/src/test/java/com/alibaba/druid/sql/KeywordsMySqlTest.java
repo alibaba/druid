@@ -16,13 +16,14 @@
 package com.alibaba.druid.sql;
 
 import com.alibaba.druid.sql.parser.Keywords;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class KeywordsMySqlTest extends TestCase {
+public class KeywordsMySqlTest {
+    @Test
     public void test_sort() throws Exception {
         List<String> list = new ArrayList<String>(Keywords.DEFAULT_KEYWORDS.getKeywords().keySet());
 

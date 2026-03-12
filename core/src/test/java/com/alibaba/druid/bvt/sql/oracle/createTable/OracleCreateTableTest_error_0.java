@@ -20,6 +20,8 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.util.JdbcConstants;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleCreateTableTest_error_0 extends OracleTest {
     public void test_types() throws Exception {
         Throwable error = null;

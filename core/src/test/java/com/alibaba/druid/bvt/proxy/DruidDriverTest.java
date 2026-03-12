@@ -21,11 +21,15 @@ import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxyImpl;
 import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.util.JdbcUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Properties;
 
-public class DruidDriverTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class DruidDriverTest {
+    @AfterEach
     protected void tearDown() throws Exception {
         DruidDriver.getProxyDataSources().clear();
         assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
@@ -60,10 +64,12 @@ public class DruidDriverTest extends TestCase {
         }
     }
 
+    @Test
     public void test_registerDriver() throws Exception {
         assertFalse(DruidDriver.registerDriver(null));
     }
 
+    @Test
     public void test_getRawDriverClassName() throws Exception {
         String className = JdbcUtils.getDriverClassName("jdbc:mysql:");
         if (className.equals("com.mysql.jdbc.Driver")) {
@@ -88,6 +94,7 @@ public class DruidDriverTest extends TestCase {
         }
     }
 
+    @Test
     public void test_getRawDriver() throws Exception {
         DruidDriver driver = new DruidDriver();
         assertNotNull(driver.createDriver(MockDriver.class.getName()));
@@ -123,6 +130,7 @@ public class DruidDriverTest extends TestCase {
 
     }
 
+    @Test
     public void test_driver_wrap() throws Exception {
         DruidDriver driver = new DruidDriver();
 

@@ -23,6 +23,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class HiveCreateTableTest_31_mappedBy_for_dla extends OracleTest {
     public void test_0() throws Exception {
         String sql = //

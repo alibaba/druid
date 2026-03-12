@@ -24,6 +24,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleCreateTypeTest5 extends OracleTest {
     public void test_types() throws Exception {
         String sql = "CREATE OR REPLACE TYPE T_PMINFO_LOAN_OBJECT                                                                               \n" +

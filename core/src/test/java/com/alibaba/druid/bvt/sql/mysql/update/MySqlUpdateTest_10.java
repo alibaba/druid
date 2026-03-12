@@ -25,6 +25,8 @@ import com.alibaba.druid.wall.WallUtils;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlUpdateTest_10 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "UPDATE car_tt  set gps_url=null  WHERE  id = ?";

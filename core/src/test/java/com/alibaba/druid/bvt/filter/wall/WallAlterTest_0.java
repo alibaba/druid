@@ -17,17 +17,22 @@ package com.alibaba.druid.bvt.filter.wall;
 
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class WallAlterTest_0 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class WallAlterTest_0 {
     private String sql = "alter index idx_t1 rebuild";
 
     private WallConfig config = new WallConfig();
 
+    @BeforeEach
     protected void setUp() throws Exception {
         config.setUpdateAllow(true);
     }
 
+    @Test
     public void testORACLE() throws Exception {
         assertTrue(WallUtils.isValidateOracle(sql, config));
     }

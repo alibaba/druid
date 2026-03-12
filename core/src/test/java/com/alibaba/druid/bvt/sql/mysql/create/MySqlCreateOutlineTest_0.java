@@ -21,11 +21,14 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class MySqlCreateOutlineTest_0 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlCreateOutlineTest_0 {
+    @Test
     public void test_0() throws Exception {
         String sql = "create outline t2 on select ? to select /*+TDDL:slave()*/ * from ms10 where c1=?;";
 

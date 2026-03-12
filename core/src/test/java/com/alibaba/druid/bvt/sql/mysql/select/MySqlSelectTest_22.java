@@ -22,6 +22,8 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_22 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select CONSTRAINT constraint from t where id = 1 order by constraint desc";

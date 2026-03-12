@@ -17,9 +17,12 @@ package com.alibaba.druid.bvt.filter.wall.mysql;
 
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class MySqlWallTest_concat extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlWallTest_concat {
+    @Test
     public void test_true() throws Exception {
         WallProvider provider = new MySqlWallProvider();
 

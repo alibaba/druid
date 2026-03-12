@@ -21,6 +21,8 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_offset extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select * from t limit ${1} offset ${2}";

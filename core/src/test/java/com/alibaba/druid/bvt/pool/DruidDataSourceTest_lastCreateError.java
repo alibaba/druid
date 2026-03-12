@@ -4,19 +4,24 @@ import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 import java.util.Properties;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * 这个场景测试minIdle > maxActive
  *
  * @author wenshao [szujobs@hotmail.com]
  */
-public class DruidDataSourceTest_lastCreateError extends TestCase {
+public class DruidDataSourceTest_lastCreateError {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
@@ -29,10 +34,12 @@ public class DruidDataSourceTest_lastCreateError extends TestCase {
         });
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
     }
 
+    @Test
     public void test_error() throws Exception {
         assertNull(dataSource.getLastCreateError());
         assertNull(dataSource.getLastCreateErrorTime());

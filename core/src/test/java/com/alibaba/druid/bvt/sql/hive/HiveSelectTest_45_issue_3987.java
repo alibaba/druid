@@ -18,11 +18,14 @@ package com.alibaba.druid.bvt.sql.hive;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class HiveSelectTest_45_issue_3987 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class HiveSelectTest_45_issue_3987 {
+    @Test
     public void test_0() throws Exception {
         String sql = "select id,number_id,parent_id,layer_id,alias,name \n" +
                 "from (select id,number_id,parent_id,layer_id,alias,name,row_number() over(distribute by number_id sort by create_time desc,id desc) rownum from hdw_ods.ods_my_coredata__dts_device_category where pdate ='') m where m.rownum = 1";

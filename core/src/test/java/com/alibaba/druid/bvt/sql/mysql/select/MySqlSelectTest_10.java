@@ -26,6 +26,8 @@ import com.alibaba.druid.stat.TableStat;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_10 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SELECT * FROM t_department  WHERE name IN ('0000','4444') ORDER BY name ASC";

@@ -2,8 +2,9 @@ package com.alibaba.druid.sql.parser;
 
 import com.alibaba.druid.sql.parser.DialectFeature.LexerFeature;
 import com.alibaba.druid.sql.parser.DialectFeature.ParserFeature;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DialectFeatureNamingAliasTest {
     @Test
@@ -11,17 +12,17 @@ public class DialectFeatureNamingAliasTest {
         DialectFeature feature = new DialectFeature();
         feature.unconfigFeature(ParserFeature.UDJ, ParserFeature.UserDefinedJoin);
 
-        Assert.assertFalse(feature.isEnabled(ParserFeature.UDJ));
-        Assert.assertFalse(feature.isEnabled(ParserFeature.UserDefinedJoin));
-        Assert.assertEquals(ParserFeature.UDJ.getMask(), ParserFeature.UserDefinedJoin.getMask());
+        assertFalse(feature.isEnabled(ParserFeature.UDJ));
+        assertFalse(feature.isEnabled(ParserFeature.UserDefinedJoin));
+        assertEquals(ParserFeature.UDJ.getMask(), ParserFeature.UserDefinedJoin.getMask());
 
         feature.configFeature(ParserFeature.UserDefinedJoin, true);
-        Assert.assertTrue(feature.isEnabled(ParserFeature.UDJ));
-        Assert.assertTrue(feature.isEnabled(ParserFeature.UserDefinedJoin));
+        assertTrue(feature.isEnabled(ParserFeature.UDJ));
+        assertTrue(feature.isEnabled(ParserFeature.UserDefinedJoin));
 
         feature.configFeature(ParserFeature.UDJ, false);
-        Assert.assertFalse(feature.isEnabled(ParserFeature.UDJ));
-        Assert.assertFalse(feature.isEnabled(ParserFeature.UserDefinedJoin));
+        assertFalse(feature.isEnabled(ParserFeature.UDJ));
+        assertFalse(feature.isEnabled(ParserFeature.UserDefinedJoin));
     }
 
     @Test
@@ -29,16 +30,16 @@ public class DialectFeatureNamingAliasTest {
         DialectFeature feature = new DialectFeature();
         feature.unconfigFeature(LexerFeature.ScanString2PutDoubleBackslash, LexerFeature.ScanStringDoubleBackslash);
 
-        Assert.assertFalse(feature.isEnabled(LexerFeature.ScanString2PutDoubleBackslash));
-        Assert.assertFalse(feature.isEnabled(LexerFeature.ScanStringDoubleBackslash));
-        Assert.assertEquals(LexerFeature.ScanString2PutDoubleBackslash.getMask(), LexerFeature.ScanStringDoubleBackslash.getMask());
+        assertFalse(feature.isEnabled(LexerFeature.ScanString2PutDoubleBackslash));
+        assertFalse(feature.isEnabled(LexerFeature.ScanStringDoubleBackslash));
+        assertEquals(LexerFeature.ScanString2PutDoubleBackslash.getMask(), LexerFeature.ScanStringDoubleBackslash.getMask());
 
         feature.configFeature(LexerFeature.ScanStringDoubleBackslash, true);
-        Assert.assertTrue(feature.isEnabled(LexerFeature.ScanString2PutDoubleBackslash));
-        Assert.assertTrue(feature.isEnabled(LexerFeature.ScanStringDoubleBackslash));
+        assertTrue(feature.isEnabled(LexerFeature.ScanString2PutDoubleBackslash));
+        assertTrue(feature.isEnabled(LexerFeature.ScanStringDoubleBackslash));
 
         feature.configFeature(LexerFeature.ScanString2PutDoubleBackslash, false);
-        Assert.assertFalse(feature.isEnabled(LexerFeature.ScanString2PutDoubleBackslash));
-        Assert.assertFalse(feature.isEnabled(LexerFeature.ScanStringDoubleBackslash));
+        assertFalse(feature.isEnabled(LexerFeature.ScanString2PutDoubleBackslash));
+        assertFalse(feature.isEnabled(LexerFeature.ScanStringDoubleBackslash));
     }
 }

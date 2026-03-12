@@ -23,6 +23,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class H2_MergeTest_1 extends OracleTest {
     public void test_0() throws Exception {
         String sql = //

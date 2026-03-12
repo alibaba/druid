@@ -22,6 +22,8 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlShowTest_table2 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SHOW FULL TABLES FROM test-db WHERE Table_type != 'VIEW'";

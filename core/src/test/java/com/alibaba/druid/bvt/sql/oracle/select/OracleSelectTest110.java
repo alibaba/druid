@@ -25,6 +25,8 @@ import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleSelectTest110 extends OracleTest {
     public void test_0() throws Exception {
         String sql = "SELECT\n" + "  Home_City,\n" + "  bank_type,\n" + "  differ_flag,\n" + "  adjust_flag,\n"

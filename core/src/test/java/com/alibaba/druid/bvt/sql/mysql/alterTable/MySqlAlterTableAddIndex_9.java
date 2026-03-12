@@ -22,9 +22,12 @@ import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class MySqlAlterTableAddIndex_9 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlAlterTableAddIndex_9 {
+    @Test
     public void test_0() throws Exception {
         String sql =
                 "ALTER TABLE t_order ADD FULLTEXT INDEX `g_i_buyer` (`buyer_id`);";
@@ -46,6 +49,7 @@ public class MySqlAlterTableAddIndex_9 extends TestCase {
         assertEquals(1, tableStat.getCreateIndexCount());
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql =
                 "ALTER TABLE t_order ADD CLUSTERED INDEX `g_i_buyer` (`buyer_id`);";
@@ -67,6 +71,7 @@ public class MySqlAlterTableAddIndex_9 extends TestCase {
         assertEquals(1, tableStat.getCreateIndexCount());
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql =
                 "ALTER TABLE t_order ADD CLUSTERED KEY `g_i_buyer` (`buyer_id`);";
@@ -88,6 +93,7 @@ public class MySqlAlterTableAddIndex_9 extends TestCase {
         assertEquals(1, tableStat.getCreateIndexCount());
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql =
                 "alter table xxx add key `idx_001`(`col1`,`current_date`,`col2`)";
@@ -109,6 +115,7 @@ public class MySqlAlterTableAddIndex_9 extends TestCase {
         assertEquals(1, tableStat.getCreateIndexCount());
     }
 
+    @Test
     public void test_4() throws Exception {
         String sql =
                 "alter table xxx add key `idx_001`(`col1`,`current_time`,`col2`)";
@@ -130,6 +137,7 @@ public class MySqlAlterTableAddIndex_9 extends TestCase {
         assertEquals(1, tableStat.getCreateIndexCount());
     }
 
+    @Test
     public void test_5() throws Exception {
         String sql =
                 "alter table xxx add key `idx_001`(`current_timestamp`,`curdate`,`LOCALTIME`, `LOCALTIMESTAMP`)";

@@ -19,11 +19,14 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class MySqlCreateSequenceTest3 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlCreateSequenceTest3 {
+    @Test
     public void test_0() throws Exception {
         String sql = //
                 "CREATE GROUP SEQUENCE seq1 START WITH 123 UNIT COUNT 1 INDEX 0";
@@ -57,6 +60,7 @@ public class MySqlCreateSequenceTest3 extends TestCase {
         // assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "order_mode")));
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = //
                 "CREATE SIMPLE WITH CACHE SEQUENCE seq1 START WITH 123";
@@ -89,6 +93,7 @@ public class MySqlCreateSequenceTest3 extends TestCase {
         // assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "order_mode")));
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = //
                 "RENAME SEQUENCE seq3 to seq4";
@@ -122,6 +127,7 @@ public class MySqlCreateSequenceTest3 extends TestCase {
         // assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "order_mode")));
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = //
                 "CREATE GROUP SEQUENCE seq1 START WITH 123 unit count 10 index 1 step 10";
@@ -149,6 +155,7 @@ public class MySqlCreateSequenceTest3 extends TestCase {
         assertEquals("CREATE GROUP SEQUENCE seq1 START WITH 123 UNIT COUNT 10 INDEX 1 STEP 10", stmt.toString());
     }
 
+    @Test
     public void test_4() throws Exception {
         String sql = //
                 "CREATE TIME SEQUENCE seq1";

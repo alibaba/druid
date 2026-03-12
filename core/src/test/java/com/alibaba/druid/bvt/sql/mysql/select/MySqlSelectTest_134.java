@@ -9,6 +9,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_134 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "/*TDDL:RETRY_ERROR_SQL_ON_OLD_SERVER=FALSE*/\n" +

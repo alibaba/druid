@@ -3,17 +3,20 @@ package com.alibaba.druid.bvt.sql.mysql.param;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
  * Created by wenshao on 16/8/23.
  */
-public class MySqlParameterizedOutputVisitorTest_58 extends TestCase {
+public class MySqlParameterizedOutputVisitorTest_58 {
     final DbType dbType = JdbcConstants.MYSQL;
 
+    @Test
     public void test_for_parameterize() throws Exception {
         String sql = "select * from t where id = 101";
 
@@ -26,6 +29,7 @@ public class MySqlParameterizedOutputVisitorTest_58 extends TestCase {
         assertEquals(101, params.get(0));
     }
 
+    @Test
     public void test_for_parameterize_insert() throws Exception {
         String sql = "insert into mytab(fid,fname)values(1001,'wenshao');";
 

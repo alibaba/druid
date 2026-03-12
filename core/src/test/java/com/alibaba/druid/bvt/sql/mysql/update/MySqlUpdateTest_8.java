@@ -25,6 +25,8 @@ import com.alibaba.druid.stat.TableStat.Column;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlUpdateTest_8 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "update haskell_function set `arity` = arity-'1' where id = 1;";

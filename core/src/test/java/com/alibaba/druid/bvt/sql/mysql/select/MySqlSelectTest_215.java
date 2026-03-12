@@ -21,6 +21,8 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_215 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select 7777777777777777777777777777777777777 * 10 from t1;";

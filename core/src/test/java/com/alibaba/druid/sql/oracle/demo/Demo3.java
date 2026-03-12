@@ -29,14 +29,15 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Demo3 extends TestCase {
+public class Demo3 {
+    @Test
     public void test_0() throws Exception {
         String sql = "select * from user u where u.uid = 2 and uname = ?";
         List<Object> parameters = new ArrayList<Object>();
@@ -47,6 +48,7 @@ public class Demo3 extends TestCase {
         System.out.println(realSql);
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "select * from user where uid = ? and uname = ?";
         List<Object> parameters = new ArrayList<Object>();
@@ -57,6 +59,7 @@ public class Demo3 extends TestCase {
         System.out.println(realSql);
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "select * from (select * from user where uid = ? and uname = ?) t";
         List<Object> parameters = new ArrayList<Object>();
@@ -67,6 +70,7 @@ public class Demo3 extends TestCase {
         System.out.println(realSql);
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = "select * from groups where uid = ? and uname = ?";
         List<Object> parameters = new ArrayList<Object>();

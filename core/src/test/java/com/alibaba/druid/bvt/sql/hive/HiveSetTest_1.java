@@ -4,14 +4,16 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author lizongbo
  */
-public class HiveSetTest_1 extends TestCase {
+public class HiveSetTest_1 {
     static String sql1 = "set hivevar:exp_id = 8001\n" +
         ";";
 
@@ -23,6 +25,7 @@ public class HiveSetTest_1 extends TestCase {
 
     static String sql4 = "set hivevar.exp_id = \"8001\"\n" +
         ";";
+    @Test
     public void test_setHiveVar1() throws Exception {
         {
             DbType dbType = JdbcConstants.ODPS;
@@ -44,6 +47,7 @@ public class HiveSetTest_1 extends TestCase {
 
     }
 
+    @Test
     public void test_setHiveVar2() throws Exception {
         for (DbType dbType : new DbType[]{JdbcConstants.ODPS, JdbcConstants.HIVE}) {
             List<SQLStatement> statementList = SQLUtils.parseStatements(sql2, dbType);
@@ -56,6 +60,7 @@ public class HiveSetTest_1 extends TestCase {
 
     }
 
+    @Test
     public void test_setHiveVar3() throws Exception {
         {
             DbType dbType = JdbcConstants.ODPS;
@@ -77,6 +82,7 @@ public class HiveSetTest_1 extends TestCase {
 
     }
 
+    @Test
     public void test_setHiveVar4() throws Exception {
         for (DbType dbType : new DbType[]{JdbcConstants.ODPS, JdbcConstants.HIVE}) {
             List<SQLStatement> statementList = SQLUtils.parseStatements(sql4, dbType);

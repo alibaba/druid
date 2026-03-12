@@ -19,9 +19,12 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class HelpTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class HelpTest {
+    @Test
     public void test_help_0() throws Exception {
         String sql = "HELP 'contents'";
         MySqlStatementParser parser = new MySqlStatementParser(sql);

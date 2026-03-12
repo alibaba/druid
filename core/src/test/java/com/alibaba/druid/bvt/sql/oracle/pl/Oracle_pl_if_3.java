@@ -23,6 +23,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class Oracle_pl_if_3 extends OracleTest {
     public void test_0() throws Exception {
         String sql = "IF l_salary BETWEEN 10000 AND 20000\n" +

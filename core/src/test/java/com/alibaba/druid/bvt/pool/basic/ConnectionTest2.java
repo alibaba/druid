@@ -25,6 +25,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class ConnectionTest2 extends PoolTestCase {
     private MockDriver driver;
     private DruidDataSource dataSource;

@@ -27,6 +27,8 @@ import com.alibaba.druid.stat.TableStat;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_14 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SELECT * FROM t1 WHERE column1 = (SELECT column1 FROM t2);";

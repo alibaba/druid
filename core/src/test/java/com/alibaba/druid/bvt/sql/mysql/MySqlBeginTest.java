@@ -24,6 +24,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlBeginTest extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "START TRANSACTION;"

@@ -3,10 +3,12 @@ package com.alibaba.druid.bvt.hibernate;
 import com.alibaba.druid.bvt.hibernate.entity.Sample;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
-import junit.framework.TestCase;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
@@ -19,14 +21,14 @@ import java.util.Properties;
  * @author yinheli [yinheli@gmail.com]
  * @date 2012-11-26 下午11:41
  */
-public class HibernateCRUDTest extends TestCase {
+public class HibernateCRUDTest {
     private static final Logger log = LoggerFactory.getLogger(HibernateCRUDTest.class);
 
     private DruidDataSource dataSource;
 
     private SessionFactory sessionFactory;
 
-    @Override
+    @BeforeEach
     public void setUp() throws Exception {
         /*init dataSource*/
         dataSource = new DruidDataSource();
@@ -56,7 +58,7 @@ public class HibernateCRUDTest extends TestCase {
         sessionFactory = factoryBean.getObject();
     }
 
-    @Override
+    @AfterEach
     public void tearDown() throws Exception {
         sessionFactory.close();
         JdbcUtils.close(dataSource);
@@ -92,6 +94,7 @@ public class HibernateCRUDTest extends TestCase {
 
     /*-------- test start --------*/
 
+    @Test
     public void test_create() {
         Session session = null;
         try {
@@ -104,6 +107,7 @@ public class HibernateCRUDTest extends TestCase {
         }
     }
 
+    @Test
     public void test_get() {
         Session session = null;
         try {
@@ -117,6 +121,7 @@ public class HibernateCRUDTest extends TestCase {
         }
     }
 
+    @Test
     public void test_update() {
         Session session = null;
         try {
@@ -130,6 +135,7 @@ public class HibernateCRUDTest extends TestCase {
         }
     }
 
+    @Test
     public void test_delete() {
         Session session = null;
         try {
@@ -143,6 +149,7 @@ public class HibernateCRUDTest extends TestCase {
         }
     }
 
+    @Test
     public void test_transactional_create() {
         Session session = null;
         Transaction tran = null;
@@ -160,6 +167,7 @@ public class HibernateCRUDTest extends TestCase {
         }
     }
 
+    @Test
     public void test_transactional_update() {
         Session session = null;
         Transaction tran = null;
@@ -178,6 +186,7 @@ public class HibernateCRUDTest extends TestCase {
         }
     }
 
+    @Test
     public void test_transactional_delete() {
         Session session = null;
         Transaction tran = null;

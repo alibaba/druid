@@ -9,6 +9,8 @@ import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class SqlSkipCountTest extends PoolTestCase {
     private DruidDataSource dataSource;
 

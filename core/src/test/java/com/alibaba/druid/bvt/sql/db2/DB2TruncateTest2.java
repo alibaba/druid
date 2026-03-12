@@ -25,6 +25,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class DB2TruncateTest2 extends DB2Test {
     public void test_0() throws Exception {
         String sql = "TRUNCATE TABLE INVENTORY IGNORE DELETE TRIGGERS DROP STORAGE IMMEDIATE";

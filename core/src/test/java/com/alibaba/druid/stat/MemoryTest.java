@@ -1,11 +1,12 @@
 package com.alibaba.druid.stat;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.lang.management.ManagementFactory;
 import java.text.NumberFormat;
 
-public class MemoryTest extends TestCase {
+public class MemoryTest {
+    @Test
     public void test_0() throws Exception {
         A item = new A();
         gc();

@@ -26,6 +26,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class SQLite_SelectTest_2 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select * from mytable ORDER BY id DESC limit 0,10";

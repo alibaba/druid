@@ -3,12 +3,15 @@ package com.alibaba.druid.bvt.sql.sqlserver;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.MSSQLServerExportParameterVisitor;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MSSQLServerExportParameterVisitorTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MSSQLServerExportParameterVisitorTest {
+    @Test
     public void test_sqlserver() throws Exception {
         String sql = "select fname, count(*) from t where fid = 1 group by fname order by 1";
 

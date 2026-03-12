@@ -6,16 +6,21 @@ import com.alibaba.druid.pool.vendor.OracleExceptionSorter;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.test.util.OracleMockDriverConnectFailed;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.lang.Thread.State;
 import java.sql.SQLException;
 import java.util.concurrent.TimeUnit;
 
-public class OracleExceptionSorterTest_closeConnectFailedDatasource extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OracleExceptionSorterTest_closeConnectFailedDatasource {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
 
@@ -33,11 +38,12 @@ public class OracleExceptionSorterTest_closeConnectFailedDatasource extends Test
         OracleMockDriverConnectFailed.CONNECT_BARIER.reset();
     }
 
-    @Override
+        @AfterEach
     protected void tearDown() throws Exception {
         assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
+    @Test
     public void test_connect() throws Exception {
         Thread connectFailedThread = new Thread() {
             public void run() {

@@ -26,6 +26,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class DB2SelectTest_31 extends DB2Test {
     public void test_0() throws Exception {
         String sql = "select rtrim(current_server), rtrim(current schema), rtrim(current_user) from sysibm.sysdummy1";

@@ -7,6 +7,8 @@ import net.sourceforge.jtds.jdbc.JtdsConnection;
 
 import java.lang.reflect.Constructor;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class JtdsXAConnectionTest extends PoolTestCase {
     public void test_jtds() throws Exception {
         Constructor<JtdsConnection> constrcutor = JtdsConnection.class.getDeclaredConstructor();

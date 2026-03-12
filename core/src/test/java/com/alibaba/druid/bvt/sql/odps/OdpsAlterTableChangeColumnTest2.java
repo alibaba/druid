@@ -19,11 +19,14 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class OdpsAlterTableChangeColumnTest2 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OdpsAlterTableChangeColumnTest2 {
+    @Test
     public void test_select() throws Exception {
         String sql = "alter table sale_detail change column old_col_name rename to new_col_name;";
         assertEquals("ALTER TABLE sale_detail\n" +

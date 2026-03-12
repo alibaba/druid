@@ -23,6 +23,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class Oracle_pl_4 extends OracleTest {
     public void test_0() throws Exception {
         String sql = "begin buf_b := HEXTORAW('636865642f4c'); \n" +

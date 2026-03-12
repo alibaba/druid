@@ -17,27 +17,33 @@ package com.alibaba.druid.bvt.filter.wall;
 
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class WallUpdateTest2 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class WallUpdateTest2 {
     private String sql = "UPDATE T_USER SET FNAME = ?";
 
+    @Test
     public void testMySql_true() throws Exception {
         WallConfig config = new WallConfig();
         assertTrue(WallUtils.isValidateMySql(sql, config));
     }
 
+    @Test
     public void testORACLE_true() throws Exception {
         WallConfig config = new WallConfig();
         assertTrue(WallUtils.isValidateOracle(sql, config));
     }
 
+    @Test
     public void testMySql_false() throws Exception {
         WallConfig config = new WallConfig();
         config.setUpdateAllow(false);
         assertFalse(WallUtils.isValidateMySql(sql, config));
     }
 
+    @Test
     public void testORACLE_false() throws Exception {
         WallConfig config = new WallConfig();
         config.setUpdateAllow(false);

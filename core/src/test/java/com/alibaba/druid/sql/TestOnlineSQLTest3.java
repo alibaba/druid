@@ -16,14 +16,14 @@
 package com.alibaba.druid.sql;
 
 import com.alibaba.druid.util.JdbcUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-public class TestOnlineSQLTest3 extends TestCase {
+public class TestOnlineSQLTest3 {
     private String url = "jdbc:mysql://a.b.c.d/dragoon_v25_masterdb";
     private String user = "dragoon_test";
     private String password = "dragoon_test";
@@ -42,6 +42,7 @@ public class TestOnlineSQLTest3 extends TestCase {
         }
     }
 
+    @Test
     public void test_0() throws Exception {
 //        ResultSet rs = conn.getMetaData().getTables(null, null, null, null);
 //        JdbcUtils.printResultSet(rs);

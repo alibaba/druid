@@ -24,6 +24,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class TestClone extends PoolTestCase {
     private DruidDataSource dataSource;
 

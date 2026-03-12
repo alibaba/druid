@@ -26,21 +26,26 @@ import com.alibaba.druid.proxy.jdbc.DataSourceProxyImpl;
 import com.alibaba.druid.proxy.jdbc.ResultSetProxy;
 import com.alibaba.druid.stat.JdbcDataSourceStat;
 import com.alibaba.druid.stat.JdbcStatManager;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 
-public class CounterFilterTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class CounterFilterTest {
     String sql = "SELECT 1";
 
+    @AfterEach
     protected void tearDown() throws Exception {
         DruidDriver.getProxyDataSources().clear();
         assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
 
+    @Test
     public void test_countFilter() throws Exception {
         DataSourceProxyConfig config = new DataSourceProxyConfig();
         config.setUrl("");
@@ -74,6 +79,7 @@ public class CounterFilterTest extends TestCase {
         assertNotNull(dataSourceStat.getConnectionStat().getConnectLastTime());
     }
 
+    @Test
     public void test_count_filter() throws Exception {
         DataSourceProxyConfig config = new DataSourceProxyConfig();
         config.setUrl("");

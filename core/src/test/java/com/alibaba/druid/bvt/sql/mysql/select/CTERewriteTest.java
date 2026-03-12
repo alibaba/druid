@@ -11,9 +11,12 @@ import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLWithSubqueryClause;
 import com.alibaba.druid.sql.repository.SchemaRepository;
 import com.alibaba.druid.sql.visitor.SQLASTVisitorAdapter;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class CTERewriteTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class CTERewriteTest {
+    @Test
     public void test_for_rewrite() throws Exception {
         String sql = "WITH x AS (\n" +
                 "        SELECT o.open_id AS open_id\n" +

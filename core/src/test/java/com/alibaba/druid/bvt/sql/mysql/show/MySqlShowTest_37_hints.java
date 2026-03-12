@@ -7,6 +7,8 @@ import com.alibaba.druid.sql.parser.SQLParserFeature;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
  * @author chenmo.cm
  * @date 2018/8/24 上午10:37

@@ -16,10 +16,12 @@
 package com.alibaba.druid.sql.parser;
 
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
-public class SQLLexerTest2 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class SQLLexerTest2 {
+    @Test
     public void test_lexer() throws Exception {
         String sql = "SELECT * FROM T WHERE F1 = ? ORDER BY F2";
         Lexer lexer = new Lexer(sql);
@@ -45,6 +47,7 @@ public class SQLLexerTest2 extends TestCase {
         }
     }
 
+    @Test
     public void test_lexer2() throws Exception {
         String sql = "SELECT substr('''a''bc',0,3) FROM dual";
         Lexer lexer = new Lexer(sql);
@@ -68,6 +71,7 @@ public class SQLLexerTest2 extends TestCase {
         }
     }
 
+    @Test
     public void test_lexer_error_info() {
         String line1 = "SELECT *";
         String line2 = "FORM a";
@@ -81,13 +85,14 @@ public class SQLLexerTest2 extends TestCase {
         }
         assert exception != null;
         String message = exception.getMessage();
-        Assert.assertTrue(message.startsWith("not supported. "));
-        Assert.assertTrue(message.contains("pos 13"));
-        Assert.assertTrue(message.contains("line 2"));
-        Assert.assertTrue(message.contains("column "));
-        Assert.assertTrue(message.contains("token IDENTIFIER FORM"));
+        assertTrue(message.startsWith("not supported. "));
+        assertTrue(message.contains("pos 13"));
+        assertTrue(message.contains("line 2"));
+        assertTrue(message.contains("column "));
+        assertTrue(message.contains("token IDENTIFIER FORM"));
     }
 
+    @Test
     public void test_lexer_computePos() {
         String sql = "\nSELECT;";
         Lexer lexer = new Lexer(sql);
@@ -96,7 +101,7 @@ public class SQLLexerTest2 extends TestCase {
         lexer.computeRowAndColumn();
         int posLine = lexer.getPosLine();
         int column = lexer.getPosColumn();
-        Assert.assertEquals(posLine, 2);
-        Assert.assertEquals(column, 7);
+        assertEquals(posLine, 2);
+        assertEquals(column, 7);
     }
 }

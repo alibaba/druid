@@ -18,9 +18,10 @@ package com.alibaba.druid.bvt.sql.mysql.visitor;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class MySqlParameterizedOutputVisitorTest extends TestCase {
+public class MySqlParameterizedOutputVisitorTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT appsheetserialno FROM app_trans WHERE nodeid = _gbk '619' "
                 + " AND alino = _gbk '2013110900031031001700thfund00163619'"
@@ -53,6 +54,7 @@ public class MySqlParameterizedOutputVisitorTest extends TestCase {
         System.out.println("-----------------------");
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "create  or replace  view  vtmp_log_node_204180 as select `twf_log_group_user`.`uni_id` as `user_id`, `twf_log_group_user`.`control_group_type` from `twf_log_group_user` where `twf_log_group_user`.`subjob_id` = 204180";
         System.out.println(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL));

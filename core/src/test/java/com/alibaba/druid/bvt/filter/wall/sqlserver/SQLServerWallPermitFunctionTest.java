@@ -16,7 +16,11 @@
 package com.alibaba.druid.bvt.filter.wall.sqlserver;
 
 import com.alibaba.druid.wall.WallUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * SQLServerWallPermitFunctionTest
@@ -25,30 +29,24 @@ import junit.framework.TestCase;
  * @version 1.0, 2012-3-18
  * @see
  */
-public class SQLServerWallPermitFunctionTest extends TestCase {
-    /**
-     * @param name
-     */
-    public SQLServerWallPermitFunctionTest(String name) {
-        super(name);
-    }
-
+public class SQLServerWallPermitFunctionTest {
     /*
      * (non-Javadoc)
      * @see junit.framework.TestCase#setUp()
      */
+    @BeforeEach
     protected void setUp() throws Exception {
-        super.setUp();
     }
 
     /*
      * (non-Javadoc)
      * @see junit.framework.TestCase#tearDown()
      */
+    @AfterEach
     protected void tearDown() throws Exception {
-        super.tearDown();
     }
 
+    @Test
     public void test01() throws Exception {
         assertFalse(WallUtils.isValidateSqlServer("select * from t where fid = 1 UNION SELECT user_name() FROM X;"));
     }
@@ -84,6 +82,7 @@ public class SQLServerWallPermitFunctionTest extends TestCase {
      *
      * @throws Exception
      */
+    @Test
     public void test_is_srvrolemember() throws Exception {
         assertFalse(WallUtils.isValidateSqlServer("select * from t where fid = 1 UNION SELECT is_srvrolemember(‘sysadmin’) FROM X;"));
         assertFalse(WallUtils.isValidateSqlServer("select * from t where fid = 1 UNION SELECT is_srvrolemember(‘dbcreator’) FROM X;"));

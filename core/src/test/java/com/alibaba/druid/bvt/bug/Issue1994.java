@@ -7,11 +7,14 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleInsertStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class Issue1994 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class Issue1994 {
+    @Test
     public void test_for_issue() throws Exception {
         String sql = "INSERT INTO MKTG_H_EXEC_RESULT_FACT\n" +
                 "(THE_DATE, AREA_ID, SCENE_ID, MKTG_CNT, MKTG_SUC_CNT\n" +

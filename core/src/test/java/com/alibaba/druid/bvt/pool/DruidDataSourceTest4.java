@@ -3,14 +3,19 @@ package com.alibaba.druid.bvt.pool;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.ExceptionSorter;
 import com.alibaba.druid.pool.vendor.MySqlValidConnectionChecker;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 import java.util.Properties;
 
-public class DruidDataSourceTest4 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class DruidDataSourceTest4 {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
@@ -18,10 +23,12 @@ public class DruidDataSourceTest4 extends TestCase {
         dataSource.setInitialSize(1);
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
     }
 
+    @Test
     public void test_getTransactionThresholdMillis() {
         assertEquals(0, dataSource.getTransactionThresholdMillis());
 
@@ -30,20 +37,24 @@ public class DruidDataSourceTest4 extends TestCase {
         assertEquals(100, dataSource.getTransactionThresholdMillis());
     }
 
+    @Test
     public void test_getTransactionHistogramRanges() {
         assertNotNull(dataSource.getTransactionHistogramRanges());
     }
 
+    @Test
     public void test_getTransactionHistogramRanges_1() {
         assertEquals(6, dataSource.getTransactionHistogramRanges().length);
     }
 
+    @Test
     public void test_setValidConnectionCheckerClassName() throws Exception {
         assertNull(dataSource.getValidConnectionChecker());
         dataSource.setValidConnectionCheckerClassName(MySqlValidConnectionChecker.class.getName());
         assertNotNull(dataSource.getValidConnectionChecker());
     }
 
+    @Test
     public void test_setMinIdle() throws Exception {
         assertEquals(0, dataSource.getMinIdle());
         dataSource.init();
@@ -51,6 +62,7 @@ public class DruidDataSourceTest4 extends TestCase {
         assertEquals(1, dataSource.getMinIdle());
     }
 
+    @Test
     public void test_setMinIdle_error() throws Exception {
         assertEquals(0, dataSource.getMinIdle());
         dataSource.init();
@@ -64,10 +76,12 @@ public class DruidDataSourceTest4 extends TestCase {
         assertEquals(0, dataSource.getMinIdle());
     }
 
+    @Test
     public void test_setExceptionSorter_error() throws Exception {
         dataSource.setExceptionSorter("xx");
     }
 
+    @Test
     public void test_setExceptionSorter_error2() throws Exception {
         Exception error = null;
         try {
@@ -78,6 +92,7 @@ public class DruidDataSourceTest4 extends TestCase {
         assertNotNull(error);
     }
 
+    @Test
     public void test_getParentLogger() throws Exception {
         Exception error = null;
         try {

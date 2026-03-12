@@ -23,6 +23,8 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class TestClose_2 extends PoolTestCase {
     public void test_close() throws Exception {
         DruidDataSource dataSource = new DruidDataSource();

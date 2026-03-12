@@ -17,21 +17,27 @@ package com.alibaba.druid.bvt.filter.wall;
 
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class WallDropTest2 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class WallDropTest2 {
     private String sql = "DROP PROCEDURE IF EXISTS CP_PayCalc1";
 
     private WallConfig config = new WallConfig();
 
+    @BeforeEach
     protected void setUp() throws Exception {
         config.setDropTableAllow(true);
     }
 
+    @Test
     public void testMySql() throws Exception {
         assertTrue(WallUtils.isValidateMySql(sql, config));
     }
 
+    @Test
     public void testORACLE() throws Exception {
         assertTrue(WallUtils.isValidateOracle(sql, config));
     }

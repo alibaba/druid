@@ -23,6 +23,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleSelectTest121 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SELECT DATE_TYPE , NVL ( TIME_0 , ? ) TIME_0 , NVL ( TIME_1 , ? ) TIME_1 , NVL ( TIME_2 , ? ) TIME_2 , NVL ( TIME_3 , ? ) TIME_3 , NVL ( TIME_4 , ? ) TIME_4 , NVL ( TIME_5 , ? ) TIME_5 , NVL ( TIME_6 , ? ) TIME_6 , NVL ( TIME_7 , ? ) TIME_7 , NVL ( TIME_8 , ? ) TIME_8 , NVL ( TIME_9 , ? ) TIME_9 , NVL ( TIME_10 , ? ) TIME_10 , NVL ( TIME_11 , ? ) TIME_11 , NVL ( TIME_12 , ? ) TIME_12 , NVL ( TIME_13 , ? ) TIME_13 , NVL ( TIME_14 , ? ) TIME_14 , NVL ( TIME_15 , ? ) TIME_15 , NVL ( TIME_16 , ? ) TIME_16 , NVL ( TIME_17 , ? ) TIME_17 , NVL ( TIME_18 , ? ) TIME_18 , NVL ( TIME_19 , ? ) TIME_19 , NVL ( TIME_20 , ? ) TIME_20 , NVL ( TIME_21 , ? ) TIME_21 , NVL ( TIME_22 , ? ) TIME_22 , NVL ( TIME_23 , ? ) TIME_23 , NVL ( TIME_ALL , ? ) TIME_ALL \n" +

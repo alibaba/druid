@@ -26,6 +26,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class DB2SelectTest_11 extends DB2Test {
     public void test_0() throws Exception {
         String sql = "SELECT A.F_0201, A.F_0301, A.F_0802, A.F_2100"

@@ -4,15 +4,18 @@ package com.alibaba.druid.bvt.sql.oracle.visitor;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
  * Created by wenshao on 16/8/23.
  */
-public class OracleParameterizedOutputVisitorTest_01 extends TestCase {
+public class OracleParameterizedOutputVisitorTest_01 {
+    @Test
     public void test_for_parameterize() throws Exception {
         String sql = "SELECT dd.synonym_name table_name,'EAIREP' as schema_name,  aa.num_rows,bb.comments description,to_char(cc.created,'YYYY-MM-DD HH24:MI:SS') createTime,to_char(cc.last_ddl_time,'YYYY-MM-DD HH24:MI:SS') last_ddl_time, 'SYNONYM' table_type ,lower(aa.owner || '.' || aa.table_name) ref_info\n" +
                 " from dba_synonyms dd,\n" +

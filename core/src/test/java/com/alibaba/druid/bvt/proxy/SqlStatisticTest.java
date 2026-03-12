@@ -16,9 +16,12 @@
 package com.alibaba.druid.bvt.proxy;
 
 import com.alibaba.druid.stat.JdbcSqlStat;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class SqlStatisticTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class SqlStatisticTest {
+    @Test
     public void test_sql_stat() throws Exception {
         JdbcSqlStat stat = new JdbcSqlStat("SELECT * FROM t_user");
         assertEquals(null, stat.getExecuteLastStartTime());

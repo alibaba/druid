@@ -22,6 +22,8 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlDumpTest_1 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "DUMP DATA OVERWRITE INTO 'odps://cod_garuda/wenyu_meta_person' select cid, cname, dept, gender, pid from wenyu_meta_person limit 10;";

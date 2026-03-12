@@ -17,12 +17,13 @@ package com.alibaba.druid.benckmark.proxy.sqlcase;
 
 import com.alibaba.druid.benckmark.proxy.BenchmarkCase;
 import com.alibaba.druid.benckmark.proxy.SQLExecutor;
-import org.junit.Assert;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Date;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SelectNow extends BenchmarkCase {
     private String sql;
@@ -49,8 +50,8 @@ public class SelectNow extends BenchmarkCase {
             now = rs.getTimestamp(1);
             rowCount++;
         }
-        Assert.assertNotNull(now);
-        Assert.assertEquals(1, rowCount);
+        assertNotNull(now);
+        assertEquals(1, rowCount);
         rs.close();
         stmt.close();
     }

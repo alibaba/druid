@@ -4,6 +4,8 @@ import com.alibaba.druid.sql.PGTest;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGCircleExpr;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGExprParser;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class CircleTest extends PGTest {
     public void test_timestamp() throws Exception {
         String sql = "circle '((0,0),2)'";

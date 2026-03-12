@@ -17,8 +17,9 @@ package com.alibaba.druid.benckmark.pool;
 
 import com.alibaba.druid.TestUtil;
 import com.alibaba.druid.pool.DruidDataSource;
-import junit.framework.TestCase;
 import org.apache.commons.dbcp.BasicDataSource;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.sql.DataSource;
 
@@ -28,7 +29,7 @@ import java.sql.Statement;
 import java.text.NumberFormat;
 import java.util.concurrent.CountDownLatch;
 
-public class Case_Concurrent_50 extends TestCase {
+public class Case_Concurrent_50 {
     private String jdbcUrl;
     private String user;
     private String password;
@@ -46,6 +47,7 @@ public class Case_Concurrent_50 extends TestCase {
 
     private final int THREAD_COUNT = 50;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
         user = "dragoon25";
@@ -53,6 +55,7 @@ public class Case_Concurrent_50 extends TestCase {
         driverClass = "com.alibaba.druid.mock.MockDriver";
     }
 
+    @Test
     public void test_0() throws Exception {
         final DruidDataSource dataSource = new DruidDataSource();
 
@@ -78,6 +81,7 @@ public class Case_Concurrent_50 extends TestCase {
         System.out.println();
     }
 
+    @Test
     public void test_1() throws Exception {
         final BasicDataSource dataSource = new BasicDataSource();
 

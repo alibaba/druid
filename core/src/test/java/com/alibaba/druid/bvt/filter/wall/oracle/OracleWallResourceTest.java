@@ -23,6 +23,8 @@ import com.alibaba.druid.wall.spi.OracleWallProvider;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleWallResourceTest extends PGTest {
     public void test_0() throws Exception {
         exec_test("bvt/wall/oracle/oracle-01.sql");

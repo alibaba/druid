@@ -19,9 +19,10 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement.TableSpaceOption;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateUserStatement.UserSpecification;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class MySqlASTVisitorAdapterTest extends TestCase {
+public class MySqlASTVisitorAdapterTest {
+    @Test
     public void test_adapter() throws Exception {
         MySqlASTVisitorAdapter adapter = new MySqlASTVisitorAdapter();
         new SQLBooleanExpr().accept(adapter);

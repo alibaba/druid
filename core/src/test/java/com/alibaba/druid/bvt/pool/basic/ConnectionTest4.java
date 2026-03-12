@@ -33,6 +33,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class ConnectionTest4 extends PoolTestCase {
     private MockDriver driver;
     private DruidDataSource dataSource;
@@ -73,8 +75,8 @@ public class ConnectionTest4 extends PoolTestCase {
     public void test_basic() throws Exception {
         DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
 
-        assertEquals(null, conn.unwrap(Date.class));
-        assertEquals(null, conn.unwrap(null));
+        assertNull(conn.unwrap(Date.class));
+        assertNull(conn.unwrap(null));
         Connection statementConn = ((ConnectionProxy) conn.getConnection()).getRawObject();
         assertTrue(statementConn instanceof DruidStatementConnection);
         assertEquals(((DruidStatementConnection) statementConn).getConnection(), conn.unwrap(Connection.class));

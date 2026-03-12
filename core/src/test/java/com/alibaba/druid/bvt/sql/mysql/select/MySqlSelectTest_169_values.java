@@ -8,6 +8,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_169_values extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SELECT * FROM (VALUES (89), (35), (77)) EXCEPT SELECT * FROM (VALUES (33), (35), (60))";

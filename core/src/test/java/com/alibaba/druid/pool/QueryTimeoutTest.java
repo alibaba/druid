@@ -1,15 +1,17 @@
 package com.alibaba.druid.pool;
 
 import com.alibaba.druid.util.JdbcUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-public class QueryTimeoutTest extends TestCase {
+public class QueryTimeoutTest {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:oracle:thin:@a.b.c.d:1521:OINTEST");
@@ -26,6 +28,7 @@ public class QueryTimeoutTest extends TestCase {
         dataSource.setFilters("stat");
     }
 
+    @Test
     public void test_queryTimeout() throws Exception {
         {
             Connection conn = dataSource.getConnection();

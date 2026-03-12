@@ -16,9 +16,12 @@
 package com.alibaba.druid.bvt.filter.wall.oracle;
 
 import com.alibaba.druid.wall.WallUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class OracleWallTest1 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OracleWallTest1 {
+    @Test
     public void test_true() throws Exception {
         assertTrue(WallUtils.isValidateOracle("SELECT DICT_ID,NAME,VALUE,STATUS FROM T_EBM_DICT WHERE T_EBM_DICT.PID=10 OR T_EBM_DICT.PID=11"));
         assertTrue(WallUtils.isValidateMySql("SELECT DICT_ID,NAME,VALUE,STATUS FROM T_EBM_DICT WHERE T_EBM_DICT.PID=10 OR T_EBM_DICT.PID=11"));

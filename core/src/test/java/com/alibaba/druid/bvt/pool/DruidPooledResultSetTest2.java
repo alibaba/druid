@@ -17,25 +17,32 @@ package com.alibaba.druid.bvt.pool;
 
 import com.alibaba.druid.mock.MockResultSet;
 import com.alibaba.druid.pool.DruidDataSource;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-public class DruidPooledResultSetTest2 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class DruidPooledResultSetTest2 {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setTestOnBorrow(false);
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
     }
 
+    @Test
     public void testWrap() throws Exception {
         String sql = "select ?";
         Connection conn = dataSource.getConnection();

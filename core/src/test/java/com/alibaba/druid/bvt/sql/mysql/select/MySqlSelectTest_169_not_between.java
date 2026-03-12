@@ -8,6 +8,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_169_not_between extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select * from t where (a && b) not between 1 and 2;";

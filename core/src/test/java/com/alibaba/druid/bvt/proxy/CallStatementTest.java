@@ -17,11 +17,15 @@ package com.alibaba.druid.bvt.proxy;
 
 import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.stat.JdbcStatManager;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.*;
 
-public class CallStatementTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class CallStatementTest {
     /**
      * Procedures that should be created before the tests are run and dropped when the tests have finished. First
      * element in each row is the name of the procedure, second element is SQL which creates it.
@@ -50,6 +54,7 @@ public class CallStatementTest extends TestCase {
 
     private static String create_url = "jdbc:wrap-jdbc:filters=default,commonLogging,log4j:name=demo:jdbc:derby:memory:callableStatementDB;create=true";
 
+    @BeforeEach
     protected void setUp() throws Exception {
         Class.forName("com.alibaba.druid.proxy.DruidDriver");
 
@@ -81,12 +86,14 @@ public class CallStatementTest extends TestCase {
         conn.close();
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dropTable();
         DruidDriver.getProxyDataSources().clear();
         assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
 
+    @Test
     public void test_precall() throws Exception {
         f_testExecuteQueryWithNoDynamicResultSets();
         f_testExecuteQueryWithNoDynamicResultSets_callable();

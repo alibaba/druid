@@ -8,11 +8,14 @@ import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.Set;
 
-public class SchemaStatTest12 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class SchemaStatTest12 {
+    @Test
     public void test_schemaStat() throws Exception {
         String sql = "select work_no , nick_name , name , ifnull(sum(investment_percentage ) / 100 , 0 ) as invest_percent " +
                 "from ( " +

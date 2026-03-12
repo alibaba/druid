@@ -18,8 +18,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.function.IntFunction;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SQLResourceTest {
     protected static final String DELIMITER_LONG = "------------------------------------------------------------------------------------------------------------------------";
@@ -125,7 +125,7 @@ public class SQLResourceTest {
 
             SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
             SQLStatement stmt = parser.parseStatement();
-            assertEquals(parser.getLexer().info(), Token.EOF, parser.getLexer().token());
+            assertEquals(Token.EOF, parser.getLexer().token(), parser.getLexer().info());
             String result = SQLUtils.toSQLString(stmt, dbType).trim();
             assertEquals(expected, result);
 

@@ -5,6 +5,8 @@ import com.alibaba.druid.pool.vendor.SybaseExceptionSorter;
 
 import java.sql.SQLException;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class SybaseExceptionSorterTest extends PoolTestCase {
     public void test_false() throws Exception {
         SybaseExceptionSorter sorter = new SybaseExceptionSorter();

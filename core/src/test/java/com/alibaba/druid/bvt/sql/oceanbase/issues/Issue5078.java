@@ -5,9 +5,9 @@ import com.alibaba.druid.bvt.sql.mysql.issues.Issue5421;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * 验证 update ant.t1 set name=10 where id >100 limit 1语法

@@ -1,14 +1,19 @@
 package com.alibaba.druid.bvt.pool;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class DruidDataSourceTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class DruidDataSourceTest {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
@@ -17,15 +22,18 @@ public class DruidDataSourceTest extends TestCase {
         dataSource.init();
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
     }
 
+    @Test
     public void test_getInitStackTrace() {
         String stackTrace = dataSource.getInitStackTrace();
         assertTrue(stackTrace.indexOf("com.alibaba.druid.bvt.pool.DruidDataSourceTest.setUp") != -1);
     }
 
+    @Test
     public void test_restart() throws Exception {
         assertEquals(true, dataSource.isInited());
         {

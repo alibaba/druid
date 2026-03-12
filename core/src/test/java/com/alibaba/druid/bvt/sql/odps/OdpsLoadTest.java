@@ -1,9 +1,12 @@
 package com.alibaba.druid.bvt.sql.odps;
 
 import com.alibaba.druid.sql.SQLUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class OdpsLoadTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OdpsLoadTest {
+    @Test
     public void test_load_0() throws Exception {
         String sql = "LOAD OVERWRITE TABLE tsv_load_tbl \n" +
                 "FROM\n" +
@@ -18,6 +21,7 @@ public class OdpsLoadTest extends TestCase {
                 ");", SQLUtils.formatOdps(sql));
     }
 
+    @Test
     public void test_load_1() throws Exception {
         String sql = "LOAD OVERWRITE TABLE oss_load_static_part PARTITION(ds='20190101')\n" +
                 "FROM\n" +
@@ -28,6 +32,7 @@ public class OdpsLoadTest extends TestCase {
                 "STORED AS PARQUET;", SQLUtils.formatOdps(sql));
     }
 
+    @Test
     public void test_load_2() throws Exception {
         String sql = "LOAD OVERWRITE TABLE oss_load_dyn_part PARTITION(ds)\n" +
                 "FROM\n" +

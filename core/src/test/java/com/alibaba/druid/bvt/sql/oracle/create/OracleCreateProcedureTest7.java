@@ -22,6 +22,8 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleCreateProcedureTest7 extends OracleTest {
     public void test_0() throws Exception {
         String sql = "CREATE OR REPLACE PROCEDURE proc_helloworld\n" + "AS\n" + "\tV_TMP_NUM1 NUMBER(2);\n"

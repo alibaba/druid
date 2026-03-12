@@ -18,16 +18,21 @@ package com.alibaba.druid.bvt.pool;
 import com.alibaba.druid.mock.MockResultSet;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledResultSet;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLFeatureNotSupportedException;
 
-public class DruidPooledResultSetTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class DruidPooledResultSetTest {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
@@ -35,10 +40,12 @@ public class DruidPooledResultSetTest extends TestCase {
         dataSource.setFilters("stat");
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
     }
 
+    @Test
     public void testWrap() throws Exception {
         String sql = "select ?";
         Connection conn = dataSource.getConnection();
@@ -56,6 +63,7 @@ public class DruidPooledResultSetTest extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_notSupport() throws Exception {
         String sql = "select ?";
         Connection conn = dataSource.getConnection();
@@ -77,6 +85,7 @@ public class DruidPooledResultSetTest extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_notSupport_1() throws Exception {
         String sql = "select ?";
         Connection conn = dataSource.getConnection();
@@ -98,6 +107,7 @@ public class DruidPooledResultSetTest extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_rowCount() throws Exception {
         String sql = "select ?";
         Connection conn = dataSource.getConnection();

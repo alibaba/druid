@@ -20,6 +20,8 @@ import com.alibaba.fastjson2.JSON;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MysqlCheckTest extends MysqlTest {
     public void testEndTokenChecking() throws Exception {
         Object[][] samples = {

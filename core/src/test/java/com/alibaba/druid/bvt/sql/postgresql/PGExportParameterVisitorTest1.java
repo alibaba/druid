@@ -3,11 +3,14 @@ package com.alibaba.druid.bvt.sql.postgresql;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGSQLStatementParser;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGExportParameterVisitor;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class PGExportParameterVisitorTest1 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class PGExportParameterVisitorTest1 {
+    @Test
     public void test_pg() throws Exception {
         String sql = "select fname, count(*) from t where fid = 1 group by fname order by 1";
 

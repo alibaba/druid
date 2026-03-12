@@ -20,11 +20,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class NumberTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class NumberTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT -32032.6809e+10;";
 
@@ -36,6 +39,7 @@ public class NumberTest extends TestCase {
         assertEquals("SELECT -32032.6809e+10;", text);
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "SELECT 294.42;";
 

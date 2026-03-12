@@ -2,23 +2,23 @@ package com.alibaba.druid.pool.ha.selector;
 
 import com.alibaba.druid.pool.ha.HighAvailableDataSource;
 import com.alibaba.druid.pool.ha.MockDataSource;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.sql.DataSource;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class NamedDataSourceSelectorTest {
     private Map<String, DataSource> dataSourceMap;
     private HighAvailableDataSource dataSource;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         dataSourceMap = new HashMap<String, DataSource>();
         dataSourceMap.put("foo", new MockDataSource("foo"));
@@ -27,7 +27,7 @@ public class NamedDataSourceSelectorTest {
         dataSource.setDataSourceMap(dataSourceMap);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         dataSourceMap = null;
         dataSource.destroy();

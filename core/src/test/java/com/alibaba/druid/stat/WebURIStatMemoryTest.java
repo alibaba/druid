@@ -1,12 +1,13 @@
 package com.alibaba.druid.stat;
 
 import com.alibaba.druid.support.http.stat.WebURIStat;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.lang.management.ManagementFactory;
 import java.text.NumberFormat;
 
-public class WebURIStatMemoryTest extends TestCase {
+public class WebURIStatMemoryTest {
+    @Test
     public void test_0() throws Exception {
         WebURIStat item = new WebURIStat("");
         gc();

@@ -4,11 +4,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerOutputVisitor;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class SQLServerCreateTriggerTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class SQLServerCreateTriggerTest {
+    @Test
     public void testCreateTriggerAfterInsert() {
         String sql = "CREATE TRIGGER trg_audit ON dbo.orders AFTER INSERT AS BEGIN INSERT INTO audit_log SELECT * FROM inserted; END";
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
@@ -31,6 +34,7 @@ public class SQLServerCreateTriggerTest extends TestCase {
         assertTrue(result.contains("AFTER INSERT"));
     }
 
+    @Test
     public void testCreateOrAlterTriggerInsteadOfDelete() {
         String sql = "CREATE OR ALTER TRIGGER trg_check ON products INSTEAD OF DELETE AS BEGIN SELECT 'Cannot delete'; END";
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
@@ -51,6 +55,7 @@ public class SQLServerCreateTriggerTest extends TestCase {
         assertTrue(result.contains("INSTEAD OF DELETE"));
     }
 
+    @Test
     public void testCreateTriggerMultipleEvents() {
         String sql = "CREATE TRIGGER trg_update ON employees AFTER UPDATE, INSERT AS BEGIN SELECT 1; END";
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
@@ -72,6 +77,7 @@ public class SQLServerCreateTriggerTest extends TestCase {
         assertTrue(result.contains("UPDATE"));
     }
 
+    @Test
     public void testCreateTriggerForInsert() {
         String sql = "CREATE TRIGGER trg_for ON dbo.orders FOR INSERT AS BEGIN SELECT 1; END";
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
@@ -83,6 +89,7 @@ public class SQLServerCreateTriggerTest extends TestCase {
         assertEquals(SQLCreateTriggerStatement.TriggerType.AFTER, stmt.getTriggerType());
     }
 
+    @Test
     public void testCreateTriggerAllEvents() {
         String sql = "CREATE TRIGGER trg_all ON dbo.orders AFTER INSERT, UPDATE, DELETE AS BEGIN SELECT 1; END";
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
@@ -95,6 +102,7 @@ public class SQLServerCreateTriggerTest extends TestCase {
         assertTrue(stmt.isDelete());
     }
 
+    @Test
     public void testCreateTriggerRoundTrip() {
         String sql = "CREATE TRIGGER trg_audit ON dbo.orders AFTER INSERT AS BEGIN INSERT INTO audit_log SELECT * FROM inserted; END";
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);

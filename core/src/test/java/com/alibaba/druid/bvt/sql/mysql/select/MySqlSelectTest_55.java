@@ -24,6 +24,8 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_55 extends MysqlTest {
     public void test_date() throws Exception {
         System.out.println(new SimpleDateFormat("yyyyMMdd").parse("19050101").getTime());

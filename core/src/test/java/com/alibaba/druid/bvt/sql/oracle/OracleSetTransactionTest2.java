@@ -22,6 +22,8 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleSetTransactionTest2 extends OracleTest {
     public void test_0() throws Exception {
         String sql = "SET TRANSACTION READ ONLY NAME 'Toronto';";

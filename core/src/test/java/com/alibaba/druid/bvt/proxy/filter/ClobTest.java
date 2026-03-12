@@ -17,21 +17,28 @@ package com.alibaba.druid.bvt.proxy.filter;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.*;
 
-public class ClobTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class ClobTest {
     protected int dataSourceListSize;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSourceListSize = DruidDataSourceStatManager.getInstance().getDataSourceList().size();
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         assertEquals(dataSourceListSize, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
+    @Test
     public void test_clob() throws Exception {
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setFilters("stat");

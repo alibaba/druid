@@ -19,9 +19,12 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class DB2AlterTableTest_2 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class DB2AlterTableTest_2 {
+    @Test
     public void test_alter_constraint() throws Exception {
         String sql = "alter table audit.SQLHIS alter column  EXPLAINMSG set data type VARCHAR(255)";
         SQLStatement stmt = SQLUtils.parseStatements(sql, JdbcConstants.DB2).get(0);

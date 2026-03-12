@@ -20,11 +20,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class START_TRANSACTION_Test extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class START_TRANSACTION_Test {
+    @Test
     public void test_0() throws Exception {
         String sql = "START TRANSACTION;";
 
@@ -36,6 +39,7 @@ public class START_TRANSACTION_Test extends TestCase {
         assertEquals("START TRANSACTION;", text);
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "START TRANSACTION WITH CONSISTENT SNAPSHOT;";
 
@@ -47,6 +51,7 @@ public class START_TRANSACTION_Test extends TestCase {
         assertEquals("START TRANSACTION WITH CONSISTENT SNAPSHOT;", text);
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "START TRANSACTION BEGIN;";
 
@@ -58,6 +63,7 @@ public class START_TRANSACTION_Test extends TestCase {
         assertEquals("START TRANSACTION BEGIN;", text);
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = "START TRANSACTION BEGIN WORK;";
 
@@ -69,6 +75,7 @@ public class START_TRANSACTION_Test extends TestCase {
         assertEquals("START TRANSACTION BEGIN WORK;", text);
     }
 
+    @Test
     public void test_4() throws Exception {
         String sql = "COMMIT;";
 
@@ -80,6 +87,7 @@ public class START_TRANSACTION_Test extends TestCase {
         assertEquals("COMMIT;", text);
     }
 
+    @Test
     public void test_5() throws Exception {
         String sql = "COMMIT WORK;";
 
@@ -91,6 +99,7 @@ public class START_TRANSACTION_Test extends TestCase {
         assertEquals("COMMIT WORK;", text);
     }
 
+    @Test
     public void test_6() throws Exception {
         String sql = "ROLLBACK;";
 
@@ -102,6 +111,7 @@ public class START_TRANSACTION_Test extends TestCase {
         assertEquals("ROLLBACK;", text);
     }
 
+    @Test
     public void test_7() throws Exception {
         String sql = "SET autocommit=0;";
 

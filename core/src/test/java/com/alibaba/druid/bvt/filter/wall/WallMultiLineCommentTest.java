@@ -16,15 +16,19 @@
 package com.alibaba.druid.bvt.filter.wall;
 
 import com.alibaba.druid.wall.WallUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class WallMultiLineCommentTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class WallMultiLineCommentTest {
     private String sql = "select f1 from t where a=1 /* and b=1 */";
 
+    @Test
     public void testOracle() throws Exception {
         assertFalse(WallUtils.isValidateOracle(sql));
     }
 
+    @Test
     public void testMySql() throws Exception {
         assertFalse(WallUtils.isValidateMySql(sql));
     }

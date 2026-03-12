@@ -1,11 +1,12 @@
 package com.alibaba.druid.stat;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicLongFieldUpdater;
 
-public class PerfTest extends TestCase {
+public class PerfTest {
+    @Test
     public void test_0() throws Exception {
         for (int i = 0; i < 3; ++i) {
             long startMillis = System.currentTimeMillis();

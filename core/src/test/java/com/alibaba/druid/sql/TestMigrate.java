@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.support.json.JSONUtils;
 import oracle.jdbc.OracleStatement;
-import org.junit.Assert;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -30,6 +29,8 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestMigrate extends OracleTest {
     private String jdbcUrl;
@@ -81,7 +82,7 @@ public class TestMigrate extends OracleTest {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
         // print(statementList);
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
@@ -208,7 +209,7 @@ public class TestMigrate extends OracleTest {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
         // print(statementList);
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

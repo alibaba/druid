@@ -8,6 +8,8 @@ import com.alibaba.druid.pool.DruidPooledConnection;
 import java.lang.reflect.Field;
 import java.sql.PreparedStatement;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class DruidConnectionHolderTest4 extends PoolTestCase {
     private DruidDataSource dataSource;
 

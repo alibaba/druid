@@ -20,11 +20,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class MiscellaneousFunctionsTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MiscellaneousFunctionsTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "UPDATE t SET i = DEFAULT(i)+1 WHERE id < 100;";
 
@@ -36,6 +39,7 @@ public class MiscellaneousFunctionsTest extends TestCase {
         assertEquals("UPDATE t\nSET i = DEFAULT(i) + 1\nWHERE id < 100;", text);
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "SELECT GET_LOCK('lock1',10);";
 
@@ -47,6 +51,7 @@ public class MiscellaneousFunctionsTest extends TestCase {
         assertEquals("SELECT GET_LOCK('lock1', 10);", text);
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "SELECT INET_ATON('209.207.224.40');";
 
@@ -58,6 +63,7 @@ public class MiscellaneousFunctionsTest extends TestCase {
         assertEquals("SELECT INET_ATON('209.207.224.40');", text);
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = "SELECT UUID();";
 

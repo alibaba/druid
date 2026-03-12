@@ -2,11 +2,12 @@ package com.alibaba.druid.bvt.sql;
 
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIntervalExpr;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleExprParser;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class EqualTest2 extends TestCase {
+public class EqualTest2 {
+    @Test
     public void test_exits() throws Exception {
         String sql = "INTERVAL '30.12345' SECOND(2, 4)";
         String sql_c = "INTERVAL '30.12345' SECOND(2, 3)";

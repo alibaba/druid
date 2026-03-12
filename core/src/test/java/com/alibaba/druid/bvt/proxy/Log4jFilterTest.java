@@ -19,16 +19,21 @@ import com.alibaba.druid.filter.logging.Log4jFilter;
 import com.alibaba.druid.filter.logging.LogFilter;
 import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.stat.JdbcStatManager;
-import junit.framework.TestCase;
 import org.apache.log4j.Logger;
 import org.apache.log4j.Priority;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
-public class Log4jFilterTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class Log4jFilterTest {
+    @AfterEach
     protected void tearDown() throws Exception {
         DruidDriver.getProxyDataSources().clear();
         assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
 
+    @Test
     public void test_logger() throws Exception {
         Log4jFilter filter = new Log4jFilter();
 

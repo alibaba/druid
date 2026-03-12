@@ -1,9 +1,12 @@
 package com.alibaba.druid.bvt.sql.odps;
 
 import com.alibaba.druid.sql.SQLUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class OdpsAlterTableSetCommentTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OdpsAlterTableSetCommentTest {
+    @Test
     public void test_if() throws Exception {
         String sql = "alter table sale_detail set comment 'new coments for table sale_detail';";
         assertEquals("ALTER TABLE sale_detail"

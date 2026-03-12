@@ -4,11 +4,14 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class HiveInsert_0 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class HiveInsert_0 {
+    @Test
     public void test_select() throws Exception {
         String sql = "INSERT INTO TABLE students\n" +
                 "  VALUES ('fred flintstone', 35, 1.28), ('barney rubble', 32, 2.32);";

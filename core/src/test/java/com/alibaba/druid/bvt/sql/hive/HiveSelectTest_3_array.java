@@ -4,12 +4,15 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class HiveSelectTest_3_array
-        extends TestCase {
+ {
+    @Test
     public void test_select() throws Exception {
         String sql = "select languages[0] from json_nested_test;";
         assertEquals("SELECT languages[0]\n" +

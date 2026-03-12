@@ -5,12 +5,12 @@ import com.alibaba.druid.filter.config.ConfigFilter;
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * @author Jonas Yang
@@ -26,7 +26,7 @@ public class ConfigFilterTest extends ConfigFileGenerator {
         try {
             dataSource.init();
 
-            assertEquals("The username is " + dataSource.getUsername(), "test1", dataSource.getUsername());
+            assertEquals("test1", dataSource.getUsername(), "The username is " + dataSource.getUsername());
         } finally {
             JdbcUtils.close(dataSource);
         }
@@ -41,7 +41,7 @@ public class ConfigFilterTest extends ConfigFileGenerator {
         try {
             dataSource.init();
 
-            assertEquals("The username is " + dataSource.getUsername(), "test1", dataSource.getUsername());
+            assertEquals("test1", dataSource.getUsername(), "The username is " + dataSource.getUsername());
         } finally {
             System.clearProperty(ConfigFilter.SYS_PROP_CONFIG_FILE);
             JdbcUtils.close(dataSource);
@@ -77,8 +77,7 @@ public class ConfigFilterTest extends ConfigFileGenerator {
 
         try {
             dataSource.init();
-            assertEquals("The password is " + dataSource.getPassword() + ", is not xiaoyu", "xiaoyu",
-                    dataSource.getPassword());
+            assertEquals("xiaoyu", dataSource.getPassword(), "The password is " + dataSource.getPassword() + ", is not xiaoyu");
         } finally {
             JdbcUtils.close(dataSource);
         }
@@ -92,7 +91,7 @@ public class ConfigFilterTest extends ConfigFileGenerator {
         try {
             dataSource.init();
 
-            assertEquals("The password is " + dataSource.getPassword(), "xiaoyu", dataSource.getPassword());
+            assertEquals("xiaoyu", dataSource.getPassword(), "The password is " + dataSource.getPassword());
         } finally {
             JdbcUtils.close(dataSource);
         }

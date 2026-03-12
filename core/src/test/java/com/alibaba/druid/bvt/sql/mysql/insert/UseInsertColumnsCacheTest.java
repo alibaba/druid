@@ -3,9 +3,12 @@ package com.alibaba.druid.bvt.sql.mysql.insert;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class UseInsertColumnsCacheTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class UseInsertColumnsCacheTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "insert into tc_biz_mytable (f1, f2,   f3, f4, f5, f6, f7, f8) values (1, 2, 3, 4, 5, 6, 7, 8)";
 

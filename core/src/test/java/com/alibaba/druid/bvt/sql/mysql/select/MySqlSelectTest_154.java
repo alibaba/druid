@@ -11,6 +11,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_154 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SELECT 1 is NULL,(~(NULLIF(1,1 ))) \n" +

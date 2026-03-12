@@ -2,9 +2,12 @@ package com.alibaba.druid.bvt.sql.eval;
 
 import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class EvalMethodTest_ltrim extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class EvalMethodTest_ltrim {
+    @Test
     public void test_method() throws Exception {
         assertEquals("barbar", SQLEvalVisitorUtils.evalExpr(JdbcConstants.MYSQL, "LTRIM('  barbar')"));
     }

@@ -23,6 +23,8 @@ import com.alibaba.druid.stat.TableStat;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleSelectTest3 extends OracleTest {
     public void test_0() throws Exception {
         String sql = "SELECT department_id, last_name, salary " +

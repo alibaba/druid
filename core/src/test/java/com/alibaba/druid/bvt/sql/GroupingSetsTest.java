@@ -2,9 +2,12 @@ package com.alibaba.druid.bvt.sql;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class GroupingSetsTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class GroupingSetsTest {
+    @Test
     public void test_groupingSets() throws Exception {
         String sql = "SELECT brand, size, sum(sales) FROM items_sold GROUP BY GROUPING SETS ((brand), (size), ());";
 

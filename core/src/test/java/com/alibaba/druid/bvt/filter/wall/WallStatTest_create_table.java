@@ -6,11 +6,14 @@ import com.alibaba.druid.wall.spi.MySqlWallProvider;
 import com.alibaba.druid.wall.spi.OracleWallProvider;
 import com.alibaba.druid.wall.spi.PGWallProvider;
 import com.alibaba.druid.wall.spi.SQLServerWallProvider;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class WallStatTest_create_table extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class WallStatTest_create_table {
     private String sql = "create table t (fid int, fname varchar(50))";
 
+    @Test
     public void testMySql() throws Exception {
         WallProvider provider = new MySqlWallProvider();
         provider.getConfig().setCreateTableAllow(true);
@@ -20,6 +23,7 @@ public class WallStatTest_create_table extends TestCase {
         assertEquals(1, tableStat.getCreateCount());
     }
 
+    @Test
     public void testOracle() throws Exception {
         WallProvider provider = new OracleWallProvider();
         provider.getConfig().setCreateTableAllow(true);
@@ -29,6 +33,7 @@ public class WallStatTest_create_table extends TestCase {
         assertEquals(1, tableStat.getCreateCount());
     }
 
+    @Test
     public void testPG() throws Exception {
         WallProvider provider = new PGWallProvider();
         provider.getConfig().setCreateTableAllow(true);
@@ -38,6 +43,7 @@ public class WallStatTest_create_table extends TestCase {
         assertEquals(1, tableStat.getCreateCount());
     }
 
+    @Test
     public void testSQLServer() throws Exception {
         WallProvider provider = new SQLServerWallProvider();
         provider.getConfig().setCreateTableAllow(true);

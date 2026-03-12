@@ -18,17 +18,20 @@ package com.alibaba.druid.bvt.proxy.filter;
 import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.JdbcSqlStat;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.Statement;
 import java.util.concurrent.CountDownLatch;
 
-public class StatFilterConcurrentTest extends TestCase {
+public class StatFilterConcurrentTest {
     private DruidDataSource dataSource;
     private StatFilter statFilter;
     private int LOOP_COUNT = 1000 * 1;
 
+    @BeforeEach
     public void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
@@ -39,10 +42,12 @@ public class StatFilterConcurrentTest extends TestCase {
         dataSource.setConnectionProperties("executeSleep=1");
     }
 
+    @AfterEach
     public void tearDown() throws Exception {
         dataSource.close();
     }
 
+    @Test
     public void test_stat() throws Exception {
         concurrent(100);
         for (JdbcSqlStat sqlStat : dataSource.getDataSourceStat().getSqlStatMap().values()) {

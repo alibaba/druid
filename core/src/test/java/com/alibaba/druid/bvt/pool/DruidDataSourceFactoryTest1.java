@@ -3,12 +3,15 @@ package com.alibaba.druid.bvt.pool;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidDataSourceFactory;
 import com.alibaba.druid.util.JdbcUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.util.Properties;
 
-public class DruidDataSourceFactoryTest1 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class DruidDataSourceFactoryTest1 {
+    @Test
     public void test_NONE() throws Exception {
         Properties properties = new Properties();
         properties.put(DruidDataSourceFactory.PROP_URL, "jdbc:mock:xxx");
@@ -27,6 +30,7 @@ public class DruidDataSourceFactoryTest1 extends TestCase {
         }
     }
 
+    @Test
     public void test_READ_COMMITTED() throws Exception {
         Properties properties = new Properties();
         properties.put(DruidDataSourceFactory.PROP_URL, "jdbc:mock:xxx");
@@ -46,6 +50,7 @@ public class DruidDataSourceFactoryTest1 extends TestCase {
         }
     }
 
+    @Test
     public void test_READ_UNCOMMITTED() throws Exception {
         Properties properties = new Properties();
         properties.put(DruidDataSourceFactory.PROP_URL, "jdbc:mock:xxx");
@@ -65,6 +70,7 @@ public class DruidDataSourceFactoryTest1 extends TestCase {
         }
     }
 
+    @Test
     public void test_REPEATABLE_READ() throws Exception {
         Properties properties = new Properties();
         properties.put(DruidDataSourceFactory.PROP_URL, "jdbc:mock:xxx");
@@ -84,6 +90,7 @@ public class DruidDataSourceFactoryTest1 extends TestCase {
         }
     }
 
+    @Test
     public void test_SERIALIZABLE() throws Exception {
         Properties properties = new Properties();
         properties.put(DruidDataSourceFactory.PROP_URL, "jdbc:mock:xxx");
@@ -103,6 +110,7 @@ public class DruidDataSourceFactoryTest1 extends TestCase {
         }
     }
 
+    @Test
     public void test_other() throws Exception {
         Properties properties = new Properties();
         properties.put(DruidDataSourceFactory.PROP_URL, "jdbc:mock:xxx");
@@ -121,6 +129,7 @@ public class DruidDataSourceFactoryTest1 extends TestCase {
         }
     }
 
+    @Test
     public void test_integer() throws Exception {
         Properties properties = new Properties();
         properties.put(DruidDataSourceFactory.PROP_URL, "jdbc:mock:xxx");
@@ -141,6 +150,7 @@ public class DruidDataSourceFactoryTest1 extends TestCase {
         }
     }
 
+    @Test
     public void test_init() throws Exception {
         Properties properties = new Properties();
         properties.put(DruidDataSourceFactory.PROP_URL, "jdbc:mock:xxx");
@@ -158,10 +168,12 @@ public class DruidDataSourceFactoryTest1 extends TestCase {
         }
     }
 
+    @Test
     public void test_getObjectInstance() throws Exception {
         assertNull(new DruidDataSourceFactory().getObjectInstance(null, null, null, null));
     }
 
+    @Test
     public void test_getObjectInstance_1() throws Exception {
         assertNull(new DruidDataSourceFactory().getObjectInstance(new Object(), null, null, null));
     }

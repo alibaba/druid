@@ -23,15 +23,17 @@ import com.alibaba.druid.sql.dialect.odps.visitor.OdpsSchemaStatVisitor;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.Utils;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.List;
 
-public class OdpsFileTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OdpsFileTest {
+    @Test
     public void test_0() throws Exception {
         exec_test("bvt/parser/odps-0.txt");
     }
@@ -52,7 +54,7 @@ public class OdpsFileTest extends TestCase {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         SchemaStatVisitor visitor = new OdpsSchemaStatVisitor();
         stmt.accept(visitor);
@@ -71,7 +73,7 @@ public class OdpsFileTest extends TestCase {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         StringBuilder out = new StringBuilder();
         MySqlOutputVisitor visitor = new MySqlOutputVisitor(out, true);
@@ -79,6 +81,6 @@ public class OdpsFileTest extends TestCase {
 
         System.out.println(out.toString());
 
-        Assert.assertEquals(expect, out.toString());
+        assertEquals(expect, out.toString());
     }
 }

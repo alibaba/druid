@@ -4,9 +4,12 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.odps.parser.OdpsStatementParser;
 import com.alibaba.druid.sql.parser.Token;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class OdpsCreateViewTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OdpsCreateViewTest {
+    @Test
     public void test_create() throws Exception {
         String sql = "CREATE view sale_detail as select * from dual;";
         OdpsStatementParser parser = new OdpsStatementParser(sql);
@@ -19,6 +22,7 @@ public class OdpsCreateViewTest extends TestCase {
                 + "\nFROM dual;", output);
     }
 
+    @Test
     public void test_create_or_replace() throws Exception {
         String sql = "CREATE or replace view sale_detail as select * from dual;";
         OdpsStatementParser parser = new OdpsStatementParser(sql);
@@ -31,6 +35,7 @@ public class OdpsCreateViewTest extends TestCase {
                 + "\nFROM dual;", output);
     }
 
+    @Test
     public void test_create_if_not_exists() throws Exception {
         String sql = "CREATE view if not exists sale_detail as select * from dual;";
         OdpsStatementParser parser = new OdpsStatementParser(sql);
@@ -43,6 +48,7 @@ public class OdpsCreateViewTest extends TestCase {
                 + "\nFROM dual;", output);
     }
 
+    @Test
     public void test_create_comments() throws Exception {
         String sql = "CREATE view if not exists sale_detail comment 'aaaa' as select * from dual;";
         OdpsStatementParser parser = new OdpsStatementParser(sql);
@@ -56,6 +62,7 @@ public class OdpsCreateViewTest extends TestCase {
                 + "\nFROM dual;", output);
     }
 
+    @Test
     public void test_create_column_comments() throws Exception {
         String sql = "CREATE view if not exists sale_detail (f1 comment 'aaaa', f2 comment 'bbb') as select * from dual;";
         OdpsStatementParser parser = new OdpsStatementParser(sql);

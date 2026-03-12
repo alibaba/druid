@@ -18,9 +18,12 @@ package com.alibaba.druid.bvt.sql.oracle;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class OracleGroupingSetTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OracleGroupingSetTest {
+    @Test
     public void test_interval() throws Exception {
         String sql = "SELECT channel_desc, calendar_month_desc, co.country_id, "
                 + "TO_CHAR(sum(amount_sold) , '9,999,999,999') AS SALES$\n"

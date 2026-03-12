@@ -2,16 +2,21 @@ package com.alibaba.druid.bvt.pool;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.proxy.jdbc.PreparedStatementProxy;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.Types;
 
-public class PreparedStatementProxyImplTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class PreparedStatementProxyImplTest {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
@@ -19,10 +24,12 @@ public class PreparedStatementProxyImplTest extends TestCase {
         dataSource.setFilters("log4j");
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
     }
 
+    @Test
     public void test_setObject() throws Exception {
         String sql = "insert t values(?, ?, ?, ?, ?,  ?, ?, ?, ?, ?)";
         Connection conn = dataSource.getConnection();

@@ -19,8 +19,9 @@ import com.alibaba.druid.TestUtil;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.jolbox.bonecp.BoneCPDataSource;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
-import junit.framework.TestCase;
 import org.apache.commons.dbcp.BasicDataSource;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.sql.DataSource;
 
@@ -29,7 +30,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.NumberFormat;
 
-public class Case0 extends TestCase {
+public class Case0 {
     private String jdbcUrl;
     private String user;
     private String password;
@@ -45,6 +46,7 @@ public class Case0 extends TestCase {
     public final int LOOP_COUNT = 5;
     public final int COUNT = 1000 * 1000 * 1;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
         user = "dragoon25";
@@ -56,6 +58,7 @@ public class Case0 extends TestCase {
 //        password = "x";
     }
 
+    @Test
     public void test_druid() throws Exception {
         DruidDataSource dataSource = new DruidDataSource();
 

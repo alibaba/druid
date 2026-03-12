@@ -23,6 +23,8 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OceanbaseHintTest_Index extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SELECT /*+ INDEX(t1 i1) , INDEX(t2 i2)*/ * from t1, t2 WHERE t1.c1=t2.c1;";

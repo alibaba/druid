@@ -18,9 +18,12 @@ package com.alibaba.druid.bvt.spring;
 import com.alibaba.druid.support.spring.stat.SpringMethodInfo;
 import com.alibaba.druid.support.spring.stat.SpringMethodStat;
 import com.alibaba.druid.support.spring.stat.SpringStat;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class SpringMethodInfoTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class SpringMethodInfoTest {
+    @Test
     public void test_equals() throws Exception {
         SpringMethodInfo b1 = new SpringMethodInfo(B.class, B.class.getMethod("f", int.class));
         SpringMethodInfo c = new SpringMethodInfo(C.class, C.class.getMethod("f", int.class));
@@ -34,6 +37,7 @@ public class SpringMethodInfoTest extends TestCase {
         assertEquals(C.class.getName(), c.getClassName());
     }
 
+    @Test
     public void test_get() throws Exception {
         SpringStat springStat = new SpringStat();
 

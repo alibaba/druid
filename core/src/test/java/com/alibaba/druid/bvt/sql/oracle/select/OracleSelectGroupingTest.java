@@ -18,11 +18,12 @@ package com.alibaba.druid.bvt.sql.oracle.select;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class OracleSelectGroupingTest extends TestCase {
+public class OracleSelectGroupingTest {
+    @Test
     public void test_select() throws Exception {
         String sql = "SELECT COUNT(*) FROM employees e, departments d WHERE d.department_id = e.department_id GROUP BY ROLLUP (department_name, job_id);";
 

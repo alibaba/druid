@@ -2,14 +2,19 @@ package com.alibaba.druid.bvt.pool;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledPreparedStatement;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 
-public class DruidPooledPreparedStatementTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class DruidPooledPreparedStatementTest {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
@@ -18,10 +23,12 @@ public class DruidPooledPreparedStatementTest extends TestCase {
         dataSource.setPoolPreparedStatements(true);
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
     }
 
+    @Test
     public void test_hitCount() throws Exception {
         String sql = "select ?";
         {

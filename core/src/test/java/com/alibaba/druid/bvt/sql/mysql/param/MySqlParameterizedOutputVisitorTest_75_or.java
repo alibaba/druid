@@ -8,12 +8,15 @@ import com.alibaba.druid.sql.visitor.ParameterizedVisitor;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.fastjson2.JSON;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MySqlParameterizedOutputVisitorTest_75_or extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlParameterizedOutputVisitorTest_75_or {
+    @Test
     public void test_or() throws Exception {
         String sql = "select * from t1 where id = 1 or id = 2 or id = 3";
 
@@ -29,6 +32,7 @@ public class MySqlParameterizedOutputVisitorTest_75_or extends TestCase {
         assertEquals("[1,2,3]", JSON.toJSONString(outParameters));
     }
 
+    @Test
     public void test_or_2() throws Exception {
         String sql = "select * from t1 where id = 1 or id = 2 or id = 3";
 

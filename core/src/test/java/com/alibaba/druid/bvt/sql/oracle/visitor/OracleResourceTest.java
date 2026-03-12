@@ -29,6 +29,8 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleResourceTest extends OracleTest {
     public void test_0_9() throws Exception {
         for (int i = 0; i <= 9; ++i) { // 57

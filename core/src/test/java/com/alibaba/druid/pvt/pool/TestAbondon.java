@@ -18,12 +18,16 @@ package com.alibaba.druid.pvt.pool;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class TestAbondon extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class TestAbondon {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         DruidDataSourceStatManager.clear();
 
@@ -36,14 +40,16 @@ public class TestAbondon extends TestCase {
         dataSource.setUrl("jdbc:mock:xxx");
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
+    @Test
     public void test_0() throws Exception {
         DruidPooledConnection conn = dataSource.getConnection();
-        Assert.assertEquals(false, conn.isClosed());
+        assertEquals(false, conn.isClosed());
         Thread.sleep(10);
 
         for (int i = 0; i < 100; ++i) {
@@ -52,6 +58,6 @@ public class TestAbondon extends TestCase {
             }
             Thread.sleep(10);
         }
-        Assert.assertEquals(true, conn.isAbandonded());
+        assertEquals(true, conn.isAbandonded());
     }
 }

@@ -17,12 +17,15 @@ package com.alibaba.druid.bvt.bug;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * https://github.com/alibaba/druid/issues/4094
  */
-public class Issue_4094 extends TestCase {
+public class Issue_4094 {
+    @Test
     public void test_betweent_lost() {
         // 此sql可以正常执行
         String sql = "SELECT B.CUSTOMER_ID customerId,B.CN_NAME NAME,OPENING_DATE,CLOSING_DATE,count(A.OPENING_DATE) over (partition BY B.CUSTOMER_ID ORDER BY trunc(A.OPENING_DATE,'mm') RANGE BETWEEN interval '3' month (4) preceding AND CURRENT ROW) AS createCount,count(A.CLOSING_DATE) over (partition BY B.CUSTOMER_ID ORDER BY trunc(NVL(A.CLOSING_DATE,SYSDATE),'mm') RANGE BETWEEN interval '3' month (4) preceding AND CURRENT ROW) AS cancelCount,row_number () over (partition BY B.CUSTOMER_ID ORDER BY trunc(A.OPENING_DATE) DESC) AS row_flg FROM account_info A,CUSTOMER_INFO B WHERE A.CUSTOMER_ID=B.CUSTOMER_ID";

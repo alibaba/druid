@@ -26,6 +26,8 @@ import com.alibaba.druid.stat.TableStat.Column;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlCreateViewTest4 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "create or replace definer = 'ivan'@'%' view my_view3 as select count(*) from t3;";

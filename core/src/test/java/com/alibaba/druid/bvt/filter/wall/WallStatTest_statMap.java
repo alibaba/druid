@@ -5,21 +5,28 @@ import com.alibaba.druid.support.json.JSONUtils;
 import com.alibaba.druid.wall.WallContext;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
 import java.util.Map;
 
-public class WallStatTest_statMap extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class WallStatTest_statMap {
+    @BeforeEach
     protected void setUp() throws Exception {
         WallContext.clearContext();
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         WallContext.clearContext();
     }
 
     @SuppressWarnings("unchecked")
+    @Test
     public void testMySql() throws Exception {
         WallProvider providerA = new MySqlWallProvider();
 

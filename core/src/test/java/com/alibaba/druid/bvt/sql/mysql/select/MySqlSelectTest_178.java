@@ -10,6 +10,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_178 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select rt_dws_csn_sta_lgt_ord_ri.metrics_id as yujiu from rt_dws_csn_sta_lgt_ord_ri CROSS JOIN rt_dws_csn_sta_lgt_ord_mi ;";

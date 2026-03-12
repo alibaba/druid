@@ -1,19 +1,23 @@
 package com.alibaba.druid.pool.mysql;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
  * Created by wenshao on 16/8/5.
  */
-public class MySqlTest extends TestCase {
+public class MySqlTest {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mysql://127.0.0.1:3306/druid_test_db?allowMultiQueries=true");
@@ -25,10 +29,12 @@ public class MySqlTest extends TestCase {
         dataSource.setTestWhileIdle(true);
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
     }
 
+    @Test
     public void test_mysql() throws Exception {
         Connection connection = dataSource.getConnection();
 
@@ -38,15 +44,15 @@ public class MySqlTest extends TestCase {
         stmt.execute("select 1;select 1");
 
         ResultSet rs = stmt.getResultSet();
-        Assert.assertFalse(rs.isClosed());
+        assertFalse(rs.isClosed());
 
-        Assert.assertTrue(stmt.getMoreResults());
-        Assert.assertTrue(rs.isClosed());
+        assertTrue(stmt.getMoreResults());
+        assertTrue(rs.isClosed());
 
         ResultSet rs2 = stmt.getResultSet();
-        Assert.assertFalse(rs2.isClosed());
+        assertFalse(rs2.isClosed());
         rs2.close();
-        Assert.assertTrue(rs2.isClosed());
+        assertTrue(rs2.isClosed());
 
         stmt.close();
 

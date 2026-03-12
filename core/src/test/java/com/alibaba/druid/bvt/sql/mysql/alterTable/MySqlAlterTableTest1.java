@@ -19,9 +19,12 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class MySqlAlterTableTest1 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlAlterTableTest1 {
+    @Test
     public void test_alter_0() throws Exception {
         String sql = "ALTER TABLE t1 RENAME t2;";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -31,6 +34,7 @@ public class MySqlAlterTableTest1 extends TestCase {
         assertEquals("RENAME TABLE t1 TO t2;", output);
     }
 
+    @Test
     public void test_alter_1() throws Exception {
         String sql = "ALTER TABLE t2 ADD d TIMESTAMP;";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -40,6 +44,7 @@ public class MySqlAlterTableTest1 extends TestCase {
         assertEquals("ALTER TABLE t2\n\tADD COLUMN d TIMESTAMP;", output);
     }
 
+    @Test
     public void test_alter_2() throws Exception {
         String sql = "ALTER TABLE t2 ADD INDEX (d), ADD UNIQUE (a);";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -49,6 +54,7 @@ public class MySqlAlterTableTest1 extends TestCase {
         assertEquals("ALTER TABLE t2\n\tADD INDEX (d),\n\tADD UNIQUE (a);", output);
     }
 
+    @Test
     public void test_alter_3() throws Exception {
         String sql = "ALTER TABLE t1 RENAME TO t2;";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -58,6 +64,7 @@ public class MySqlAlterTableTest1 extends TestCase {
         assertEquals("RENAME TABLE t1 TO t2;", output);
     }
 
+    @Test
     public void test_alter_4() throws Exception {
         String sql = "ALTER TABLE t1 RENAME AS t2;";
         MySqlStatementParser parser = new MySqlStatementParser(sql);

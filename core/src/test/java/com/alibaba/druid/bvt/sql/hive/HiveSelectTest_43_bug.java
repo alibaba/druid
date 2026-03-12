@@ -20,11 +20,14 @@ import com.alibaba.druid.sql.SQLParseAssertUtil;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveMultiInsertStatement;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class HiveSelectTest_43_bug extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class HiveSelectTest_43_bug {
+    @Test
     public void test_0() throws Exception {
         String sql = "from (select a.ddate\n" +
                 "        ,a.game_id\n" +

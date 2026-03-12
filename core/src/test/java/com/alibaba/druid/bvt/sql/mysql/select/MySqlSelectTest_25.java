@@ -23,6 +23,8 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_25 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select truncate(AVG(mark),2) from tabName where spu = ? and is_delete=0 and is_check = '2'";

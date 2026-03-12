@@ -7,7 +7,9 @@ import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @version 1.0
@@ -16,7 +18,8 @@ import junit.framework.TestCase;
  * @Author zzy
  * @Date 2019-05-06 15:45
  */
-public class MySqlAlterTableAddIndex_10 extends TestCase {
+public class MySqlAlterTableAddIndex_10 {
+    @Test
     public void test_alter_table_add_index_with_options() throws Exception {
         String sql = "ALTER TABLE test001 ADD INDEX `i` using btree (`b`) key_block_size=32 comment 'hehe';";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -37,6 +40,7 @@ public class MySqlAlterTableAddIndex_10 extends TestCase {
         assertEquals(1, tableStat.getCreateIndexCount());
     }
 
+    @Test
     public void test_alter_table_add_index_multi_type() throws Exception {
         String sql = "ALTER TABLE test001 ADD INDEX `i2` using btree (`b`) key_block_size=32 comment 'hehe' using hash;";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -57,6 +61,7 @@ public class MySqlAlterTableAddIndex_10 extends TestCase {
         assertEquals(1, tableStat.getCreateIndexCount());
     }
 
+    @Test
     public void test_alter_table_add_fulltext_index_option_ngram() throws Exception {
         String sql = "alter table test001 add fulltext index (b) with parser ngram key_block_size=32 comment 'hehe';";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -77,6 +82,7 @@ public class MySqlAlterTableAddIndex_10 extends TestCase {
         assertEquals(1, tableStat.getCreateIndexCount());
     }
 
+    @Test
     public void test_alter_table_add_constraint_primary_key_with_options() throws Exception {
         String sql = "alter table test001 add constraint primary key using btree (b) key_block_size=32 comment 'hehe' using btree;";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -97,6 +103,7 @@ public class MySqlAlterTableAddIndex_10 extends TestCase {
         assertEquals(1, tableStat.getCreateIndexCount());
     }
 
+    @Test
     public void test_alter_table_add_constraint_unique_key_with_options() throws Exception {
         String sql = "alter table test001 add constraint unique key `uk` using btree (b) key_block_size=32 comment 'hehe' using btree;";
         MySqlStatementParser parser = new MySqlStatementParser(sql);

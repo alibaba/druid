@@ -8,6 +8,8 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlInsertTest_17 extends MysqlTest {
     public void test_insert_rollback_on_fail() throws Exception {
         String sql = "/*+engine=MPP, mppNativeInsertFromSelect=true*/\n"

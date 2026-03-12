@@ -8,6 +8,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class PGJsonOperatorTest extends PGTest {
     public void test_arrow() {
         String sql = "SELECT data->'name' FROM users";
@@ -36,7 +38,7 @@ public class PGJsonOperatorTest extends PGTest {
         assertEquals(1, stmtList.size());
 
         String output = SQLUtils.toSQLString(stmtList, JdbcConstants.POSTGRESQL);
-        assertTrue("Expected #> in: " + output, output.contains("#>"));
+        assertTrue(output.contains("#>"), "Expected #> in: " + output);
     }
 
     public void test_hash_double_arrow() {
@@ -46,7 +48,7 @@ public class PGJsonOperatorTest extends PGTest {
         assertEquals(1, stmtList.size());
 
         String output = SQLUtils.toSQLString(stmtList, JdbcConstants.POSTGRESQL);
-        assertTrue("Expected #>> in: " + output, output.contains("#>>"));
+        assertTrue(output.contains("#>>"), "Expected #>> in: " + output);
     }
 
     public void test_at_greater_than() {

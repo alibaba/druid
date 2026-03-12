@@ -20,11 +20,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class HexadecimalValuesTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class HexadecimalValuesTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT 0x5061756c;";
 
@@ -36,6 +39,7 @@ public class HexadecimalValuesTest extends TestCase {
         assertEquals("SELECT 0x5061756c;", text);
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "SELECT X'4D7953514C';";
 
@@ -47,6 +51,7 @@ public class HexadecimalValuesTest extends TestCase {
         assertEquals("SELECT 0x4D7953514C;", text);
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "SELECT x'4D7953514C';";
 
@@ -58,6 +63,7 @@ public class HexadecimalValuesTest extends TestCase {
         assertEquals("SELECT 0x4D7953514C;", text);
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = "SELECT 0x65 USING utf8;";
 
@@ -69,6 +75,7 @@ public class HexadecimalValuesTest extends TestCase {
         assertEquals("SELECT 0x65 USING utf8;", text);
     }
 
+    @Test
     public void test_4() throws Exception {
         String sql = "SELECT 0x41, CAST(0x41 AS UNSIGNED)";
 
@@ -80,6 +87,7 @@ public class HexadecimalValuesTest extends TestCase {
         assertEquals("SELECT 0x41, CAST(0x41 AS UNSIGNED)", text);
     }
 
+    @Test
     public void test_5() throws Exception {
         String sql = "SELECT HEX('cat')";
 

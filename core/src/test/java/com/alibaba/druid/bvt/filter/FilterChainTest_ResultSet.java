@@ -23,19 +23,24 @@ import com.alibaba.druid.proxy.jdbc.ResultSetProxyImpl;
 import com.alibaba.druid.proxy.jdbc.StatementProxy;
 import com.alibaba.druid.proxy.jdbc.StatementProxyImpl;
 import com.alibaba.druid.util.JdbcUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collections;
 
-public class FilterChainTest_ResultSet extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class FilterChainTest_ResultSet {
     private DruidDataSource dataSource;
     private StatementProxy statement;
     private MockResultSet mockResultSet;
 
     private int invokeCount;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         statement = new StatementProxyImpl(null, null, 1);
@@ -48,12 +53,14 @@ public class FilterChainTest_ResultSet extends TestCase {
         };
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
 
         invokeCount = 0;
     }
 
+    @Test
     public void test_resultSet_getObject() throws Exception {
         FilterChainImpl chain = new FilterChainImpl(dataSource);
 
@@ -63,6 +70,7 @@ public class FilterChainTest_ResultSet extends TestCase {
         assertEquals(1, invokeCount);
     }
 
+    @Test
     public void test_resultSet_getObject_1() throws Exception {
         FilterChainImpl chain = new FilterChainImpl(dataSource);
 
@@ -72,6 +80,7 @@ public class FilterChainTest_ResultSet extends TestCase {
         assertEquals(1, invokeCount);
     }
 
+    @Test
     public void test_resultSet_getObject_2() throws Exception {
         FilterChainImpl chain = new FilterChainImpl(dataSource);
 
@@ -81,6 +90,7 @@ public class FilterChainTest_ResultSet extends TestCase {
         assertEquals(1, invokeCount);
     }
 
+    @Test
     public void test_resultSet_getObject_3() throws Exception {
         FilterChainImpl chain = new FilterChainImpl(dataSource);
 

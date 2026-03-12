@@ -26,6 +26,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class DB2SelectTest_25_concat extends DB2Test {
     public void test_0() throws Exception {
         String sql = "select ID, AUTHORITY_TYPE from t_authority a where authority_type like CONCAT('%', ?)";

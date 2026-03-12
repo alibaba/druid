@@ -18,19 +18,24 @@ package com.alibaba.druid.bvt.proxy;
 import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.util.JdbcUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.PrintStream;
 import java.sql.*;
 
-public class SchemaReadTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class SchemaReadTest {
     private static String url = "jdbc:wrap-jdbc:filters=default,commonLogging,log4j:name=demo:jdbc:derby:classpath:petstore-db";
 
+    @AfterEach
     protected void tearDown() throws Exception {
         DruidDriver.getProxyDataSources().clear();
         assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
 
+    @Test
     public void test_schema() throws Exception {
         Class.forName("com.alibaba.druid.proxy.DruidDriver");
 
@@ -95,6 +100,7 @@ public class SchemaReadTest extends TestCase {
         }
     }
 
+    @Test
     public void test_schema2() throws Exception {
         Class.forName("com.alibaba.druid.proxy.DruidDriver");
 

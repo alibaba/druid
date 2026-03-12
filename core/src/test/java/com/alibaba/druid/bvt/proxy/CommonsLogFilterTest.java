@@ -19,16 +19,21 @@ import com.alibaba.druid.filter.logging.CommonsLogFilter;
 import com.alibaba.druid.filter.logging.LogFilter;
 import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.stat.JdbcStatManager;
-import junit.framework.TestCase;
 import org.apache.commons.logging.impl.Log4JLogger;
 import org.apache.log4j.Priority;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
-public class CommonsLogFilterTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class CommonsLogFilterTest {
+    @AfterEach
     protected void tearDown() throws Exception {
         DruidDriver.getProxyDataSources().clear();
         assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
 
+    @Test
     public void test_logger() throws Exception {
         CommonsLogFilter filter = new CommonsLogFilter();
 

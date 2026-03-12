@@ -24,6 +24,8 @@ import com.alibaba.druid.stat.TableStat;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlCreateTableTest41 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "CREATE TABLE tk (col1 INT, col2 CHAR(5), col3 DATE)" +

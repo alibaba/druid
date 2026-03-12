@@ -22,9 +22,12 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class LargeOrTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class LargeOrTest {
+    @Test
     public void test_largeOr() throws Exception {
         StringBuilder buf = new StringBuilder();
         buf.append("SELECT 1 FROM T WHERE ID = ?");
@@ -40,6 +43,7 @@ public class LargeOrTest extends TestCase {
         assertEquals(SQLBinaryOperator.Equality, last.getOperator());
     }
 
+    @Test
     public void test_largeAnd() throws Exception {
         StringBuilder buf = new StringBuilder();
         buf.append("SELECT 1 FROM T WHERE ID = ?");

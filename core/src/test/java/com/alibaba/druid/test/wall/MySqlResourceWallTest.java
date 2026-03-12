@@ -19,13 +19,14 @@ import com.alibaba.druid.wall.Violation;
 import com.alibaba.druid.wall.WallCheckResult;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
-import junit.framework.TestCase;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class MySqlResourceWallTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlResourceWallTest {
     private String[] items;
 
+    @Test
     public void test_false() throws Exception {
         WallProvider provider = new MySqlWallProvider();
 
@@ -60,7 +61,7 @@ public class MySqlResourceWallTest extends TestCase {
         System.out.println(provider.getViolationCount());
 //        String sql = "SELECT name, '******' password, createTime from user where name like 'admin' AND (CASE WHEN (7885=7885) THEN 1 ELSE 0 END)";
 
-//        Assert.assertFalse(provider.checkValid(sql));
+//        assertFalse(provider.checkValid(sql));
     }
 
     @Test
@@ -74,7 +75,7 @@ public class MySqlResourceWallTest extends TestCase {
             Violation violation = result.getViolations().get(0);
             System.out.println("error () : " + violation.getMessage());
         }
-        Assert.assertTrue(provider.checkValid(sql));
+        assertTrue(provider.checkValid(sql));
 
         sql = "lock tables etstsun LOW_PRIORITY write";
         result = provider.check(sql);
@@ -82,7 +83,7 @@ public class MySqlResourceWallTest extends TestCase {
             Violation violation = result.getViolations().get(0);
             System.out.println("error () : " + violation.getMessage());
         }
-        Assert.assertTrue(provider.checkValid(sql));
+        assertTrue(provider.checkValid(sql));
 
         sql = "UNLOCK TABLES";
         result = provider.check(sql);
@@ -90,7 +91,7 @@ public class MySqlResourceWallTest extends TestCase {
             Violation violation = result.getViolations().get(0);
             System.out.println("error () : " + violation.getMessage());
         }
-        Assert.assertTrue(provider.checkValid(sql));
+        assertTrue(provider.checkValid(sql));
 
         sql = "lock table dsdfsdf read";
         result = provider.check(sql);
@@ -98,7 +99,7 @@ public class MySqlResourceWallTest extends TestCase {
             Violation violation = result.getViolations().get(0);
             System.out.println("error () : " + violation.getMessage());
         }
-        Assert.assertTrue(provider.checkValid(sql));
+        assertTrue(provider.checkValid(sql));
 
         sql = "lock table dsdfsdf read local";
         result = provider.check(sql);
@@ -106,6 +107,6 @@ public class MySqlResourceWallTest extends TestCase {
             Violation violation = result.getViolations().get(0);
             System.out.println("error () : " + violation.getMessage());
         }
-        Assert.assertTrue(provider.checkValid(sql));
+        assertTrue(provider.checkValid(sql));
     }
 }

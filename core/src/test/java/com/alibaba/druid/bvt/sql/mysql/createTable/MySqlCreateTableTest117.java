@@ -7,6 +7,8 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlCreateTableTest117 extends MysqlTest {
     public void test() throws Exception {
         String sql = "CREATE TABLE IF NOT EXISTS `Employee` (id int(10) auto_increment" +

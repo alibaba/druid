@@ -20,6 +20,8 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLLimit;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_clearLimit extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select a from t limit 1,2";

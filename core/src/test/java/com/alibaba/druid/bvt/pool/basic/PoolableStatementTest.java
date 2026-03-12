@@ -17,15 +17,20 @@ package com.alibaba.druid.bvt.pool.basic;
 
 import com.alibaba.druid.mock.MockStatement;
 import com.alibaba.druid.pool.DruidPooledStatement;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class PoolableStatementTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class PoolableStatementTest {
     protected Statement raw;
     protected DruidPooledStatement stmt;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         raw = new MockStatement(null);
         stmt = new DruidPooledStatement(null, raw) {
@@ -39,9 +44,11 @@ public class PoolableStatementTest extends TestCase {
         };
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
     }
 
+    @Test
     public void test_basic() throws Exception {
         assertEquals(raw, stmt.getStatement());
         assertEquals(null, stmt.getPoolableConnection());

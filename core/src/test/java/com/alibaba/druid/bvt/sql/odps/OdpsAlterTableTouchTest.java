@@ -1,15 +1,19 @@
 package com.alibaba.druid.bvt.sql.odps;
 
 import com.alibaba.druid.sql.SQLUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class OdpsAlterTableTouchTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OdpsAlterTableTouchTest {
+    @Test
     public void test_touch() throws Exception {
         String sql = "alter table test_lifecycle touch;";
         assertEquals("ALTER TABLE test_lifecycle"
                 + "\n\tTOUCH;", SQLUtils.formatOdps(sql));
     }
 
+    @Test
     public void test_touch_partition() throws Exception {
         String sql = "alter table test_lifecycle touch PARTITION (dt='20141111');";
         assertEquals("ALTER TABLE test_lifecycle"

@@ -7,6 +7,8 @@ import com.alibaba.druid.util.MySqlUtils;
 import java.lang.reflect.Constructor;
 import java.sql.SQLException;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
  * Created by wenshao on 18/07/2017.
  */

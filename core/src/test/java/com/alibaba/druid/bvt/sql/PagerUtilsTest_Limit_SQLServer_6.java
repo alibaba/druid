@@ -2,9 +2,12 @@ package com.alibaba.druid.bvt.sql;
 
 import com.alibaba.druid.sql.PagerUtils;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class PagerUtilsTest_Limit_SQLServer_6 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class PagerUtilsTest_Limit_SQLServer_6 {
+    @Test
     public void test_db2_union() throws Exception {
         String sql = "SELECT t.name USER_NAME, t.xxx FROM t_sd_users t ORDER BY t.name ASC";
         String result = PagerUtils.limit(sql, JdbcConstants.SQL_SERVER, 10, 10);

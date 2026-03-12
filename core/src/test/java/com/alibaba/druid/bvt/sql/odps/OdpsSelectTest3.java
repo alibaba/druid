@@ -16,9 +16,12 @@
 package com.alibaba.druid.bvt.sql.odps;
 
 import com.alibaba.druid.sql.SQLUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class OdpsSelectTest3 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OdpsSelectTest3 {
+    @Test
     public void test_distribute_by() throws Exception {
         String sql = "select RANK() OVER (PARTITION BY ui ORDER BY duration DESC) rank from dual";
         assertEquals("SELECT RANK() OVER (PARTITION BY ui ORDER BY duration DESC) AS rank"

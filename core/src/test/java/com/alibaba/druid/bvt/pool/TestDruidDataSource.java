@@ -18,19 +18,26 @@ package com.alibaba.druid.bvt.pool;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 
-public class TestDruidDataSource extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class TestDruidDataSource {
+    @AfterEach
     protected void tearDown() throws Exception {
         DruidDataSourceStatManager.clear();
     }
 
+    @BeforeEach
     protected void setUp() throws Exception {
         assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
+    @Test
     public void test_0() throws Exception {
         DruidDataSource dataSource = new DruidDataSource();
 

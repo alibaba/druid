@@ -21,9 +21,12 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class OracleAlterTableTest_drop_constraint extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OracleAlterTableTest_drop_constraint {
+    @Test
     public void test_alter_constraint() throws Exception {
         String sql = "alter table TUSER drop constraint UK_084c17821a8f47e8b31fbb126b6";
         OracleStatementParser parser = new OracleStatementParser(sql);

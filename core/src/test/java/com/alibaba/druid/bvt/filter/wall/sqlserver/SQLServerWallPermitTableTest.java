@@ -16,7 +16,9 @@
 package com.alibaba.druid.bvt.filter.wall.sqlserver;
 
 import com.alibaba.druid.wall.WallUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * 这个场景测试访问SQLServer系统表
@@ -25,12 +27,14 @@ import junit.framework.TestCase;
  * @version 1.0, 2012-3-18
  * @see
  */
-public class SQLServerWallPermitTableTest extends TestCase {
+public class SQLServerWallPermitTableTest {
+    @Test
     public void test01() throws Exception {
         assertFalse(WallUtils.isValidateSqlServer("SELECT * FROM T UNION select * from sysObjects"));
         assertFalse(WallUtils.isValidateSqlServer("SELECT * FROM T UNION select * from sysdatabases"));
     }
 
+    @Test
     public void test03() throws Exception {
         assertFalse(WallUtils.isValidateSqlServer("SELECT * FROM T UNION SELECT sysobjects.name as tablename, syscolumns.name as columnname FROM sysobjects JOIN syscolumns ON sysobjects.id = syscolumns.id WHERE sysobjects.xtype = ‘U’ AND syscolumns.name LIKE ‘%PASSWORD%’ "));
         assertFalse(WallUtils.isValidateSqlServer("SELECT * FROM T UNION SELECT name FROM syscolumns WHERE id = (SELECT id FROM sysobjects WHERE name = ‘mytable’);"));

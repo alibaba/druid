@@ -1,9 +1,12 @@
 package com.alibaba.druid.bvt.sql.oracle.tomysql;
 
 import com.alibaba.druid.sql.SQLUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class OracleToMySql_PageTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OracleToMySql_PageTest {
+    @Test
     public void test_page() throws Exception {
         String sql = "SELECT XX.*, ROWNUM AS RN" +
                 "\nFROM (SELECT *" +
@@ -20,6 +23,7 @@ public class OracleToMySql_PageTest extends TestCase {
         System.out.println(mysqlSql);
     }
 
+    @Test
     public void test_page1() throws Exception {
         String sql = "select * from t_xiaoxi where rowid in(select rid from (select rownum rn,rid from(select rowid rid,cid from t_xiaoxi  order by cid desc) where rownum<10000) where rn>9980) order by cid desc;";
 

@@ -21,20 +21,26 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DataSourceMonitorable;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.util.JdbcUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.management.openmbean.TabularData;
 
 import java.sql.Connection;
 
-public class TestIdle extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class TestIdle {
     private DruidDataSource dataSource;
 
+    @AfterEach
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
         DruidDataSourceStatManager.clear();
     }
 
+    @BeforeEach
     protected void setUp() throws Exception {
         TabularData dataSourceList = DruidDataSourceStatManager.getInstance().getDataSourceList();
         if (dataSourceList.size() > 0) {
@@ -44,6 +50,7 @@ public class TestIdle extends TestCase {
         assertEquals(0, dataSourceList.size());
     }
 
+    @Test
     public void test_idle() throws Exception {
         MockDriver driver = new MockDriver();
 
@@ -127,11 +134,11 @@ public class TestIdle extends TestCase {
                 assertEquals(count - i - 1, dataSource.getActiveCount());
             }
             assertEquals(4, driver.getConnections().size());
-            assertEquals("activeCount not zero", 0, dataSource.getActiveCount());
+            assertEquals(0, dataSource.getActiveCount(), "activeCount not zero");
 
             dataSource.shrink();
-            assertEquals("activeCount not zero", 0, dataSource.getActiveCount());
-            assertEquals("minIdle not equal physical", dataSource.getMinIdle(), driver.getConnections().size());
+            assertEquals(0, dataSource.getActiveCount(), "activeCount not zero");
+            assertEquals(dataSource.getMinIdle(), driver.getConnections().size(), "minIdle not equal physical");
         }
 
     }

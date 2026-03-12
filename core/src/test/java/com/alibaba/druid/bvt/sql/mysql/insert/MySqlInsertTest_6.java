@@ -24,6 +24,8 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlInsertTest_6 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "insert into document(the_key,the_namespace,Gmt_create,Gmt_modify,Expired_time,the_value) " +

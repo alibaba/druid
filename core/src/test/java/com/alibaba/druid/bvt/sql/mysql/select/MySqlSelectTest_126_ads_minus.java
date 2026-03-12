@@ -8,6 +8,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_126_ads_minus extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select q.case_id as case_id\n" +

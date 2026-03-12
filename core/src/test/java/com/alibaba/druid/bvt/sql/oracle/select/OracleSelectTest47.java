@@ -23,6 +23,8 @@ import com.alibaba.druid.sql.test.TestUtils;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleSelectTest47 extends OracleTest {
     public void test_0() throws Exception {
         String sql = //

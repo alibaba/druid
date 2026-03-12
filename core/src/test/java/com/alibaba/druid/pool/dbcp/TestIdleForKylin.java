@@ -18,13 +18,16 @@ package com.alibaba.druid.pool.dbcp;
 import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-public class TestIdleForKylin extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class TestIdleForKylin {
+    @Test
     public void test_idle() throws Exception {
         MockDriver driver = MockDriver.instance;
 
@@ -45,7 +48,7 @@ public class TestIdleForKylin extends TestCase {
         {
             Connection conn = dataSource.getConnection();
 
-            // Assert.assertEquals(dataSource.getInitialSize(), driver.getConnections().size());
+            // assertEquals(dataSource.getInitialSize(), driver.getConnections().size());
             System.out.println("raw size : " + driver.getConnections().size());
 
             PreparedStatement stmt = conn.prepareStatement("SELECT 1");
@@ -60,7 +63,7 @@ public class TestIdleForKylin extends TestCase {
         {
             Connection conn = dataSource.getConnection();
 
-            // Assert.assertEquals(dataSource.getInitialSize(), driver.getConnections().size());
+            // assertEquals(dataSource.getInitialSize(), driver.getConnections().size());
             System.out.println("raw size : " + driver.getConnections().size());
 
             conn.close();

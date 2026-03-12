@@ -18,7 +18,8 @@ package com.alibaba.druid.bvt.pool;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidDataSourceFactory;
 import com.alibaba.druid.util.JdbcUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 import javax.naming.Reference;
 import javax.naming.StringRefAddr;
@@ -26,13 +27,17 @@ import javax.sql.DataSource;
 
 import java.util.Hashtable;
 
-public class DruidDataSourceFactoryTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class DruidDataSourceFactoryTest {
     private DruidDataSource dataSource;
 
+    @AfterEach
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
     }
 
+    @Test
     public void test_factory() throws Exception {
         DruidDataSourceFactory factory = new DruidDataSourceFactory();
 

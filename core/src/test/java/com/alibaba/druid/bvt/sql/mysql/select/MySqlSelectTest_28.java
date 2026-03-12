@@ -23,6 +23,8 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_28 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "/* 0a7d0d8614637128401131809d4d9d/9// */"

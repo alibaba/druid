@@ -27,6 +27,8 @@ import com.alibaba.druid.wall.WallUtils;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlUpdateTest_15 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "update students set name='test' where id in (select stu_id from score where s <100)";

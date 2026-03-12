@@ -19,11 +19,14 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class OdpsAlterTableChangeColumnTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OdpsAlterTableChangeColumnTest {
+    @Test
     public void test_select() throws Exception {
         String sql = "ALTER TABLE adl_smeta_indi_rule_relation_sdt CHANGE COLUMN indi_level COMMENT 'xxxx';";
         assertEquals("ALTER TABLE adl_smeta_indi_rule_relation_sdt\n" +

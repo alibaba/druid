@@ -23,6 +23,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleGrantTest_5 extends OracleTest {
     public void test_0() throws Exception {
         String sql = "grant resource, connect, create view, create procedure, create sequence to DZFP_CX;";

@@ -21,9 +21,12 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.stat.TableStat.Column;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class MySqlAlterTableTest5 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlAlterTableTest5 {
+    @Test
     public void test_alter_first() throws Exception {
         String sql = "ALTER TABLE table_name   change COLUMN column_name column_newname char(50)";
         MySqlStatementParser parser = new MySqlStatementParser(sql);

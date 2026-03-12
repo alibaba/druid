@@ -19,7 +19,6 @@ import com.alibaba.druid.filter.logging.Log4j2Filter;
 import com.alibaba.druid.filter.logging.LogFilter;
 import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.stat.JdbcStatManager;
-import junit.framework.TestCase;
 import org.apache.log4j.Priority;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
@@ -29,13 +28,19 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.util.MessageSupplier;
 import org.apache.logging.log4j.util.Supplier;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
-public class Log4j2FilterTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class Log4j2FilterTest {
+    @AfterEach
     protected void tearDown() throws Exception {
         DruidDriver.getProxyDataSources().clear();
         assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
 
+    @Test
     public void test_logger() throws Exception {
         Log4j2Filter filter = null;
         try {

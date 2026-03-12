@@ -16,18 +16,21 @@
 package com.alibaba.druid.bvt.filter.wall;
 
 import com.alibaba.druid.wall.WallUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author wenshao
  */
-public class WallSelectWhereTest5 extends TestCase {
+public class WallSelectWhereTest5 {
     private String sql = "select * from t WHERE FID = 256 OR CONCAT(CHR(67)||CHR(65)||CHR(84), '-DOG') = 'CAT-DOG'";
 
 //    public void testMySql() throws Exception {
 //        assertFalse(WallUtils.isValidateMySql(sql));
 //    }
 
+    @Test
     public void testORACLE() throws Exception {
         assertFalse(WallUtils.isValidateOracle(sql));
     }

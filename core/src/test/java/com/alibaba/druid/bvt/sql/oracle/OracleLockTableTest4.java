@@ -24,6 +24,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleLockTableTest4 extends OracleTest {
     public void test_0() throws Exception {
         String sql = "LOCK TABLE \"TAB9527\" IN EXCLUSIVE MODE  NOWAIT";

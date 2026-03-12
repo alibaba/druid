@@ -16,7 +16,7 @@
 package com.alibaba.druid.bvt.pool.basic;
 
 import com.alibaba.druid.pool.DruidDataSourceFactory;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import javax.naming.RefAddr;
 import javax.naming.Reference;
@@ -24,8 +24,11 @@ import javax.naming.Reference;
 import java.util.Hashtable;
 import java.util.Properties;
 
-public class DruidDataSourceFactoryTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class DruidDataSourceFactoryTest {
     @SuppressWarnings("serial")
+    @Test
     public void test_factory() throws Exception {
         DruidDataSourceFactory factory = new DruidDataSourceFactory();
 
@@ -51,6 +54,7 @@ public class DruidDataSourceFactoryTest extends TestCase {
         factory.getObjectInstance(ref, null, null, new Hashtable<Object, Object>());
     }
 
+    @Test
     public void test_createDataSource() throws Exception {
         Properties properties = new Properties();
         properties.setProperty("defaultAutoCommit", "true");

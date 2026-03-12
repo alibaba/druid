@@ -4,7 +4,9 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @version 1.0
@@ -13,7 +15,8 @@ import junit.framework.TestCase;
  * @Author zzy
  * @Date 2019-05-15 14:37
  */
-public class MySqlAlterTableTest52_primary_prefix_key extends TestCase {
+public class MySqlAlterTableTest52_primary_prefix_key {
+    @Test
     public void test_0() {
         String sql = "alter table test001 add primary key (b (4) asc, c (8) desc);";
 

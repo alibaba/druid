@@ -22,13 +22,16 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author <a href="mailto:danping.yudp@alibaba-inc.com">YU Danping</a>
  */
 
-public class DMLCallParserTest extends TestCase {
+public class DMLCallParserTest {
+    @Test
     public void testCall_0() throws Exception {
         String sql = "call p(?,?)";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -38,6 +41,7 @@ public class DMLCallParserTest extends TestCase {
         assertEquals("CALL p(?, ?)", output);
     }
 
+    @Test
     public void testCall_1() throws Exception {
         String sql = "call p(@var1,'@var2',var3)";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -47,6 +51,7 @@ public class DMLCallParserTest extends TestCase {
         assertEquals("CALL p(@var1, '@var2', var3)", output);
     }
 
+    @Test
     public void testCall_2() throws Exception {
         String sql = "call p()";
         MySqlStatementParser parser = new MySqlStatementParser(sql);

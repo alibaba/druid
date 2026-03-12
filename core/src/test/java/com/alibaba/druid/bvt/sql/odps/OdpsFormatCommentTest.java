@@ -1,9 +1,12 @@
 package com.alibaba.druid.bvt.sql.odps;
 
 import com.alibaba.druid.sql.SQLUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class OdpsFormatCommentTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OdpsFormatCommentTest {
+    @Test
     public void test_column_comment() throws Exception {
         String sql = "select f1 -- aaa"
                 + "\n from t1";
@@ -11,6 +14,7 @@ public class OdpsFormatCommentTest extends TestCase {
                 + "\nFROM t1", SQLUtils.formatOdps(sql));
     }
 
+    @Test
     public void test_column_2_comment() throws Exception {
         String sql = "select f1 -- aaa"
                 + "\n, f2 -- bbb"
@@ -20,6 +24,7 @@ public class OdpsFormatCommentTest extends TestCase {
                 + "\nFROM t1", SQLUtils.formatOdps(sql));
     }
 
+    @Test
     public void test_column_2_multi_comment() throws Exception {
         String sql = "select f1 /*aa*/"
                 + "\n, f2 -- bbb"

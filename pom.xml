@@ -40,6 +40,7 @@
 		<springboot4.version>4.0.0-M3</springboot4.version>
 
 		<junit.version>4.13.1</junit.version>
+		<junit-jupiter.version>5.11.4</junit-jupiter.version>
 		<jmh.version>1.37</jmh.version>
 
 		<gpg.skip>false</gpg.skip>
@@ -89,7 +90,13 @@
 
 	<dependencyManagement>
 		<dependencies>
-			<!-- spring libs -->
+			<dependency>
+				<groupId>org.junit</groupId>
+				<artifactId>junit-bom</artifactId>
+				<version>${junit-jupiter.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -211,7 +218,7 @@
 				</plugin>
 				<plugin>
 					<artifactId>maven-surefire-plugin</artifactId>
-					<version>3.0.0-M7</version>
+					<version>3.5.2</version>
 				</plugin>
 				<plugin>
 					<artifactId>maven-assembly-plugin</artifactId>

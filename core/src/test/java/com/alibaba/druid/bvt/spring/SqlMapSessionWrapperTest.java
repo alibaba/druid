@@ -3,21 +3,28 @@ package com.alibaba.druid.bvt.spring;
 import com.alibaba.druid.support.ibatis.SqlMapSessionWrapper;
 import com.ibatis.sqlmap.engine.impl.SqlMapClientImpl;
 import com.ibatis.sqlmap.engine.impl.SqlMapSessionImpl;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-public class SqlMapSessionWrapperTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class SqlMapSessionWrapperTest {
     private ClassPathXmlApplicationContext context;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         context = new ClassPathXmlApplicationContext("com/alibaba/druid/pool/ibatis/spring-config-ibatis.xml");
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         context.close();
     }
 
     @SuppressWarnings("deprecation")
+    @Test
     public void test_wrap() throws Exception {
         SqlMapClientImpl client = (SqlMapClientImpl) context.getBean("master-sqlMapClient");
         assertNotNull(client);

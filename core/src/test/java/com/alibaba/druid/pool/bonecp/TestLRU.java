@@ -21,7 +21,6 @@ import com.jolbox.bonecp.BoneCPDataSource;
 import com.jolbox.bonecp.ConnectionHandle;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import com.mchange.v2.c3p0.impl.NewProxyConnection;
-import junit.framework.TestCase;
 import org.apache.commons.dbcp.BasicDataSource;
 
 import javax.sql.DataSource;
@@ -29,7 +28,7 @@ import javax.sql.DataSource;
 import java.lang.reflect.Field;
 import java.sql.Connection;
 
-public class TestLRU extends TestCase {
+public class TestLRU {
     public void f_test_boneCP() throws Exception {
         BoneCPDataSource ds = new BoneCPDataSource();
         ds.setJdbcUrl("jdbc:mock:test");

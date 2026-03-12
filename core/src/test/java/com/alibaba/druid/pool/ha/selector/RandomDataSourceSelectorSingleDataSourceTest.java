@@ -4,13 +4,13 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.ha.HighAvailableDataSource;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class RandomDataSourceSelectorSingleDataSourceTest {
     private static final Log LOG = LogFactory
@@ -18,7 +18,7 @@ public class RandomDataSourceSelectorSingleDataSourceTest {
 
     private HighAvailableDataSource highAvailableDataSource;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         highAvailableDataSource = new HighAvailableDataSource();
         String file = "/com/alibaba/druid/pool/ha/ha-with-prefix-datasource.properties";
@@ -31,7 +31,7 @@ public class RandomDataSourceSelectorSingleDataSourceTest {
         highAvailableDataSource.init();
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         highAvailableDataSource.destroy();
         highAvailableDataSource = null;

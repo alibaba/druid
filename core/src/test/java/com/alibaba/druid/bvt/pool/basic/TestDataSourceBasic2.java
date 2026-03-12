@@ -25,6 +25,8 @@ import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import java.util.Arrays;
 import java.util.Properties;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class TestDataSourceBasic2 extends PoolTestCase {
     public void test_0() throws Exception {
         DruidDataSourceStatManager.clear();

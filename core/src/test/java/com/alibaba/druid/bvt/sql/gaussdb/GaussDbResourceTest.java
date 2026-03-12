@@ -1,7 +1,7 @@
 package com.alibaba.druid.bvt.sql.gaussdb;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.bvt.sql.SQLResourceTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 public class GaussDbResourceTest extends SQLResourceTest {
     public GaussDbResourceTest() {
         super(DbType.gaussdb);

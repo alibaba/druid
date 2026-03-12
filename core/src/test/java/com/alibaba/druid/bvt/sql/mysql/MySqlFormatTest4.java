@@ -18,16 +18,19 @@ package com.alibaba.druid.bvt.sql.mysql;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.util.JdbcUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * test java.sql.Time parameter format and Boolean parameterized
  * @author lizongbo
  */
-public class MySqlFormatTest4 extends TestCase {
+public class MySqlFormatTest4 {
+    @Test
     public void test_0() throws Exception {
         String text = "select * from tabletest\n"
             + "where ccc like '%tidb_txn_mode%' and open_flag = true "

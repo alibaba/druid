@@ -1,7 +1,8 @@
 package com.alibaba.druid.sql.parser;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class LexerScanModeDedupRegressionTest {
     @Test
@@ -18,9 +19,9 @@ public class LexerScanModeDedupRegressionTest {
         doubleQuoted.disableDoubleBackslashForLikeEscapes();
         doubleQuoted.scanDoubleQuoteMode();
 
-        Assert.assertEquals(singleQuoted.stringVal(), doubleQuoted.stringVal());
-        Assert.assertEquals(Token.LITERAL_CHARS, singleQuoted.token());
-        Assert.assertEquals(Token.LITERAL_CHARS, doubleQuoted.token());
+        assertEquals(singleQuoted.stringVal(), doubleQuoted.stringVal());
+        assertEquals(Token.LITERAL_CHARS, singleQuoted.token());
+        assertEquals(Token.LITERAL_CHARS, doubleQuoted.token());
     }
 
     @Test
@@ -29,8 +30,8 @@ public class LexerScanModeDedupRegressionTest {
         lexer.config(SQLParserFeature.SupportUnicodeCodePoint, true);
         lexer.scanSingleQuoteMode();
 
-        Assert.assertEquals(Token.LITERAL_CHARS, lexer.token());
-        Assert.assertEquals("ABC", lexer.stringVal());
+        assertEquals(Token.LITERAL_CHARS, lexer.token());
+        assertEquals("ABC", lexer.stringVal());
     }
 
     @Test
@@ -38,8 +39,8 @@ public class LexerScanModeDedupRegressionTest {
         Lexer lexer = new Lexer("\"col\".x");
         lexer.nextTokenValue();
 
-        Assert.assertEquals(Token.IDENTIFIER, lexer.token());
-        Assert.assertEquals("\"col\"", lexer.stringVal());
+        assertEquals(Token.IDENTIFIER, lexer.token());
+        assertEquals("\"col\"", lexer.stringVal());
     }
 
     @Test
@@ -47,9 +48,9 @@ public class LexerScanModeDedupRegressionTest {
         ExposedLexer lexer = new ExposedLexer("\"abc");
         try {
             lexer.scanDoubleQuoteMode();
-            Assert.fail();
+            fail();
         } catch (ParserException ex) {
-            Assert.assertTrue(ex.getMessage().contains("unclosed str."));
+            assertTrue(ex.getMessage().contains("unclosed str."));
         }
     }
 

@@ -3,24 +3,24 @@ package com.alibaba.druid.pool.ha.node;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.ha.HighAvailableDataSource;
 import com.alibaba.druid.pool.ha.MockDataSource;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.sql.DataSource;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PoolUpdaterTest {
     private HighAvailableDataSource haDataSource;
     private PoolUpdater updater;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         haDataSource = new HighAvailableDataSource();
         Map<String, DataSource> map = new HashMap<String, DataSource>();
@@ -30,7 +30,7 @@ public class PoolUpdaterTest {
         updater.init();
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         haDataSource.destroy();
         haDataSource = null;

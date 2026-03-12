@@ -23,6 +23,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleCreateIndexTest21 extends OracleTest {
     public void test_0() throws Exception {
         String sql = "CREATE UNIQUE INDEX \"FINANCE\".\"PK_POS_SEND_UNIQUE\" ON \"FINANCE\".\"POS_SEND_UNIQUE\" (\"SETTLE_ID\", \"PHASE\") REVERSE \n" +

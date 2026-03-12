@@ -7,12 +7,15 @@ import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleExportParameterVisitor;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Issue3989 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class Issue3989 {
+    @Test
     public void test_create_trigger() {
         String ddl2 = "CREATE TABLE table_1 (\n" +
             "  id INT AUTO_INCREMENT,\n" +
@@ -40,6 +43,7 @@ public class Issue3989 extends TestCase {
         assertEquals(3, sqlStatements.size());
     }
 
+    @Test
     public void test_create_trigger2() {
         List<SQLCreateTriggerStatement> createTriggerStatementList = new ArrayList<>();
         StringBuilder builder = new StringBuilder();

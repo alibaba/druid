@@ -17,18 +17,23 @@ package com.alibaba.druid.bvt.proxy;
 
 import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.stat.JdbcStatManager;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 
-public class ProxyDriverTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class ProxyDriverTest {
+    @Test
     public void test_connect() throws Exception {
         String url = "jdbc:wrap-jdbc:filters=default:name=clobTest:jdbc:derby:memory:clobTestDB;create=true";
         Connection conn = DriverManager.getConnection(url);
         conn.close();
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         DruidDriver.getProxyDataSources().clear();
         assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());

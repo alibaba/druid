@@ -21,6 +21,8 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlCreateTriggerTest4 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "create definer = current_user() trigger trg_my2 after insert on test.t2 for each row insert into log_table values (concat(\"inserted into table test.t2 values: (1c, _) = (\", cast(NEW.col1 as char(100)), \", \", convertToSqlNode(new.`_`, char(100)), \")\"));";

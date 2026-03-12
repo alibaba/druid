@@ -19,10 +19,11 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SQLParserImprovementsTest {
     // ========== 1. Lexer: Unicode escape validation ==========
@@ -33,8 +34,8 @@ public class SQLParserImprovementsTest {
         lexer.config(SQLParserFeature.SupportUnicodeCodePoint, true);
         lexer.scanSingleQuoteMode();
 
-        Assert.assertEquals(Token.LITERAL_CHARS, lexer.token());
-        Assert.assertEquals("A", lexer.stringVal());
+        assertEquals(Token.LITERAL_CHARS, lexer.token());
+        assertEquals("A", lexer.stringVal());
     }
 
     @Test
@@ -43,8 +44,8 @@ public class SQLParserImprovementsTest {
         lexer.config(SQLParserFeature.SupportUnicodeCodePoint, true);
         lexer.scanSingleQuoteMode();
 
-        Assert.assertEquals(Token.LITERAL_CHARS, lexer.token());
-        Assert.assertEquals("XHIY", lexer.stringVal());
+        assertEquals(Token.LITERAL_CHARS, lexer.token());
+        assertEquals("XHIY", lexer.stringVal());
     }
 
     @Test
@@ -55,10 +56,10 @@ public class SQLParserImprovementsTest {
         lexer.config(SQLParserFeature.SupportUnicodeCodePoint, true);
         try {
             lexer.scanSingleQuoteMode();
-            Assert.fail("expected ParserException for invalid unicode escape");
+            fail("expected ParserException for invalid unicode escape");
         } catch (ParserException ex) {
-            Assert.assertTrue(ex.getMessage().contains("invalid unicode escape sequence"));
-            Assert.assertTrue(ex.getMessage().contains("expected 4 hex digits"));
+            assertTrue(ex.getMessage().contains("invalid unicode escape sequence"));
+            assertTrue(ex.getMessage().contains("expected 4 hex digits"));
         }
     }
 
@@ -69,9 +70,9 @@ public class SQLParserImprovementsTest {
         lexer.config(SQLParserFeature.SupportUnicodeCodePoint, true);
         try {
             lexer.scanSingleQuoteMode();
-            Assert.fail("expected ParserException for invalid unicode escape");
+            fail("expected ParserException for invalid unicode escape");
         } catch (ParserException ex) {
-            Assert.assertTrue(ex.getMessage().contains("invalid unicode escape sequence"));
+            assertTrue(ex.getMessage().contains("invalid unicode escape sequence"));
         }
     }
 
@@ -82,9 +83,9 @@ public class SQLParserImprovementsTest {
         // Do NOT enable SupportUnicodeCodePoint -- backslash-u should be treated as literal
         lexer.scanSingleQuoteMode();
 
-        Assert.assertEquals(Token.LITERAL_CHARS, lexer.token());
+        assertEquals(Token.LITERAL_CHARS, lexer.token());
         // When unicode support is disabled, backslash-u is kept as-is
-        Assert.assertTrue(lexer.stringVal().contains("u"));
+        assertTrue(lexer.stringVal().contains("u"));
     }
 
     // ========== 2. Lexer: Improved error messages ==========
@@ -98,10 +99,9 @@ public class SQLParserImprovementsTest {
         try {
             lexer.nextToken();
             // If the base Lexer happens to support backtick, verify no TODO in output
-            Assert.assertFalse("should not reach here or token should be valid",
-                    lexer.token() == Token.ERROR);
+            assertFalse(lexer.token() == Token.ERROR, "should not reach here or token should be valid");
         } catch (ParserException ex) {
-            Assert.assertFalse(ex.getMessage().contains("TODO"));
+            assertFalse(ex.getMessage().contains("TODO"));
         }
     }
 
@@ -113,7 +113,7 @@ public class SQLParserImprovementsTest {
             lexer.nextToken();
             // Some control characters might be treated as whitespace; if token is parsed, that's okay
         } catch (ParserException ex) {
-            Assert.assertFalse("error message should not contain TODO", ex.getMessage().contains("TODO"));
+            assertFalse(ex.getMessage().contains("TODO"), "error message should not contain TODO");
         }
     }
 
@@ -123,10 +123,10 @@ public class SQLParserImprovementsTest {
     public void testExecuteStatementErrorMessage() {
         try {
             SQLUtils.parseStatements("EXECUTE proc1", DbType.postgresql);
-            Assert.fail("expected ParserException");
+            fail("expected ParserException");
         } catch (ParserException ex) {
-            Assert.assertTrue(ex.getMessage().contains("not supported"));
-            Assert.assertFalse(ex.getMessage().contains("TODO"));
+            assertTrue(ex.getMessage().contains("not supported"));
+            assertFalse(ex.getMessage().contains("TODO"));
         }
     }
 
@@ -136,11 +136,11 @@ public class SQLParserImprovementsTest {
         SQLStatementParser parser = new SQLStatementParser("SHOW TABLES");
         try {
             parser.parseStatementList();
-            Assert.fail("expected ParserException");
+            fail("expected ParserException");
         } catch (ParserException ex) {
-            Assert.assertTrue(ex.getMessage().contains("SHOW"));
-            Assert.assertTrue(ex.getMessage().contains("not supported"));
-            Assert.assertFalse(ex.getMessage().contains("TODO"));
+            assertTrue(ex.getMessage().contains("SHOW"));
+            assertTrue(ex.getMessage().contains("not supported"));
+            assertFalse(ex.getMessage().contains("TODO"));
         }
     }
 
@@ -149,9 +149,9 @@ public class SQLParserImprovementsTest {
         SQLStatementParser parser = new SQLStatementParser("DROP XYZABC foo");
         try {
             parser.parseStatementList();
-            Assert.fail("expected ParserException");
+            fail("expected ParserException");
         } catch (ParserException ex) {
-            Assert.assertFalse(ex.getMessage().contains("TODO"));
+            assertFalse(ex.getMessage().contains("TODO"));
         }
     }
 
@@ -163,7 +163,7 @@ public class SQLParserImprovementsTest {
             SQLUtils.parseStatements("WITH RECURSIVE cte AS (SELECT 1) UPDATE t SET x = 1", DbType.mysql);
             // Some dialects may handle this — if parsed ok, that's also acceptable
         } catch (ParserException ex) {
-            Assert.assertFalse(ex.getMessage().contains("TODO"));
+            assertFalse(ex.getMessage().contains("TODO"));
         }
     }
 
@@ -173,10 +173,10 @@ public class SQLParserImprovementsTest {
     public void testNullsOrderTypeErrorMessage() {
         try {
             SQLUtils.parseStatements("SELECT a FROM t ORDER BY a NULLS MIDDLE", DbType.mysql);
-            Assert.fail("expected ParserException");
+            fail("expected ParserException");
         } catch (ParserException ex) {
-            Assert.assertTrue(ex.getMessage().contains("FIRST") || ex.getMessage().contains("LAST"));
-            Assert.assertFalse(ex.getMessage().contains("TODO"));
+            assertTrue(ex.getMessage().contains("FIRST") || ex.getMessage().contains("LAST"));
+            assertFalse(ex.getMessage().contains("TODO"));
         }
     }
 
@@ -186,13 +186,13 @@ public class SQLParserImprovementsTest {
         String sql = "CREATE TABLE t (id INT, fk INT REFERENCES other(id) MATCH UNKNOWN_TYPE)";
         try {
             SQLUtils.parseStatements(sql, DbType.mysql);
-            Assert.fail("expected ParserException");
+            fail("expected ParserException");
         } catch (ParserException ex) {
-            Assert.assertTrue(ex.getMessage().contains("FULL")
+            assertTrue(ex.getMessage().contains("FULL")
                     || ex.getMessage().contains("PARTIAL")
                     || ex.getMessage().contains("SIMPLE")
                     || ex.getMessage().contains("MATCH"));
-            Assert.assertFalse(ex.getMessage().contains("TODO"));
+            assertFalse(ex.getMessage().contains("TODO"));
         }
     }
 
@@ -202,9 +202,9 @@ public class SQLParserImprovementsTest {
         String sql = "CREATE TABLE t (id INT IDENTITY('abc', 1))";
         try {
             SQLUtils.parseStatements(sql, DbType.mysql);
-            Assert.fail("expected ParserException");
+            fail("expected ParserException");
         } catch (ParserException ex) {
-            Assert.assertFalse(ex.getMessage().contains("TODO"));
+            assertFalse(ex.getMessage().contains("TODO"));
         }
     }
 
@@ -215,10 +215,10 @@ public class SQLParserImprovementsTest {
         String sql = "SELECT * FROM t UNPIVOT (val FOR col IN (SELECT x FROM y))";
         try {
             SQLUtils.parseStatements(sql, DbType.mysql);
-            Assert.fail("expected ParserException");
+            fail("expected ParserException");
         } catch (ParserException ex) {
-            Assert.assertTrue(ex.getMessage().contains("UNPIVOT") || ex.getMessage().contains("subquery"));
-            Assert.assertFalse(ex.getMessage().contains("TODO"));
+            assertTrue(ex.getMessage().contains("UNPIVOT") || ex.getMessage().contains("subquery"));
+            assertFalse(ex.getMessage().contains("TODO"));
         }
     }
 
@@ -228,48 +228,48 @@ public class SQLParserImprovementsTest {
     public void testParseTableCommentMySQL() {
         String sql = "CREATE TABLE t (id INT) COMMENT = 'test table'";
         List<SQLStatement> stmts = SQLUtils.parseStatements(sql, DbType.mysql);
-        Assert.assertEquals(1, stmts.size());
+        assertEquals(1, stmts.size());
         SQLCreateTableStatement stmt = (SQLCreateTableStatement) stmts.get(0);
-        Assert.assertNotNull(stmt.getComment());
-        Assert.assertTrue(stmt.getComment().toString().contains("test table"));
+        assertNotNull(stmt.getComment());
+        assertTrue(stmt.getComment().toString().contains("test table"));
     }
 
     @Test
     public void testParseTableCommentWithoutEquals() {
         String sql = "CREATE TABLE t (id INT) COMMENT 'another table'";
         List<SQLStatement> stmts = SQLUtils.parseStatements(sql, DbType.mysql);
-        Assert.assertEquals(1, stmts.size());
+        assertEquals(1, stmts.size());
         SQLCreateTableStatement stmt = (SQLCreateTableStatement) stmts.get(0);
-        Assert.assertNotNull(stmt.getComment());
+        assertNotNull(stmt.getComment());
     }
 
     @Test
     public void testParseTableEngineMySQL() {
         String sql = "CREATE TABLE t (id INT) ENGINE = InnoDB";
         List<SQLStatement> stmts = SQLUtils.parseStatements(sql, DbType.mysql);
-        Assert.assertEquals(1, stmts.size());
+        assertEquals(1, stmts.size());
         SQLCreateTableStatement stmt = (SQLCreateTableStatement) stmts.get(0);
-        Assert.assertNotNull(stmt.getEngine());
-        Assert.assertTrue(stmt.getEngine().toString().contains("InnoDB"));
+        assertNotNull(stmt.getEngine());
+        assertTrue(stmt.getEngine().toString().contains("InnoDB"));
     }
 
     @Test
     public void testParseTableEngineWithoutEquals() {
         String sql = "CREATE TABLE t (id INT) ENGINE InnoDB";
         List<SQLStatement> stmts = SQLUtils.parseStatements(sql, DbType.mysql);
-        Assert.assertEquals(1, stmts.size());
+        assertEquals(1, stmts.size());
         SQLCreateTableStatement stmt = (SQLCreateTableStatement) stmts.get(0);
-        Assert.assertNotNull(stmt.getEngine());
+        assertNotNull(stmt.getEngine());
     }
 
     @Test
     public void testParseTableCommentAndEngine() {
         String sql = "CREATE TABLE t (id INT) ENGINE = InnoDB COMMENT = 'my table'";
         List<SQLStatement> stmts = SQLUtils.parseStatements(sql, DbType.mysql);
-        Assert.assertEquals(1, stmts.size());
+        assertEquals(1, stmts.size());
         SQLCreateTableStatement stmt = (SQLCreateTableStatement) stmts.get(0);
-        Assert.assertNotNull(stmt.getEngine());
-        Assert.assertNotNull(stmt.getComment());
+        assertNotNull(stmt.getEngine());
+        assertNotNull(stmt.getComment());
     }
 
     // ========== 7. SQLExprParser: parseConstraintStateOptions ==========
@@ -278,16 +278,16 @@ public class SQLParserImprovementsTest {
     public void testConstraintEnable() {
         String sql = "CREATE TABLE t (id INT, CONSTRAINT pk PRIMARY KEY (id) ENABLE)";
         List<SQLStatement> stmts = SQLUtils.parseStatements(sql, DbType.oracle);
-        Assert.assertEquals(1, stmts.size());
+        assertEquals(1, stmts.size());
         SQLCreateTableStatement stmt = (SQLCreateTableStatement) stmts.get(0);
-        Assert.assertEquals(2, stmt.getTableElementList().size());
+        assertEquals(2, stmt.getTableElementList().size());
     }
 
     @Test
     public void testConstraintDisableNovalidate() {
         String sql = "CREATE TABLE t (id INT, CONSTRAINT pk PRIMARY KEY (id) DISABLE NOVALIDATE)";
         List<SQLStatement> stmts = SQLUtils.parseStatements(sql, DbType.oracle);
-        Assert.assertEquals(1, stmts.size());
+        assertEquals(1, stmts.size());
     }
 
     @Test
@@ -295,28 +295,28 @@ public class SQLParserImprovementsTest {
         // Base parser's parseUnique handles VALIDATE
         String sql = "CREATE TABLE t (id INT, UNIQUE (id) VALIDATE)";
         List<SQLStatement> stmts = SQLUtils.parseStatements(sql, DbType.oracle);
-        Assert.assertEquals(1, stmts.size());
+        assertEquals(1, stmts.size());
     }
 
     @Test
     public void testUniqueConstraintNovalidate() {
         String sql = "CREATE TABLE t (id INT, UNIQUE (id) NOVALIDATE)";
         List<SQLStatement> stmts = SQLUtils.parseStatements(sql, DbType.oracle);
-        Assert.assertEquals(1, stmts.size());
+        assertEquals(1, stmts.size());
     }
 
     @Test
     public void testUniqueConstraintRely() {
         String sql = "CREATE TABLE t (id INT, UNIQUE (id) RELY)";
         List<SQLStatement> stmts = SQLUtils.parseStatements(sql, DbType.oracle);
-        Assert.assertEquals(1, stmts.size());
+        assertEquals(1, stmts.size());
     }
 
     @Test
     public void testUniqueConstraintNorely() {
         String sql = "CREATE TABLE t (id INT, UNIQUE (id) NORELY)";
         List<SQLStatement> stmts = SQLUtils.parseStatements(sql, DbType.oracle);
-        Assert.assertEquals(1, stmts.size());
+        assertEquals(1, stmts.size());
     }
 
     // ========== 8. Round-trip: parse -> toString -> parse ==========
@@ -328,10 +328,10 @@ public class SQLParserImprovementsTest {
         String output = stmts.get(0).toString();
         // re-parse
         List<SQLStatement> stmts2 = SQLUtils.parseStatements(output, DbType.mysql);
-        Assert.assertEquals(1, stmts2.size());
+        assertEquals(1, stmts2.size());
         SQLCreateTableStatement stmt2 = (SQLCreateTableStatement) stmts2.get(0);
-        Assert.assertNotNull(stmt2.getEngine());
-        Assert.assertNotNull(stmt2.getComment());
+        assertNotNull(stmt2.getEngine());
+        assertNotNull(stmt2.getComment());
     }
 
     @Test
@@ -339,10 +339,10 @@ public class SQLParserImprovementsTest {
         String sql = "SELECT a FROM t ORDER BY a NULLS FIRST";
         List<SQLStatement> stmts = SQLUtils.parseStatements(sql, DbType.mysql);
         String output = stmts.get(0).toString();
-        Assert.assertTrue(output.toUpperCase().contains("NULLS FIRST"));
+        assertTrue(output.toUpperCase().contains("NULLS FIRST"));
         // re-parse
         List<SQLStatement> stmts2 = SQLUtils.parseStatements(output, DbType.mysql);
-        Assert.assertEquals(1, stmts2.size());
+        assertEquals(1, stmts2.size());
     }
 
     @Test
@@ -350,7 +350,7 @@ public class SQLParserImprovementsTest {
         String sql = "SELECT a FROM t ORDER BY a NULLS LAST";
         List<SQLStatement> stmts = SQLUtils.parseStatements(sql, DbType.mysql);
         String output = stmts.get(0).toString();
-        Assert.assertTrue(output.toUpperCase().contains("NULLS LAST"));
+        assertTrue(output.toUpperCase().contains("NULLS LAST"));
     }
 
     @Test
@@ -360,7 +360,7 @@ public class SQLParserImprovementsTest {
         List<SQLStatement> stmts = SQLUtils.parseStatements(sql, DbType.mysql);
         String output = stmts.get(0).toString();
         List<SQLStatement> stmts2 = SQLUtils.parseStatements(output, DbType.mysql);
-        Assert.assertEquals(1, stmts2.size());
+        assertEquals(1, stmts2.size());
     }
 
     // ========== 9. Supplemental: verify no TODO in common error paths ==========
@@ -370,11 +370,11 @@ public class SQLParserImprovementsTest {
         SQLStatementParser parser = new SQLStatementParser("COPY t FROM 'file.csv'");
         try {
             parser.parseStatementList();
-            Assert.fail("expected ParserException");
+            fail("expected ParserException");
         } catch (ParserException ex) {
-            Assert.assertTrue(ex.getMessage().contains("COPY"));
-            Assert.assertTrue(ex.getMessage().contains("not supported"));
-            Assert.assertFalse(ex.getMessage().contains("TODO"));
+            assertTrue(ex.getMessage().contains("COPY"));
+            assertTrue(ex.getMessage().contains("not supported"));
+            assertFalse(ex.getMessage().contains("TODO"));
         }
     }
 
@@ -383,11 +383,11 @@ public class SQLParserImprovementsTest {
         SQLStatementParser parser = new SQLStatementParser("ALTER TABLESPACE ts1 ADD DATAFILE 'file1'");
         try {
             parser.parseStatementList();
-            Assert.fail("expected ParserException");
+            fail("expected ParserException");
         } catch (ParserException ex) {
-            Assert.assertTrue(ex.getMessage().contains("ALTER TABLESPACE"));
-            Assert.assertTrue(ex.getMessage().contains("not supported"));
-            Assert.assertFalse(ex.getMessage().contains("TODO"));
+            assertTrue(ex.getMessage().contains("ALTER TABLESPACE"));
+            assertTrue(ex.getMessage().contains("not supported"));
+            assertFalse(ex.getMessage().contains("TODO"));
         }
     }
 
@@ -396,11 +396,11 @@ public class SQLParserImprovementsTest {
         SQLStatementParser parser = new SQLStatementParser("ALTER PROCEDURE proc1 COMPILE");
         try {
             parser.parseStatementList();
-            Assert.fail("expected ParserException");
+            fail("expected ParserException");
         } catch (ParserException ex) {
-            Assert.assertTrue(ex.getMessage().contains("ALTER PROCEDURE"));
-            Assert.assertTrue(ex.getMessage().contains("not supported"));
-            Assert.assertFalse(ex.getMessage().contains("TODO"));
+            assertTrue(ex.getMessage().contains("ALTER PROCEDURE"));
+            assertTrue(ex.getMessage().contains("not supported"));
+            assertFalse(ex.getMessage().contains("TODO"));
         }
     }
 
@@ -409,11 +409,11 @@ public class SQLParserImprovementsTest {
         SQLStatementParser parser = new SQLStatementParser("ALTER FUNCTION func1 COMPILE");
         try {
             parser.parseStatementList();
-            Assert.fail("expected ParserException");
+            fail("expected ParserException");
         } catch (ParserException ex) {
-            Assert.assertTrue(ex.getMessage().contains("ALTER FUNCTION"));
-            Assert.assertTrue(ex.getMessage().contains("not supported"));
-            Assert.assertFalse(ex.getMessage().contains("TODO"));
+            assertTrue(ex.getMessage().contains("ALTER FUNCTION"));
+            assertTrue(ex.getMessage().contains("not supported"));
+            assertFalse(ex.getMessage().contains("TODO"));
         }
     }
 

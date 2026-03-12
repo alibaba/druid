@@ -16,7 +16,9 @@
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
 import com.alibaba.druid.wall.WallUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * SQLServerWallTest
@@ -25,7 +27,8 @@ import junit.framework.TestCase;
  * @version 1.0, 2012-3-18
  * @see
  */
-public class MySqlWallTest10 extends TestCase {
+public class MySqlWallTest10 {
+    @Test
     public void test_true() throws Exception {
         assertTrue(WallUtils.isValidateMySql(//
                 "SELECT t.*,a.param_id FROM lhwtag AS t RIGHT JOIN lhwtag_relation AS a USING(`tag_id`) WHERE a.`type_id`=1 AND a.`param_id` IN ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9') ORDER BY t.`content_count`"));

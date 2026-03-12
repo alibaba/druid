@@ -23,18 +23,22 @@ import com.alibaba.druid.pool.DruidPooledCallableStatement;
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.pool.DruidPooledPreparedStatement.PreparedStatementKey;
 import com.alibaba.druid.pool.PreparedStatementHolder;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.InputStream;
 import java.io.Reader;
 import java.sql.*;
 
-public class PoolableCallableStatementTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class PoolableCallableStatementTest {
     private DruidDataSource dataSource = new DruidDataSource();
     protected DruidPooledConnection conn;
     protected MockCallableStatement raw;
     protected DruidPooledCallableStatement stmt;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         MockConnection mockConn = new MockConnection();
         DruidConnectionHolder connHolder = new DruidConnectionHolder(dataSource, mockConn, 0);
@@ -60,6 +64,7 @@ public class PoolableCallableStatementTest extends TestCase {
         assertEquals(2, raw.getOutParameters().size());
     }
 
+    @Test
     public void test_executeQuery_large() throws Exception {
         for (int i = 0; i < 1000 * 1000; ++i) {
             ResultSet rs = stmt.executeQuery();
@@ -67,11 +72,13 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_basic() throws Exception {
         assertEquals(raw, stmt.getCallableStatementRaw());
     }
 
     @SuppressWarnings("deprecation")
+    @Test
     public void test_callableStmt() throws Exception {
         assertTrue(stmt.wasNull() == false);
         stmt.getString(1);
@@ -111,6 +118,7 @@ public class PoolableCallableStatementTest extends TestCase {
         stmt.getBlob("1");
     }
 
+    @Test
     public void test_getByLabel_error() {
         {
             SQLException error = null;
@@ -286,6 +294,7 @@ public class PoolableCallableStatementTest extends TestCase {
     }
 
     @SuppressWarnings("deprecation")
+    @Test
     public void test_get_error() {
         {
             SQLException error = null;
@@ -449,6 +458,7 @@ public class PoolableCallableStatementTest extends TestCase {
 
     }
 
+    @Test
     public void test_getNClob() throws Exception {
         stmt.getNClob(1);
         stmt.getNClob("1");
@@ -474,6 +484,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_getNString() throws Exception {
         stmt.getNString(1);
         stmt.getNString("1");
@@ -499,6 +510,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_getNCharacterStream() throws Exception {
         stmt.getNCharacterStream(1);
         stmt.getNCharacterStream("1");
@@ -524,6 +536,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_getCharacterStream() throws Exception {
         stmt.getCharacterStream(1);
         stmt.getCharacterStream("1");
@@ -549,6 +562,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_updateCharacterStream_2() throws Exception {
         stmt.setCharacterStream(1, (Reader) null, 1L);
         stmt.setCharacterStream("1", (Reader) null, 1L);
@@ -574,6 +588,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_setNClob() throws Exception {
         stmt.setNClob(1, (Reader) null);
         stmt.setNClob("1", (Reader) null);
@@ -599,6 +614,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_setClob() throws Exception {
         stmt.setClob(1, (Reader) null);
         stmt.setClob("1", (Reader) null);
@@ -624,6 +640,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_setNCharacterStream() throws Exception {
         stmt.setNCharacterStream(1, (Reader) null);
         stmt.setNCharacterStream("1", (Reader) null);
@@ -649,6 +666,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_setCharacterStream() throws Exception {
         stmt.setCharacterStream(1, (Reader) null);
         stmt.setCharacterStream("1", (Reader) null);
@@ -674,6 +692,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_setBinaryStream() throws Exception {
         stmt.setBinaryStream(1, (InputStream) null);
         stmt.setBinaryStream("1", (InputStream) null);
@@ -699,6 +718,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_setBinaryStream_1() throws Exception {
         stmt.setBinaryStream(1, (InputStream) null, 1);
         stmt.setBinaryStream("1", (InputStream) null, 1);
@@ -724,6 +744,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_setBinaryStream_2() throws Exception {
         stmt.setBinaryStream(1, (InputStream) null, 1L);
         stmt.setBinaryStream("1", (InputStream) null, 1L);
@@ -749,6 +770,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_setAsciiStream() throws Exception {
         stmt.setAsciiStream(1, (InputStream) null);
         stmt.setAsciiStream("1", (InputStream) null);
@@ -774,6 +796,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_setBlob() throws Exception {
         stmt.setBlob(1, (InputStream) null);
         stmt.setBlob("1", (InputStream) null);
@@ -799,6 +822,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_setClob_1() throws Exception {
         stmt.setClob(1, (Clob) null);
         stmt.setClob("1", (Clob) null);
@@ -824,6 +848,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_setClob_2() throws Exception {
         stmt.setClob(1, (Reader) null, 1L);
         stmt.setClob("1", (Reader) null, 1L);
@@ -849,6 +874,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_setAsciiStream_1() throws Exception {
         stmt.setAsciiStream(1, (InputStream) null, 1L);
         stmt.setAsciiStream("1", (InputStream) null, 1L);
@@ -874,6 +900,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_setNull() throws Exception {
         stmt.setNull(1, Types.INTEGER, "Int");
         stmt.setNull("1", Types.INTEGER, "Int");
@@ -899,6 +926,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_setTimestamp() throws Exception {
         stmt.setTimestamp(1, (Timestamp) null);
         stmt.setTimestamp("1", (Timestamp) null);
@@ -924,6 +952,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_setTimestamp_1() throws Exception {
         stmt.setTimestamp(1, (Timestamp) null, null);
         stmt.setTimestamp("1", (Timestamp) null, null);
@@ -949,6 +978,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_setTime() throws Exception {
         stmt.setTime(1, (Time) null);
         stmt.setTime("1", (Time) null);
@@ -974,6 +1004,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_setTime_1() throws Exception {
         stmt.setTime(1, (Time) null, null);
         stmt.setTime("1", (Time) null, null);
@@ -999,6 +1030,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_setDate() throws Exception {
         stmt.setDate(1, (Date) null);
         stmt.setDate("1", (Date) null);
@@ -1024,6 +1056,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_setDate_1() throws Exception {
         stmt.setDate(1, (Date) null, null);
         stmt.setDate("1", (Date) null, null);
@@ -1049,6 +1082,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_setCharacterStream_1() throws Exception {
         stmt.setCharacterStream(1, (Reader) null, 1);
         stmt.setCharacterStream("1", (Reader) null, 1);
@@ -1074,6 +1108,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_setObject() throws Exception {
         stmt.setObject(1, null);
         stmt.setObject("1", null);
@@ -1099,6 +1134,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_setObject_1() throws Exception {
         stmt.setObject(1, null, Types.INTEGER);
         stmt.setObject("1", null, Types.INTEGER);
@@ -1124,6 +1160,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_setObject_2() throws Exception {
         stmt.setObject(1, null, Types.INTEGER, 2);
         stmt.setObject("1", null, Types.INTEGER, 2);
@@ -1149,6 +1186,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_setAsciiStream_2() throws Exception {
         stmt.setAsciiStream(1, (InputStream) null, 1);
         stmt.setAsciiStream("1", (InputStream) null, 1);
@@ -1174,6 +1212,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_setBytes() throws Exception {
         stmt.setBytes(1, null);
         stmt.setBytes("1", null);
@@ -1199,6 +1238,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_setString() throws Exception {
         stmt.setString(1, null);
         stmt.setString("1", null);
@@ -1224,6 +1264,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_setBigDecimal() throws Exception {
         stmt.setBigDecimal(1, null);
         stmt.setBigDecimal("1", null);
@@ -1249,6 +1290,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_setDouble() throws Exception {
         stmt.setDouble(1, 1.0D);
         stmt.setDouble("1", 1.0D);
@@ -1274,6 +1316,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_setFloat() throws Exception {
         stmt.setFloat(1, 1.0F);
         stmt.setFloat("1", 1.0F);
@@ -1299,6 +1342,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_setLong() throws Exception {
         stmt.setLong(1, 2);
         stmt.setLong("1", 2);
@@ -1324,6 +1368,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_setInt() throws Exception {
         stmt.setInt(1, 2);
         stmt.setInt("1", 2);
@@ -1349,6 +1394,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_setShort() throws Exception {
         stmt.setShort(1, Short.MAX_VALUE);
         stmt.setShort("1", Short.MAX_VALUE);
@@ -1374,6 +1420,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_setByte() throws Exception {
         stmt.setByte(1, Byte.MAX_VALUE);
         stmt.setByte("1", Byte.MAX_VALUE);
@@ -1399,6 +1446,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_getClob() throws Exception {
         stmt.getClob(1);
         stmt.getClob("1");
@@ -1424,6 +1472,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_getArray() throws Exception {
         stmt.getArray(1);
         stmt.getArray("1");
@@ -1449,6 +1498,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_getDate() throws Exception {
         stmt.getDate(1);
         stmt.getDate("1");
@@ -1474,6 +1524,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_getDate_1() throws Exception {
         stmt.getDate(1, null);
         stmt.getDate("1", null);
@@ -1499,6 +1550,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_getTime() throws Exception {
         stmt.getTime(1);
         stmt.getTime("1");
@@ -1524,6 +1576,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_getTime_1() throws Exception {
         stmt.getTime(1, null);
         stmt.getTime("1", null);
@@ -1549,6 +1602,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_getTimestamp() throws Exception {
         stmt.getTimestamp(1);
         stmt.getTimestamp("1");
@@ -1574,6 +1628,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_getTimestamp_1() throws Exception {
         stmt.getTimestamp(1, null);
         stmt.getTimestamp("1", null);
@@ -1599,6 +1654,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_getURL() throws Exception {
         stmt.getURL(1);
         stmt.getURL("1");
@@ -1624,6 +1680,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_setBlob_1() throws Exception {
         stmt.setBlob(1, (Blob) null);
         stmt.setBlob("1", (Blob) null);
@@ -1649,6 +1706,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_setSQLXML() throws Exception {
         stmt.setSQLXML(1, (SQLXML) null);
         stmt.setSQLXML("1", (SQLXML) null);
@@ -1674,6 +1732,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_getSQLXML() throws Exception {
         stmt.getSQLXML(1);
         stmt.getSQLXML("1");
@@ -1699,6 +1758,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_setBlob_2() throws Exception {
         stmt.setBlob(1, (InputStream) null, 1L);
         stmt.setBlob("1", (InputStream) null, 1L);
@@ -1724,6 +1784,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_setNClob_1() throws Exception {
         stmt.setNClob(1, (Reader) null, 1L);
         stmt.setNClob("1", (Reader) null, 1L);
@@ -1749,6 +1810,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_setNCharacterStream_1() throws Exception {
         stmt.setNCharacterStream(1, (Reader) null, 1L);
         stmt.setNCharacterStream("1", (Reader) null, 1L);
@@ -1774,6 +1836,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_setRowId() throws Exception {
         stmt.setRowId(1, (RowId) null);
         stmt.setRowId("1", (RowId) null);
@@ -1799,6 +1862,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_getRowId() throws Exception {
         stmt.getRowId(1);
         stmt.getRowId("1");
@@ -1824,6 +1888,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_setNString() throws Exception {
         stmt.setNString(1, (String) null);
         stmt.setNString("1", (String) null);
@@ -1849,6 +1914,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_getObject() throws Exception {
         stmt.getObject(1, (java.util.Map) null);
         stmt.getObject("1", (java.util.Map) null);
@@ -1874,6 +1940,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_setBoolean() throws Exception {
         stmt.setBoolean(1, true);
         stmt.setBoolean("1", true);
@@ -1899,6 +1966,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_setURL() throws Exception {
         stmt.setURL(1, null);
         stmt.setURL("1", null);
@@ -1924,6 +1992,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_setNClob_2() throws Exception {
         stmt.setNClob(1, (NClob) null);
         stmt.setNClob("1", (NClob) null);
@@ -1949,6 +2018,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_setNull_1() throws Exception {
         stmt.setNull(1, Types.INTEGER);
         stmt.setNull("1", Types.INTEGER);
@@ -1974,6 +2044,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_registerOutParameter() throws Exception {
         stmt.registerOutParameter(1, Types.INTEGER, "Int");
         stmt.registerOutParameter("1", Types.INTEGER, "Int");
@@ -1999,6 +2070,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_registerOutParameter_1() throws Exception {
         stmt.registerOutParameter(1, Types.INTEGER, 2);
         stmt.registerOutParameter("1", Types.INTEGER, 2);
@@ -2024,6 +2096,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @Test
     public void test_registerOutParameter_2() throws Exception {
         stmt.registerOutParameter(1, Types.INTEGER);
         stmt.registerOutParameter("1", Types.INTEGER);

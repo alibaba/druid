@@ -7,6 +7,8 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlCreateTableTest130_ads extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "CREATE TABLE IF NOT EXISTS hm_crm.crm_wdk_hm_store_poi_di\n" +

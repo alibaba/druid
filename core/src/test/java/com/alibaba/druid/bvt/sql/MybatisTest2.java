@@ -18,26 +18,32 @@ package com.alibaba.druid.bvt.sql;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.util.JdbcUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class MybatisTest2 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MybatisTest2 {
     private String sql = "select * from t where id = ${id}";
 
+    @Test
     public void test_mysql() throws Exception {
         assertEquals("SELECT *\nFROM t\nWHERE id = ${id}", SQLUtils.format(sql, JdbcUtils.MYSQL));
         assertEquals("SELECT *\nFROM t\nWHERE id = ${id}", SQLUtils.format(sql, JdbcUtils.OCEANBASE));
     }
 
+    @Test
     public void test_oracle() throws Exception {
         assertEquals("SELECT *\nFROM t\nWHERE id = ${id}", SQLUtils.format(sql, JdbcUtils.ORACLE));
         assertEquals("SELECT *\nFROM t\nWHERE id = ${id}", SQLUtils.format(sql, JdbcUtils.OCEANBASE_ORACLE));
         assertEquals("SELECT *\nFROM t\nWHERE id = ${id}", SQLUtils.format(sql, JdbcUtils.ALI_ORACLE));
     }
 
+    @Test
     public void test_postgres() throws Exception {
         assertEquals("SELECT *\nFROM t\nWHERE id = ${id}", SQLUtils.format(sql, JdbcUtils.POSTGRESQL));
     }
 
+    @Test
     public void test_sql92() throws Exception {
         assertEquals("SELECT *\nFROM t\nWHERE id = ${id}", SQLUtils.format(sql, (DbType) null));
     }

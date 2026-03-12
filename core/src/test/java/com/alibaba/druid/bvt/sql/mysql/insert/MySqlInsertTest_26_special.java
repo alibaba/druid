@@ -27,6 +27,8 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlInsertTest_26_special extends MysqlTest {
     public void test_insert_timestamp() throws Exception {
         String sql = "INSERT INTO SUNTEST(ID,NAME) VALUES(1,'\\_ASDFASDF')";

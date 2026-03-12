@@ -25,6 +25,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleInsertTest19 extends OracleTest {
     public void test_0() throws Exception {
         String sql = "insert into TB_DUOBAO_PARTICIPATE_NUMBER ( PARTICIPATE_NUMBER, PERIOD_ID, PRODUCT_ID,number_index)"

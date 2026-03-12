@@ -1,9 +1,12 @@
 package com.alibaba.druid.bvt.sql.odps;
 
 import com.alibaba.druid.sql.SQLUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class OdpsAlterTableDropPartitionTest2 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OdpsAlterTableDropPartitionTest2 {
+    @Test
     public void test_if() throws Exception {
         String sql = "alter table myp.table2 drop if exists  partition(ds=20161209) \n";
         assertEquals("ALTER TABLE myp.table2\n" +

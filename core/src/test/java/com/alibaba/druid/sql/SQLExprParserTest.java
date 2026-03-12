@@ -25,47 +25,54 @@ import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLUnaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.parser.SQLExprParser;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
-public class SQLExprParserTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class SQLExprParserTest {
+    @Test
     public void test_binary() throws Exception {
         SQLExprParser exprParser = new SQLExprParser("AGE > 5");
         SQLBinaryOpExpr binaryOpExpr = (SQLBinaryOpExpr) exprParser.expr();
 
-        Assert.assertEquals(SQLBinaryOperator.GreaterThan, binaryOpExpr.getOperator());
+        assertEquals(SQLBinaryOperator.GreaterThan, binaryOpExpr.getOperator());
 
         SQLIdentifierExpr left = (SQLIdentifierExpr) binaryOpExpr.getLeft();
         SQLIntegerExpr right = (SQLIntegerExpr) binaryOpExpr.getRight();
 
-        Assert.assertEquals("AGE", left.getName());
-        Assert.assertEquals(5, right.getNumber().intValue());
+        assertEquals("AGE", left.getName());
+        assertEquals(5, right.getNumber().intValue());
     }
 
+    @Test
     public void test_primary_case() throws Exception {
         SQLExprParser exprParser = new SQLExprParser("CASE WHEN 1 = 1 THEN 1 ELSE 0 END");
-        Assert.assertTrue(exprParser.primary() instanceof SQLCaseExpr);
+        assertTrue(exprParser.primary() instanceof SQLCaseExpr);
     }
 
+    @Test
     public void test_primary_not_parenthesized() throws Exception {
         SQLExprParser exprParser = new SQLExprParser("NOT (1 = 1)");
-        Assert.assertTrue(exprParser.primary() instanceof SQLNotExpr);
+        assertTrue(exprParser.primary() instanceof SQLNotExpr);
     }
 
+    @Test
     public void test_primary_negative_integer() throws Exception {
         SQLExprParser exprParser = new SQLExprParser("-1");
         SQLIntegerExpr expr = (SQLIntegerExpr) exprParser.primary();
-        Assert.assertEquals(-1, expr.getNumber().intValue());
+        assertEquals(-1, expr.getNumber().intValue());
     }
 
+    @Test
     public void test_primary_positive_unary() throws Exception {
         SQLExprParser exprParser = new SQLExprParser("+1");
         SQLUnaryExpr expr = (SQLUnaryExpr) exprParser.primary();
-        Assert.assertEquals(SQLUnaryOperator.Plus, expr.getOperator());
+        assertEquals(SQLUnaryOperator.Plus, expr.getOperator());
     }
 
+    @Test
     public void test_primary_variant_question() throws Exception {
         SQLExprParser exprParser = new SQLExprParser("?");
-        Assert.assertTrue(exprParser.primary() instanceof SQLVariantRefExpr);
+        assertTrue(exprParser.primary() instanceof SQLVariantRefExpr);
     }
 }

@@ -22,11 +22,14 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class MySqlSelectTest_114 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlSelectTest_114 {
+    @Test
     public void test_0() throws Exception {
         String sql = "select count(0) from (select id from auth WHERE 1=1 AND/**/b=2 ORDER BY create_time DESC) as total";
 

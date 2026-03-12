@@ -7,6 +7,8 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlCreateTableTest142 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "CREATE TABLE `think_member_discount` (\n" +

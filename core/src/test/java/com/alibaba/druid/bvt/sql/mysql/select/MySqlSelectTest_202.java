@@ -21,11 +21,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class MySqlSelectTest_202 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlSelectTest_202 {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT CURRENT_DATE, CURRENT_TIMESTAMP, CURRENT_TIME, CURDATE, LOCALTIME, LOCALTIMESTAMP;";
 

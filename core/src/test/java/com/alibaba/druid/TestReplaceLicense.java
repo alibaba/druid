@@ -16,14 +16,16 @@
 package com.alibaba.druid;
 
 import com.alibaba.druid.util.Utils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.*;
 
-public class TestReplaceLicense extends TestCase {
+public class TestReplaceLicense {
     private String license;
     private String lineSeparator;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("License.txt");
         Reader reader = new InputStreamReader(is);
@@ -35,6 +37,7 @@ public class TestReplaceLicense extends TestCase {
         // sun.security.action.GetPropertyAction("line.separator"));
     }
 
+    @Test
     public void test_0() throws Exception {
         File file = new File("/usr/alibaba/workspace/druid");
         listFile(file);

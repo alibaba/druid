@@ -17,15 +17,17 @@ package com.alibaba.druid.bvt.sql.oracle;
 
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.util.JdbcUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class MergeTest extends TestCase {
+public class MergeTest {
+    @Test
     public void test_mergeCall() throws Exception {
         String sql = "{ call INTERFACE_DATA_EXTRACTION.INVOICE_INFO(?,?,?)}";
 
         ParameterizedOutputVisitorUtils.parameterize(sql, null);
     }
 
+    @Test
     public void test_mergeCall_oracle() throws Exception {
         String sql = "{ call INTERFACE_DATA_EXTRACTION.INVOICE_INFO(?,?,?)}";
 
@@ -34,6 +36,7 @@ public class MergeTest extends TestCase {
         ParameterizedOutputVisitorUtils.parameterize(sql, JdbcUtils.ALI_ORACLE);
     }
 
+    @Test
     public void test_mergeCall_mysql() throws Exception {
         String sql = "{ call INTERFACE_DATA_EXTRACTION.INVOICE_INFO(?,?,?)}";
 

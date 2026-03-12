@@ -1,9 +1,12 @@
 package com.alibaba.druid.bvt.sql.odps;
 
 import com.alibaba.druid.sql.SQLUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class OdpsFormatCommentTest15 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OdpsFormatCommentTest15 {
+    @Test
     public void test_column_comment() throws Exception {
         String sql = "create table t1 (f0 bigint) partitioned by (ds string, hh string);";
         assertEquals("CREATE TABLE t1 ("

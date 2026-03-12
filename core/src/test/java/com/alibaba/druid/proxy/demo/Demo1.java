@@ -16,28 +16,30 @@
 package com.alibaba.druid.proxy.demo;
 
 import com.alibaba.druid.stat.JdbcStatManager;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 
-public class Demo1 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class Demo1 {
+    @Test
     public void test_0() throws Exception {
         JdbcStatManager.getInstance().reset(); // 重置计数器
 
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getConnectionStat().getConnectCount());
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getConnectionStat().getCloseCount());
+        assertEquals(0, JdbcStatManager.getInstance().getConnectionStat().getConnectCount());
+        assertEquals(0, JdbcStatManager.getInstance().getConnectionStat().getCloseCount());
 
         String url = "jdbc:wrap-jdbc:filters=default:name=preCallTest:jdbc:derby:memory:Demo1;create=true";
         Connection conn = DriverManager.getConnection(url);
 
-        Assert.assertEquals(1, JdbcStatManager.getInstance().getConnectionStat().getConnectCount());
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getConnectionStat().getCloseCount());
+        assertEquals(1, JdbcStatManager.getInstance().getConnectionStat().getConnectCount());
+        assertEquals(0, JdbcStatManager.getInstance().getConnectionStat().getCloseCount());
 
         conn.close();
 
-        Assert.assertEquals(1, JdbcStatManager.getInstance().getConnectionStat().getConnectCount());
-        Assert.assertEquals(1, JdbcStatManager.getInstance().getConnectionStat().getCloseCount());
+        assertEquals(1, JdbcStatManager.getInstance().getConnectionStat().getConnectCount());
+        assertEquals(1, JdbcStatManager.getInstance().getConnectionStat().getCloseCount());
     }
 }

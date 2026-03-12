@@ -9,6 +9,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_175_hints extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SELECT/!TDDL:t1.id=1 and t2.id=1*/ * FROM t1 INNER JOIN SELECT val FROM t2 WHERE id=1";

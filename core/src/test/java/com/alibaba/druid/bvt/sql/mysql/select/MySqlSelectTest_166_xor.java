@@ -8,6 +8,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_166_xor extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select 1 from corona_select_multi_db_multi_tb where (1 XOR 2 ) between 3 and 4";

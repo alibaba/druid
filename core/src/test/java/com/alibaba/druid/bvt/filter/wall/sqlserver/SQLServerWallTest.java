@@ -16,7 +16,11 @@
 package com.alibaba.druid.bvt.filter.wall.sqlserver;
 
 import com.alibaba.druid.wall.WallUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * SQLServerWallTest
@@ -25,30 +29,24 @@ import junit.framework.TestCase;
  * @version 1.0, 2012-3-18
  * @see
  */
-public class SQLServerWallTest extends TestCase {
-    /**
-     * @param name
-     */
-    public SQLServerWallTest(String name) {
-        super(name);
-    }
-
+public class SQLServerWallTest {
     /*
      * (non-Javadoc)
      * @see junit.framework.TestCase#setUp()
      */
+    @BeforeEach
     protected void setUp() throws Exception {
-        super.setUp();
     }
 
     /*
      * (non-Javadoc)
      * @see junit.framework.TestCase#tearDown()
      */
+    @AfterEach
     protected void tearDown() throws Exception {
-        super.tearDown();
     }
 
+    @Test
     public void test_stuff() throws Exception {
         assertFalse(WallUtils.isValidateSqlServer("SELECT * from table where version = @@version"));
         assertFalse(WallUtils.isValidateSqlServer("SELECT 1 — comment"));

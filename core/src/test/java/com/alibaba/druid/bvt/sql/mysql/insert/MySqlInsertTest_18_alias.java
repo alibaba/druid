@@ -23,6 +23,8 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlInsertTest_18_alias extends MysqlTest {
     public void test_insert_rollback_on_fail() throws Exception {
         String sql = "INSERT INTO t1 (fval) values (\"abc\")";

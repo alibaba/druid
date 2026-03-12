@@ -18,11 +18,14 @@ package com.alibaba.druid.bvt.sql.oracle.visitor;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class OracleSchemaStatVisitorTest6 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OracleSchemaStatVisitorTest6 {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT 'SYS_B_0',COUNT('$SYS_B_1') AS DEVICECOUNT "
                 + "FROM ("

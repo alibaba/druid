@@ -22,6 +22,8 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_mtr
         extends MysqlTest {
     public void test_0() throws Exception {

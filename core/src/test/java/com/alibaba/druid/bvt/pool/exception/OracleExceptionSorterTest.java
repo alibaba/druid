@@ -6,14 +6,19 @@ import com.alibaba.druid.pool.vendor.OracleExceptionSorter;
 import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.test.util.OracleMockDriver;
 import com.alibaba.druid.util.JdbcUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class OracleExceptionSorterTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OracleExceptionSorterTest {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
 
@@ -28,11 +33,12 @@ public class OracleExceptionSorterTest extends TestCase {
         dataSource.setFilters("log4j");
     }
 
-    @Override
+        @AfterEach
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
     }
 
+    @Test
     public void test_connect() throws Exception {
         String sql = "SELECT 1";
         {

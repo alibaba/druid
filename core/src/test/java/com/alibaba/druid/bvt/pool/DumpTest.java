@@ -2,13 +2,17 @@ package com.alibaba.druid.bvt.pool;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.JdbcSqlStat;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
 import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /*
  * Copyright 1999-2018 Alibaba Group Holding Ltd.
@@ -25,9 +29,10 @@ import java.util.Map;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class DumpTest extends TestCase {
+public class DumpTest {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
@@ -37,10 +42,12 @@ public class DumpTest extends TestCase {
         dataSource.setPoolPreparedStatements(true);
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
     }
 
+    @Test
     public void testWrap() throws Exception {
         String sql = "select ?";
         Connection conn = dataSource.getConnection();
@@ -56,6 +63,7 @@ public class DumpTest extends TestCase {
         dataSource.dump();
     }
 
+    @Test
     public void testToString() throws Exception {
         {
             String sql = "select ?";
@@ -85,6 +93,7 @@ public class DumpTest extends TestCase {
         dataSource.toString();
     }
 
+    @Test
     public void test_getPoolingConnectionInfo() throws Exception {
         String sql = "select ?, ?";
         Connection conn = dataSource.getConnection();
@@ -104,6 +113,7 @@ public class DumpTest extends TestCase {
         assertEquals(2, poolingList.size());
     }
 
+    @Test
     public void test_getStatData() throws Exception {
         String sql = "select ?, ?";
         Connection conn = dataSource.getConnection();
@@ -133,6 +143,7 @@ public class DumpTest extends TestCase {
         assertNotNull(dataSource.getSqlStat((int) sqlStat.getId()));
     }
 
+    @Test
     public void test_getReference() throws Exception {
         dataSource.getReference();
     }

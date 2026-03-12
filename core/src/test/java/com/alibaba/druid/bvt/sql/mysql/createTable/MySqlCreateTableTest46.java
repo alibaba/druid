@@ -22,6 +22,8 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlCreateTableTest46 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "CREATE TABLE lookup" +

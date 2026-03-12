@@ -25,6 +25,8 @@ import com.alibaba.druid.sql.parser.SQLParserFeature;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleSelectTest86_comment extends OracleTest {
     public void test_0() throws Exception {
         String sql = //

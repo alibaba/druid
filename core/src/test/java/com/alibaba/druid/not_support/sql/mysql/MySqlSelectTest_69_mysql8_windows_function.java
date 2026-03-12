@@ -26,6 +26,8 @@ import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_69_mysql8_windows_function extends MysqlTest {
     public static void test_0() throws Exception {
         String sql = "SELECT\n" +

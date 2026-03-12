@@ -24,6 +24,8 @@ import com.alibaba.druid.sql.parser.SQLStatementParser;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleMergeTest9 extends OracleTest {
     public void test_0() throws Exception {
         String sql = "MERGE INTO tb_xxx_test t1\n" +

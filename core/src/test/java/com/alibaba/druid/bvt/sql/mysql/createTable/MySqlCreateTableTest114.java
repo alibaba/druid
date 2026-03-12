@@ -12,6 +12,8 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.sql.Types;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlCreateTableTest114 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "CREATE TABLE best_sign_cont_task ( \n" +

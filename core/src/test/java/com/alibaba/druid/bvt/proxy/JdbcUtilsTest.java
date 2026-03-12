@@ -23,7 +23,8 @@ import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.Utils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -36,12 +37,16 @@ import java.sql.Statement;
 import java.sql.Types;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class JdbcUtilsTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class JdbcUtilsTest {
+    @AfterEach
     protected void tearDown() throws Exception {
         DruidDriver.getProxyDataSources().clear();
         assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
 
+    @Test
     public void test_print() throws Exception {
         final AtomicInteger nextCount = new AtomicInteger(2);
 
@@ -102,6 +107,7 @@ public class JdbcUtilsTest extends TestCase {
         JdbcUtils.printResultSet(rs);
     }
 
+    @Test
     public void test_close() throws Exception {
         JdbcUtils.close((Connection) null);
         JdbcUtils.close((Statement) null);
@@ -141,6 +147,7 @@ public class JdbcUtilsTest extends TestCase {
         new JdbcUtils();
     }
 
+    @Test
     public void test_getTypeName() {
         JdbcUtils.getTypeName(Types.ARRAY);
         JdbcUtils.getTypeName(Types.BIGINT);
@@ -179,6 +186,7 @@ public class JdbcUtilsTest extends TestCase {
         JdbcUtils.getTypeName(Types.OTHER);
     }
 
+    @Test
     public void test_read() throws Exception {
         {
             Exception error = null;

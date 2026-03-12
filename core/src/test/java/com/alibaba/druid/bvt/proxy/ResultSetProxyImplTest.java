@@ -23,21 +23,26 @@ import com.alibaba.druid.proxy.jdbc.DataSourceProxyConfig;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxyImpl;
 import com.alibaba.druid.proxy.jdbc.ResultSetProxy;
 import com.alibaba.druid.stat.JdbcStatManager;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.Reader;
 import java.sql.Connection;
 import java.sql.NClob;
 import java.sql.Statement;
 
-public class ResultSetProxyImplTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class ResultSetProxyImplTest {
     String sql = "SELECT 1";
 
+    @AfterEach
     protected void tearDown() throws Exception {
         DruidDriver.getProxyDataSources().clear();
         assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
 
+    @Test
     public void test_resultset() throws Exception {
         MockDriver driver = new MockDriver();
         DataSourceProxyConfig config = new DataSourceProxyConfig();

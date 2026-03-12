@@ -1,9 +1,12 @@
 package com.alibaba.druid.bvt.utils;
 
 import com.alibaba.druid.util.jdbc.LocalResultSet;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class LocalResultSetTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class LocalResultSetTest {
+    @Test
     public void test_0() throws Exception {
         LocalResultSet rs = new LocalResultSet(null);
         rs.getRows().add(new Object[1]);

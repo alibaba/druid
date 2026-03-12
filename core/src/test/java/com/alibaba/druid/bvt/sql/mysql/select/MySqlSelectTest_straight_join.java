@@ -24,6 +24,8 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_straight_join extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select count(*) from nation n1 join nation n2 on n1.nationkey = n2.nationkey straight_join nation n3 on n2.nationkey=n3.nationkey;";

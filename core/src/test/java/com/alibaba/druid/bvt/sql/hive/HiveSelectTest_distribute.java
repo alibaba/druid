@@ -20,10 +20,13 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.testutil.ParserTestUtils;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class HiveSelectTest_distribute
-        extends TestCase {
+ {
+    @Test
     public void test_0() throws Exception {
         String sql = "select * from LD_aly.fct_pay_ord_cn_di t1 distribute by buyer_id sort by seller_id";
 

@@ -2,16 +2,19 @@ package com.alibaba.druid.util;
 
 import com.alibaba.druid.pool.DruidAbstractDataSource;
 import com.alibaba.druid.pool.DruidDataSource;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Properties;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
  * @author lizongbo
  */
-public class DruidDataSourceUtilsTest extends TestCase {
+public class DruidDataSourceUtilsTest {
+    @Test
     public void testConfigFromProperties() {
         Properties properties = new Properties();
 //DruidAbstractDataSource fields
@@ -454,6 +457,7 @@ public class DruidDataSourceUtilsTest extends TestCase {
         //assertEquals(druidLoadSpifilterSkip, String.valueOf(dataSource.isLoadSpifilterSkip()));
     }
 
+    @Test
     public void testGenTestCode() {
         for (Field field : DruidAbstractDataSource.class.getDeclaredFields()) {
             if (Modifier.isStatic(field.getModifiers())) {

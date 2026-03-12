@@ -16,12 +16,15 @@
 package com.alibaba.druid.bvt.filter.wall;
 
 import com.alibaba.druid.wall.spi.OracleWallProvider;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author wenshao
  */
-public class WallDenyTableTest extends TestCase {
+public class WallDenyTableTest {
+    @Test
     public void testORACLE() throws Exception {
         String sql = "SELECT *FROM T UNION SELECT F1, F2 FROM SYS.ABC";
 

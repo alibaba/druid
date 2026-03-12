@@ -18,9 +18,12 @@ package com.alibaba.druid.bvt.sql.oracle;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class OracleLiteralTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OracleLiteralTest {
+    @Test
     public void test_oracle() throws Exception {
         String sql = "SELECT FROM_TZ(TIMESTAMP '2007-11-20 08:00:00', '3:00') FROM DUAL;";
 
@@ -36,6 +39,7 @@ public class OracleLiteralTest extends TestCase {
         System.out.println(text);
     }
 
+    @Test
     public void test_date() throws Exception {
         String sql = "SELECT DATE '1998-12-25' FROM DUAL;";
 

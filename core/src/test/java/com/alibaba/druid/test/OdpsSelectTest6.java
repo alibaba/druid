@@ -19,14 +19,16 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.odps.parser.OdpsStatementParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
-import junit.framework.TestCase;
 import org.apache.commons.io.FileUtils;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.util.List;
 
-public class OdpsSelectTest6 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OdpsSelectTest6 {
+    @Test
     public void test_distribute_by() throws Exception {
         File file = new File("/Users/wenshao/Downloads/datasafe_base_dev.udf_test.txt");
         String sql = FileUtils.readFileToString(file, "UTF-8");
@@ -35,12 +37,12 @@ public class OdpsSelectTest6 extends TestCase {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
 
-//        Assert.assertEquals("SELECT *"
+//        assertEquals("SELECT *"
 //                + "\nFROM t"
 //                + "\nWHERE ds = '20160303'"
 //                + "\n\tAND hour IN ('18')", SQLUtils.formatOdps(sql));

@@ -25,9 +25,12 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableChangeCo
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.Token;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class MySqlAlterTableTest_40_change extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlAlterTableTest_40_change {
+    @Test
     public void test_alter_constraint() throws Exception {
         String sql = "alter table sdfwef change column a c int";
         MySqlStatementParser parser = new MySqlStatementParser(sql);

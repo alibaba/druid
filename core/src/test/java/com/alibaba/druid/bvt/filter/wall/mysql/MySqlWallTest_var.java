@@ -16,7 +16,9 @@
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
 import com.alibaba.druid.wall.WallUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * SQLServerWallTest
@@ -25,27 +27,32 @@ import junit.framework.TestCase;
  * @version 1.0, 2012-3-18
  * @see
  */
-public class MySqlWallTest_var extends TestCase {
+public class MySqlWallTest_var {
+    @Test
     public void test_true() throws Exception {
         assertTrue(WallUtils.isValidateMySql(//
                 "SELECT @@GLOBAL.sql_mode"));
     }
 
+    @Test
     public void test_true_1() throws Exception {
         assertTrue(WallUtils.isValidateMySql(//
                 "SELECT @@SESSION.sql_mode;"));
     }
 
+    @Test
     public void test_false() throws Exception {
         assertFalse(WallUtils.isValidateMySql(//
                 "SELECT * FROM T WHERE @@SESSION.sql_mode = 'ANSI'"));
     }
 
+    @Test
     public void test_true2() throws Exception {
         assertTrue(WallUtils.isValidateMySql(//
                 "SELECT * FROM T WHERE @@sql_mode = 'ANSI'"));
     }
 
+    @Test
     public void test_false_1() throws Exception {
         assertFalse(WallUtils.isValidateMySql(//
                 "SELECT * FROM T WHERE @@basedir = 'ANSI'"));

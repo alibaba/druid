@@ -5,11 +5,11 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -29,24 +29,24 @@ import java.util.zip.GZIPInputStream;
 public class H2OutputVisitorTest {
     private static final Log LOG = LogFactory.getLog(H2OutputVisitorTest.class);
 
-    @BeforeClass
+    @BeforeAll
     public static void loadDriver() {
         org.h2.Driver.load();
     }
 
-    @AfterClass
+    @AfterAll
     public static void unloadDriver() {
         org.h2.Driver.unload();
     }
 
     private Connection connection;
 
-    @Before
+    @BeforeEach
     public void initConnection() throws SQLException {
         connection = DriverManager.getConnection("jdbc:h2:mem:test;MODE=MySQL");
     }
 
-    @After
+    @AfterEach
     public void closeConnection() throws SQLException {
         connection.close();
     }

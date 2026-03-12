@@ -21,26 +21,32 @@ import com.alibaba.druid.sql.dialect.h2.visitor.H2OutputVisitor;
 import com.alibaba.druid.sql.dialect.h2.visitor.H2SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.Utils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.List;
 
-public class H2ResourceTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class H2ResourceTest {
+    @Test
     public void test_0() throws Exception {
         exec_test("bvt/parser/h2-0.txt");
     }
 
+    @Test
     public void test_1() throws Exception {
         exec_test("bvt/parser/h2-1.txt");
     }
 
+    @Test
     public void test_2() throws Exception {
         exec_test("bvt/parser/h2-2.txt");
     }
 
+    @Test
     public void test_3() throws Exception {
         exec_test("bvt/parser/h2-3.txt");
     }

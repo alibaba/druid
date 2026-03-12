@@ -18,9 +18,13 @@ package com.alibaba.druid.bvt.proxy;
 import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.stat.JdbcConnectionStat;
 import com.alibaba.druid.stat.JdbcStatManager;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
-public class StatisticTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class StatisticTest {
+    @Test
     public void test_stat() throws Exception {
         JdbcConnectionStat stat = new JdbcConnectionStat();
         assertEquals(null, stat.getConnectLastTime());
@@ -30,6 +34,7 @@ public class StatisticTest extends TestCase {
         assertEquals(2, stat.getActiveMax());
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         DruidDriver.getProxyDataSources().clear();
         assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());

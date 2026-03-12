@@ -6,14 +6,17 @@ import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by wenshao on 12/07/2017.
  */
-public class Issue2049 extends TestCase {
+public class Issue2049 {
+    @Test
     public void test_0() throws Exception {
         String sql = "select * from emp a,dmp b;";
 

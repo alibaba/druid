@@ -22,6 +22,8 @@ import com.alibaba.druid.sql.parser.SQLParserFeature;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_100_alias extends MysqlTest {
     public void test_2() throws Exception {
         String sql = "\n" +

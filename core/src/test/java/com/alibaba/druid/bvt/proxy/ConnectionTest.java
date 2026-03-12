@@ -18,13 +18,18 @@ package com.alibaba.druid.bvt.proxy;
 import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.util.JdbcUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.*;
 
-public class ConnectionTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class ConnectionTest {
     private static String create_url = "jdbc:wrap-jdbc:filters=default,commonLogging,log4j:name=demo:jdbc:derby:memory:connectionTestDB;create=true";
 
+    @BeforeEach
     protected void setUp() throws Exception {
         Class.forName("com.alibaba.druid.proxy.DruidDriver");
 
@@ -51,6 +56,7 @@ public class ConnectionTest extends TestCase {
         conn.close();
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dropTable();
         DruidDriver.getProxyDataSources().clear();
@@ -58,6 +64,7 @@ public class ConnectionTest extends TestCase {
     }
 
     @SuppressWarnings("deprecation")
+    @Test
     public void test_connection() throws Exception {
         Connection conn = null;
         PreparedStatement pstmt = null;

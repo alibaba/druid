@@ -2,9 +2,12 @@ package com.alibaba.druid.sql.parser;
 
 import com.alibaba.druid.sql.testutil.ParserTestUtils;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class SQLParserRefactorRegressionTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class SQLParserRefactorRegressionTest {
+    @Test
     public void test_round_trip_behavior_equivalence() {
         String sql = "select id from t where k between 1 and 3 order by id";
         String first = ParserTestUtils.parseSingleStatement(sql, JdbcConstants.MYSQL).toString();
@@ -13,6 +16,7 @@ public class SQLParserRefactorRegressionTest extends TestCase {
         assertEquals(first, second);
     }
 
+    @Test
     public void test_error_locality_contains_token_context() {
         String sql = "select * from t where";
         try {

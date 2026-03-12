@@ -11,6 +11,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_148_extract extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SELECT EXTRACT(YEAR FROM '2008-01-02') >> 3 FROM corona_select_one_db_one_tb";

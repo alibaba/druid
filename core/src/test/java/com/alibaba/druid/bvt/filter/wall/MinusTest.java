@@ -2,9 +2,12 @@ package com.alibaba.druid.bvt.filter.wall;
 
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class MinusTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MinusTest {
+    @Test
     public void test_false() throws Exception {
         WallConfig config = new WallConfig();
         config.setIntersectAllow(false);
@@ -12,6 +15,7 @@ public class MinusTest extends TestCase {
                 "SELECT * FROM A Intersect SELECT * FROM B", config));
     }
 
+    @Test
     public void test_true() throws Exception {
         assertTrue(WallUtils.isValidateOracle(//
                 "SELECT * FROM A Intersect SELECT * FROM B"));

@@ -17,14 +17,14 @@ package com.alibaba.druid.sql;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class OnlineOracleTest3 extends TestCase {
+public class OnlineOracleTest3 {
     private String jdbcUrl;
     private String user;
     private String password;
@@ -46,6 +46,7 @@ public class OnlineOracleTest3 extends TestCase {
 //        dataSource.setFilters("wall");
     }
 
+    @Test
     public void test_connect() throws Exception {
         executeQuery("select UID, USER FROM DUAL");
     }

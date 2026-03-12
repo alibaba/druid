@@ -10,6 +10,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlCreateTable_like_test extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "CREATE TABLE like_test (LIKE t1)";

@@ -6,11 +6,14 @@ import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class Issue2876 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class Issue2876 {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT CONCAT(\"'\",b.PRIMARY_ID,\"'\") \n" +
                 "FROM s_user_session_attributes a \n" +

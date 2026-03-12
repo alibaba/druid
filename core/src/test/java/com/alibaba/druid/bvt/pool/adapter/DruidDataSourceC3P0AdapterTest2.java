@@ -24,6 +24,8 @@ import javax.sql.DataSource;
 
 import java.io.Closeable;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class DruidDataSourceC3P0AdapterTest2 extends PoolTestCase {
     public void test_0() throws Exception {
         assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());

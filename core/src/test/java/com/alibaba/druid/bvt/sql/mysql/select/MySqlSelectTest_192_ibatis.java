@@ -7,6 +7,8 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_192_ibatis extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select * from ${table_name} \n" +

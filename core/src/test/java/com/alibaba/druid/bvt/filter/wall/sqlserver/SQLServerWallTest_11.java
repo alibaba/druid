@@ -17,14 +17,17 @@ package com.alibaba.druid.bvt.filter.wall.sqlserver;
 
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.SQLServerWallProvider;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * SQLServerWallTest
  *
  * @see
  */
-public class SQLServerWallTest_11 extends TestCase {
+public class SQLServerWallTest_11 {
+    @Test
     public void test_true() throws Exception {
         WallProvider provider = new SQLServerWallProvider();
         provider.getConfig().setCommentAllow(true);

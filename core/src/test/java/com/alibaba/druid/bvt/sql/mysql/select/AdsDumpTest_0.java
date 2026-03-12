@@ -8,6 +8,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class AdsDumpTest_0 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "/*+dump-merge=true*/DUMP DATA SELECT amp.buyer_add_cart_info.buyer_id,amp.buyer_add_cart_info.pre_score,amp.buyer_add_cart_info.cart_price FROM amp.buyer_add_cart_info  "

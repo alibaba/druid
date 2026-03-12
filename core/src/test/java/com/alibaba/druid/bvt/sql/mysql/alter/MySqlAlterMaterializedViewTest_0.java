@@ -19,9 +19,12 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class MySqlAlterMaterializedViewTest_0 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlAlterMaterializedViewTest_0 {
+    @Test
     public void test_alter_first() throws Exception {
         String sql = "ALTER MATERIALIZED VIEW view_name\n" +
                 "REFRESH COMPLETE ON DEMAND\n" +
@@ -35,6 +38,7 @@ public class MySqlAlterMaterializedViewTest_0 extends TestCase {
                 "ENABLE QUERY REWRITE", SQLUtils.toMySqlString(stmt));
     }
 
+    @Test
     public void test_alter_0() throws Exception {
         SQLStatement stmt = SQLUtils.parseSingleMysqlStatement(
                 "ALTER MATERIALIZED VIEW myview \n" +
@@ -44,6 +48,7 @@ public class MySqlAlterMaterializedViewTest_0 extends TestCase {
                 "DISABLE QUERY REWRITE", SQLUtils.toMySqlString(stmt));
     }
 
+    @Test
     public void test_alter_1() throws Exception {
         String sql = "ALTER MATERIALIZED VIEW myview \n" +
                 "REFRESH FAST ON DEMAND \n" +
@@ -57,6 +62,7 @@ public class MySqlAlterMaterializedViewTest_0 extends TestCase {
                 "DISABLE QUERY REWRITE", SQLUtils.toMySqlString(stmt));
     }
 
+    @Test
     public void test_alter_2() throws Exception {
         String sql = "ALTER MATERIALIZED VIEW view_name\n" +
                 "REFRESH COMPLETE ON DEMAND";
@@ -68,6 +74,7 @@ public class MySqlAlterMaterializedViewTest_0 extends TestCase {
                 "REFRESH COMPLETE ON DEMAND", SQLUtils.toMySqlString(stmt));
     }
 
+    @Test
     public void test_alter_3() throws Exception {
         String sql = "ALTER MATERIALIZED VIEW view_name\n" +
                 "REFRESH COMPLETE ON DEMAND " +
@@ -82,6 +89,7 @@ public class MySqlAlterMaterializedViewTest_0 extends TestCase {
                 "START WITH '2020-08-20 14:50:00' NEXT current_date() + INTERVAL 15 DAY", SQLUtils.toMySqlString(stmt));
     }
 
+    @Test
     public void test_alter_4() throws Exception {
         String sql = "ALTER MATERIALIZED VIEW view_name\n" +
                 "REFRESH COMPLETE ON DEMAND " +
@@ -96,6 +104,7 @@ public class MySqlAlterMaterializedViewTest_0 extends TestCase {
                 "START WITH now() NEXT DATE_ADD(now(), INTERVAL 1 MINUTE)", SQLUtils.toMySqlString(stmt));
     }
 
+    @Test
     public void test_alter_5() throws Exception {
         String sql = "ALTER MATERIALIZED VIEW view_name\n" +
                 "REFRESH COMPLETE ON COMMIT";
@@ -107,6 +116,7 @@ public class MySqlAlterMaterializedViewTest_0 extends TestCase {
                 "REFRESH COMPLETE ON COMMIT", SQLUtils.toMySqlString(stmt));
     }
 
+    @Test
     public void test_alter_6() throws Exception {
         String sql = "ALTER MATERIALIZED VIEW view_name\n" +
                 "REFRESH FAST ON COMMIT\n";
@@ -118,6 +128,7 @@ public class MySqlAlterMaterializedViewTest_0 extends TestCase {
                 "REFRESH FAST ON COMMIT", SQLUtils.toMySqlString(stmt));
     }
 
+    @Test
     public void test_alter_7() throws Exception {
         String sql = "ALTER MATERIALIZED VIEW view_name\n" +
                 "REFRESH COMPLETE ON OVERWRITE\n";
@@ -129,6 +140,7 @@ public class MySqlAlterMaterializedViewTest_0 extends TestCase {
                 "REFRESH COMPLETE ON OVERWRITE", SQLUtils.toMySqlString(stmt));
     }
 
+    @Test
     public void test_alter_all() {
         ok("ALTER MATERIALIZED VIEW mymv \n" +
                         "REFRESH NEXT current_date() + INTERVAL 15 DAY\n" +
@@ -166,6 +178,7 @@ public class MySqlAlterMaterializedViewTest_0 extends TestCase {
                         "DISABLE QUERY REWRITE;");
     }
 
+    @Test
     public void test_bad_case() {
         String sql = "ALTER MATERIALIZED VIEW mymv";
 

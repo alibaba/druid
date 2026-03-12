@@ -16,14 +16,17 @@
 package com.alibaba.druid.bvt.filter.wall;
 
 import com.alibaba.druid.wall.WallUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * 这个场景，被攻击者用于测试当前SQL拥有多少字段
  *
  * @author wenshao
  */
-public class WallUnionTest3 extends TestCase {
+public class WallUnionTest3 {
+    @Test
     public void testMySql() throws Exception {
 //        assertFalse(WallUtils.isValidateMySql("SELECT id, product FROM test.test t LIMIT 0,0 UNION ALL SELECT 1,'x'"));
 //        assertFalse(WallUtils.isValidateMySql("SELECT id, product FROM test.test t LIMIT 0,0 UNION ALL SELECT 1,'x';"));

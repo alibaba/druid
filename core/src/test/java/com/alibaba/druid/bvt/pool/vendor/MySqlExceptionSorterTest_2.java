@@ -6,6 +6,8 @@ import com.alibaba.druid.pool.vendor.MySqlExceptionSorter;
 import java.net.SocketTimeoutException;
 import java.sql.SQLException;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
  * Created by wenshao on 18/07/2017.
  */
