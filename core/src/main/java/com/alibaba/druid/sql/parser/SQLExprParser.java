@@ -486,7 +486,7 @@ public class SQLExprParser extends SQLParser {
                 sqlExpr = primaryIdentifier();
                 break;
             case NEW:
-                throw new ParserException("TODO " + lexer.info());
+                throw new ParserException("NEW expression is not supported for current dialect. " + lexer.info());
             case LITERAL_INT:
                 Number number = lexer.integerValue();
                 lexer.nextToken();
@@ -1238,7 +1238,7 @@ public class SQLExprParser extends SQLParser {
                 sqlExpr = primary();
                 return new SQLUnaryExpr(SQLUnaryOperator.Negative, sqlExpr);
             default:
-                throw new ParserException("TODO : " + lexer.info());
+                throw new ParserException("unexpected token after unary minus: " + lexer.token + ". " + lexer.info());
         }
     }
 
@@ -1281,7 +1281,7 @@ public class SQLExprParser extends SQLParser {
 
                 return new SQLUnaryExpr(SQLUnaryOperator.Plus, sqlExpr);
             default:
-                throw new ParserException("TODO " + lexer.info());
+                throw new ParserException("unexpected token after unary plus: " + lexer.token + ". " + lexer.info());
         }
     }
 
@@ -3092,7 +3092,7 @@ public class SQLExprParser extends SQLParser {
                 lexer.nextToken();
                 item.setNullsOrderType(SQLSelectOrderByItem.NullsOrderType.NullsLast);
             } else {
-                throw new ParserException("TODO " + lexer.info());
+                throw new ParserException("syntax error, expect FIRST or LAST after NULLS, actual " + lexer.stringVal() + ". " + lexer.info());
             }
         }
 
@@ -3511,7 +3511,7 @@ public class SQLExprParser extends SQLParser {
                 } else if (expr instanceof SQLObjectImpl) {
                     ((SQLExprImpl) expr).setHint(new SQLCommentHint(text));
                 } else {
-                    throw new ParserException("TODO : " + lexer.info());
+                    throw new ParserException("hint cannot be applied to expression type " + expr.getClass().getSimpleName() + ". " + lexer.info());
                 }
                 this.lexer.nextToken();
             }
@@ -4239,7 +4239,7 @@ public class SQLExprParser extends SQLParser {
                 }
                 break;
             default:
-                throw new ParserException("TODO " + lexer.info());
+                throw new ParserException("unexpected token in NOT expression: " + lexer.token + ". " + lexer.info());
         }
 
         return expr;
@@ -4944,7 +4944,7 @@ public class SQLExprParser extends SQLParser {
                     return parseColumnRest(column);
                 }
 
-                throw new ParserException("TODO : " + lexer.info());
+                throw new ParserException("unsupported column constraint after CONSTRAINT keyword. " + lexer.info());
             case CHECK:
                 SQLColumnCheck check = parseColumnCheck();
                 column.addConstraint(check);
@@ -4994,7 +4994,7 @@ public class SQLExprParser extends SQLParser {
                                 if (lexer.hashLCase() == FnvHash.Constants.CACHE) {
                                     column.setSequenceType(AutoIncrementType.SIMPLE_CACHE);
                                 } else {
-                                    throw new ParserException("TODO : " + lexer.info());
+                                    throw new ParserException("syntax error, expect CACHE after SIMPLE WITH, actual " + lexer.stringVal() + ". " + lexer.info());
                                 }
                                 lexer.nextToken();
                                 return parseColumnRest(column);
@@ -5072,7 +5072,7 @@ public class SQLExprParser extends SQLParser {
             ident.setSeed(lexer.integerValue().intValue());
             lexer.nextToken();
         } else {
-            throw new ParserException("TODO : " + lexer.info());
+            throw new ParserException("syntax error, expect integer for IDENTITY seed, actual " + lexer.token + ". " + lexer.info());
         }
 
         if (lexer.token == Token.COMMA) {
@@ -5081,7 +5081,7 @@ public class SQLExprParser extends SQLParser {
                 ident.setIncrement(lexer.integerValue().intValue());
                 lexer.nextToken();
             } else {
-                throw new ParserException("TODO : " + lexer.info());
+                throw new ParserException("syntax error, expect integer for IDENTITY increment, actual " + lexer.token + ". " + lexer.info());
             }
         }
 
@@ -5111,7 +5111,7 @@ public class SQLExprParser extends SQLParser {
                 fk.setReferenceMatch(SQLForeignKeyImpl.Match.SIMPLE);
                 lexer.nextToken();
             } else {
-                throw new ParserException("TODO : " + lexer.info());
+                throw new ParserException("syntax error, expect FULL, PARTIAL or SIMPLE after MATCH, actual " + lexer.stringVal() + ". " + lexer.info());
             }
         }
 
@@ -5272,6 +5272,55 @@ public class SQLExprParser extends SQLParser {
         }
 
         return unique;
+    }
+
+    /**
+     * Parse constraint state options: ENABLE/DISABLE, VALIDATE/NOVALIDATE, RELY/NORELY.
+     * Common across Oracle, base SQL, and other dialects.
+     * Callers can use this to avoid duplicating the same if-else chain.
+     *
+     * @param constraint the unique constraint to set options on
+     * @return true if at least one option was parsed
+     */
+    protected boolean parseConstraintStateOptions(SQLUnique constraint) {
+        boolean parsed = false;
+        for (; ; ) {
+            if (lexer.token == Token.ENABLE) {
+                lexer.nextToken();
+                constraint.setEnable(Boolean.TRUE);
+                parsed = true;
+            } else if (lexer.token == Token.DISABLE) {
+                lexer.nextToken();
+                SavePoint savePoint = lexer.mark();
+                if ("NOVALIDATE".equalsIgnoreCase(lexer.stringVal())) {
+                    constraint.setDisableNovalidate(true);
+                    lexer.nextToken();
+                } else {
+                    lexer.reset(savePoint);
+                    constraint.setEnable(Boolean.FALSE);
+                }
+                parsed = true;
+            } else if (lexer.identifierEquals(FnvHash.Constants.VALIDATE)) {
+                lexer.nextToken();
+                constraint.setValidate(Boolean.TRUE);
+                parsed = true;
+            } else if (lexer.identifierEquals(FnvHash.Constants.NOVALIDATE)) {
+                lexer.nextToken();
+                constraint.setValidate(Boolean.FALSE);
+                parsed = true;
+            } else if (lexer.identifierEquals(FnvHash.Constants.RELY)) {
+                lexer.nextToken();
+                constraint.setRely(Boolean.TRUE);
+                parsed = true;
+            } else if (lexer.identifierEquals(FnvHash.Constants.NORELY)) {
+                lexer.nextToken();
+                constraint.setRely(Boolean.FALSE);
+                parsed = true;
+            } else {
+                break;
+            }
+        }
+        return parsed;
     }
 
     public void parseAssignItem(List<SQLAssignItem> outList, SQLObject parent) {
@@ -5599,7 +5648,7 @@ public class SQLExprParser extends SQLParser {
                 constraint = parseDefault();
                 break;
             default:
-                throw new ParserException("TODO : " + lexer.info());
+                throw new ParserException("unsupported constraint type: " + lexer.token + ". " + lexer.info());
         }
 
         if (name == null && lexer.token == Token.IDENTIFIER) {
