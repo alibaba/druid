@@ -691,8 +691,12 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean, Comparable<JdbcSqlSt
         runningCountUpdater.decrementAndGet(this);
     }
 
+    /**
+     * @deprecated Use {@link #decrementRunningCount()} instead
+     */
+    @Deprecated
     public void decrementExecutingCount() {
-        runningCountUpdater.decrementAndGet(this);
+        decrementRunningCount();
     }
 
     public long getExecuteSuccessCount() {
@@ -1052,7 +1056,6 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean, Comparable<JdbcSqlSt
         resultSetHoldTimeNanoUpdater.addAndGet(this, resultHoldTimeNano);
         executeAndResultSetHoldTimeUpdater.addAndGet(this, statementExecuteNano + resultHoldTimeNano);
         executeAndResultHoldTimeHistogramRecord(statementExecuteNano + resultHoldTimeNano);
-        updateCount_0_1_Updater.incrementAndGet(this);
     }
 
     public boolean isRemoved() {
