@@ -41,6 +41,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 
     <bean id="dataSourceExporter" class="org.springframework.jmx.export.MBeanExporter"
           lazy-init="false">
+        <property name="registrationBehaviorName" value="REGISTRATION_REPLACE_EXISTING"/>
         <property name="beans">
             <map>
                 <entry key="com.alibaba.druid.test:type=WallConfig"
