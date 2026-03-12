@@ -25,3 +25,4 @@ replay_pid*.log
 .vscode
 druid-spring-boot-3-starter/demo-db.mv.db
 /worktrees/
+.claude/worktrees/
