@@ -135,7 +135,7 @@ public class SQLCreateTableParser extends SQLDDLParser {
             constraint.setParent(createTable);
             createTable.getTableElementList().add((SQLTableElement) constraint);
         } else if (token == Token.TABLESPACE) {
-            throw new ParserException("TODO " + lexer.info());
+            throw new ParserException("TABLESPACE as table element is not supported, use it after table definition. " + lexer.info());
         } else if (lexer.token() == Token.LIKE) {
             lexer.nextToken();
             SQLTableLike tableLike = new SQLTableLike();
@@ -247,7 +247,7 @@ public class SQLCreateTableParser extends SQLDDLParser {
     }
 
     protected SQLTableElement parseCreateTableSupplementalLoggingProps() {
-        throw new ParserException("TODO " + lexer.info());
+        throw new ParserException("SUPPLEMENTAL LOGGING is not supported for current dialect. " + lexer.info());
     }
 
     protected SQLCreateTableStatement newCreateStatement() {
@@ -278,5 +278,67 @@ public class SQLCreateTableParser extends SQLDDLParser {
     }
 
     protected void createTableAfterQuery(SQLCreateTableStatement stmt) {
+    }
+
+    /**
+     * Parse table COMMENT clause, common across multiple dialects (Hive, ClickHouse, GaussDB, StarRocks, BigQuery).
+     * Usage: call this in dialect-specific parseCreateTableRest() when COMMENT token is encountered.
+     *
+     * @return true if COMMENT was parsed, false otherwise
+     */
+    protected boolean parseTableComment(SQLCreateTableStatement stmt) {
+        if (lexer.nextIf(Token.COMMENT)) {
+            if (lexer.nextIf(Token.EQ)) {
+                // COMMENT = 'xxx'
+            }
+            stmt.setComment(this.exprParser.primary());
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Parse ENGINE = expr clause, common across MySQL, Hive, ClickHouse, StarRocks and other dialects.
+     *
+     * @return true if ENGINE was parsed, false otherwise
+     */
+    protected boolean parseTableEngine(SQLCreateTableStatement stmt) {
+        if (lexer.identifierEquals(FnvHash.Constants.ENGINE)) {
+            lexer.nextToken();
+            if (lexer.nextIf(Token.EQ)) {
+                // ENGINE = xxx
+            }
+            stmt.setEngine(this.exprParser.primary());
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Parse table-level assignment properties like WITH (key=value, ...) or TBLPROPERTIES (key=value, ...).
+     * Common across PostgreSQL, GaussDB, Hive, and other dialects.
+     *
+     * @param stmt the create table statement
+     * @param keyword the keyword to match (e.g., "TBLPROPERTIES")
+     * @return true if properties were parsed, false otherwise
+     */
+    protected boolean parseTableProperties(SQLCreateTableStatement stmt, String keyword) {
+        if (lexer.identifierEquals(keyword)) {
+            lexer.nextToken();
+            accept(Token.LPAREN);
+            for (; ; ) {
+                SQLAssignItem item = this.exprParser.parseAssignItem(true, stmt);
+                item.setParent(stmt);
+                stmt.getTableOptions().add(item);
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                    continue;
+                }
+                break;
+            }
+            accept(Token.RPAREN);
+            return true;
+        }
+        return false;
     }
 }

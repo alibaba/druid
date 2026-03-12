@@ -652,7 +652,7 @@ public class SQLStatementParser extends SQLParser {
                 statementList.add(stmt);
                 return StatementListParseResult.CONTINUE;
             } else {
-                throw new ParserException("TODO " + lexer.info());
+                throw new ParserException("unsupported statement after WITH clause, expect SELECT. " + lexer.info());
             }
         }
 
@@ -731,7 +731,7 @@ public class SQLStatementParser extends SQLParser {
     }
 
     public SQLStatement parseExecute() {
-        throw new ParserException("TODO");
+        throw new ParserException("EXECUTE statement is not supported for current dialect. " + lexer.info());
     }
 
     private SQLStatement parseGetDiagnosticsStatement() {
@@ -784,7 +784,7 @@ public class SQLStatementParser extends SQLParser {
     }
 
     public SQLStatement parseCopy() {
-        throw new ParserException("TODO : " + lexer.info());
+        throw new ParserException("COPY statement is not supported for current dialect. " + lexer.info());
     }
 
     public SQLStatement parseFor() {
@@ -954,7 +954,7 @@ public class SQLStatementParser extends SQLParser {
                         lexer.reset(mark);
                         stmt = parseDropCatalog();
                     } else {
-                        throw new ParserException("TODO " + lexer.info());
+                        throw new ParserException("unsupported DROP EXTERNAL target, expect TABLE or CATALOG. " + lexer.info());
                     }
                 } else if (lexer.token() == Token.FULLTEXT) {
                     lexer.nextToken();
@@ -985,7 +985,7 @@ public class SQLStatementParser extends SQLParser {
                 } else if (lexer.identifierEquals("OFFLINEMODEL")) {
                     stmt = parseDropOfflineModel();
                 } else {
-                    throw new ParserException("TODO " + lexer.info());
+                    throw new ParserException("unsupported DROP target '" + lexer.stringVal() + "'. " + lexer.info());
                 }
 
                 break;
@@ -1294,15 +1294,15 @@ public class SQLStatementParser extends SQLParser {
     }
 
     protected SQLStatement alterTableSpace() {
-        throw new ParserException("TODO " + lexer.info());
+        throw new ParserException("ALTER TABLESPACE is not supported for current dialect. " + lexer.info());
     }
 
     protected SQLStatement alterProcedure() {
-        throw new ParserException("TODO " + lexer.info());
+        throw new ParserException("ALTER PROCEDURE is not supported for current dialect. " + lexer.info());
     }
 
     protected SQLStatement parseAlterFunction() {
-        throw new ParserException("TODO " + lexer.info());
+        throw new ParserException("ALTER FUNCTION is not supported for current dialect. " + lexer.info());
     }
 
     public SQLStatement parseKill() {
@@ -1542,7 +1542,7 @@ public class SQLStatementParser extends SQLParser {
     }
 
     public SQLStatement parseShow() {
-        throw new ParserException("TODO " + lexer.info());
+        throw new ParserException("SHOW statement is not supported for current dialect. " + lexer.info());
     }
 
     public SQLUseStatement parseUse() {
@@ -1773,7 +1773,7 @@ public class SQLStatementParser extends SQLParser {
                         accept(Token.VIEW);
                         privilege = "CREATE ANY MATERIALIZED VIEW";
                     } else {
-                        throw new ParserException("TODO : " + lexer.token + " " + lexer.stringVal());
+                        throw new ParserException("unsupported CREATE ANY privilege type '" + lexer.stringVal() + "'. " + lexer.info());
                     }
                 } else if (lexer.identifierEquals("SYNONYM")) {
                     privilege = "CREATE SYNONYM";
@@ -1790,7 +1790,7 @@ public class SQLStatementParser extends SQLParser {
                 } else if (lexer.token == Token.COMMA) {
                     privilege = "CREATE";
                 } else {
-                    throw new ParserException("TODO : " + lexer.token + " " + lexer.stringVal());
+                    throw new ParserException("unsupported CREATE privilege type '" + lexer.stringVal() + "'. " + lexer.info());
                 }
             } else if (lexer.token == Token.ALTER) {
                 lexer.nextToken();
@@ -1814,12 +1814,12 @@ public class SQLStatementParser extends SQLParser {
                         accept(Token.VIEW);
                         privilege = "ALTER ANY MATERIALIZED VIEW";
                     } else {
-                        throw new ParserException("TODO : " + lexer.token + " " + lexer.stringVal());
+                        throw new ParserException("unsupported ALTER ANY privilege type '" + lexer.stringVal() + "'. " + lexer.info());
                     }
                 } else if (lexer.token == Token.ON || lexer.token == Token.COMMA) {
                     privilege = "ALTER";
                 } else {
-                    throw new ParserException("TODO : " + lexer.token + " " + lexer.stringVal());
+                    throw new ParserException("unsupported ALTER privilege type '" + lexer.stringVal() + "'. " + lexer.info());
                 }
             } else if (lexer.token == Token.DROP) {
                 lexer.nextToken();
@@ -1840,7 +1840,7 @@ public class SQLStatementParser extends SQLParser {
                         accept(Token.VIEW);
                         privilege = "DROP ANY MATERIALIZED VIEW";
                     } else {
-                        throw new ParserException("TODO : " + lexer.token + " " + lexer.stringVal());
+                        throw new ParserException("unsupported DROP ANY privilege type '" + lexer.stringVal() + "'. " + lexer.info());
                     }
                 } else {
                     privilege = "DROP";
@@ -2159,15 +2159,15 @@ public class SQLStatementParser extends SQLParser {
     }
 
     protected SQLStatement alterRest(Lexer.SavePoint mark) {
-        throw new ParserException("TODO " + lexer.info());
+        throw new ParserException("unsupported ALTER statement. " + lexer.info());
     }
 
     protected SQLStatement alterEvent() {
-        throw new ParserException("TODO " + lexer.info());
+        throw new ParserException("ALTER EVENT is not supported for current dialect. " + lexer.info());
     }
 
     public SQLStatement alterUser() {
-        throw new ParserException("TODO " + lexer.info());
+        throw new ParserException("ALTER USER is not supported for current dialect. " + lexer.info());
     }
 
     protected SQLStatement alterView() {
@@ -2366,7 +2366,7 @@ public class SQLStatementParser extends SQLParser {
     }
 
     protected void alterTableUnset(SQLAlterTableStatement stmt) {
-        throw new ParserException("TODO " + lexer.info());
+        throw new ParserException("ALTER TABLE ... UNSET is not supported for current dialect. " + lexer.info());
     }
 
     protected void alterTableSorted(SQLAlterTableStatement stmt) {
@@ -2675,13 +2675,13 @@ public class SQLStatementParser extends SQLParser {
             stmt.addItem(setTableSerde);
         } else {
             if (alterTableSetRest(stmt)) {
-                throw new ParserException("TODO " + lexer.info());
+                throw new ParserException("unsupported ALTER TABLE SET option. " + lexer.info());
             }
         }
     }
 
     protected void alterTableChangeOwner(SQLAlterTableStatement stmt) {
-        throw new ParserException("TODO " + lexer.info());
+        throw new ParserException("ALTER TABLE ... CHANGE OWNER is not supported for current dialect. " + lexer.info());
     }
 
     protected void alterTableSetSerdeProperties(SQLAlterTableStatement stmt) {

@@ -1428,7 +1428,7 @@ public class Lexer {
                     token = Token.SEMI;
                     return;
                 case '`':
-                    throw new ParserException("TODO. " + info()); // TODO
+                    throw new ParserException("backtick quote is not supported for current dialect. " + info());
                 case '@':
                     scanVariable_at();
                     return;
@@ -1741,7 +1741,7 @@ public class Lexer {
                 }
                 break;
             default:
-                throw new ParserException("TODO. " + info());
+                throw new ParserException("unexpected character '" + ch + "'. " + info());
         }
     }
 
@@ -2072,6 +2072,10 @@ public class Lexer {
                     char c2 = charAt(++pos);
                     char c3 = charAt(++pos);
                     char c4 = charAt(++pos);
+                    if (!CharTypes.isHex(c1) || !CharTypes.isHex(c2) || !CharTypes.isHex(c3) || !CharTypes.isHex(c4)) {
+                        throw new ParserException("invalid unicode escape sequence '\\u"
+                                + c1 + c2 + c3 + c4 + "', expected 4 hex digits. " + info());
+                    }
                     int intVal = Integer.parseInt(new String(new char[]{c1, c2, c3, c4}), 16);
                     putChar((char) intVal);
                     return;
@@ -2188,6 +2192,10 @@ public class Lexer {
                             char c2 = charAt(++pos);
                             char c3 = charAt(++pos);
                             char c4 = charAt(++pos);
+                            if (!CharTypes.isHex(c1) || !CharTypes.isHex(c2) || !CharTypes.isHex(c3) || !CharTypes.isHex(c4)) {
+                                throw new ParserException("invalid unicode escape sequence '\\u"
+                                        + c1 + c2 + c3 + c4 + "', expected 4 hex digits. " + info());
+                            }
 
                             int intVal = Integer.parseInt(new String(new char[]{c1, c2, c3, c4}), 16);
 

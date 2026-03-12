@@ -1315,7 +1315,7 @@ public class SQLSelectParser extends SQLParser {
         }
 
         if (lexer.token == Token.SELECT) {
-            throw new ParserException("TODO " + lexer.info());
+            throw new ParserException("unexpected SELECT in table source, subquery must be wrapped in parentheses. " + lexer.info());
         }
 
         SQLTableSource unnestTableSource = parseUnnestTableSource();
@@ -2517,7 +2517,7 @@ public class SQLSelectParser extends SQLParser {
             accept(Token.LPAREN);
 
             if (lexer.token() == (Token.SELECT)) {
-                throw new ParserException("TODO. " + lexer.info());
+                throw new ParserException("subquery in UNPIVOT IN clause is not supported. " + lexer.info());
             }
             parsePivotIn(unPivot, unPivot.getPivotIn());
 
