@@ -505,17 +505,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
                 String lastExecSql = statement.getLastExecuteSql();
                 if (logSlowSql) {
-                    ConnectionProxy conn = statement.getConnectionProxy();
-                    DataSourceProxy ds = conn.getDirectDataSource();
-
-                    StringBuilder buf = new StringBuilder(256);
-                    buf.append("slow sql ").append(millis).append(" millis.")
-                       .append(" dataSource=").append(ds.getName())
-                       .append(", conn=").append(conn.getId())
-                       .append(", thread=").append(Thread.currentThread().getName())
-                       .append(". ").append(lastExecSql).append(' ').append(slowParameters);
-
-                    String msg = buf.toString();
+                    String msg = "slow sql " + millis + " millis. " + lastExecSql + " " + slowParameters;
                     switch (slowSqlLogLevel) {
                         case "WARN":
                             LOG.warn(msg);
