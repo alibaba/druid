@@ -1056,6 +1056,7 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean, Comparable<JdbcSqlSt
         resultSetHoldTimeNanoUpdater.addAndGet(this, resultHoldTimeNano);
         executeAndResultSetHoldTimeUpdater.addAndGet(this, statementExecuteNano + resultHoldTimeNano);
         executeAndResultHoldTimeHistogramRecord(statementExecuteNano + resultHoldTimeNano);
+        updateCount_0_1_Updater.incrementAndGet(this);
     }
 
     public boolean isRemoved() {
