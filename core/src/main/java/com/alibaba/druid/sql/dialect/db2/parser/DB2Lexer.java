@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.db2.parser;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.parser.DialectFeature;
 import com.alibaba.druid.sql.parser.Keywords;
 import com.alibaba.druid.sql.parser.Lexer;
@@ -67,7 +68,7 @@ public class DB2Lexer extends Lexer {
     }
 
     public DB2Lexer(String input, SQLParserFeature... features) {
-        super(input);
+        super(input, DbType.db2);
         for (SQLParserFeature feature : features) {
             config(feature, true);
         }
