@@ -139,6 +139,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
             case trino:
             case supersql:
             case polardbx:
+            case goldendb:
                 if (config == null) {
                     config = new WallConfig(MySqlWallProvider.DEFAULT_CONFIG_DIR);
                 }
