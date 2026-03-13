@@ -97,6 +97,9 @@ import com.alibaba.druid.sql.dialect.snowflake.SnowflakeStatementParser;
 import com.alibaba.druid.sql.dialect.spark.parser.SparkExprParser;
 import com.alibaba.druid.sql.dialect.spark.parser.SparkLexer;
 import com.alibaba.druid.sql.dialect.spark.parser.SparkStatementParser;
+import com.alibaba.druid.sql.dialect.sqlite.parser.SQLiteExprParser;
+import com.alibaba.druid.sql.dialect.sqlite.parser.SQLiteLexer;
+import com.alibaba.druid.sql.dialect.sqlite.parser.SQLiteStatementParser;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerExprParser;
 import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
@@ -186,6 +189,7 @@ public class SQLParserUtils {
         registerBuiltinStatementParserFactory((sql, dbType, features) -> new OscarStatementParser(sql, features), DbType.oscar);
         registerBuiltinStatementParserFactory((sql, dbType, features) -> new DmStatementParser(sql, features), DbType.dm);
         registerBuiltinStatementParserFactory((sql, dbType, features) -> new TDStatementParser(sql, features), DbType.teradata);
+        registerBuiltinStatementParserFactory((sql, dbType, features) -> new SQLiteStatementParser(sql, features), DbType.sqlite);
 
         registerBuiltinExprParserFactory((sql, dbType, features) -> new OracleExprParser(sql, features), DbType.oracle);
         registerBuiltinExprParserFactory((sql, dbType, features) -> new MySqlExprParser(sql, features), DbType.mysql, DbType.mariadb);
@@ -220,6 +224,7 @@ public class SQLParserUtils {
         registerBuiltinExprParserFactory((sql, dbType, features) -> new ImpalaExprParser(sql, features), DbType.impala);
         registerBuiltinExprParserFactory((sql, dbType, features) -> new DorisExprParser(sql, features), DbType.doris);
         registerBuiltinExprParserFactory((sql, dbType, features) -> new TDExprParser(sql, features), DbType.teradata);
+        registerBuiltinExprParserFactory((sql, dbType, features) -> new SQLiteExprParser(sql, features), DbType.sqlite);
 
         registerBuiltinLexerFactory((sql, dbType, features) -> new OracleLexer(sql, features), DbType.oracle);
         registerBuiltinLexerFactory((sql, dbType, features) -> new MySqlLexer(sql, features), DbType.mysql, DbType.mariadb);
@@ -253,6 +258,7 @@ public class SQLParserUtils {
         registerBuiltinLexerFactory((sql, dbType, features) -> new ImpalaLexer(sql, features), DbType.impala);
         registerBuiltinLexerFactory((sql, dbType, features) -> new DorisLexer(sql, features), DbType.doris);
         registerBuiltinLexerFactory((sql, dbType, features) -> new TDLexer(sql, features), DbType.teradata);
+        registerBuiltinLexerFactory((sql, dbType, features) -> new SQLiteLexer(sql, features), DbType.sqlite);
     }
 
     private static void registerBuiltinStatementParserFactory(StatementParserFactory factory, DbType... dbTypes) {

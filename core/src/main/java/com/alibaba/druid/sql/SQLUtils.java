@@ -68,6 +68,8 @@ import com.alibaba.druid.sql.dialect.presto.visitor.PrestoOutputVisitor;
 import com.alibaba.druid.sql.dialect.redshift.visitor.RedshiftOutputVisitor;
 import com.alibaba.druid.sql.dialect.spark.visitor.SparkOutputASTVisitor;
 import com.alibaba.druid.sql.dialect.spark.visitor.SparkSchemaStatASTVisitor;
+import com.alibaba.druid.sql.dialect.sqlite.visitor.SQLiteOutputVisitor;
+import com.alibaba.druid.sql.dialect.sqlite.visitor.SQLiteSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerOutputVisitor;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.starrocks.visitor.StarRocksOutputVisitor;
@@ -599,6 +601,8 @@ public class SQLUtils {
                 return new DorisOutputVisitor(out);
             case teradata:
                 return new TDOutputVisitor(out);
+            case sqlite:
+                return new SQLiteOutputVisitor(out);
             default:
                 return new SQLASTOutputVisitor(out, dbType);
         }
@@ -659,6 +663,8 @@ public class SQLUtils {
                 return new CKStatVisitor(repository);
             case dm:
                 return new DmSchemaStatVisitor(repository);
+            case sqlite:
+                return new SQLiteSchemaStatVisitor(repository);
             default:
                 return new SchemaStatVisitor(repository);
         }
