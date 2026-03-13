@@ -22,7 +22,7 @@ import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.support.profile.ProfileEntryKey;
 import com.alibaba.druid.support.profile.ProfileEntryReqStat;
 import com.alibaba.druid.support.profile.Profiler;
-import com.alibaba.druid.util.DruidWebUtils;
+import com.alibaba.druid.util.DruidWebUtilsJakarta;
 import com.alibaba.druid.util.PatternMatcher;
 import com.alibaba.druid.util.ServletPathMatcher;
 import jakarta.servlet.*;
@@ -276,7 +276,7 @@ public class WebStatFilter extends AbstractWebStatImpl implements Filter {
 
         StatFilterContext.getInstance().addContextListener(statFilterContextListener);
 
-        this.contextPath = DruidWebUtils.getContextPath(config.getServletContext());
+        this.contextPath = DruidWebUtilsJakarta.getContextPath(config.getServletContext());
         if (webAppStat == null) {
             webAppStat = new WebAppStat(contextPath, this.sessionStatMaxCount);
         }
