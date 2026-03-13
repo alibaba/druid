@@ -32,6 +32,7 @@ public class OracleSelectQueryBlock extends SQLSelectQueryBlock implements Oracl
     private ModelClause modelClause;
 
     private boolean skipLocked;
+    private boolean isBulkCollect;
 
     public OracleSelectQueryBlock clone() {
         OracleSelectQueryBlock x = new OracleSelectQueryBlock();
@@ -73,6 +74,14 @@ public class OracleSelectQueryBlock extends SQLSelectQueryBlock implements Oracl
 
     public void setSkipLocked(boolean skipLocked) {
         this.skipLocked = skipLocked;
+    }
+
+    public boolean isBulkCollect() {
+        return isBulkCollect;
+    }
+
+    public void setBulkCollect(boolean bulkCollect) {
+        this.isBulkCollect = bulkCollect;
     }
 
     @Override
