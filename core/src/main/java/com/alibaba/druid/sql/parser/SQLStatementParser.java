@@ -1047,11 +1047,12 @@ public class SQLStatementParser extends SQLParser {
 
         acceptIdentifier("MATERIALIZED");
 
+        accept(Token.VIEW);
+
         if (lexer.identifierEquals("CONCURRENTLY")) {
             lexer.nextToken();
             stmt.setConcurrently(true);
         }
-        accept(Token.VIEW);
 
         stmt.setName(this.exprParser.name());
 
