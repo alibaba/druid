@@ -106,9 +106,7 @@ public class Lexer {
         this.commentHandler = commentHandler;
         this.dbType = dbType;
 
-        if (DbType.sqlite == dbType) {
-            this.keywords = Keywords.SQLITE_KEYWORDS;
-        } else if (DbType.dm == dbType) {
+        if (DbType.dm == dbType) {
             this.keywords = Keywords.DM_KEYWORDS;
         }
     }
