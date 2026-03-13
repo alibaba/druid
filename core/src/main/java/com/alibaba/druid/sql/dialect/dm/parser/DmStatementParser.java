@@ -27,10 +27,12 @@ public class DmStatementParser extends SQLStatementParser {
         super(new DmExprParser(lexer));
     }
 
+    @Override
     public DmSelectParser createSQLSelectParser() {
         return new DmSelectParser(this.exprParser, selectListCache);
     }
 
+    @Override
     public SQLUpdateStatement parseUpdateStatement() {
         accept(Token.UPDATE);
 
@@ -69,6 +71,7 @@ public class DmStatementParser extends SQLStatementParser {
         return updateStatement;
     }
 
+    @Override
     public DmInsertStatement parseInsert() {
         DmInsertStatement stmt = new DmInsertStatement();
 
@@ -119,6 +122,7 @@ public class DmStatementParser extends SQLStatementParser {
         return stmt;
     }
 
+    @Override
     public DmDeleteStatement parseDeleteStatement() {
         lexer.nextToken();
         DmDeleteStatement deleteStatement = new DmDeleteStatement();
@@ -156,6 +160,7 @@ public class DmStatementParser extends SQLStatementParser {
         return deleteStatement;
     }
 
+    @Override
     public boolean parseStatementListDialect(List<SQLStatement> statementList) {
         switch (lexer.token()) {
             case BEGIN:
@@ -173,12 +178,14 @@ public class DmStatementParser extends SQLStatementParser {
         return false;
     }
 
+    @Override
     public DmSelectStatement parseSelect() {
         DmSelectParser selectParser = createSQLSelectParser();
         SQLSelect select = selectParser.select();
         return new DmSelectStatement(select);
     }
 
+    @Override
     public SQLStatement parseWith() {
         SQLWithSubqueryClause with = this.parseWithQuery();
 
@@ -209,6 +216,7 @@ public class DmStatementParser extends SQLStatementParser {
         throw new ParserException("TODO. " + lexer.info());
     }
 
+    @Override
     protected SQLAlterTableAlterColumn parseAlterColumn() {
         if (lexer.token() == Token.COLUMN) {
             lexer.nextToken();
@@ -246,6 +254,7 @@ public class DmStatementParser extends SQLStatementParser {
         return alterColumn;
     }
 
+    @Override
     public SQLStatement parseShow() {
         accept(Token.SHOW);
         SQLShowTablesStatement stmt = new SQLShowTablesStatement();
@@ -261,6 +270,7 @@ public class DmStatementParser extends SQLStatementParser {
         return stmt;
     }
 
+    @Override
     public SQLCreateIndexStatement parseCreateIndex() {
         accept(Token.CREATE);
         SQLCreateIndexStatement stmt = new SQLCreateIndexStatement(getDbType());
@@ -324,6 +334,7 @@ public class DmStatementParser extends SQLStatementParser {
         return stmt;
     }
 
+    @Override
     public SQLCreateTableParser getSQLCreateTableParser() {
         return new DmCreateTableParser(this.exprParser);
     }

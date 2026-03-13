@@ -4,6 +4,7 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLParseAssertUtil;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.parser.ParserException;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -286,6 +287,104 @@ public class DM_SelectTest {
     public void test_select_nulls_first_last() {
         // DM: ORDER BY ... NULLS FIRST|LAST
         String sql = "SELECT * FROM t1 ORDER BY name ASC NULLS FIRST";
+        List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, dbType);
+        assertEquals(1, stmtList.size());
+    }
+
+    // ========== Error case tests ==========
+
+    @Test
+    public void test_select_invalid_sql_missing_from() {
+        // Incomplete SQL should throw ParserException
+        String sql = "SELECT FROM";
+        assertThrows(ParserException.class, () -> SQLUtils.parseStatements(sql, dbType));
+    }
+
+    @Test
+    public void test_select_invalid_empty_select() {
+        // Empty string should throw
+        String sql = "SELECT";
+        assertThrows(ParserException.class, () -> SQLUtils.parseStatements(sql, dbType));
+    }
+
+    @Test
+    public void test_select_invalid_fetch_missing_rows() {
+        // FETCH NEXT 10 without ROWS ONLY should throw
+        String sql = "SELECT * FROM t1 ORDER BY id OFFSET 5 FETCH NEXT 10";
+        assertThrows(ParserException.class, () -> SQLUtils.parseStatements(sql, dbType));
+    }
+
+    // ========== LIMIT/OFFSET edge case tests ==========
+
+    @Test
+    public void test_select_limit_all() {
+        // DM: LIMIT ALL
+        String sql = "SELECT * FROM t1 LIMIT ALL";
+        List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, dbType);
+        assertEquals(1, stmtList.size());
+    }
+
+    @Test
+    public void test_select_limit_zero() {
+        String sql = "SELECT * FROM t1 LIMIT 0";
+        List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, dbType);
+        assertEquals(1, stmtList.size());
+        SQLParseAssertUtil.assertParseSql(sql, dbType);
+    }
+
+    @Test
+    public void test_select_offset_rows() {
+        // DM: OFFSET n ROWS (with ROWS suffix)
+        String sql = "SELECT * FROM t1 ORDER BY id OFFSET 10 ROWS";
+        List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, dbType);
+        assertEquals(1, stmtList.size());
+    }
+
+    @Test
+    public void test_select_offset_row() {
+        // DM: OFFSET n ROW (singular)
+        String sql = "SELECT * FROM t1 ORDER BY id OFFSET 1 ROW";
+        List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, dbType);
+        assertEquals(1, stmtList.size());
+    }
+
+    @Test
+    public void test_select_limit_offset_expressions() {
+        // LIMIT/OFFSET with complex expressions
+        String sql = "SELECT * FROM t1 ORDER BY id LIMIT 10 + 5 OFFSET 20 * 2";
+        List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, dbType);
+        assertEquals(1, stmtList.size());
+    }
+
+    @Test
+    public void test_select_limit_offset_comma_zero() {
+        // LIMIT 0, 10 (offset=0, count=10)
+        String sql = "SELECT * FROM t1 ORDER BY id LIMIT 0, 10";
+        List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, dbType);
+        assertEquals(1, stmtList.size());
+    }
+
+    @Test
+    public void test_select_fetch_first() {
+        // FETCH FIRST (not NEXT)
+        String sql = "SELECT * FROM t1 ORDER BY id FETCH FIRST 5 ROWS ONLY";
+        List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, dbType);
+        assertEquals(1, stmtList.size());
+    }
+
+    @Test
+    public void test_select_offset_fetch_first() {
+        // OFFSET + FETCH FIRST combined
+        String sql = "SELECT * FROM t1 ORDER BY id OFFSET 10 ROWS FETCH FIRST 5 ROWS ONLY";
+        List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, dbType);
+        assertEquals(1, stmtList.size());
+    }
+
+    // ========== FOR UPDATE OF test ==========
+
+    @Test
+    public void test_select_for_update_of() {
+        String sql = "SELECT * FROM t1 WHERE id = 1 FOR UPDATE OF name, status";
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, dbType);
         assertEquals(1, stmtList.size());
     }

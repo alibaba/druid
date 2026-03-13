@@ -9,6 +9,13 @@ import java.util.Map;
 import static com.alibaba.druid.sql.parser.CharTypes.isIdentifierChar;
 import static com.alibaba.druid.sql.parser.Token.LITERAL_CHARS;
 
+/**
+ * Lexer for Dameng (DM) database SQL dialect.
+ *
+ * <p>Extends the base {@link Lexer} with DM-specific keywords and Oracle-compatible
+ * string scanning (single-quote doubling for escape). DM is an Oracle-compatible
+ * Chinese relational database that supports both Oracle and MySQL syntax extensions.</p>
+ */
 public class DmLexer extends Lexer {
     static final Keywords DM_KEYWORDS;
     static {
@@ -86,6 +93,7 @@ public class DmLexer extends Lexer {
         }
     }
 
+    @Override
     protected void scanString() {
         mark = pos;
         boolean hasSpecial = false;
@@ -133,6 +141,7 @@ public class DmLexer extends Lexer {
         }
     }
 
+    @Override
     protected void scanVariable_at() {
         if (ch != '@') {
             throw new ParserException("illegal variable. " + info());

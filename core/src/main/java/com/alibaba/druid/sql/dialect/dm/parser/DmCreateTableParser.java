@@ -19,6 +19,7 @@ public class DmCreateTableParser extends SQLCreateTableParser {
         super(exprParser);
     }
 
+    @Override
     public SQLPartitionBy parsePartitionBy() {
         lexer.nextToken();
         accept(Token.BY);

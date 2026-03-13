@@ -47,7 +47,7 @@ public class DmOutputVisitor extends SQLASTOutputVisitor implements DmASTVisitor
         }
 
         if (x.getOf().size() > 0) {
-            print(' ');
+            print0(ucase ? " OF " : " of ");
             for (int i = 0; i < x.getOf().size(); ++i) {
                 if (i != 0) {
                     println(", ");
@@ -68,6 +68,7 @@ public class DmOutputVisitor extends SQLASTOutputVisitor implements DmASTVisitor
         return false;
     }
 
+    @Override
     public boolean visit(DmSelectQueryBlock x) {
         if ((!isParameterized()) && isPrettyFormat() && x.hasBeforeComment()) {
             printlnComments(x.getBeforeCommentsDirect());

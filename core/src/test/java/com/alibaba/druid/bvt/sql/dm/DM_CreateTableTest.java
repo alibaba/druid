@@ -126,4 +126,34 @@ public class DM_CreateTableTest {
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, dbType);
         assertEquals(1, stmtList.size());
     }
+
+    // ========== Partition clause tests ==========
+
+    @Test
+    public void test_create_table_partition_by_hash() {
+        String sql = "CREATE TABLE t1 (id INT, name VARCHAR(100)) PARTITION BY HASH (id)";
+        List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, dbType);
+        assertEquals(1, stmtList.size());
+    }
+
+    @Test
+    public void test_create_table_partition_by_range() {
+        String sql = "CREATE TABLE t1 (id INT, created_date DATE) PARTITION BY RANGE (created_date)";
+        List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, dbType);
+        assertEquals(1, stmtList.size());
+    }
+
+    @Test
+    public void test_create_table_partition_by_list() {
+        String sql = "CREATE TABLE t1 (id INT, region VARCHAR(50)) PARTITION BY LIST (region)";
+        List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, dbType);
+        assertEquals(1, stmtList.size());
+    }
+
+    @Test
+    public void test_create_table_partition_by_hash_multi_columns() {
+        String sql = "CREATE TABLE t1 (id INT, dept_id INT, name VARCHAR(100)) PARTITION BY HASH (id, dept_id)";
+        List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, dbType);
+        assertEquals(1, stmtList.size());
+    }
 }

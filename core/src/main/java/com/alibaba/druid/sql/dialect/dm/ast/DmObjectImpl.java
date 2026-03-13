@@ -10,7 +10,9 @@ public abstract class DmObjectImpl extends SQLObjectImpl implements DmObject {
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
-        this.accept0((DmASTVisitor) visitor);
+        if (visitor instanceof DmASTVisitor) {
+            this.accept0((DmASTVisitor) visitor);
+        }
     }
 
     public abstract void accept0(DmASTVisitor visitor);

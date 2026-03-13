@@ -65,6 +65,7 @@ public class DmExprParser extends SQLExprParser {
         return new DmSelectParser(this);
     }
 
+    @Override
     public SQLExpr primary() {
         if (lexer.token() == Token.VALUES) {
             lexer.nextToken();
@@ -95,6 +96,7 @@ public class DmExprParser extends SQLExprParser {
         return super.primary();
     }
 
+    @Override
     protected SQLExpr parseInterval() {
         accept(Token.INTERVAL);
 
@@ -177,6 +179,7 @@ public class DmExprParser extends SQLExprParser {
         return interval;
     }
 
+    @Override
     public SQLExpr primaryRest(SQLExpr expr) {
         if (expr.getClass() == SQLIdentifierExpr.class) {
             SQLIdentifierExpr identifierExpr = (SQLIdentifierExpr) expr;
