@@ -218,6 +218,7 @@ public class PGSQLStatementParser extends SQLStatementParser {
             if (lexer.token() == Token.COMMA) {
                 lexer.nextToken();
                 SQLListExpr list = new SQLListExpr();
+                list.setParenthesized(true);
                 list.addItem(returning);
 
                 this.exprParser.exprList(list.getItems(), list);

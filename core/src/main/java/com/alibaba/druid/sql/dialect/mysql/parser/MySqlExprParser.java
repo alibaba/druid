@@ -1260,7 +1260,9 @@ public class MySqlExprParser extends SQLExprParser {
                 if (lexer.token() != Token.LPAREN) {
                     SQLExpr expr = primary();
                     SQLValuesQuery values = new SQLValuesQuery();
-                    values.addValue(new SQLListExpr(expr));
+                    SQLListExpr sqlListExpr = new SQLListExpr(expr);
+                    sqlListExpr.setParenthesized(true);
+                    values.addValue(sqlListExpr);
                     return new SQLQueryExpr(new SQLSelect(values));
                 }
                 return this.methodRest(new SQLIdentifierExpr("VALUES"), true);
@@ -2542,6 +2544,7 @@ public class MySqlExprParser extends SQLExprParser {
 
                     accept(Token.LPAREN);
                     SQLListExpr list = new SQLListExpr();
+                    list.setParenthesized(true);
                     exprList(list.getItems(), list);
                     accept(Token.RPAREN);
                     assignItem = new SQLAssignItem(new SQLIdentifierExpr("UNION"), list);
