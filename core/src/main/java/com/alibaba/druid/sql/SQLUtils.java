@@ -27,6 +27,8 @@ import com.alibaba.druid.sql.dialect.clickhouse.visitor.CKStatVisitor;
 import com.alibaba.druid.sql.dialect.databricks.visitor.DatabricksOutputASTVisitor;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2OutputVisitor;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2SchemaStatVisitor;
+import com.alibaba.druid.sql.dialect.dm.visitor.DmOutputVisitor;
+import com.alibaba.druid.sql.dialect.dm.visitor.DmSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.doris.visitor.DorisOutputVisitor;
 import com.alibaba.druid.sql.dialect.gaussdb.visitor.GaussDbOutputVisitor;
 import com.alibaba.druid.sql.dialect.h2.visitor.H2OutputVisitor;
@@ -585,6 +587,8 @@ public class SQLUtils {
                 return new CKOutputVisitor(out);
             case oscar:
                 return new OscarOutputVisitor(out);
+            case dm:
+                return new DmOutputVisitor(out);
             case starrocks:
                 return new StarRocksOutputVisitor(out);
             case bigquery:
@@ -653,6 +657,8 @@ public class SQLUtils {
                 return new SparkSchemaStatASTVisitor(repository);
             case clickhouse:
                 return new CKStatVisitor(repository);
+            case dm:
+                return new DmSchemaStatVisitor(repository);
             default:
                 return new SchemaStatVisitor(repository);
         }
