@@ -122,6 +122,7 @@ public class DmSelectParser extends SQLSelectParser {
                     lexer.nextToken();
                     SQLExpr offset = expr();
                     limit.setOffset(offset);
+                    limit.setOffsetClause(true);
                 }
 
                 queryBlock.setLimit(limit);
@@ -130,6 +131,7 @@ public class DmSelectParser extends SQLSelectParser {
                 lexer.nextToken();
                 SQLExpr offset = expr();
                 limit.setOffset(offset);
+                limit.setOffsetClause(true);
 
                 if (lexer.token() == Token.ROW || lexer.token() == Token.ROWS) {
                     lexer.nextToken();
