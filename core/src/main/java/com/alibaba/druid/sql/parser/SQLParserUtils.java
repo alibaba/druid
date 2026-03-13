@@ -39,6 +39,10 @@ import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
 import com.alibaba.druid.sql.dialect.db2.parser.DB2ExprParser;
 import com.alibaba.druid.sql.dialect.db2.parser.DB2Lexer;
 import com.alibaba.druid.sql.dialect.db2.parser.DB2StatementParser;
+import com.alibaba.druid.sql.dialect.dm.ast.stmt.DmSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.dm.parser.DmExprParser;
+import com.alibaba.druid.sql.dialect.dm.parser.DmLexer;
+import com.alibaba.druid.sql.dialect.dm.parser.DmStatementParser;
 import com.alibaba.druid.sql.dialect.doris.parser.DorisExprParser;
 import com.alibaba.druid.sql.dialect.doris.parser.DorisLexer;
 import com.alibaba.druid.sql.dialect.doris.parser.DorisStatementParser;
@@ -180,6 +184,7 @@ public class SQLParserUtils {
         registerBuiltinStatementParserFactory((sql, dbType, features) -> new ImpalaStatementParser(sql, features), DbType.impala);
         registerBuiltinStatementParserFactory((sql, dbType, features) -> new DorisStatementParser(sql, features), DbType.doris);
         registerBuiltinStatementParserFactory((sql, dbType, features) -> new OscarStatementParser(sql, features), DbType.oscar);
+        registerBuiltinStatementParserFactory((sql, dbType, features) -> new DmStatementParser(sql, features), DbType.dm);
         registerBuiltinStatementParserFactory((sql, dbType, features) -> new TDStatementParser(sql, features), DbType.teradata);
 
         registerBuiltinExprParserFactory((sql, dbType, features) -> new OracleExprParser(sql, features), DbType.oracle);
@@ -210,6 +215,7 @@ public class SQLParserUtils {
         registerBuiltinExprParserFactory((sql, dbType, features) -> new SnowflakeExprParser(sql, features), DbType.snowflake);
         registerBuiltinExprParserFactory((sql, dbType, features) -> new CKExprParser(sql, features), DbType.clickhouse);
         registerBuiltinExprParserFactory((sql, dbType, features) -> new OscarExprParser(sql, features), DbType.oscar);
+        registerBuiltinExprParserFactory((sql, dbType, features) -> new DmExprParser(sql, features), DbType.dm);
         registerBuiltinExprParserFactory((sql, dbType, features) -> new StarRocksExprParser(sql, features), DbType.starrocks);
         registerBuiltinExprParserFactory((sql, dbType, features) -> new ImpalaExprParser(sql, features), DbType.impala);
         registerBuiltinExprParserFactory((sql, dbType, features) -> new DorisExprParser(sql, features), DbType.doris);
@@ -238,6 +244,7 @@ public class SQLParserUtils {
         registerBuiltinLexerFactory((sql, dbType, features) -> new SparkLexer(sql), DbType.spark);
         registerBuiltinLexerFactory((sql, dbType, features) -> new DatabricksLexer(sql), DbType.databricks);
         registerBuiltinLexerFactory((sql, dbType, features) -> new OscarLexer(sql, features), DbType.oscar);
+        registerBuiltinLexerFactory((sql, dbType, features) -> new DmLexer(sql, features), DbType.dm);
         registerBuiltinLexerFactory((sql, dbType, features) -> new CKLexer(sql, features), DbType.clickhouse);
         registerBuiltinLexerFactory((sql, dbType, features) -> new StarRocksLexer(sql, features), DbType.starrocks);
         registerBuiltinLexerFactory((sql, dbType, features) -> new HiveLexer(sql, features), DbType.hive);
@@ -434,6 +441,8 @@ public class SQLParserUtils {
                 return new SQLServerSelectQueryBlock();
             case oscar:
                 return new OscarSelectQueryBlock();
+            case dm:
+                return new DmSelectQueryBlock();
             default:
                 return new SQLSelectQueryBlock(dbType);
         }
