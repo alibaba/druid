@@ -172,6 +172,8 @@ WallFilter 针对不同数据库方言提供了专门的 WallProvider：
 | DB2 | `DB2WallProvider` |
 | SQLite | `SQLiteWallProvider` |
 
+> **说明：** SQLite 虽未列入 Druid 的 30 个 SQL 方言解析器，但提供了独立的 WallProvider 用于基本的 SQL 安全防护。
+
 ### SQL 注入防护示例
 
 WallFilter 可以检测并阻止常见的 SQL 注入攻击：
@@ -244,3 +246,5 @@ spring:
 ### Dialect-Specific Providers
 
 WallFilter uses dialect-specific providers: `MySqlWallProvider`, `OracleWallProvider`, `SQLServerWallProvider`, `PGWallProvider`, `DB2WallProvider`, `SQLiteWallProvider`.
+
+> **Note:** SQLite is not among Druid's 30 SQL dialect parsers, but a standalone WallProvider is available for basic SQL security protection.

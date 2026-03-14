@@ -54,6 +54,8 @@
 | `poolPreparedStatements` | false | 是否启用 PSCache |
 | `maxPoolPreparedStatementPerConnectionSize` | 10 | 每个连接的 PSCache 大小 |
 
+> **提示：** 调用 `setMaxPoolPreparedStatementPerConnectionSize(n)`（n > 0）会自动开启 `poolPreparedStatements = true`，无需手动设置。
+
 ### 配置示例
 
 #### Java 代码配置
@@ -234,5 +236,5 @@ dataSource.setLogAbandoned(true);          // 记录泄漏连接的堆栈
 1. **Enable `testWhileIdle`** — lowest overhead validation strategy
 2. **Always set `validationQuery`** — required for validation to work
 3. **Set `maxWait`** — avoid infinite waits in high-concurrency scenarios
-4. **Disable `poolPreparedStatements` for MySQL** — enable for Oracle/DB2/PostgreSQL
+4. **Disable `poolPreparedStatements` for MySQL** — enable for Oracle/DB2/PostgreSQL. Note: calling `setMaxPoolPreparedStatementPerConnectionSize(n)` with n > 0 auto-enables PSCache
 5. **Use `removeAbandoned` in dev/test** — helps detect connection leaks
