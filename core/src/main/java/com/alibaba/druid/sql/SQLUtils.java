@@ -21,6 +21,7 @@ import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.athena.visitor.AthenaOutputVisitor;
 import com.alibaba.druid.sql.dialect.bigquery.visitor.BigQueryOutputVisitor;
+import com.alibaba.druid.sql.dialect.bigquery.visitor.BigQuerySchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.blink.vsitor.BlinkOutputVisitor;
 import com.alibaba.druid.sql.dialect.clickhouse.visitor.CKOutputVisitor;
 import com.alibaba.druid.sql.dialect.clickhouse.visitor.CKStatVisitor;
@@ -657,6 +658,8 @@ public class SQLUtils {
                 return new SparkSchemaStatASTVisitor(repository);
             case clickhouse:
                 return new CKStatVisitor(repository);
+            case bigquery:
+                return new BigQuerySchemaStatVisitor(repository);
             case dm:
                 return new DmSchemaStatVisitor(repository);
             default:

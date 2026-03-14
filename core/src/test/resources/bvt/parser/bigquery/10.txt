@@ -1,0 +1,131 @@
+CREATE SCHEMA my_project.my_dataset
+--------------------
+CREATE DATABASE my_project.my_dataset
+------------------------------------------------------------------------------------------------------------------------
+CREATE SCHEMA IF NOT EXISTS my_project.my_dataset OPTIONS(location = 'us')
+--------------------
+CREATE DATABASE IF NOT EXISTS my_project.my_dataset OPTIONS (location='us' )
+------------------------------------------------------------------------------------------------------------------------
+CREATE OR REPLACE PROCEDURE my_project.my_dataset.my_proc(x INT64, y STRING)
+BEGIN
+  SELECT x;
+END
+--------------------
+CREATE OR REPLACE PROCEDURE my_project.my_dataset.my_proc (
+	x INT64,
+	y STRING
+)
+BEGIN
+	SELECT x;
+END;
+------------------------------------------------------------------------------------------------------------------------
+EXPORT DATA
+OPTIONS (uri = 'gs://bucket/folder/*.csv', format = 'CSV', overwrite = true)
+AS (
+  SELECT id, name FROM my_table WHERE created_date > '2024-01-01'
+)
+--------------------
+EXPORT DATA
+OPTIONS (uri = 'gs://bucket/folder/*.csv',format = 'CSV',overwrite = true)
+AS (SELECT id, name
+FROM my_table
+WHERE created_date > '2024-01-01')
+------------------------------------------------------------------------------------------------------------------------
+CALL my_project.my_dataset.my_proc(1, 'hello')
+--------------------
+CALL my_project.my_dataset.my_proc(1, 'hello')
+------------------------------------------------------------------------------------------------------------------------
+CREATE TEMP FUNCTION add_one(x INT64) RETURNS INT64 AS (x + 1)
+--------------------
+CREATE TEMPORARY FUNCTION add_one (
+	x INT64
+)
+RETURNS INT64
+AS (x + 1)
+------------------------------------------------------------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION my_project.my_dataset.my_udf(a STRING)
+RETURNS STRING
+LANGUAGE js AS """
+  return a.toUpperCase();
+"""
+--------------------
+CREATE OR REPLACE FUNCTION my_project.my_dataset.my_udf (
+	a STRING
+)
+RETURNS STRING
+LANGUAGE js
+AS """
+  return a.toUpperCase();
+"""
+------------------------------------------------------------------------------------------------------------------------
+SET x = 5
+--------------------
+SET x = 5
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE my_project.my_dataset.my_table (
+  id INT64 NOT NULL,
+  name STRING(100),
+  amount NUMERIC(10, 2),
+  tags ARRAY<STRING>,
+  address STRUCT<street STRING, city STRING, zip INT64>,
+  metadata JSON,
+  location GEOGRAPHY,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP(),
+  PRIMARY KEY (id) NOT ENFORCED
+)
+PARTITION BY DATE(created_at)
+CLUSTER BY name
+OPTIONS (description = 'My table', labels = [('env', 'prod')])
+--------------------
+CREATE TABLE my_project.my_dataset.my_table (
+	id INT64 NOT NULL,
+	name STRING(100),
+	amount NUMERIC(10, 2),
+	tags ARRAY<STRING>,
+	address STRUCT<street STRING, city STRING, zip INT64>,
+	metadata JSON,
+	location GEOGRAPHY,
+	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP(),
+	PRIMARY KEY (id) NOT ENFORCED
+)
+PARTITION BY DATE(created_at)
+CLUSTER BY name
+OPTIONS (
+	description = 'My table',
+	labels = [('env', 'prod')]
+)
+------------------------------------------------------------------------------------------------------------------------
+CREATE OR REPLACE TABLE my_project.my_dataset.my_table
+CLONE my_project.my_dataset.source_table
+--------------------
+CREATE OR REPLACE TABLE my_project.my_dataset.my_table
+CLONE my_project.my_dataset.source_table
+------------------------------------------------------------------------------------------------------------------------
+CREATE TEMP TABLE temp_results AS
+SELECT id, name FROM source_table WHERE status = 'active'
+--------------------
+CREATE TEMPORARY TABLE temp_results
+AS
+SELECT id, name
+FROM source_table
+WHERE status = 'active'
+------------------------------------------------------------------------------------------------------------------------
+MERGE INTO target_table t
+USING source_table s
+ON t.id = s.id
+WHEN MATCHED THEN
+  UPDATE SET t.name = s.name, t.value = s.value
+WHEN NOT MATCHED THEN
+  INSERT (id, name, value) VALUES (s.id, s.name, s.value)
+--------------------
+MERGE INTO target_table t
+USING source_table s ON t.id = s.id
+WHEN MATCHED THEN UPDATE
+SET t.name = s.name,
+	t.value = s.value
+WHEN NOT MATCHED THEN INSERT (id, name, value)
+VALUES (s.id, s.name, s.value)
+------------------------------------------------------------------------------------------------------------------------
+TRUNCATE TABLE my_project.my_dataset.my_table
+--------------------
+TRUNCATE TABLE my_project.my_dataset.my_table

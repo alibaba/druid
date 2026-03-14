@@ -1,0 +1,80 @@
+BEGIN
+  DECLARE x INT64 DEFAULT 0;
+  SET x = x + 1;
+  IF x > 10 THEN
+    SELECT 'big';
+  ELSEIF x > 5 THEN
+    SELECT 'medium';
+  ELSE
+    SELECT 'small';
+  END IF;
+END
+--------------------
+BEGIN
+	DECLARE x INT64 DEFAULT 0;
+	SET x = x + 1;
+	IF x > 10
+		THEN
+		SELECT 'big';
+	ELSEIF x > 5
+	 THEN
+		SELECT 'medium';
+	ELSE
+		SELECT 'small';
+	END IF;
+END;
+------------------------------------------------------------------------------------------------------------------------
+BEGIN
+  WHILE x < 10 DO
+    SET x = x + 1;
+  END WHILE;
+END
+--------------------
+BEGIN
+	WHILE x < 10 LOOP
+	SET x = x + 1;
+	END LOOP;
+END;
+------------------------------------------------------------------------------------------------------------------------
+BEGIN
+  LOOP
+    SET x = x + 1;
+    IF x >= 10 THEN
+      LEAVE;
+    END IF;
+  END LOOP;
+END
+--------------------
+BEGIN
+	LOOP
+		SET x = x + 1;
+		IF x >= 10
+			THEN
+			LEAVE;
+		END IF;
+	END LOOP;
+END;
+------------------------------------------------------------------------------------------------------------------------
+BEGIN
+  SELECT 1;
+EXCEPTION WHEN ERROR THEN
+  SELECT @@error.message;
+END
+--------------------
+BEGIN
+	SELECT 1;
+EXCEPTION
+	WHEN ERROR THEN SELECT @@error.message;
+END;
+------------------------------------------------------------------------------------------------------------------------
+EXECUTE IMMEDIATE 'SELECT ? + ?' INTO result USING 1 AS a, 2 AS b
+--------------------
+EXECUTE IMMEDIATE 'SELECT ? + ?' INTO result USING 1 AS a, 2 AS b
+------------------------------------------------------------------------------------------------------------------------
+RAISE USING MESSAGE = 'Something went wrong'
+--------------------
+RAISE USING MESSAGE = 'Something went wrong'
+------------------------------------------------------------------------------------------------------------------------
+BEGIN TRANSACTION
+--------------------
+START TRANSACTION

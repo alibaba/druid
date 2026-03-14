@@ -484,4 +484,63 @@ public class BigQueryOutputVisitor extends SQLASTOutputVisitor
         x.getName().accept(this);
         return false;
     }
+
+    @Override
+    public boolean visit(SQLCreateProcedureStatement x) {
+        if (x.isOrReplace()) {
+            print0(ucase ? "CREATE OR REPLACE PROCEDURE " : "create or replace procedure ");
+        } else {
+            print0(ucase ? "CREATE PROCEDURE " : "create procedure ");
+        }
+        x.getName().accept(this);
+
+        int paramSize = x.getParameters().size();
+        if (paramSize > 0) {
+            print0(" (");
+            this.indentCount++;
+            println();
+            for (int i = 0; i < paramSize; ++i) {
+                if (i != 0) {
+                    print(',');
+                    println();
+                }
+                x.getParameters().get(i).accept(this);
+            }
+            this.indentCount--;
+            println();
+            print(')');
+        }
+
+        SQLStatement block = x.getBlock();
+        if (block != null) {
+            println();
+            block.accept(this);
+        }
+        return false;
+    }
+
+    public boolean visit(BigQueryExportDataStatement x) {
+        print0(ucase ? "EXPORT DATA" : "export data");
+
+        SQLExprTableSource connection = x.getConnection();
+        if (connection != null) {
+            print0(ucase ? " WITH CONNECTION " : " with connection ");
+            connection.accept(this);
+        }
+
+        println();
+        print0(ucase ? "OPTIONS (" : "options (");
+        printAndAccept(x.getOptions(), ",");
+        print(')');
+
+        SQLStatement asSelect = x.getAsSelect();
+        if (asSelect != null) {
+            println();
+            print0(ucase ? "AS (" : "as (");
+            asSelect.accept(this);
+            print(')');
+        }
+
+        return false;
+    }
 }
