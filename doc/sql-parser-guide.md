@@ -42,7 +42,7 @@ String formatted = SQLUtils.format(ugly, DbType.mysql);
 
 // 带配置的格式化
 SQLUtils.FormatOption option = new SQLUtils.FormatOption();
-option.setUppCase(true);     // 关键字大写
+option.setUppCase(true);     // 关键字大写（注意：API 方法名 setUppCase 双 p 是源码中的已有拼写）
 option.setPrettyFormat(true); // 美化格式
 String result = SQLUtils.format(ugly, DbType.mysql, option);
 ```
@@ -80,7 +80,7 @@ System.out.println("Conditions: " + visitor.getConditions());
 | 方法 | 说明 |
 |------|------|
 | `parseStatements(sql, dbType)` | 解析 SQL 文本为语句列表 |
-| `parseSingleStatement(sql, dbType)` | 解析单条 SQL 语句 |
+| `parseSingleStatement(sql, dbType, features...)` | 解析单条 SQL 语句（可传入 `SQLParserFeature` 可变参数） |
 | `format(sql, dbType)` | 格式化 SQL |
 | `format(sql, dbType, option)` | 带选项格式化 SQL |
 | `toSQLString(sqlObject, dbType)` | AST 节点输出为 SQL 文本 |

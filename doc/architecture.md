@@ -152,6 +152,7 @@ Filter (interface)
 └── FilterAdapter                  # Filter 适配器基类
     ├── WallFilter                 # 安全防火墙 Filter
     ├── EncodingConvertFilter      # 字符编码转换 Filter
+    ├── ConfigFilter               # 配置加密解密 Filter
     └── FilterEventAdapter         # 事件适配器
         ├── StatFilter             # 统计 Filter
         └── LogFilter (abstract)   # 日志 Filter 基类
