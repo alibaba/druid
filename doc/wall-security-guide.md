@@ -78,7 +78,7 @@ spring.datasource.druid.filters: wall
 | `noneBaseStatementAllow` | false | 是否允许非基本语句（如 `SET`、`SHOW`） |
 | `conditionAndAlwayTrueAllow` | true | 是否允许恒真条件 `AND 1=1` |
 | `conditionAndAlwayFalseAllow` | false | 是否允许恒假条件 `AND 1=0` |
-| `selectIntoAllow` | false | 是否允许 `SELECT INTO` |
+| `selectIntoAllow` | true | 是否允许 `SELECT INTO` |
 | `selectUnionCheck` | true | 检查 UNION 注入 |
 | `selectWhereAlwayTrueCheck` | true | 检查 WHERE 恒真 |
 | `selectHavingAlwayTrueCheck` | true | 检查 HAVING 恒真 |

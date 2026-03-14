@@ -42,7 +42,7 @@
 | 参数 | 默认值 | 说明 |
 |------|--------|------|
 | `timeBetweenEvictionRunsMillis` | 60000 | 回收线程执行间隔（毫秒） |
-| `minEvictableIdleTimeMillis` | 300000 | 连接最小空闲时间，超过则可被回收（5分钟） |
+| `minEvictableIdleTimeMillis` | 1800000 | 连接最小空闲时间，超过则可被回收（30分钟） |
 | `maxEvictableIdleTimeMillis` | 25200000 | 连接最大空闲时间，超过则强制回收（7小时） |
 | `keepAlive` | false | 是否对空闲连接发送心跳保活 |
 | `keepAliveBetweenTimeMillis` | 120000 | KeepAlive 间隔时间（毫秒） |
@@ -80,7 +80,7 @@ dataSource.setTestOnReturn(false);
 
 // 连接回收
 dataSource.setTimeBetweenEvictionRunsMillis(60000);
-dataSource.setMinEvictableIdleTimeMillis(300000);
+dataSource.setMinEvictableIdleTimeMillis(1800000);
 
 // KeepAlive
 dataSource.setKeepAlive(true);
@@ -114,7 +114,7 @@ spring:
       test-on-borrow: false
       test-on-return: false
       time-between-eviction-runs-millis: 60000
-      min-evictable-idle-time-millis: 300000
+      min-evictable-idle-time-millis: 1800000
       keep-alive: true
       filters: stat,wall
 ```
@@ -225,7 +225,7 @@ dataSource.setLogAbandoned(true);          // 记录泄漏连接的堆栈
 | Parameter | Default | Description |
 |-----------|---------|-------------|
 | `timeBetweenEvictionRunsMillis` | 60000 | Eviction thread interval (ms) |
-| `minEvictableIdleTimeMillis` | 300000 | Minimum idle time before eviction (5 min) |
+| `minEvictableIdleTimeMillis` | 1800000 | Minimum idle time before eviction (30 min) |
 | `maxEvictableIdleTimeMillis` | 25200000 | Maximum idle time, force eviction (7 hours) |
 | `keepAlive` | false | Send heartbeats to idle connections |
 
