@@ -1,4 +1,4 @@
-# CLAUDE.md — Druid Project Context
+# AGENTS.md — Druid Project Context
 
 ## Project Overview
 
@@ -27,7 +27,7 @@ mvn test -pl core -Dtest=<TestClass>  # Single test class
 ## Key Source Paths
 
 - `core/src/main/java/com/alibaba/druid/pool/` — Connection pool (`DruidDataSource`)
-- `core/src/main/java/com/alibaba/druid/sql/dialect/` — 31 SQL dialect parsers
+- `core/src/main/java/com/alibaba/druid/sql/dialect/` — 30 SQL dialect parsers
 - `core/src/main/java/com/alibaba/druid/sql/parser/` — Core parser infrastructure
 - `core/src/main/java/com/alibaba/druid/sql/ast/` — AST node classes
 - `core/src/main/java/com/alibaba/druid/filter/` — Filter chain implementations

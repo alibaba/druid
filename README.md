@@ -18,7 +18,7 @@
 | 功能领域 | 说明 |
 |---------|------|
 | **JDBC 连接池** | 高性能、可监控的连接池实现 `DruidDataSource`，支持物理连接预热、PSCache、KeepAlive 等高级特性 |
-| **SQL 解析器** | 支持 31 种 SQL 方言的完整解析器，生成 AST 抽象语法树，支持 SQL 格式化、改写和分析 |
+| **SQL 解析器** | 支持 30 种 SQL 方言的完整解析器，生成 AST 抽象语法树，支持 SQL 格式化、改写和分析 |
 | **SQL 防火墙** | 基于 AST 的 `WallFilter` SQL 安全防护，可拦截 SQL 注入、危险操作等 |
 | **监控统计** | 内置 `StatFilter` 实时采集 SQL 执行统计、连接池状态，提供 Web 监控页面 |
 | **Filter 扩展** | 可插拔的 Filter-Chain 架构，支持日志、加密、统计等扩展 |
@@ -68,14 +68,12 @@ spring:
       max-active: 20
       min-idle: 5
       max-wait: 60000
-      # 启用监控统计
+      # 启用 Filter
       filter:
         stat:
           enabled: true
           log-slow-sql: true
           slow-sql-millis: 2000
-      # 启用 SQL 防火墙
-      filter:
         wall:
           enabled: true
 ```
@@ -130,16 +128,16 @@ druid/
 
 ## SQL 方言支持
 
-Druid SQL 解析器支持 31 种数据库方言，每种方言都提供完整的 Lexer、Parser、AST 和 Visitor 实现：
+Druid SQL 解析器支持 30 种数据库方言，每种方言都提供完整的 Lexer、Parser、AST 和 Visitor 实现：
 
 | 分类 | 支持的数据库 |
 |------|------------|
-| **主流关系型** | MySQL, PostgreSQL, Oracle, SQL Server, SQLite, DB2, Informix |
-| **国产数据库** | 达梦 (DM), 人大金仓 (Oscar), GaussDB |
+| **主流关系型** | MySQL, PostgreSQL, Oracle, SQL Server, DB2, H2, Informix |
+| **国产数据库** | 达梦 (DM), Oscar, GaussDB |
 | **分析型/MPP** | ClickHouse, Doris, StarRocks, Teradata, Redshift |
 | **云原生/数仓** | BigQuery, Snowflake, Synapse, Hologres, ODPS (MaxCompute) |
 | **计算引擎** | Hive, Spark, Presto, Impala, Athena, Blink, Databricks |
-| **其他** | H2, Phoenix, SuperSQL, Transact-SQL |
+| **其他** | Phoenix, SuperSQL, Transact-SQL |
 
 ## 文档
 

@@ -52,7 +52,7 @@ spring.datasource.druid.filters: wall
 
 | 配置项 | 默认值 | 说明 |
 |--------|--------|------|
-| `selelctAllow` | true | 是否允许 SELECT |
+| `selectAllow` | true | 是否允许 SELECT |
 | `selectAllColumnAllow` | true | 是否允许 `SELECT *` |
 | `insertAllow` | true | 是否允许 INSERT |
 | `updateAllow` | true | 是否允许 UPDATE |
@@ -76,7 +76,7 @@ spring.datasource.druid.filters: wall
 |--------|--------|------|
 | `multiStatementAllow` | false | 是否允许多语句执行（堆叠注入防护） |
 | `noneBaseStatementAllow` | false | 是否允许非基本语句（如 `SET`、`SHOW`） |
-| `conditionAndAlwayTrueAllow` | false | 是否允许恒真条件 `AND 1=1` |
+| `conditionAndAlwayTrueAllow` | true | 是否允许恒真条件 `AND 1=1` |
 | `conditionAndAlwayFalseAllow` | false | 是否允许恒假条件 `AND 1=0` |
 | `selectIntoAllow` | false | 是否允许 `SELECT INTO` |
 | `selectUnionCheck` | true | 检查 UNION 注入 |
@@ -146,16 +146,18 @@ WallFilter 支持通过白名单和黑名单控制可访问的表和 Schema：
 ```java
 WallConfig config = new WallConfig();
 
-// 设置允许访问的表（白名单）
-config.setPermitTable("users");
-config.setPermitTable("orders");
+// 添加允许访问的表（白名单）
+config.getPermitTables().add("users");
+config.getPermitTables().add("orders");
 
-// 设置禁止访问的表（黑名单）
-config.setDenyTable("admin_secrets");
+// 添加禁止访问的表（黑名单）
+config.getDenyTables().add("admin_secrets");
 
 WallFilter wallFilter = new WallFilter();
 wallFilter.setConfig(config);
 ```
+
+也可以通过配置文件批量管理白名单/黑名单，在 WallConfig 资源目录下放置 `permit-table.txt` 和 `deny-table.txt` 文件，每行一个表名。
 
 ### 方言支持
 
@@ -169,7 +171,6 @@ WallFilter 针对不同数据库方言提供了专门的 WallProvider：
 | PostgreSQL | `PGWallProvider` |
 | DB2 | `DB2WallProvider` |
 | SQLite | `SQLiteWallProvider` |
-| 达梦 (DM) | `DMWallProvider` |
 
 ### SQL 注入防护示例
 
@@ -191,17 +192,21 @@ SELECT * FROM users WHERE id = 1 -- AND password = 'xxx';
 
 ### 处理拦截
 
-当 SQL 被拦截时，WallFilter 会抛出 `WallDeniedException` 异常。可在应用层捕获处理：
+当 SQL 被拦截时，WallFilter 会抛出 `SQLException`（消息以 `"sql injection violation"` 开头）。可在应用层捕获处理：
 
 ```java
 try {
     jdbcTemplate.query(sql, ...);
-} catch (WallDeniedException e) {
-    // SQL 被防火墙拦截
-    logger.warn("SQL blocked by WallFilter: {}", e.getMessage());
-    // 进行告警、审计等处理
+} catch (SQLException e) {
+    if (e.getMessage() != null && e.getMessage().startsWith("sql injection violation")) {
+        // SQL 被防火墙拦截
+        logger.warn("SQL blocked by WallFilter: {}", e.getMessage());
+        // 进行告警、审计等处理
+    }
 }
 ```
+
+> **注意：** 可通过 `druid.wall.throwException=false` 配置禁止 WallFilter 抛出异常，此时违规 SQL 会被静默拦截（不执行但也不报错）。
 
 ---
 
@@ -238,4 +243,4 @@ spring:
 
 ### Dialect-Specific Providers
 
-WallFilter uses dialect-specific providers: `MySqlWallProvider`, `OracleWallProvider`, `SQLServerWallProvider`, `PGWallProvider`, `DB2WallProvider`, `SQLiteWallProvider`, `DMWallProvider`.
+WallFilter uses dialect-specific providers: `MySqlWallProvider`, `OracleWallProvider`, `SQLServerWallProvider`, `PGWallProvider`, `DB2WallProvider`, `SQLiteWallProvider`.
