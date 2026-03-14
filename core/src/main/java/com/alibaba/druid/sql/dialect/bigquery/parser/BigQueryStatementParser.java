@@ -9,6 +9,7 @@ import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.bigquery.ast.BigQueryAssertStatement;
 import com.alibaba.druid.sql.dialect.bigquery.ast.BigQueryCreateModelStatement;
 import com.alibaba.druid.sql.dialect.bigquery.ast.BigQueryExecuteImmediateStatement;
+import com.alibaba.druid.sql.dialect.bigquery.ast.BigQueryExportDataStatement;
 import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.util.FnvHash;
 
@@ -36,14 +37,86 @@ public class BigQueryStatementParser extends SQLStatementParser {
     }
 
     @Override
+    public void parseCreateTableSupportSchema() {
+        if (lexer.token() == Token.SCHEMA) {
+            lexer.nextToken();
+        } else {
+            accept(Token.DATABASE);
+        }
+    }
+
+    @Override
+    public SQLStatement parseCreateDatabase() {
+        SQLStatement stmt = super.parseCreateDatabase();
+        if (stmt instanceof SQLCreateDatabaseStatement) {
+            SQLCreateDatabaseStatement createDb = (SQLCreateDatabaseStatement) stmt;
+            if (lexer.nextIfIdentifier(FnvHash.Constants.OPTIONS)) {
+                accept(Token.LPAREN);
+                for (;;) {
+                    SQLAssignItem item = this.exprParser.parseAssignItem(true, createDb);
+                    item.setParent(createDb);
+                    createDb.getOptions().put(
+                            item.getTarget().toString(),
+                            item.getValue()
+                    );
+                    if (lexer.nextIf(Token.COMMA)) {
+                        continue;
+                    }
+                    break;
+                }
+                accept(Token.RPAREN);
+            }
+        }
+        return stmt;
+    }
+
+    @Override
+    public SQLCreateProcedureStatement parseCreateProcedure() {
+        SQLCreateProcedureStatement stmt = new SQLCreateProcedureStatement();
+        stmt.setDbType(dbType);
+
+        accept(Token.CREATE);
+        if (lexer.nextIf(Token.OR)) {
+            accept(Token.REPLACE);
+            stmt.setOrReplace(true);
+        }
+
+        accept(Token.PROCEDURE);
+
+        stmt.setName(this.exprParser.name());
+
+        parameters(stmt.getParameters(), stmt);
+
+        SQLStatement block;
+        if (lexer.token() == Token.BEGIN) {
+            block = this.parseBlock();
+        } else {
+            block = this.parseStatement();
+        }
+
+        stmt.setBlock(block);
+
+        return stmt;
+    }
+
+    @Override
     public SQLCreateFunctionStatement parseCreateFunction() {
         SQLCreateFunctionStatement createFunction = new SQLCreateFunctionStatement();
         accept(Token.CREATE);
+        if (lexer.nextIf(Token.OR)) {
+            accept(Token.REPLACE);
+            createFunction.setOrReplace(true);
+        }
         if (lexer.nextIfIdentifier("TEMP")
                 || lexer.nextIfIdentifier(FnvHash.Constants.TEMPORARY)) {
             createFunction.setTemporary(true);
         }
         accept(Token.FUNCTION);
+        if (lexer.nextIf(Token.IF)) {
+            accept(Token.NOT);
+            accept(Token.EXISTS);
+            createFunction.setIfNotExists(true);
+        }
         createFunction.setName(
                 this.exprParser.name());
 
@@ -137,7 +210,38 @@ public class BigQueryStatementParser extends SQLStatementParser {
             statementList.add(parseRaise());
             return true;
         }
+        if (lexer.identifierEquals(FnvHash.Constants.EXPORT)) {
+            statementList.add(parseExportData());
+            return true;
+        }
         return false;
+    }
+
+    protected SQLStatement parseExportData() {
+        acceptIdentifier("EXPORT");
+        acceptIdentifier("DATA");
+
+        BigQueryExportDataStatement stmt = new BigQueryExportDataStatement();
+
+        if (lexer.nextIf(Token.WITH)) {
+            acceptIdentifier("CONNECTION");
+            SQLExprTableSource connection = new SQLExprTableSource(this.exprParser.name());
+            stmt.setConnection(connection);
+        }
+
+        if (lexer.nextIfIdentifier(FnvHash.Constants.OPTIONS)) {
+            exprParser.parseAssignItem(stmt.getOptions(), stmt);
+        }
+
+        if (lexer.nextIf(Token.AS)) {
+            accept(Token.LPAREN);
+            SQLSelect select = createSQLSelectParser().select();
+            SQLSelectStatement selectStmt = new SQLSelectStatement(select, dbType);
+            stmt.setAsSelect(selectStmt);
+            accept(Token.RPAREN);
+        }
+
+        return stmt;
     }
 
     @Override
