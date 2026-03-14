@@ -111,7 +111,7 @@ List<Map<String, Object>> sqlStats =
     DruidStatManagerFacade.getInstance().getSqlStatDataList(null);
 
 // 获取活跃连接堆栈
-List<Map<String, Object>> activeConnections =
+List<List<String>> activeConnections =
     DruidStatManagerFacade.getInstance().getActiveConnStackTraceList();
 ```
 
@@ -134,7 +134,7 @@ public class DruidMonitorController {
 
     @GetMapping("/wall")
     public Object wallStat() {
-        return DruidStatManagerFacade.getInstance().getWallStatMap();
+        return DruidStatManagerFacade.getInstance().getWallStatMap(null);
     }
 }
 ```
@@ -222,7 +222,7 @@ DruidStatManagerFacade.getInstance().getDataSourceStatDataList();
 // Get SQL statistics
 DruidStatManagerFacade.getInstance().getSqlStatDataList(null);
 
-// Get active connection stack traces
+// Get active connection stack traces (returns List<List<String>>)
 DruidStatManagerFacade.getInstance().getActiveConnStackTraceList();
 ```
 
