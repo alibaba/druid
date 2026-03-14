@@ -140,22 +140,25 @@ DbType → SQLParserUtils.createParser() → Dialect-specific Parser
 ### 类层次关系
 
 ```
-DruidDataSource
-├── DruidConnectionHolder          # 连接持有者，包装物理连接
-│   └── DruidPooledConnection      # 池化连接，应用层使用
-├── CreateConnectionThread         # 异步创建连接线程
-├── DestroyConnectionThread        # 连接回收线程
-└── LogStatsThread                 # 定期日志统计线程
+DruidDataSource                        # 连接池核心类
+├── CreateConnectionThread (内部类)     # 异步创建连接线程
+├── DestroyConnectionThread (内部类)    # 连接回收线程
+└── LogStatsThread (内部类)             # 定期日志统计线程
+
+DruidConnectionHolder                  # 连接持有者，包装物理连接
+DruidPooledConnection                  # 池化连接，应用层使用
 
 Filter (interface)
-├── FilterAdapter                  # Filter 适配器基类
-│   ├── StatFilter                 # 统计 Filter
-│   ├── WallFilter                 # 安全防火墙 Filter
-│   ├── FilterEventAdapter         # 事件适配器
-│   │   ├── Slf4jLogFilter
-│   │   ├── Log4jFilter
-│   │   └── Log4j2Filter
-│   └── EncodingConvertFilter
+└── FilterAdapter                  # Filter 适配器基类
+    ├── WallFilter                 # 安全防火墙 Filter
+    ├── EncodingConvertFilter      # 字符编码转换 Filter
+    └── FilterEventAdapter         # 事件适配器
+        ├── StatFilter             # 统计 Filter
+        └── LogFilter (abstract)   # 日志 Filter 基类
+            ├── Slf4jLogFilter
+            ├── Log4jFilter
+            ├── Log4j2Filter
+            └── CommonsLogFilter
 
 SQLStatement (AST root)
 ├── SQLSelectStatement             # SELECT 语句
