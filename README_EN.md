@@ -18,7 +18,7 @@ English | [中文](README.md)
 | Capability | Description |
 |-----------|-------------|
 | **JDBC Connection Pool** | High-performance, monitorable pool implementation `DruidDataSource` with connection warm-up, PSCache, KeepAlive and more |
-| **SQL Parser** | Full parser for 31 SQL dialects, generating AST (Abstract Syntax Tree) with support for formatting, rewriting and analysis |
+| **SQL Parser** | Full parser for 30 SQL dialects, generating AST (Abstract Syntax Tree) with support for formatting, rewriting and analysis |
 | **SQL Firewall** | AST-based `WallFilter` for SQL injection protection, blocking dangerous operations |
 | **Monitoring & Stats** | Built-in `StatFilter` for real-time SQL execution statistics, connection pool status, and Web monitoring console |
 | **Filter Extension** | Pluggable Filter-Chain architecture supporting logging, encryption, statistics and custom extensions |
@@ -126,16 +126,16 @@ druid/
 
 ## SQL Dialect Support
 
-The Druid SQL parser supports 31 database dialects, each with full Lexer, Parser, AST and Visitor implementations:
+The Druid SQL parser supports 30 database dialects, each with full Lexer, Parser, AST and Visitor implementations:
 
 | Category | Supported Databases |
 |----------|-------------------|
-| **Major RDBMS** | MySQL, PostgreSQL, Oracle, SQL Server, SQLite, DB2, Informix |
-| **Chinese Databases** | Dameng (DM), Oscar (Kingbase), GaussDB |
+| **Major RDBMS** | MySQL, PostgreSQL, Oracle, SQL Server, DB2, H2, Informix |
+| **Chinese Databases** | Dameng (DM), Oscar, GaussDB |
 | **Analytical / MPP** | ClickHouse, Doris, StarRocks, Teradata, Redshift |
 | **Cloud / Data Warehouse** | BigQuery, Snowflake, Synapse, Hologres, ODPS (MaxCompute) |
 | **Compute Engines** | Hive, Spark, Presto, Impala, Athena, Blink, Databricks |
-| **Other** | H2, Phoenix, SuperSQL, Transact-SQL |
+| **Other** | Phoenix, SuperSQL, Transact-SQL |
 
 ## Documentation
 

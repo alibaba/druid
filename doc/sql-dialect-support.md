@@ -6,7 +6,7 @@
 
 ## 中文
 
-Druid SQL 解析器当前支持 31 种数据库方言。每种方言都提供完整的 Lexer（词法分析器）、Parser（语法分析器）、AST（抽象语法树节点）和 Visitor（访问者）实现。
+Druid SQL 解析器当前支持 30 种数据库方言。每种方言都提供完整的 Lexer（词法分析器）、Parser（语法分析器）、AST（抽象语法树节点）和 Visitor（访问者）实现。
 
 ### 方言支持矩阵
 
@@ -16,12 +16,11 @@ Druid SQL 解析器当前支持 31 种数据库方言。每种方言都提供完
 | PostgreSQL | `postgresql` | Y | Y | Y | Y | Y |
 | Oracle | `oracle` | Y | Y | Y | Y | Y |
 | SQL Server | `sqlserver` | Y | Y | Y | Y | Y |
-| SQLite | `sqlite` | Y | Y | Y | Y | Y |
 | DB2 | `db2` | Y | Y | Y | Y | Y |
 | H2 | `h2` | Y | Y | Y | Y | - |
 | Informix | `informix` | Y | Y | Y | Y | - |
-| 达梦 (DM) | `dm` | Y | Y | Y | Y | Y |
-| 人大金仓 (Oscar) | `oscar` | Y | Y | Y | Y | - |
+| 达梦 (DM) | `dm` | Y | Y | Y | Y | - |
+| Oscar | `oscar` | Y | Y | Y | Y | - |
 | GaussDB | `gaussdb` | Y | Y | Y | Y | - |
 | ClickHouse | `clickhouse` | Y | Y | Y | Y | - |
 | Doris | `doris` | Y | Y | Y | Y | - |
@@ -82,15 +81,6 @@ Druid SQL 解析器当前支持 31 种数据库方言。每种方言都提供完
 - CTE（`WITH ... AS`）
 - `CROSS APPLY` / `OUTER APPLY`
 - `ALTER PROCEDURE`、`ALTER VIEW`
-
-#### SQLite
-
-- `PRAGMA` 语句
-- `ATTACH` / `DETACH DATABASE`
-- `VACUUM` 数据库压缩
-- `REINDEX` 重建索引
-- `CREATE INDEX IF NOT EXISTS`
-- SQLite 特有数据类型（`INTEGER`, `REAL`, `TEXT`, `BLOB`）
 
 #### 达梦 (DM)
 
@@ -162,7 +152,7 @@ REAL
 
 ## English
 
-The Druid SQL parser currently supports 31 database dialects. Each dialect provides complete Lexer, Parser, AST and Visitor implementations.
+The Druid SQL parser currently supports 30 database dialects. Each dialect provides complete Lexer, Parser, AST and Visitor implementations.
 
 ### Dialect Support Matrix
 
@@ -190,7 +180,6 @@ SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(DbType.oracle);
 - **PostgreSQL** — `RETURNING`, `ON CONFLICT`, array types, `COPY`, window functions
 - **Oracle** — PL/SQL, `CONNECT BY`, `MERGE INTO`, `FLASHBACK`, package bodies
 - **SQL Server** — T-SQL, `TOP`, `WITH (NOLOCK)`, `CROSS APPLY`, CTEs
-- **SQLite** — `PRAGMA`, `ATTACH/DETACH`, `VACUUM`, `REINDEX`
 - **ClickHouse** — Table engines, `PARTITION BY`, `SAMPLE`, ClickHouse functions
 - **BigQuery** — `EXPORT DATA`, `STRUCT`/`ARRAY` types, backtick identifiers
 

@@ -192,9 +192,6 @@ SQLUtils.parseStatements("SELECT * FROM t LIMIT 20 OFFSET 10", DbType.postgresql
 
 // Oracle 特有语法
 SQLUtils.parseStatements("SELECT * FROM t WHERE ROWNUM <= 20", DbType.oracle);
-
-// SQLite 特有语法
-SQLUtils.parseStatements("PRAGMA table_info('users')", DbType.sqlite);
 ```
 
 ### 性能建议
