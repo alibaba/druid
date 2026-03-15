@@ -20,7 +20,9 @@ public class SQLRaiseStatement extends SQLStatementImpl {
     }
 
     public void accept0(SQLASTVisitor visitor) {
-        visitor.visit(this);
+        if (visitor.visit(this)) {
+            acceptChild(visitor, message);
+        }
         visitor.endVisit(this);
     }
 
