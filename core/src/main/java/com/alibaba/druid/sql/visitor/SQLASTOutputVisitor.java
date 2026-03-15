@@ -8526,7 +8526,17 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     @Override
     public boolean visit(WhenUpdate x) {
-        print0(ucase ? "WHEN MATCHED THEN UPDATE" : "when matched then update");
+        print0(ucase ? "WHEN" : "when");
+        if (x.isNot()) {
+            print0(ucase ? " NOT" : " not");
+        }
+        print0(ucase ? " MATCHED" : " matched");
+        SQLName by = x.getBy();
+        if (by != null) {
+            print0(ucase ? " BY " : " by ");
+            by.accept(this);
+        }
+        print0(ucase ? " THEN UPDATE" : " then update");
         println();
         incrementIndent();
         print(ucase ? "SET " : "set ");
@@ -8589,7 +8599,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     @Override
     public boolean visit(WhenInsert x) {
-        print0(ucase ? "WHEN NOT MATCHED" : "when not matched");
+        print0(ucase ? "WHEN" : "when");
+        if (x.isNot()) {
+            print0(ucase ? " NOT" : " not");
+        }
+        print0(ucase ? " MATCHED" : " matched");
         SQLName by = x.getBy();
         if (by != null) {
             print0(ucase ? " BY " : " by ");
