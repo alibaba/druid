@@ -1616,7 +1616,11 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
         if (logicColumnMap == null) {
             return logicColumn;
         }
-        return logicColumnMap.get(logicColumn);
+        Integer physical = logicColumnMap.get(logicColumn);
+        if (physical == null) {
+            throw new IllegalArgumentException("Invalid column index: " + logicColumn);
+        }
+        return physical;
     }
 
     @Override
@@ -1624,7 +1628,11 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
         if (physicalColumnMap == null) {
             return physicalColumn;
         }
-        return physicalColumnMap.get(physicalColumn);
+        Integer logical = physicalColumnMap.get(physicalColumn);
+        if (logical == null) {
+            throw new IllegalArgumentException("Invalid column index: " + physicalColumn);
+        }
+        return logical;
     }
 
     @Override

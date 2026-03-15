@@ -44,13 +44,13 @@ import static com.alibaba.druid.util.Utils.getBoolean;
 public class WallFilter extends FilterAdapter implements WallFilterMBean {
     private static final Log LOG = LogFactory.getLog(WallFilter.class);
 
-    private boolean inited;
+    private volatile boolean inited;
 
-    private WallProvider provider;
+    private volatile WallProvider provider;
 
-    private String dbTypeName;
+    private volatile String dbTypeName;
 
-    private WallConfig config;
+    private volatile WallConfig config;
 
     private volatile boolean logViolation;
     private volatile boolean throwException = true;
@@ -90,6 +90,10 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
 
     @Override
     public synchronized void init(DataSourceProxy dataSource) {
+        if (this.inited) {
+            return;
+        }
+
         if (dataSource == null) {
             LOG.error("dataSource should not be null");
             return;
@@ -214,7 +218,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
         Collections.sort(wallProviderCreatorList, (o1, o2) -> {
             return Integer.compare(o1.getOrder(), o2.getOrder());
         });
-        for (WallProviderCreator providerCreator : providerCreators) {
+        for (WallProviderCreator providerCreator : wallProviderCreatorList) {
             WallProvider wallProvider = providerCreator.createWallConfig(dataSource, config, dbType);
             if (wallProvider != null) {
                 LOG.debug("use wallProvider " + wallProvider.getClass().getName() + " from " + providerCreator.getClass().getName());
@@ -283,6 +287,9 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
     }
 
     public void setTenantColumn(String tenantColumn) {
+        if (this.config == null) {
+            throw new IllegalStateException("WallFilter config is not set, call setConfig() or init() first");
+        }
         this.config.setTenantColumn(tenantColumn);
     }
 
@@ -496,6 +503,8 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
         } finally {
             if (originalContext != null) {
                 WallContext.setContext(originalContext);
+            } else {
+                WallContext.clearContext();
             }
         }
     }
@@ -573,7 +582,9 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
             int[] updateCounts = chain.statement_executeBatch(statement);
             int updateCount = 0;
             for (int count : updateCounts) {
-                updateCount += count;
+                if (count > 0) {
+                    updateCount += count;
+                }
             }
 
             if (sqlStat != null) {
@@ -743,7 +754,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
                 Object setValue;
                 if (item.value instanceof SQLValuableExpr) {
                     setValue = ((SQLValuableExpr) item.value).getValue();
-                } else {
+                } else if (item.value instanceof SQLVariantRefExpr) {
                     int index = ((SQLVariantRefExpr) item.value).getIndex();
                     JdbcParameter parameter = parameterMap.get(index);
                     if (parameter != null) {
@@ -751,6 +762,8 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
                     } else {
                         setValue = null;
                     }
+                } else {
+                    setValue = null;
                 }
 
                 List<Object> filtersValues = new ArrayList<Object>(item.filterValues.size());
@@ -758,7 +771,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
                     Object filterValue;
                     if (filterValueExpr instanceof SQLValuableExpr) {
                         filterValue = ((SQLValuableExpr) filterValueExpr).getValue();
-                    } else {
+                    } else if (filterValueExpr instanceof SQLVariantRefExpr) {
                         int index = ((SQLVariantRefExpr) filterValueExpr).getIndex();
                         JdbcParameter parameter = parameterMap.get(index);
                         if (parameter != null) {
@@ -766,6 +779,8 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
                         } else {
                             filterValue = null;
                         }
+                    } else {
+                        filterValue = null;
                     }
                     filtersValues.add(filterValue);
                 }
@@ -872,7 +887,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
                 if (violations.get(0) instanceof SyntaxErrorViolation) {
                     SyntaxErrorViolation violation = (SyntaxErrorViolation) violations.get(0);
                     throw new SQLException("sql injection violation, dbType "
-                            + getDbType() + ", "
+                            + getDbType()
                             + ", druid-version "
                             + VERSION.getVersionNumber()
                             + ", "
@@ -940,11 +955,9 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
         int fetchRowCount = resultSet.getFetchRowCount();
 
         WallSqlStat sqlStat = (WallSqlStat) resultSet.getStatementProxy().getAttribute(ATTR_SQL_STAT);
-        if (sqlStat == null) {
-            return;
+        if (sqlStat != null) {
+            provider.addFetchRowCount(sqlStat, fetchRowCount);
         }
-
-        provider.addFetchRowCount(sqlStat, fetchRowCount);
     }
 
     // ////////////////
@@ -953,6 +966,10 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
     public int resultSet_findColumn(FilterChain chain, ResultSetProxy resultSet, String columnLabel)
             throws SQLException {
         int physicalColumn = chain.resultSet_findColumn(resultSet, columnLabel);
+        List<Integer> hiddenColumns = resultSet.getHiddenColumns();
+        if (hiddenColumns != null && hiddenColumns.contains(physicalColumn)) {
+            throw new SQLException("Column '" + columnLabel + "' not found", "S0022");
+        }
         return resultSet.getLogicColumn(physicalColumn);
     }
 
@@ -1404,7 +1421,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
         boolean hasNext = chain.resultSet_next(resultSet);
         TenantCallBack callback = provider.getConfig().getTenantCallBack();
         if (callback != null && hasNext) {
-            List<Integer> tenantColumns = tenantColumnsLocal.get();
+            List<Integer> tenantColumns = (List<Integer>) resultSet.getAttribute(ATTR_TENANT_COLUMNS);
             if (tenantColumns != null && tenantColumns.size() > 0) {
                 for (Integer columnIndex : tenantColumns) {
                     Object value = resultSet.getResultSetRaw().getObject(columnIndex);
@@ -1564,7 +1581,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
         return provider.checkValid(sql);
     }
 
-    private static final ThreadLocal<List<Integer>> tenantColumnsLocal = new ThreadLocal<List<Integer>>();
+    private static final String ATTR_TENANT_COLUMNS = "wall.tenantColumns";
 
     private void preprocessResultSet(ResultSetProxy resultSet) throws SQLException {
         if (resultSet == null) {
@@ -1611,7 +1628,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
 
             if (!StringUtils.isEmpty(hiddenColumn)) {
                 String columnName = metaData.getColumnName(physicalColumn);
-                if (null != hiddenColumn && hiddenColumn.equalsIgnoreCase(columnName)) {
+                if (hiddenColumn.equalsIgnoreCase(columnName)) {
                     hiddenColumns.add(physicalColumn);
                     isHidden = true;
                 }
@@ -1623,7 +1640,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
             }
 
             if (!StringUtils.isEmpty(tenantColumn)
-                    && null != tenantColumn && tenantColumn.equalsIgnoreCase(metaData.getColumnName(physicalColumn))) {
+                    && tenantColumn.equalsIgnoreCase(metaData.getColumnName(physicalColumn))) {
                 tenantColumns.add(physicalColumn);
             }
         }
@@ -1633,6 +1650,8 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
             resultSet.setPhysicalColumnMap(physicalColumnMap);
             resultSet.setHiddenColumns(hiddenColumns);
         }
-        tenantColumnsLocal.set(tenantColumns);
+        if (tenantColumns.size() > 0) {
+            resultSet.putAttribute(ATTR_TENANT_COLUMNS, tenantColumns);
+        }
     }
 }
