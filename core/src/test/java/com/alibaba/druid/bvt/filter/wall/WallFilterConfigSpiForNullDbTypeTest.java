@@ -30,10 +30,9 @@ public class WallFilterConfigSpiForNullDbTypeTest {
 
     @Test
     public void test_wallFilter() throws Exception {
-        System.out.println("wallFilter= " + wallFilter);
-        System.out.println("wallFilter.getConfig()= " + wallFilter.getConfig());
-        System.out.println("wallFilter.getConfig()= " + wallFilter.getProvider().getClass());
-        assertNull(wallFilter.getConfig());
-        assertTrue(wallFilter.getProvider() instanceof NullWallProvider);
+        // With correct SPI ordering, Test02WallProviderCreator (order=100) takes
+        // precedence over Test01WallProviderCreator (order=200)
+        assertNotNull(wallFilter.getConfig());
+        assertTrue(wallFilter.getProvider() instanceof NoMatchDbWallProvider);
     }
 }
