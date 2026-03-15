@@ -1118,7 +1118,7 @@ public class SQLSelectParser extends SQLParser {
         if (lexer.token == Token.HINT) {
             SQLCommentHint hint = this.exprParser.parseHint(); // skip
             if (item instanceof SQLObjectImpl) {
-                ((SQLExprImpl) item).setHint(hint);
+                ((SQLObjectImpl) item).setHint(hint);
             }
         }
 

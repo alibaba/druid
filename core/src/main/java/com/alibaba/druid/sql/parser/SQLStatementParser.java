@@ -1823,7 +1823,7 @@ public class SQLStatementParser extends SQLParser {
                 }
             } else if (lexer.token == Token.DROP) {
                 lexer.nextToken();
-                if (lexer.token == Token.DROP) {
+                if (lexer.token == Token.TABLE) {
                     privilege = "DROP TABLE";
                     lexer.nextToken();
                 } else if (lexer.token == Token.SESSION) {

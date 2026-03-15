@@ -293,7 +293,12 @@ public class BigQueryStatementParser extends SQLStatementParser {
                 exprParser.expr()
         );
         if (lexer.nextIf(Token.AS)) {
-            stmt.setAs((SQLCharExpr) exprParser.primary());
+            SQLExpr asExpr = exprParser.primary();
+            if (asExpr instanceof SQLCharExpr) {
+                stmt.setAs((SQLCharExpr) asExpr);
+            } else {
+                throw new ParserException("syntax error, expect string literal after AS, actual " + asExpr.getClass().getSimpleName() + ". " + lexer.info());
+            }
         }
         return stmt;
     }
