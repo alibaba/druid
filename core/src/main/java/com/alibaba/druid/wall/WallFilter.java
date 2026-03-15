@@ -968,7 +968,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
         int physicalColumn = chain.resultSet_findColumn(resultSet, columnLabel);
         List<Integer> hiddenColumns = resultSet.getHiddenColumns();
         if (hiddenColumns != null && hiddenColumns.contains(physicalColumn)) {
-            throw new SQLException("Column '" + columnLabel + "' not found");
+            throw new SQLException("Column '" + columnLabel + "' not found", "S0022");
         }
         return resultSet.getLogicColumn(physicalColumn);
     }
@@ -1581,7 +1581,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
         return provider.checkValid(sql);
     }
 
-    public static final String ATTR_TENANT_COLUMNS = "wall.tenantColumns";
+    private static final String ATTR_TENANT_COLUMNS = "wall.tenantColumns";
 
     private void preprocessResultSet(ResultSetProxy resultSet) throws SQLException {
         if (resultSet == null) {
