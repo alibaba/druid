@@ -38,6 +38,9 @@ public class SQLArrayExpr extends SQLExprImpl implements SQLReplaceable {
     }
 
     public void setDataType(SQLDataType dataType) {
+        if (dataType != null) {
+            dataType.setParent(this);
+        }
         this.dataType = dataType;
     }
 
@@ -99,6 +102,9 @@ public class SQLArrayExpr extends SQLExprImpl implements SQLReplaceable {
     public List<SQLObject> getChildren() {
         List<SQLObject> children = new ArrayList<SQLObject>();
         children.add(this.expr);
+        if (this.dataType != null) {
+            children.add(this.dataType);
+        }
         children.addAll(this.values);
         return children;
     }

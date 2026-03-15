@@ -904,7 +904,8 @@ public class SQLParser {
 
     public int acceptInteger() {
         if (lexer.token == Token.LITERAL_INT) {
-            int intVal = ((Integer) lexer.integerValue()).intValue();
+            Number number = lexer.integerValue();
+            int intVal = number.intValue();
             lexer.nextToken();
             return intVal;
         } else {

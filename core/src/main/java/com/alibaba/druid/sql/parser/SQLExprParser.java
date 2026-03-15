@@ -3809,8 +3809,12 @@ public class SQLExprParser extends SQLParser {
             case EQGT: {
                 lexer.nextToken();
                 rightExp = expr();
-                String argumentName = ((SQLIdentifierExpr) expr).getName();
-                expr = new OracleArgumentExpr(argumentName, rightExp);
+                if (expr instanceof SQLIdentifierExpr) {
+                    String argumentName = ((SQLIdentifierExpr) expr).getName();
+                    expr = new OracleArgumentExpr(argumentName, rightExp);
+                } else {
+                    expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.Assignment, rightExp, dbType);
+                }
             }
             break;
             case BANGEQ:
@@ -6285,7 +6289,7 @@ public class SQLExprParser extends SQLParser {
                 acceptIdentifier(FnvHash.Constants.THAN);
                 values = new SQLPartitionValue(SQLPartitionValue.Operator.LessThan);
                 if (lexer.nextIfIdentifier(FnvHash.Constants.MAXVALUE)) {
-                    SQLIdentifierExpr maxValue = new SQLIdentifierExpr(lexer.stringVal());
+                    SQLIdentifierExpr maxValue = new SQLIdentifierExpr("MAXVALUE");
                     maxValue.setParent(values);
                     values.addItem(maxValue);
                 } else {

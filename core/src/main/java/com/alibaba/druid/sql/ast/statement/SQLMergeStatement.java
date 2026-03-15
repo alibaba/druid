@@ -65,6 +65,9 @@ public class SQLMergeStatement extends SQLStatementImpl {
     }
 
     public void setUsing(SQLTableSource using) {
+        if (using != null) {
+            using.setParent(this);
+        }
         this.using = using;
     }
 
@@ -73,6 +76,9 @@ public class SQLMergeStatement extends SQLStatementImpl {
     }
 
     public void setOn(SQLExpr on) {
+        if (on != null) {
+            on.setParent(this);
+        }
         this.on = on;
     }
 
@@ -132,6 +138,7 @@ public class SQLMergeStatement extends SQLStatementImpl {
         @Override
         public void accept0(SQLASTVisitor v) {
             if (v.visit(this)) {
+                acceptChild(v, by);
                 acceptChild(v, items);
                 acceptChild(v, where);
             }
@@ -300,6 +307,7 @@ public class SQLMergeStatement extends SQLStatementImpl {
                 acceptChild(v, by);
                 acceptChild(v, where);
             }
+            v.endVisit(this);
         }
 
         public WhenDelete cloneTo() {
@@ -319,17 +327,23 @@ public class SQLMergeStatement extends SQLStatementImpl {
 
         public When(boolean not, SQLName by, SQLExpr where) {
             this.not = not;
+            if (by != null) {
+                by.setParent(this);
+            }
             this.by = by;
+            if (where != null) {
+                where.setParent(this);
+            }
             this.where = where;
         }
 
         protected void cloneTo(When x) {
             x.not = this.not;
             if (by != null) {
-                x.by = by.clone();
+                x.setBy(by.clone());
             }
             if (where != null) {
-                x.where = where.clone();
+                x.setWhere(where.clone());
             }
         }
 
