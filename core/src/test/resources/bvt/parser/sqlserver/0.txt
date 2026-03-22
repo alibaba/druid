@@ -269,7 +269,7 @@ FROM Person.Person p
 	JOIN Person.PersonPhone pph ON p.BusinessEntityID = pph.BusinessEntityID
 WHERE LastName LIKE 'G%'
 ORDER BY LastName, FirstName
-FOR XML , TYPE, XMLSCHEMA, ELEMENTS XSINIL
+FOR XML AUTO, TYPE, XMLSCHEMA, ELEMENTS XSINIL
 ------------------------------------------------------------------------------------------------------------------------
 SELECT First_Name + ' ' + Last Name FROM Employees ORDER BY First_Name OFFSET 10 ROWS
 --------------------

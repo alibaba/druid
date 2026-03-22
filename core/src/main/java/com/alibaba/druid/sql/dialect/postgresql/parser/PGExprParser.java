@@ -363,6 +363,24 @@ public class PGExprParser extends SQLExprParser {
             castExpr.setExpr(expr);
             castExpr.setDataType(dataType);
 
+            // If parseDataType consumed a COLLATE clause (e.g., ::text COLLATE "zh-Hans-x-icu"),
+            // extract it and wrap the cast in a COLLATE binary expression
+            if (dataType instanceof com.alibaba.druid.sql.ast.statement.SQLCharacterDataType) {
+                com.alibaba.druid.sql.ast.statement.SQLCharacterDataType charType =
+                        (com.alibaba.druid.sql.ast.statement.SQLCharacterDataType) dataType;
+                String collate = charType.getCollate();
+                if (collate != null) {
+                    charType.setCollate(null);
+                    SQLBinaryOpExpr collateExpr = new SQLBinaryOpExpr(
+                            castExpr,
+                            SQLBinaryOperator.COLLATE,
+                            new SQLIdentifierExpr(collate),
+                            dbType
+                    );
+                    return primaryRest(collateExpr);
+                }
+            }
+
             return primaryRest(castExpr);
         }
 

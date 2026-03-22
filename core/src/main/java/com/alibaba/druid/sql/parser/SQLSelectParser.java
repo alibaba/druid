@@ -1237,6 +1237,13 @@ public class SQLSelectParser extends SQLParser {
                         this.exprParser.names(values.getColumns(), values);
                         accept(Token.RPAREN);
                     }
+                } else if (tableSource instanceof SQLUnionQueryTableSource) {
+                    SQLUnionQueryTableSource union = (SQLUnionQueryTableSource) tableSource;
+                    if (lexer.token == Token.LPAREN) {
+                        lexer.nextToken();
+                        this.exprParser.names(union.getColumns(), union);
+                        accept(Token.RPAREN);
+                    }
                 }
             }
 

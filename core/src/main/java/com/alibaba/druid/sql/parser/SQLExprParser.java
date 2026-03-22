@@ -4878,6 +4878,21 @@ public class SQLExprParser extends SQLParser {
                 SQLColumnCheck check = parseColumnCheck();
                 column.addConstraint(check);
                 return parseColumnRest(column);
+            case IDENTITY: {
+                lexer.nextToken();
+                SQLColumnDefinition.Identity identity = new SQLColumnDefinition.Identity();
+                if (lexer.token() == Token.LPAREN) {
+                    lexer.nextToken();
+                    SQLIntegerExpr seed = (SQLIntegerExpr) this.primary();
+                    accept(Token.COMMA);
+                    SQLIntegerExpr increment = (SQLIntegerExpr) this.primary();
+                    accept(Token.RPAREN);
+                    identity.setSeed((Integer) seed.getNumber());
+                    identity.setIncrement((Integer) increment.getNumber());
+                }
+                column.setIdentity(identity);
+                return parseColumnRest(column);
+            }
             case IDENTIFIER:
                 long hash = lexer.hashLCase();
                 if (hash == FnvHash.Constants.AUTO_INCREMENT) {

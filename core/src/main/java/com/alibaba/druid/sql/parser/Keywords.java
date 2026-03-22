@@ -176,6 +176,7 @@ public class Keywords {
             sqlitemap.put("MERGE", Token.MERGE);
             sqlitemap.put("MATCHED", Token.MATCHED);
             sqlitemap.put("USING", Token.USING);
+            sqlitemap.put("IDENTITY", Token.IDENTITY);
             DM_KEYWORDS = new Keywords(sqlitemap);
         }
     }
