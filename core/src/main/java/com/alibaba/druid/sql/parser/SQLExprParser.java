@@ -6287,7 +6287,7 @@ public class SQLExprParser extends SQLParser {
             }
 
             limit.setRowCount(rowCount);
-        } else if (lexer.identifierEquals(FnvHash.Constants.OFFSET)) {
+        } else if (lexer.identifierEquals(FnvHash.Constants.OFFSET) || lexer.token == Token.OFFSET) {
             limit.setRowCount(temp);
             lexer.nextToken();
             limit.setOffset(this.expr());
