@@ -4,6 +4,7 @@ open module druid.spring.boot4.starter {
     exports com.alibaba.druid.spring.boot4.autoconfigure.properties;
     requires spring.boot;
     requires spring.boot.autoconfigure;
+    requires spring.boot.jdbc;
     requires spring.context;
     requires spring.core;
     requires spring.aop;
@@ -13,5 +14,4 @@ open module druid.spring.boot4.starter {
     requires java.sql;
     requires java.naming;
     requires java.management;
-    requires spring.boot.jdbc;
 }
