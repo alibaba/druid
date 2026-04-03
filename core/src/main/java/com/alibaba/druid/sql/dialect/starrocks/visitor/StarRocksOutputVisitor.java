@@ -5,6 +5,7 @@ import com.alibaba.druid.sql.SQLDialect;
 import com.alibaba.druid.sql.ast.DistributedByType;
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLHint;
 import com.alibaba.druid.sql.ast.SQLPartition;
 import com.alibaba.druid.sql.ast.expr.SQLArrayExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
@@ -13,6 +14,8 @@ import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLColumnConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLExprHint;
+import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLNotNullConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLNullConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLPrimaryKeyImpl;
@@ -48,6 +51,24 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
 
     public StarRocksOutputVisitor(StringBuilder appender, DbType dbType, SQLDialect dialect, boolean parameterized) {
         super(appender, dbType, dialect, parameterized);
+    }
+
+    /**
+     * Print StarRocks Join Hint in bracket syntax: [BROADCAST], [SHUFFLE], [BUCKET], [COLOCATE].
+     *
+     * @see <a href="https://docs.starrocks.io/zh/docs/3.3/administration/Query_planning/">StarRocks Query Hint</a>
+     */
+    @Override
+    protected void printJoinHint(SQLJoinTableSource x) {
+        if (x.getHintsSize() > 0) {
+            for (SQLHint hint : x.getHints()) {
+                if (hint instanceof SQLExprHint) {
+                    print0(" [");
+                    ((SQLExprHint) hint).getExpr().accept(this);
+                    print0("]");
+                }
+            }
+        }
     }
 
     @Override

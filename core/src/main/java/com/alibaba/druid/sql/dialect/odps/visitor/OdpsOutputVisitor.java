@@ -1195,6 +1195,21 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
 
     @Override
     public boolean visit(SQLBinaryOpExpr x) {
+        if (!x.isParenthesized() && shouldForceParentheses(x)) {
+            print('(');
+            boolean rs = visitInternal(x);
+            print(')');
+
+            List<String> afterComments = x.getAfterCommentsDirect();
+            if (!parameterized) {
+                if (afterComments != null && !afterComments.isEmpty() && isPrettyFormat()) {
+                    print(' ');
+                }
+                printlnComment(afterComments);
+            }
+            return rs;
+        }
+
         int parenCount = x.getParenthesizedCount();
         if (parenCount <= 0 && x.isParenthesized()) {
             parenCount = 1;
@@ -1217,6 +1232,21 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
             printlnComment(afterComments);
         }
         return rs;
+    }
+
+    private boolean shouldForceParentheses(SQLBinaryOpExpr x) {
+        SQLObject parent = x.getParent();
+        if (!(parent instanceof SQLBinaryOpExpr)) {
+            return false;
+        }
+
+        SQLBinaryOperator op = x.getOperator();
+        if (!op.isLogical()) {
+            return false;
+        }
+
+        SQLBinaryOperator parentOp = ((SQLBinaryOpExpr) parent).getOperator();
+        return parentOp.isLogical() && op != parentOp && op.priority > parentOp.priority;
     }
 
     @Override
