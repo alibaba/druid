@@ -143,6 +143,15 @@
                     </annotationProcessorPaths>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.moditect</groupId>
+                <artifactId>moditect-maven-plugin</artifactId>
+                <configuration>
+                    <module>
+                        <moduleInfoFile>${project.basedir}/src/moditect/module-info.java</moduleInfoFile>
+                    </module>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 </project>
