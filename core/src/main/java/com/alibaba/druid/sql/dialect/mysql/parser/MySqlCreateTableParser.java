@@ -1430,8 +1430,30 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
 
             if (lexer.identifierEquals(FnvHash.Constants.SUBPARTITION)) {
                 lexer.nextToken();
-                acceptIdentifier("OPTIONS");
-                this.exprParser.parseAssignItem(subPartitionByClause.getOptions(), subPartitionByClause);
+                if (lexer.identifierEquals("TEMPLATE")) {
+                    lexer.nextToken();
+                    accept(Token.LPAREN);
+                    for (; ; ) {
+                        acceptIdentifier("SUBPARTITION");
+                        SQLSubPartition subPartition = new SQLSubPartition();
+                        subPartition.setName(this.exprParser.name());
+                        SQLPartitionValue values = this.exprParser.parsePartitionValues();
+                        if (values != null) {
+                            subPartition.setValues(values);
+                        }
+                        subPartition.setParent(subPartitionByClause);
+                        subPartitionByClause.getSubPartitionTemplate().add(subPartition);
+                        if (lexer.token() == Token.COMMA) {
+                            lexer.nextToken();
+                            continue;
+                        }
+                        break;
+                    }
+                    accept(Token.RPAREN);
+                } else {
+                    acceptIdentifier("OPTIONS");
+                    this.exprParser.parseAssignItem(subPartitionByClause.getOptions(), subPartitionByClause);
+                }
             }
 
             if (lexer.identifierEquals(FnvHash.Constants.SUBPARTITIONS)) {
