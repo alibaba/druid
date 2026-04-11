@@ -90,6 +90,7 @@ public enum SQLBinaryOperator {
     Escape("ESCAPE", 110),
     RegExp("REGEXP", 110),
     NotRegExp("NOT REGEXP", 110),
+    MemberOf("MEMBER OF", 110),
     Equality("=", 110),
     EqEq("==", 110),
 
@@ -145,6 +146,7 @@ public enum SQLBinaryOperator {
             case NotRLike:
             case RegExp:
             case NotRegExp:
+            case MemberOf:
             case Is:
             case IsNot:
                 return true;
