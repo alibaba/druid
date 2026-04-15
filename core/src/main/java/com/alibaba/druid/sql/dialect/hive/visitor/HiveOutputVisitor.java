@@ -463,7 +463,7 @@ public class HiveOutputVisitor extends SQLASTOutputVisitor implements HiveASTVis
                 char ch = text.charAt(i);
                 switch (ch) {
                     case '\\':
-                        buf.append("\\\\");
+                        buf.append("\\");
                         break;
                     case '\'':
                         buf.append("\\'");
@@ -521,6 +521,7 @@ public class HiveOutputVisitor extends SQLASTOutputVisitor implements HiveASTVis
     public boolean visit(HiveCreateTableStatement x) {
         return visit((SQLCreateTableStatement) x);
     }
+
     @Override
     public boolean visit(SQLCreateTableStatement x) {
         printCreateTable(x, true, true);
