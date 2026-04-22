@@ -561,6 +561,37 @@ public class MySqlExprParser extends SQLExprParser {
     }
 
     @Override
+    public SQLExpr relationalRest(SQLExpr expr) {
+        if (lexer.token() == Token.IDENTIFIER && lexer.hashLCase() == FnvHash.Constants.MEMBER) {
+            Lexer.SavePoint mark = lexer.mark();
+            lexer.nextToken();
+
+            if (lexer.token() == Token.OF || lexer.identifierEquals("OF")) {
+                lexer.nextToken();
+
+                SQLExpr rightExp;
+                if (lexer.token() == Token.LPAREN) {
+                    lexer.nextToken();
+                    rightExp = expr();
+                    accept(Token.RPAREN);
+                    if (rightExp instanceof SQLExprImpl) {
+                        ((SQLExprImpl) rightExp).setParenthesized(true);
+                    }
+                    rightExp = primaryRest(rightExp);
+                } else {
+                    rightExp = bitOr();
+                }
+
+                expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.MemberOf, rightExp, dbType);
+                return super.relationalRest(expr);
+            }
+            lexer.reset(mark);
+        }
+
+        return super.relationalRest(expr);
+    }
+
+    @Override
     protected SQLExpr parseSelectItemRest(String ident, long hash_lower) {
         SQLExpr expr = null;
         if (lexer.identifierEquals(FnvHash.Constants.COLLATE)
