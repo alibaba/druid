@@ -13,17 +13,42 @@ import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.FnvHash;
 
+import java.util.Arrays;
+
 public class RedshiftExprParser
         extends PGExprParser {
+    public static final String[] AGGREGATE_FUNCTIONS;
+    public static final long[] AGGREGATE_FUNCTIONS_CODES;
+
+    static {
+        String[] strings = {
+                "AVG", "COUNT", "LISTAGG", "MAX", "MIN", "STDDEV",
+                "SUM", "ROW_NUMBER", "PERCENTILE_CONT", "PERCENTILE_DISC", "RANK",
+                "DENSE_RANK", "PERCENT_RANK", "CUME_DIST"
+        };
+
+        AGGREGATE_FUNCTIONS_CODES = FnvHash.fnv1a_64_lower(strings, true);
+        AGGREGATE_FUNCTIONS = new String[AGGREGATE_FUNCTIONS_CODES.length];
+        for (String str : strings) {
+            long hash = FnvHash.fnv1a_64_lower(str);
+            int index = Arrays.binarySearch(AGGREGATE_FUNCTIONS_CODES, hash);
+            AGGREGATE_FUNCTIONS[index] = str;
+        }
+    }
+
     public RedshiftExprParser(String sql, SQLParserFeature... features) {
         super(new RedshiftLexer(sql, features));
         lexer.nextToken();
         dbType = DbType.redshift;
+        this.aggregateFunctions = AGGREGATE_FUNCTIONS;
+        this.aggregateFunctionHashCodes = AGGREGATE_FUNCTIONS_CODES;
     }
 
     public RedshiftExprParser(Lexer lexer) {
         super(lexer);
         dbType = DbType.redshift;
+        this.aggregateFunctions = AGGREGATE_FUNCTIONS;
+        this.aggregateFunctionHashCodes = AGGREGATE_FUNCTIONS_CODES;
     }
 
     @Override
