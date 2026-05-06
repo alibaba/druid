@@ -490,6 +490,8 @@ public final class JdbcUtils implements JdbcConstants {
             return "ca.edbc.jdbc.EdbcDriver";
         } else if (rawUrl.startsWith("jdbc:mimer:multi1:")) {
             return "com.mimer.jdbc.Driver";
+        } else if (rawUrl.startsWith("jdbc:yasdb:")) {
+            return "com.yashandb.jdbc.Driver";
         } else if (rawUrl.startsWith("jdbc:dm:")) {
             return JdbcConstants.DM_DRIVER;
         } else if (rawUrl.startsWith("jdbc:kingbase:")) {
@@ -574,6 +576,8 @@ public final class JdbcUtils implements JdbcConstants {
         } else if (rawUrl.startsWith("jdbc:tidb:")) {
             return DbType.tidb;
         } else if (rawUrl.startsWith("jdbc:oracle:") || rawUrl.startsWith("jdbc:log4jdbc:oracle:")) {
+            return DbType.oracle;
+        } else if (rawUrl.startsWith("jdbc:yasdb:")) {
             return DbType.oracle;
         } else if (rawUrl.startsWith("jdbc:alibaba:oracle:")) {
             return DbType.ali_oracle;

@@ -1151,7 +1151,14 @@ public class DruidDataSource extends DruidAbstractDataSource
         if (dbType == DbType.oracle) {
             isOracle = true;
 
-            if (driver.getMajorVersion() < 10) {
+            // Some Oracle-compatible databases may use non-Oracle JDBC drivers (e.g. YashanDB),
+            // whose version numbers are not aligned with Oracle's. In that case, skip the Oracle
+            // JDBC major version check but still treat the datasource as Oracle style.
+            final String driverClassName = this.driverClass;
+            final boolean oracleCompatibleNonOracleDriver =
+                    driverClassName != null && driverClassName.startsWith("com.yashandb.jdbc.");
+
+            if (!oracleCompatibleNonOracleDriver && driver.getMajorVersion() < 10) {
                 throw new SQLException("not support oracle driver " + driver.getMajorVersion() + "."
                         + driver.getMinorVersion());
             }
