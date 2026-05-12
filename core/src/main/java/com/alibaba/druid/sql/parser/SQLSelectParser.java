@@ -923,6 +923,7 @@ public class SQLSelectParser extends SQLParser {
                 groupBy.setWithCube(true);
             }
 
+            boolean previousWasComma = true;
             for (; ; ) {
                 List<String> comments = null;
                 if (lexer.hasComment()) {
@@ -931,6 +932,9 @@ public class SQLSelectParser extends SQLParser {
                 SQLExpr item = parseGroupByItem();
                 if (comments != null) {
                     item.addBeforeComment(comments);
+                }
+                if (!previousWasComma && item instanceof SQLGroupingSetExpr) {
+                    ((SQLGroupingSetExpr) item).setHasPrefixComma(false);
                 }
 
                 item.setParent(groupBy);
@@ -947,8 +951,10 @@ public class SQLSelectParser extends SQLParser {
                             && lexer.line == line + 1) {
                         item.addAfterComment(lexer.readAndResetComments());
                     }
+                    previousWasComma = true;
                     continue;
                 } else if (lexer.identifierEquals(FnvHash.Constants.GROUPING)) {
+                    previousWasComma = false;
                     continue;
                 } else {
                     break;
@@ -1002,6 +1008,11 @@ public class SQLSelectParser extends SQLParser {
                 lexer.nextToken();
                 accept(Token.BY);
 
+                // This is the reverse "HAVING ... GROUP BY" path. It only
+                // recognises COMMA as a separator and never falls into the
+                // bare-GROUPING continuation branch used by the forward
+                // parseGroupBy loop above, so the SQLGroupingSetExpr
+                // hasPrefixComma flag stays at its default (true) here.
                 for (; ; ) {
                     SQLExpr item = parseGroupByItem();
 
