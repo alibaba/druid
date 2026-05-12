@@ -2428,8 +2428,18 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 }
 
                 if (i != 0) {
+                    boolean isGroupingSet = item instanceof SQLGroupingSetExpr;
+                    // For non-first SQLGroupingSetExpr siblings, emit the comma
+                    // only when the parser observed one (or the AST was built
+                    // with the default). When absent, keep the historical
+                    // newline-only formatting.
+                    boolean prefixComma = !isGroupingSet
+                            || ((SQLGroupingSetExpr) item).isHasPrefixComma();
                     if (groupItemSingleLine) {
-                        if (item instanceof SQLGroupingSetExpr) {
+                        if (isGroupingSet) {
+                            if (prefixComma) {
+                                print(',');
+                            }
                             if (!item.hasBeforeComment()) {
                                 println();
                             }
@@ -2437,7 +2447,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                             println(',');
                         }
                     } else {
-                        if (item instanceof SQLGroupingSetExpr) {
+                        if (isGroupingSet) {
+                            if (prefixComma) {
+                                print(',');
+                            }
                             println();
                         } else {
                             print(", ");

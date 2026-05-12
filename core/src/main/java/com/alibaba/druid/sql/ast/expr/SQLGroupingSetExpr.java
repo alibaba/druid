@@ -23,8 +23,28 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * AST node for the {@code GROUPING SETS(...)} expression inside a
+ * {@code GROUP BY} clause.
+ *
+ * <p>{@link #hasPrefixComma} records whether the source SQL had a comma
+ * immediately before this expression when it appears as a non-first sibling
+ * in a {@code GROUP BY} item list. The flag participates in {@link #equals},
+ * {@link #hashCode}, and {@link #clone}; two instances that differ only in
+ * this flag are considered not equal so AST diff tools can distinguish
+ * {@code GROUP BY x, GROUPING SETS (...)} from
+ * {@code GROUP BY x GROUPING SETS (...)}.
+ */
 public class SQLGroupingSetExpr extends SQLExprImpl implements SQLReplaceable {
     private final List<SQLExpr> parameters = new ArrayList<SQLExpr>();
+    /**
+     * {@code true} when the source SQL had a comma immediately before this
+     * {@code GROUPING SETS} sibling in a {@code GROUP BY} clause. Default
+     * {@code true} preserves the historically dominant emit shape
+     * ({@code GROUP BY x, GROUPING SETS (...)}) for AST consumers that build
+     * clauses programmatically without setting this flag.
+     */
+    private boolean hasPrefixComma = true;
 
     public SQLGroupingSetExpr clone() {
         SQLGroupingSetExpr x = new SQLGroupingSetExpr();
@@ -33,7 +53,16 @@ public class SQLGroupingSetExpr extends SQLExprImpl implements SQLReplaceable {
             p2.setParent(x);
             x.parameters.add(p2);
         }
+        x.hasPrefixComma = this.hasPrefixComma;
         return x;
+    }
+
+    public boolean isHasPrefixComma() {
+        return hasPrefixComma;
+    }
+
+    public void setHasPrefixComma(boolean hasPrefixComma) {
+        this.hasPrefixComma = hasPrefixComma;
     }
 
     public List<SQLExpr> getParameters() {
@@ -65,6 +94,7 @@ public class SQLGroupingSetExpr extends SQLExprImpl implements SQLReplaceable {
         final int prime = 31;
         int result = 1;
         result = prime * result + parameters.hashCode();
+        result = prime * result + (hasPrefixComma ? 1 : 0);
         return result;
     }
 
@@ -81,6 +111,9 @@ public class SQLGroupingSetExpr extends SQLExprImpl implements SQLReplaceable {
         }
         SQLGroupingSetExpr other = (SQLGroupingSetExpr) obj;
         if (!parameters.equals(other.parameters)) {
+            return false;
+        }
+        if (hasPrefixComma != other.hasPrefixComma) {
             return false;
         }
         return true;
