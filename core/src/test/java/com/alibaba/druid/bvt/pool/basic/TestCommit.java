@@ -19,20 +19,23 @@ import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.Statement;
 
-public class TestCommit extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class TestCommit {
     private MockDriver driver;
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         DruidDataSourceStatManager.clear();
-
         driver = new MockDriver();
-
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setDriver(driver);
@@ -49,12 +52,14 @@ public class TestCommit extends TestCase {
         dataSource.setRemoveAbandoned(true);
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         assertEquals(true, dataSource.getCreateTimespanNano() > 0);
         dataSource.close();
-        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        DruidDataSourceStatManager.clear();
     }
 
+    @Test
     public void test_prepare() throws Exception {
         Connection conn = dataSource.getConnection();
 

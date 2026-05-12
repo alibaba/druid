@@ -5,14 +5,15 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
-import junit.framework.TestCase;
 import org.apache.commons.io.FileUtils;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.net.URL;
 import java.util.List;
 
-public class AntlrSqlServerTest extends TestCase {
+public class AntlrSqlServerTest {
+    @Test
     public void test_for_antlr_examples() throws Exception {
         SchemaStatVisitor schemaStatVisitor = SQLUtils.createSchemaStatVisitor(DbType.mysql);
         MySqlWallProvider provider = new MySqlWallProvider();

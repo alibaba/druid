@@ -24,9 +24,12 @@ import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class DALParserTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class DALParserTest {
+    @Test
     public void testdesc() throws Exception {
         String sql = "desc tb1";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -36,6 +39,7 @@ public class DALParserTest extends TestCase {
         assertEquals("DESC tb1", output);
     }
 
+    @Test
     public void testdesc_1() throws Exception {
         String sql = "desc db.tb1";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -45,6 +49,7 @@ public class DALParserTest extends TestCase {
         assertEquals("DESC db.tb1", output);
     }
 
+    @Test
     public void testdesc_2() throws Exception {
         String sql = "describe db.tb1";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -54,6 +59,7 @@ public class DALParserTest extends TestCase {
         assertEquals("DESC db.tb1", output);
     }
 
+    @Test
     public void testSet_1() throws Exception {
         String sql = "seT sysVar1 = ? ";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -63,6 +69,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SET sysVar1 = ?", output);
     }
 
+    @Test
     public void testSet_2() throws Exception {
         String sql = "SET `sysVar1` = ?, @@gloBal . `var2` :=1";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -72,6 +79,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SET `sysVar1` = ?, @@global.`var2` = 1", output);
     }
 
+    @Test
     public void testSet_3() throws Exception {
         String sql = "SET @usrVar1 := ?, @@`var2` =1, @@var3:=?, @'var\\'3'=?";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -81,6 +89,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SET @usrVar1 = ?, @@`var2` = 1, @@var3 = ?, @'var\\'3' = ?", output);
     }
 
+    @Test
     public void testSet_4() throws Exception {
         String sql = "SET GLOBAL var1=1, SESSION var2:=2";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -90,6 +99,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SET @@global.var1 = 1, @@session.var2 = 2", output);
     }
 
+    @Test
     public void testSet_5() throws Exception {
         String sql = "SET @@GLOBAL. var1=1, SESSION var2:=2";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -99,6 +109,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SET @@global.var1 = 1, @@session.var2 = 2", output);
     }
 
+    @Test
     public void testSetTxn_0() throws Exception {
         String sql = "SET transaction ISOLATION LEVEL READ UNCOMMITTED";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -108,6 +119,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED", output);
     }
 
+    @Test
     public void testSetTxn_1() throws Exception {
         String sql = "SET global transaction ISOLATION LEVEL READ COMMITTED";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -117,6 +129,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SET GLOBAL TRANSACTION ISOLATION LEVEL READ COMMITTED", output);
     }
 
+    @Test
     public void testSetTxn_2() throws Exception {
         String sql = "SET transaction ISOLATION LEVEL REPEATABLE READ ";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -126,6 +139,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SET TRANSACTION ISOLATION LEVEL REPEATABLE READ", output);
     }
 
+    @Test
     public void testSetTxn_3() throws Exception {
         String sql = "SET session transaction ISOLATION LEVEL SERIALIZABLE";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -135,6 +149,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SET SESSION TRANSACTION ISOLATION LEVEL SERIALIZABLE", output);
     }
 
+    @Test
     public void test_setNames() throws Exception {
         String sql = "SET names default ";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -144,6 +159,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SET NAMES DEFAULT", output);
     }
 
+    @Test
     public void test_setNames_1() throws Exception {
         String sql = "SET NAMEs 'utf8' collatE \"latin1_danish_ci\" ";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -153,6 +169,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SET NAMES 'utf8' COLLATE \"latin1_danish_ci\"", output);
     }
 
+    @Test
     public void test_setNames_2() throws Exception {
         String sql = "SET NAMEs utf8 ";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -162,6 +179,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SET NAMES utf8", output);
     }
 
+    @Test
     public void test_setCharSet() throws Exception {
         String sql = "SET CHARACTEr SEt 'utf8'  ";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -171,6 +189,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SET CHARACTER SET 'utf8'", output);
     }
 
+    @Test
     public void test_setCharSet_1() throws Exception {
         String sql = "SET CHARACTEr SEt DEFaULT  ";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -180,6 +199,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SET CHARACTER SET DEFAULT", output);
     }
 
+    @Test
     public void test_show_authors() throws Exception {
         String sql = "shoW authors ";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -189,6 +209,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW AUTHORS", output);
     }
 
+    @Test
     public void test_show_binaryLogs() throws Exception {
         String sql = "SHOW BINARY LOGS ";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -198,6 +219,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW BINARY LOGS", output);
     }
 
+    @Test
     public void test_show_masterLogs() throws Exception {
         String sql = "SHOW MASTER LOGS ";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -207,6 +229,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW MASTER LOGS", output);
     }
 
+    @Test
     public void test_show_collation() throws Exception {
         String sql = "SHOW collation";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -216,6 +239,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW COLLATION", output);
     }
 
+    @Test
     public void test_show_collation_1() throws Exception {
         String sql = "SHOW Collation like 'var1'";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -225,6 +249,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW COLLATION LIKE 'var1'", output);
     }
 
+    @Test
     public void test_show_collation_2() throws Exception {
         String sql = "SHOW COLLATION WHERE `Default` = 'Yes'";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -234,6 +259,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW COLLATION WHERE `Default` = 'Yes'", output);
     }
 
+    @Test
     public void test_show_collation_3() throws Exception {
         String sql = "SHOW collation where Collation like 'big5%'";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -243,6 +269,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW COLLATION WHERE Collation LIKE 'big5%'", output);
     }
 
+    @Test
     public void test_binaryLog() throws Exception {
         String sql = "SHOW binlog events in 'a' from 1 limit 1,2  ";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -252,6 +279,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW BINLOG EVENTS IN 'a' FROM 1 LIMIT 1, 2", output);
     }
 
+    @Test
     public void test_binaryLog_1() throws Exception {
         String sql = "SHOW binlog events from 1 limit 1,2";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -261,6 +289,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW BINLOG EVENTS FROM 1 LIMIT 1, 2", output);
     }
 
+    @Test
     public void test_binaryLog_2() throws Exception {
         String sql = "SHOW binlog events ";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -270,6 +299,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW BINLOG EVENTS", output);
     }
 
+    @Test
     public void test_show_character_set() throws Exception {
         String sql = "SHOW CHARACTER SET like 'var' ";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -279,6 +309,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW CHARACTER SET LIKE 'var'", output);
     }
 
+    @Test
     public void test_show_character_set2() throws Exception {
         String sql = "SHOW CHARSET";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -288,6 +319,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW CHARACTER SET", output);
     }
 
+    @Test
     public void test_show_character_set3() throws Exception {
         String sql = "SHOW CHARSET like 'utf8'";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -297,6 +329,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW CHARACTER SET LIKE 'utf8'", output);
     }
 
+    @Test
     public void test_show_character_set_1() throws Exception {
         String sql = "SHOW CHARACTER SET where Charset = 'big5'";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -306,6 +339,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW CHARACTER SET WHERE Charset = 'big5'", output);
     }
 
+    @Test
     public void test_show_character_set_2() throws Exception {
         String sql = "SHOW CHARACTER SET";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -315,6 +349,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW CHARACTER SET", output);
     }
 
+    @Test
     public void test_show_columns() throws Exception {
         String sql = "SHOW full columns from tb1 from db1 like 'var' ";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -324,6 +359,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW FULL COLUMNS FROM db1.tb1 LIKE 'var'", output);
     }
 
+    @Test
     public void test_show_columns_1() throws Exception {
         String sql = "show columns from events where Field = 'name'";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -333,6 +369,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW COLUMNS FROM events WHERE Field = 'name'", output);
     }
 
+    @Test
     public void test_show_columns_2() throws Exception {
         String sql = "SHOW COLUMNS FROM City";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -342,6 +379,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW COLUMNS FROM City", output);
     }
 
+    @Test
     public void test_show_columns_3() throws Exception {
         String sql = "SHOW full columns from db1.tb1 like 'var' ";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -351,6 +389,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW FULL COLUMNS FROM db1.tb1 LIKE 'var'", output);
     }
 
+    @Test
     public void test_show_columns_4() throws Exception {
         String sql = "SHOW full columns from tb1 from db1 where count(col)>10 ";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -360,6 +399,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW FULL COLUMNS FROM db1.tb1 WHERE count(col) > 10", output);
     }
 
+    @Test
     public void test_show_contributors() throws Exception {
         String sql = "SHOW contributors";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -369,6 +409,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW CONTRIBUTORS", output);
     }
 
+    @Test
     public void test_show_create_database() throws Exception {
         String sql = "SHOW CREATE DATABASE db_name";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -378,6 +419,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW CREATE DATABASE db_name", output);
     }
 
+    @Test
     public void test_show_create_database_2() throws Exception {
         String sql = "SHOW CREATE SCHEMA IF NOT EXISTS db1";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -387,6 +429,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW CREATE DATABASE IF NOT EXISTS db1", output);
     }
 
+    @Test
     public void test_show_create_event() throws Exception {
         String sql = "SHOW CREATE event db_name";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -396,6 +439,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW CREATE EVENT db_name", output);
     }
 
+    @Test
     public void test_show_create_function() throws Exception {
         String sql = "SHOW CREATE function x";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -405,6 +449,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW CREATE FUNCTION x", output);
     }
 
+    @Test
     public void test_show_create_PROCEDURE() throws Exception {
         String sql = "SHOW CREATE PROCEDURE x";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -414,6 +459,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW CREATE PROCEDURE x", output);
     }
 
+    @Test
     public void test_show_create_table() throws Exception {
         String sql = "SHOW CREATE table x";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -423,6 +469,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW CREATE TABLE x", output);
     }
 
+    @Test
     public void test_show_create_table_2() throws Exception {
         String sql = "SHOW CREATE table db.tb1";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -432,6 +479,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW CREATE TABLE db.tb1", output);
     }
 
+    @Test
     public void test_show_create_table_3() throws Exception {
         String sql = "SHOW ALL CREATE table catalog.db.tb1";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -441,6 +489,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW ALL CREATE TABLE catalog.db.tb1", output);
     }
 
+    @Test
     public void test_show_create_trigger() throws Exception {
         String sql = "SHOW CREATE trigger x";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -450,6 +499,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW CREATE TRIGGER x", output);
     }
 
+    @Test
     public void test_show_create_view() throws Exception {
         String sql = "SHOW CREATE VIEW x";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -459,6 +509,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW CREATE VIEW x", output);
     }
 
+    @Test
     public void test_show_databases() throws Exception {
         String sql = "SHOW DATABASES";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -468,6 +519,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW DATABASES", output);
     }
 
+    @Test
     public void test_show_databases_1() throws Exception {
         String sql = "SHOW DATABASES LIKE 'a%'";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -477,6 +529,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW DATABASES LIKE 'a%'", output);
     }
 
+    @Test
     public void test_show_databases_2() throws Exception {
         String sql = "SHOW DATABASES WHERE `Database` = 'mysql'";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -486,6 +539,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW DATABASES WHERE `Database` = 'mysql'", output);
     }
 
+    @Test
     public void test_show_engine() throws Exception {
         String sql = "SHOW ENGINE INNODB STATUS";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -495,6 +549,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW ENGINE INNODB STATUS", output);
     }
 
+    @Test
     public void test_show_engine_1() throws Exception {
         String sql = "SHOW ENGINE PERFORMANCE_SCHEMA STATUS";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -504,6 +559,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW ENGINE PERFORMANCE_SCHEMA STATUS", output);
     }
 
+    @Test
     public void test_show_engine_2() throws Exception {
         String sql = "SHOW ENGINE INNODB mutex";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -513,6 +569,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW ENGINE INNODB MUTEX", output);
     }
 
+    @Test
     public void test_show_engines() throws Exception {
         String sql = "SHOW ENGINES";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -522,6 +579,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW ENGINES", output);
     }
 
+    @Test
     public void test_show_engines_1() throws Exception {
         String sql = "SHOW STORAGE ENGINES";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -531,6 +589,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW STORAGE ENGINES", output);
     }
 
+    @Test
     public void test_show_errors() throws Exception {
         String sql = "SHOW COUNT(*) ERRORS";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -540,6 +599,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW COUNT(*) ERRORS", output);
     }
 
+    @Test
     public void test_show_errors_1() throws Exception {
         String sql = "SHOW ERRORS";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -549,6 +609,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW ERRORS", output);
     }
 
+    @Test
     public void test_show_errors_2() throws Exception {
         String sql = "SHOW ERRORS limit 1";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -558,6 +619,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW ERRORS LIMIT 1", output);
     }
 
+    @Test
     public void test_show_errors_3() throws Exception {
         String sql = "SHOW ERRORS limit 1, 2";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -567,6 +629,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW ERRORS LIMIT 1, 2", output);
     }
 
+    @Test
     public void test_show_events() throws Exception {
         String sql = "SHOW EVENTS";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -576,6 +639,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW EVENTS", output);
     }
 
+    @Test
     public void test_show_events_1() throws Exception {
         String sql = "SHOW EVENTS from x";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -585,6 +649,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW EVENTS FROM x", output);
     }
 
+    @Test
     public void test_show_events_2() throws Exception {
         String sql = "SHOW EVENTS in x";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -594,6 +659,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW EVENTS FROM x", output);
     }
 
+    @Test
     public void test_show_events_3() throws Exception {
         String sql = "SHOW EVENTS in x like '%'";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -603,6 +669,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW EVENTS FROM x LIKE '%'", output);
     }
 
+    @Test
     public void test_show_events_4() throws Exception {
         String sql = "SHOW EVENTS in x where 1 = 1";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -612,6 +679,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW EVENTS FROM x WHERE 1 = 1", output);
     }
 
+    @Test
     public void test_show_function_code() throws Exception {
         String sql = "SHOW function code x";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -621,6 +689,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW FUNCTION CODE x", output);
     }
 
+    @Test
     public void test_show_function_status() throws Exception {
         String sql = "SHOW function status like '%'";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -630,6 +699,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW FUNCTION STATUS LIKE '%'", output);
     }
 
+    @Test
     public void test_show_function_status_1() throws Exception {
         String sql = "SHOW function status where 1 = 1";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -639,6 +709,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW FUNCTION STATUS WHERE 1 = 1", output);
     }
 
+    @Test
     public void test_show_function_status_2() throws Exception {
         String sql = "SHOW function status ";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -648,6 +719,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW FUNCTION STATUS", output);
     }
 
+    @Test
     public void test_show_grants() throws Exception {
         String sql = "SHOW GRANTS FOR 'root'@'localhost';";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -657,6 +729,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW GRANTS FOR 'root'@'localhost';", output);
     }
 
+    @Test
     public void test_show_grants_1() throws Exception {
         String sql = "SHOW GRANTS";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -666,6 +739,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW GRANTS", output);
     }
 
+    @Test
     public void test_show_grants_2() throws Exception {
         String sql = "SHOW GRANTS FOR CURRENT_USER";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -675,6 +749,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW GRANTS FOR CURRENT_USER", output);
     }
 
+    @Test
     public void test_show_grants_3() throws Exception {
         String sql = "SHOW GRANTS FOR CURRENT_USER()";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -684,6 +759,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW GRANTS FOR CURRENT_USER()", output);
     }
 
+    @Test
     public void test_show_index() throws Exception {
         String sql = "SHOW index from tb1 from db";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -693,6 +769,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW INDEX FROM db.tb1", output);
     }
 
+    @Test
     public void test_show_index_1() throws Exception {
         String sql = "SHOW index in tb1 in db";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -702,6 +779,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW INDEX FROM db.tb1", output);
     }
 
+    @Test
     public void test_show_index_2() throws Exception {
         String sql = "SHOW index in db.tb1";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -711,6 +789,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW INDEX FROM db.tb1", output);
     }
 
+    @Test
     public void test_show_key() throws Exception {
         String sql = "SHOW keys from tb1 from db";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -720,6 +799,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW KEYS FROM db.tb1", output);
     }
 
+    @Test
     public void test_show_key_1() throws Exception {
         String sql = "SHOW keys in tb1 in db";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -729,6 +809,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW KEYS FROM db.tb1", output);
     }
 
+    @Test
     public void test_show_key_2() throws Exception {
         String sql = "SHOW keys in db.tb1";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -738,6 +819,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW KEYS FROM db.tb1", output);
     }
 
+    @Test
     public void test_show_key_3() throws Exception {
         String sql = "SHOW KEYS FROM tb1 IN db1 where maxlength = 2";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -747,6 +829,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW KEYS FROM db1.tb1 WHERE maxlength = 2", output);
     }
 
+    @Test
     public void test_master_status() throws Exception {
         String sql = "SHOW MASTER STATUS";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -756,6 +839,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW MASTER STATUS", output);
     }
 
+    @Test
     public void test_open_tables() throws Exception {
         String sql = "SHOW OPEN TABLES";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -765,6 +849,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW OPEN TABLES", output);
     }
 
+    @Test
     public void test_open_tables_1() throws Exception {
         String sql = "SHOW OPEN TABLES FROM mysql";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -774,6 +859,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW OPEN TABLES FROM mysql", output);
     }
 
+    @Test
     public void test_open_tables_2() throws Exception {
         String sql = "SHOW OPEN TABLES in mysql";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -783,6 +869,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW OPEN TABLES FROM mysql", output);
     }
 
+    @Test
     public void test_open_tables_3() throws Exception {
         String sql = "SHOW OPEN TABLES in mysql like '%'";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -792,6 +879,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW OPEN TABLES FROM mysql LIKE '%'", output);
     }
 
+    @Test
     public void test_open_tables_4() throws Exception {
         String sql = "SHOW OPEN TABLES in mysql where 1 = 1";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -801,6 +889,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW OPEN TABLES FROM mysql WHERE 1 = 1", output);
     }
 
+    @Test
     public void test_show_open_plugins() throws Exception {
         String sql = "SHOW plugins";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -810,6 +899,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW PLUGINS", output);
     }
 
+    @Test
     public void test_show_PRIVILEGES() throws Exception {
         String sql = "SHOW PRIVILEGES";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -819,6 +909,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW PRIVILEGES", output);
     }
 
+    @Test
     public void test_show_dblock() throws Exception {
         String sql = "SHOW dblock";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -828,6 +919,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW DBLOCK", output);
     }
 
+    @Test
     public void test_show_htc() throws Exception {
         String sql = "SHOW htc";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -837,6 +929,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW HTC", output);
     }
 
+    @Test
     public void test_show_Stc() throws Exception {
         String sql = "SHOW Stc";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -846,6 +939,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW STC", output);
     }
 
+    @Test
     public void test_show_Stc_1() throws Exception {
         String sql = "SHOW Stc his";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -855,6 +949,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW STC HIS", output);
     }
 
+    @Test
     public void test_show_procedure_code() throws Exception {
         String sql = "SHOW procedure code x";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -864,6 +959,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW PROCEDURE CODE x", output);
     }
 
+    @Test
     public void test_show_procedure_status() throws Exception {
         String sql = "SHOW procedure status like '%'";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -873,6 +969,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW PROCEDURE STATUS LIKE '%'", output);
     }
 
+    @Test
     public void test_show_procedure_status_1() throws Exception {
         String sql = "SHOW procedure status where 1 = 1";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -882,6 +979,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW PROCEDURE STATUS WHERE 1 = 1", output);
     }
 
+    @Test
     public void test_show_procedure_status_2() throws Exception {
         String sql = "SHOW procedure status ";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -891,6 +989,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW PROCEDURE STATUS", output);
     }
 
+    @Test
     public void test_show_processList() throws Exception {
         String sql = "SHOW processlist ";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -900,6 +999,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW PROCESSLIST", output);
     }
 
+    @Test
     public void test_show_processList_1() throws Exception {
         String sql = "SHOW full processlist ";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -909,6 +1009,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW FULL PROCESSLIST", output);
     }
 
+    @Test
     public void test_show_processList_2() throws Exception {
         String sql = "SHOW processlist where id = 3";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -918,6 +1019,7 @@ public class DALParserTest extends TestCase {
         assertEquals("show processlist where id = 3", show.toLowerCaseString());
     }
 
+    @Test
     public void test_show_processList_3() throws Exception {
         String sql = "SHOW processlist order by id desc";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -927,6 +1029,7 @@ public class DALParserTest extends TestCase {
         assertEquals("show processlist order by id desc", show.toLowerCaseString());
     }
 
+    @Test
     public void test_show_processList_4() throws Exception {
         String sql = "SHOW processlist limit 3, 4";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -936,6 +1039,7 @@ public class DALParserTest extends TestCase {
         assertEquals("show processlist limit 3, 4", show.toLowerCaseString());
     }
 
+    @Test
     public void test_show_profiles() throws Exception {
         String sql = "SHOW profiles";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -945,6 +1049,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW PROFILES", output);
     }
 
+    @Test
     public void test_show_profile() throws Exception {
         String sql = "SHOW profile";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -954,6 +1059,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW PROFILE", output);
     }
 
+    @Test
     public void test_show_profile_1() throws Exception {
         String sql = "SHOW profile all,block io,context switches,cpu,ipc,memory, page faults,source,swaps for query 2 limit 1 offset 2";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -963,6 +1069,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW PROFILE ALL, BLOCK IO, CONTEXT SWITCHES, CPU, IPC, MEMORY, PAGE FAULTS, SOURCE, SWAPS FOR QUERY 2 LIMIT 1 OFFSET 2", output);
     }
 
+    @Test
     public void test_show_relayLogEvents() throws Exception {
         String sql = "SHOW RELAYLOG EVENTS";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -972,6 +1079,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW RELAYLOG EVENTS", output);
     }
 
+    @Test
     public void test_show_relayLogEvents_1() throws Exception {
         String sql = "SHOW RELAYLOG EVENTS IN 'x' from 3 limit 5,6";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -981,6 +1089,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW RELAYLOG EVENTS IN 'x' FROM 3 LIMIT 5, 6", output);
     }
 
+    @Test
     public void test_show_slaveHosts() throws Exception {
         String sql = "SHOW SLAVE HOSTS";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -990,6 +1099,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW SLAVE HOSTS", output);
     }
 
+    @Test
     public void test_show_slaveStatus() throws Exception {
         String sql = "SHOW SLAVE Status";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -999,6 +1109,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW SLAVE STATUS", output);
     }
 
+    @Test
     public void test_show_status() throws Exception {
         String sql = "SHOW STATUS LIKE 'Key%'";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -1008,6 +1119,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW STATUS LIKE 'Key%'", output);
     }
 
+    @Test
     public void test_show_slow() throws Exception {
         String sql = "SHOW SLOW WHERE 1=1 ORDER BY A LIMIT 10";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -1017,6 +1129,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW SLOW WHERE 1 = 1 ORDER BY A LIMIT 10", output);
     }
 
+    @Test
     public void test_show_slow_1() throws Exception {
         String sql = "SHOW PHYSICAL_SLOW WHERE 1=1 ORDER BY A LIMIT 10";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -1026,6 +1139,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW PHYSICAL_SLOW WHERE 1 = 1 ORDER BY A LIMIT 10", output);
     }
 
+    @Test
     public void test_show_sequence() throws Exception {
         String sql = "SHOW SEQUENCES WHERE 1=1 ORDER BY A LIMIT 10";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -1035,6 +1149,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW SEQUENCES WHERE 1 = 1 ORDER BY A LIMIT 10", output);
     }
 
+    @Test
     public void test_show_rule() throws Exception {
         String sql = "SHOW RULE FROM A WHERE 1=1 ORDER BY A LIMIT 10";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -1044,6 +1159,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW RULE FROM A WHERE 1 = 1 ORDER BY A LIMIT 10", output);
     }
 
+    @Test
     public void test_show_rule_1() throws Exception {
         String sql = "SHOW FULL RULE FROM A WHERE 1=1 ORDER BY A LIMIT 10";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -1053,6 +1169,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW FULL RULE FROM A WHERE 1 = 1 ORDER BY A LIMIT 10", output);
     }
 
+    @Test
     public void test_show_table_status() throws Exception {
         String sql = "SHOW TABLE STATUS FROM mysql";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -1062,6 +1179,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW TABLE STATUS FROM mysql", output);
     }
 
+    @Test
     public void test_show_table_status_1() throws Exception {
         String sql = "SHOW TABLE STATUS LIKE 'test%'";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -1071,6 +1189,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW TABLE STATUS LIKE 'test%'", output);
     }
 
+    @Test
     public void test_show_table_status_2() throws Exception {
         String sql = "SHOW TABLE STATUS FROM testdb.test_group LIKE 'test%'";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -1080,6 +1199,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW TABLE STATUS FROM testdb.test_group LIKE 'test%'", output);
     }
 
+    @Test
     public void test_show_table_status_3() throws Exception {
         String sql = "SHOW TABLE STATUS FROM testdb.test_group WHERE schema_name = 'ss' or schema_name = 'ss1'";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -1090,6 +1210,7 @@ public class DALParserTest extends TestCase {
                 + "OR schema_name = 'ss1'", output);
     }
 
+    @Test
     public void test_show_table_status_4() throws Exception {
         String sql = "SHOW TABLE STATUS IN testdb.test_group WHERE schema_name = 'ss' or schema_name = 'ss1'";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -1100,6 +1221,7 @@ public class DALParserTest extends TestCase {
                 + "OR schema_name = 'ss1'", output);
     }
 
+    @Test
     public void test_show_database_status() throws Exception {
         String sql = "SHOW DATABASE STATUS LIKE foo";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -1109,6 +1231,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW DATABASE STATUS LIKE foo", output);
     }
 
+    @Test
     public void test_show_database_status_1() throws Exception {
         String sql = "SHOW DATABASE STATUS WHERE 1 = 1 ORDER BY a LIMIT 1";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -1118,6 +1241,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW DATABASE STATUS WHERE 1 = 1 ORDER BY a LIMIT 1", output);
     }
 
+    @Test
     public void test_show_triggers() throws Exception {
         String sql = "SHOW TRIGGERS LIKE 'acc%'";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -1127,6 +1251,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW TRIGGERS LIKE 'acc%'", output);
     }
 
+    @Test
     public void test_show_partitions() throws Exception {
         String sql = "SHOW PARTITIONS from a";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -1136,6 +1261,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW PARTITIONS FROM a", output);
     }
 
+    @Test
     public void test_show_partitions_2() throws Exception {
         String sql = "SHOW PARTITIONS a";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -1145,6 +1271,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW PARTITIONS FROM a", output);
     }
 
+    @Test
     public void test_show_tables_1() throws Exception {
         String sql = "SHOW FULL TABLES from a";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -1154,6 +1281,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW FULL TABLES FROM a", output);
     }
 
+    @Test
     public void test_show_tables_2() throws Exception {
         String sql = "SHOW FULL TABLES LIKE a";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -1163,6 +1291,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW FULL TABLES LIKE a", output);
     }
 
+    @Test
     public void test_show_trace_01() throws Exception {
         String sql = "SHOW TRACE WHERE 1=1 order by a limit 1";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -1172,6 +1301,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW TRACE WHERE 1 = 1 ORDER BY a LIMIT 1", output);
     }
 
+    @Test
     public void test_show_trace_02() throws Exception {
         String sql = "SHOW TRACE WHERE 1=1";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -1181,6 +1311,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW TRACE WHERE 1 = 1", output);
     }
 
+    @Test
     public void test_show_trace_03() throws Exception {
         String sql = "SHOW TRACE WHERE 1=1 limit 1";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -1190,6 +1321,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW TRACE WHERE 1 = 1 LIMIT 1", output);
     }
 
+    @Test
     public void test_show_topology_01() throws Exception {
         String sql = "SHOW TOPOLOGY T1 WHERE 1=1 limit 1";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -1199,6 +1331,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW TOPOLOGY FROM T1 WHERE 1 = 1 LIMIT 1", output);
     }
 
+    @Test
     public void test_show_triggers_1() throws Exception {
         String sql = "SHOW triggers in db where strcmp('test1', 'test2')";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -1208,6 +1341,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW TRIGGERS FROM db WHERE strcmp('test1', 'test2')", output);
     }
 
+    @Test
     public void test_show_broadcast_1() throws Exception {
         String sql = "SHOW broadcasts WHERE 1=1 order by a limit 1";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -1217,6 +1351,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW BROADCASTS WHERE 1 = 1 ORDER BY a LIMIT 1", output);
     }
 
+    @Test
     public void test_show_ds_1() throws Exception {
         String sql = "SHOW DS WHERE 1=1 order by a limit 1";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -1226,6 +1361,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW DS WHERE 1 = 1 ORDER BY a LIMIT 1", output);
     }
 
+    @Test
     public void test_show_dbstatus_1() throws Exception {
         String sql = "SHOW ddl status WHERE 1=1 order by a limit 1";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -1235,6 +1371,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW DDL STATUS WHERE 1 = 1 ORDER BY a LIMIT 1", output);
     }
 
+    @Test
     public void test_show_variants() throws Exception {
         String sql = "SHOW VARIABLES LIKE '%size%';";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -1244,6 +1381,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW VARIABLES LIKE '%size%';", output);
     }
 
+    @Test
     public void test_show_variants_1() throws Exception {
         String sql = "SHOW GLOBAL VARIABLES LIKE '%size%';";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -1253,6 +1391,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW GLOBAL VARIABLES LIKE '%size%';", output);
     }
 
+    @Test
     public void test_show_variants_2() throws Exception {
         String sql = "SHOW SESSION VARIABLES LIKE '%size%';";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -1262,6 +1401,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW SESSION VARIABLES LIKE '%size%';", output);
     }
 
+    @Test
     public void test_plancache_1() throws Exception {
         String sql = "SHOW PLANCACHE status";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -1271,6 +1411,7 @@ public class DALParserTest extends TestCase {
         assertEquals("SHOW PLANCACHE STATUS", output);
     }
 
+    @Test
     public void test_plancache_2() throws Exception {
         String sql = "DISABLED PLANCACHE";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -1280,6 +1421,7 @@ public class DALParserTest extends TestCase {
         assertEquals("DISABLED PLANCACHE", output);
     }
 
+    @Test
     public void test_plancache_3() throws Exception {
         String sql = "CLEAR PLANCACHE";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -1289,6 +1431,7 @@ public class DALParserTest extends TestCase {
         assertEquals("CLEAR PLANCACHE", output);
     }
 
+    @Test
     public void test_plancache_4() throws Exception {
         String sql = "UPDATE PLANCACHE SELECT A FROM T1 where t1.a = 1 TO SELECT B2 FROM T2 where t2.a = 2";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -1304,6 +1447,7 @@ public class DALParserTest extends TestCase {
                 + "WHERE t2.a = 2", output);
     }
 
+    @Test
     public void test_plancache_5() throws Exception {
         String sql = "EXPLAIN PLANCACHE";
         MySqlStatementParser parser = new MySqlStatementParser(sql);

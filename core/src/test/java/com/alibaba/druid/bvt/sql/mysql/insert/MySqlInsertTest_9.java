@@ -24,6 +24,8 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlInsertTest_9 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "insert into sequence values('seq_wlb_order_log',268234128+10000000,now());";

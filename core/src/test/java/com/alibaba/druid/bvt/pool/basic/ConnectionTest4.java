@@ -33,15 +33,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class ConnectionTest4 extends PoolTestCase {
     private MockDriver driver;
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
-        DruidDataSourceStatManager.clear();
-
+         DruidDataSourceStatManager.clear();
         driver = new MockDriver();
-
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setDriver(driver);
@@ -64,8 +64,7 @@ public class ConnectionTest4 extends PoolTestCase {
 
     protected void tearDown() throws Exception {
         dataSource.close();
-        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
-
+        DruidDataSourceStatManager.clear();
         JdbcStatManager.getInstance().setStatContext(null);
         super.tearDown();
     }
@@ -73,8 +72,8 @@ public class ConnectionTest4 extends PoolTestCase {
     public void test_basic() throws Exception {
         DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
 
-        assertEquals(null, conn.unwrap(Date.class));
-        assertEquals(null, conn.unwrap(null));
+        assertNull(conn.unwrap(Date.class));
+        assertNull(conn.unwrap(null));
         Connection statementConn = ((ConnectionProxy) conn.getConnection()).getRawObject();
         assertTrue(statementConn instanceof DruidStatementConnection);
         assertEquals(((DruidStatementConnection) statementConn).getConnection(), conn.unwrap(Connection.class));

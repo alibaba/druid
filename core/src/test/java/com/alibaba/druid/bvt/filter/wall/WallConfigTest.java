@@ -1,11 +1,14 @@
 package com.alibaba.druid.bvt.filter.wall;
 
 import com.alibaba.druid.wall.WallConfig;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.Properties;
 
-public class WallConfigTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class WallConfigTest {
+    @Test
     public void test_selectAllow() throws Exception {
         Properties properties = new Properties();
         properties.setProperty("druid.wall.selelctAllow", "true");
@@ -15,6 +18,7 @@ public class WallConfigTest extends TestCase {
         assertTrue(config.isSelectAllow());
     }
 
+    @Test
     public void test_selectAllow_false() throws Exception {
         Properties properties = new Properties();
         properties.setProperty("druid.wall.selelctAllow", "false");
@@ -24,6 +28,7 @@ public class WallConfigTest extends TestCase {
         assertFalse(config.isSelectAllow());
     }
 
+    @Test
     public void test_deleteAllow() throws Exception {
         Properties properties = new Properties();
         properties.setProperty("druid.wall.deleteAllow", "true");
@@ -33,6 +38,7 @@ public class WallConfigTest extends TestCase {
         assertTrue(config.isDeleteAllow());
     }
 
+    @Test
     public void test_deleteAllow_false() throws Exception {
         Properties properties = new Properties();
         properties.setProperty("druid.wall.deleteAllow", "false");
@@ -42,6 +48,7 @@ public class WallConfigTest extends TestCase {
         assertFalse(config.isDeleteAllow());
     }
 
+    @Test
     public void test_updateAllow() throws Exception {
         Properties properties = new Properties();
         properties.setProperty("druid.wall.updateAllow", "true");
@@ -51,6 +58,7 @@ public class WallConfigTest extends TestCase {
         assertTrue(config.isUpdateAllow());
     }
 
+    @Test
     public void test_updateAllow_false() throws Exception {
         Properties properties = new Properties();
         properties.setProperty("druid.wall.updateAllow", "false");
@@ -60,6 +68,7 @@ public class WallConfigTest extends TestCase {
         assertFalse(config.isUpdateAllow());
     }
 
+    @Test
     public void test_insertAllow() throws Exception {
         Properties properties = new Properties();
         properties.setProperty("druid.wall.insertAllow", "true");
@@ -69,6 +78,7 @@ public class WallConfigTest extends TestCase {
         assertTrue(config.isInsertAllow());
     }
 
+    @Test
     public void test_insertAllow_false() throws Exception {
         Properties properties = new Properties();
         properties.setProperty("druid.wall.insertAllow", "false");

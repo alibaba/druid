@@ -1,9 +1,12 @@
 package com.alibaba.druid.bvt.sql.odps;
 
 import com.alibaba.druid.sql.SQLUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class OdpsFormatTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OdpsFormatTest {
+    @Test
     public void test_format() throws Exception {
         String sql = "select * from t1; ;select * from t2;";
         assertEquals("SELECT *"
@@ -13,6 +16,7 @@ public class OdpsFormatTest extends TestCase {
                 + "\nFROM t2;", SQLUtils.formatOdps(sql));
     }
 
+    @Test
     public void test_no_semi() throws Exception {
         String sql = "select * from t1; ;select * from t2";
         assertEquals("SELECT *"

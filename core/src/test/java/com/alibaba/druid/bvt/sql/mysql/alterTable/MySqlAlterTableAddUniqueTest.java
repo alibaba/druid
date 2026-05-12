@@ -22,9 +22,12 @@ import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class MySqlAlterTableAddUniqueTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlAlterTableAddUniqueTest {
+    @Test
     public void test_alter_first() throws Exception {
         String sql = "ALTER TABLE icp.wx_msg ADD CONSTRAINT idx_msgId_msgType_event_eventKey UNIQUE (msgId, msgType, event, eventKey)";
         MySqlStatementParser parser = new MySqlStatementParser(sql);

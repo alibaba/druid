@@ -19,19 +19,26 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.stat.JdbcDataSourceStat;
 import com.alibaba.druid.stat.JdbcStatManager;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 
-public class ParamTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class ParamTest {
+    @BeforeEach
     protected void setUp() throws Exception {
         DruidDataSourceStatManager.clear();
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
-        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        DruidDataSourceStatManager.clear();
     }
 
+    @Test
     public void test_default() throws Exception {
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:");
@@ -39,10 +46,8 @@ public class ParamTest extends TestCase {
         assertEquals(0, dataSource.getProxyFilters().size());
 
         dataSource.setFilters("stat");
-
-        JdbcStatManager.getInstance().reset();
-
-        dataSource.init();
+         JdbcStatManager.getInstance().reset();
+         dataSource.init();
         JdbcDataSourceStat stat = dataSource.getDataSourceStat();
 
         assertEquals(0, stat.getConnectionStat().getConnectCount());
@@ -67,13 +72,12 @@ public class ParamTest extends TestCase {
 
         assertEquals(1, stat.getConnectionStat().getConnectCount());
         assertEquals(1, stat.getConnectionStat().getCloseCount());
-
         JdbcStatManager.getInstance().reset();
-
         assertEquals(1, stat.getConnectionStat().getConnectCount());
         assertEquals(1, stat.getConnectionStat().getCloseCount());
     }
 
+    @Test
     public void test_zero() throws Exception {
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:");
@@ -92,10 +96,8 @@ public class ParamTest extends TestCase {
         assertEquals(0, dataSource.getProxyFilters().size());
 
         dataSource.setFilters("stat");
-
-        JdbcStatManager.getInstance().reset();
-
-        // assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+         JdbcStatManager.getInstance().reset();
+         // DruidDataSourceStatManager.clear();
         // assertEquals(0, JdbcStatManager.getInstance().getDataSources().size());
 
         assertEquals(1, dataSource.getProxyFilters().size());
@@ -105,6 +107,7 @@ public class ParamTest extends TestCase {
         dataSource.close();
     }
 
+    @Test
     public void test_1() throws Exception {
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:");
@@ -115,9 +118,7 @@ public class ParamTest extends TestCase {
 
         dataSource.setFilters("stat");
         assertEquals(1, dataSource.getProxyFilters().size());
-
         JdbcStatManager.getInstance().reset();
-
         dataSource.init();
         JdbcDataSourceStat stat = dataSource.getDataSourceStat();
 

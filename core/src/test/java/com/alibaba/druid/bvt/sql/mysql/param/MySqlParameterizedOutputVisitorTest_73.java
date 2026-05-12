@@ -3,12 +3,15 @@ package com.alibaba.druid.bvt.sql.mysql.param;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MySqlParameterizedOutputVisitorTest_73 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlParameterizedOutputVisitorTest_73 {
+    @Test
     public void test_in() throws Exception {
         String sql = "replace into t1(pk, integer_test, varchar_test) values(9223372036854775808,-1,'feed32feed')";
 

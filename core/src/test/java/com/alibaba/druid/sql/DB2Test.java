@@ -17,11 +17,10 @@ package com.alibaba.druid.sql;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2OutputVisitor;
-import junit.framework.TestCase;
 
 import java.util.List;
 
-public class DB2Test extends TestCase {
+public class DB2Test {
     protected String output(List<SQLStatement> stmtList) {
         StringBuilder out = new StringBuilder();
         DB2OutputVisitor visitor = new DB2OutputVisitor(out);

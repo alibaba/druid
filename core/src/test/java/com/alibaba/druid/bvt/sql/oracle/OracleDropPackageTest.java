@@ -7,6 +7,8 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
  * <a href="https://docs.oracle.com/en/database/oracle/oracle-database/19/lnpls/DROP-PACKAGE-statement.html">DROP PACKAGE Statement</a>
  */

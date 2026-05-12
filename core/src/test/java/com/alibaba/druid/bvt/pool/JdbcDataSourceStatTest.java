@@ -17,11 +17,14 @@ package com.alibaba.druid.bvt.pool;
 
 import com.alibaba.druid.Constants;
 import com.alibaba.druid.stat.JdbcDataSourceStat;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.Properties;
 
-public class JdbcDataSourceStatTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class JdbcDataSourceStatTest {
+    @Test
     public void test_max() throws Exception {
         JdbcDataSourceStat stat = new JdbcDataSourceStat("", "");
 
@@ -32,6 +35,7 @@ public class JdbcDataSourceStatTest extends TestCase {
         assertEquals(1000, stat.getSqlStatMap().size());
     }
 
+    @Test
     public void test_max_10() throws Exception {
         Properties connectProperties = new Properties();
         connectProperties.put(Constants.DRUID_STAT_SQL_MAX_SIZE, 10);
@@ -44,6 +48,7 @@ public class JdbcDataSourceStatTest extends TestCase {
         assertEquals(10, stat.getSqlStatMap().size());
     }
 
+    @Test
     public void test_max_10_str() throws Exception {
         Properties connectProperties = new Properties();
         connectProperties.put(Constants.DRUID_STAT_SQL_MAX_SIZE, "10");

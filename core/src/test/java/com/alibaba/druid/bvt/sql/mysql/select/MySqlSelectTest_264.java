@@ -21,6 +21,8 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_264 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select json from t1";

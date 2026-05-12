@@ -23,6 +23,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_36 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SELECT * FROM mytable t1 natural LEFT JOIN t2;";

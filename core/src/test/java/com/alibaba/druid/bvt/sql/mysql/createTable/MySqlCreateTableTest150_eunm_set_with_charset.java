@@ -3,9 +3,11 @@ package com.alibaba.druid.bvt.sql.mysql.createTable;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @version 1.0
@@ -14,7 +16,8 @@ import java.util.List;
  * @Author zzy
  * @Date 2019-05-15 10:30
  */
-public class MySqlCreateTableTest150_eunm_set_with_charset extends TestCase {
+public class MySqlCreateTableTest150_eunm_set_with_charset {
+    @Test
     public void test_0() {
         String sql = "create temporary table `tb_xx` (\n" +
                 "`col_ttuap` enum('value1','value2') character set utf8  collate utf8_unicode_ci generated always as ( 1+2 ) virtual unique comment 'comment' references tb_fn ( `col_qzqnqrrfyv` ) match partial\n" +
@@ -35,6 +38,7 @@ public class MySqlCreateTableTest150_eunm_set_with_charset extends TestCase {
                 ") min_rows = 1 checksum = 1 compression = 'NONE'", stmt.toLowerCaseString());
     }
 
+    @Test
     public void test_1() {
         String sql = "create temporary table `tb_xx` (\n" +
                 "\t`col_ttuap` enum('value1', 'value2') character set utf8 collate utf8_unicode_ci generated always as (1 + 2) virtual unique comment 'comment' references tb_fn (`col_qzqnqrrfyv`) match partial\n" +

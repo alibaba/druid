@@ -3,9 +3,12 @@ package com.alibaba.druid.bvt.sql.builder;
 import com.alibaba.druid.sql.builder.SQLBuilderFactory;
 import com.alibaba.druid.sql.builder.SQLUpdateBuilder;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class BuilderUpdateTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class BuilderUpdateTest {
+    @Test
     public void test_0() throws Exception {
         SQLUpdateBuilder builder = SQLBuilderFactory.createUpdateBuilder(JdbcConstants.MYSQL);
 

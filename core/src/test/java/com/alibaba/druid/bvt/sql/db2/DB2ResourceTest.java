@@ -29,6 +29,8 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class DB2ResourceTest extends OracleTest {
     public void test_0() throws Exception {
         exec_test("bvt/parser/db2-0.txt");

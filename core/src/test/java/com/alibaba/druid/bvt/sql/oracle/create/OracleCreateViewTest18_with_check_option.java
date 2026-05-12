@@ -24,6 +24,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleCreateViewTest18_with_check_option extends OracleTest {
     public void test_types() throws Exception {
         String sql = "CREATE OR REPLACE VIEW \"ZJ\".\"SMP_SERVICE_GROUP_DEFN\" (\"OWNER\", \"GROUP_NAME\", \"GROUP_TYPE\") AS \n" +

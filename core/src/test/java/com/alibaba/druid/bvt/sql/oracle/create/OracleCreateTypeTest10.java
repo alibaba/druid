@@ -24,6 +24,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleCreateTypeTest10 extends OracleTest {
     public void test_types() throws Exception {
         String sql = "CREATE OR REPLACE type body connstrBycomma is\n" +

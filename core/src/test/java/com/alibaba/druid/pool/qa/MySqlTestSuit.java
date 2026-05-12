@@ -2,7 +2,9 @@ package com.alibaba.druid.pool.qa;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,9 +12,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class MySqlTestSuit extends TestCase {
+public class MySqlTestSuit {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         //System.setProperty("druid.log.rs", "false");
         //System.setProperty("druid.log.stmt", "false");
@@ -27,10 +30,12 @@ public class MySqlTestSuit extends TestCase {
         dataSource.setTestWhileIdle(true);
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
     }
 
+    @Test
     public void test_suit() throws Exception {
         createTable();
         {

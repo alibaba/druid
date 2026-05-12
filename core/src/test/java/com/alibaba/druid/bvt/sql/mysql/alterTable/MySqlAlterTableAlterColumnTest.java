@@ -19,9 +19,12 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class MySqlAlterTableAlterColumnTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlAlterTableAlterColumnTest {
+    @Test
     public void test_alter_first() throws Exception {
         String sql = "ALTER TABLE `cube_template` ADD `stat_report_json` VARCHAR(256) CHARSET utf8 COLLATE utf8_general_ci DEFAULT ''  NOT NULL  COMMENT '模板的统计报表json数组';";
         MySqlStatementParser parser = new MySqlStatementParser(sql);

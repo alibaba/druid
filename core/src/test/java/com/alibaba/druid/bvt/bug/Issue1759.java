@@ -4,12 +4,15 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.wall.WallCheckResult;
 import com.alibaba.druid.wall.spi.OracleWallProvider;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by wenshao on 12/07/2017.
  */
-public class Issue1759 extends TestCase {
+public class Issue1759 {
+    @Test
     public void test_0() throws Exception {
         String sql = "COMMENT ON COLUMN \"TB_CRM_MATERIAL\".\"INVALID_TIME\" IS '生效时间'";
 

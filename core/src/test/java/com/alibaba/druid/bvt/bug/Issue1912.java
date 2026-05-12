@@ -6,12 +6,15 @@ import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitorAdapter;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class Issue1912 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class Issue1912 {
+    @Test
     public void test_for_issue() throws Exception {
         String sql = "select a from t";
         SQLStatementParser parser = new SQLStatementParser(sql);

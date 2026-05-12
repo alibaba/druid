@@ -101,7 +101,10 @@ public class DialectFeature {
         ScanSQLTypeWithAt(1L << 5),
         NextTokenColon(1L << 6),
         NextTokenPrefixN(1L << 7),
+        // Deprecated alias kept for compatibility. Use ScanStringDoubleBackslash.
+        @Deprecated
         ScanString2PutDoubleBackslash(1L << 8),
+        ScanStringDoubleBackslash(1L << 8),
         ScanAliasU(1L << 9),
         ScanNumberPrefixB(1L << 10),
         ScanNumberCommonProcess(1L << 11),
@@ -151,7 +154,10 @@ public class DialectFeature {
         JoinRightTableAlias(1L << 7),
         PostNaturalJoin(1L << 8),
         MultipleJoinOn(1L << 9),
+        // Deprecated alias kept for compatibility. Use UserDefinedJoin.
+        @Deprecated
         UDJ(1L << 10),
+        UserDefinedJoin(1L << 10),
         TwoConsecutiveUnion(1L << 11),
         QueryTable(1L << 12),
         GroupByAll(1L << 13),

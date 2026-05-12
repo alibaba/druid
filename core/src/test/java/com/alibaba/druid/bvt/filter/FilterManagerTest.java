@@ -3,12 +3,14 @@ package com.alibaba.druid.bvt.filter;
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterManager;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class FilterManagerTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class FilterManagerTest {
     static {
         ClassLoader current = Thread.currentThread().getContextClassLoader();
         try {
@@ -20,10 +22,12 @@ public class FilterManagerTest extends TestCase {
         }
     }
 
+    @Test
     public void test_instance() throws Exception {
         new FilterManager();
     }
 
+    @Test
     public void test_loadFilter() throws Exception {
         Exception error = null;
 
@@ -35,6 +39,7 @@ public class FilterManagerTest extends TestCase {
         assertNotNull(error);
     }
 
+    @Test
     public void test_loadFilter_2() throws Exception {
         Exception error = null;
 

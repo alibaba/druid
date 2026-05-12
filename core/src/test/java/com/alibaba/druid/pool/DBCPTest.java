@@ -16,13 +16,14 @@
 package com.alibaba.druid.pool;
 
 import com.alibaba.druid.mock.MockDriver;
-import junit.framework.TestCase;
 import org.apache.commons.dbcp.BasicDataSource;
+import org.junit.jupiter.api.Test;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
 
-public class DBCPTest extends TestCase {
+public class DBCPTest {
+    @Test
     public void test_dbcp() throws Exception {
         BasicDataSource dataSource = new BasicDataSource();
         dataSource.setDriverClassName(MockDriver.class.getName());

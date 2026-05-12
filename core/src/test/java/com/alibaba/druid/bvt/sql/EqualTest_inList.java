@@ -2,11 +2,12 @@ package com.alibaba.druid.bvt.sql;
 
 import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleExprParser;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class EqualTest_inList extends TestCase {
+public class EqualTest_inList {
+    @Test
     public void test_exits() throws Exception {
         String sql = "x in (1, 2, 3)";
         String sql_c = "x not in (1, 2, 3)";

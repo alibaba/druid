@@ -17,9 +17,12 @@ package com.alibaba.druid.bvt.filter.wall.mysql;
 
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class MySqlWallTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlWallTest {
+    @Test
     public void testWall() throws Exception {
         assertFalse(WallUtils.isValidateMySql("SELECT * FROM X where id=1 and 1!=1 union select 14,13,12,11,10,@@version_compile_os,8,7,6,5,4,3,2,1 FROM X"));
         assertTrue(WallUtils.isValidateMySql("select '@@version_compile_os' FROM X"));

@@ -19,9 +19,12 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class MySqlAlterTableTest28 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlAlterTableTest28 {
+    @Test
     public void test_alter_add_key() throws Exception {
         String sql = "ALTER TABLE project_measures MODIFY COLUMN value DECIMAL (38,20) NULL, MODIFY COLUMN variation_value_1 DECIMAL (38,20) NULL, MODIFY COLUMN variation_value_2 DECIMAL (38,20) NULL, MODIFY COLUMN variation_value_3 DECIMAL (38,20) NULL, MODIFY COLUMN variation_value_4 DECIMAL (38,20) NULL, MODIFY COLUMN variation_value_5 DECIMAL (38,20) NULL";
         MySqlStatementParser parser = new MySqlStatementParser(sql);

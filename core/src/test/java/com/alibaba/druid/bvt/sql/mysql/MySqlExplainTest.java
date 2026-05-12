@@ -24,6 +24,8 @@ import com.alibaba.druid.stat.TableStat;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
  * See https://dev.mysql.com/doc/refman/5.7/en/explain.html for test cases.
  */

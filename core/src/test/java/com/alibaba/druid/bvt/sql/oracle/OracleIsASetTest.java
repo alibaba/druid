@@ -18,9 +18,12 @@ package com.alibaba.druid.bvt.sql.oracle;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class OracleIsASetTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OracleIsASetTest {
+    @Test
     public void test_is_a_set() throws Exception {
         String sql = "SELECT customer_id, cust_address_ntab FROM customers_demo WHERE cust_address_ntab IS A SET;";
 

@@ -3,16 +3,19 @@ package com.alibaba.druid.bvt.sql.mysql.alterTable;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author shicai.xsc 2018/9/13 下午3:35
  * @desc
  * @since 5.0.0.0
  */
-public class MySqlAlterTableTest50 extends TestCase {
+public class MySqlAlterTableTest50 {
+    @Test
     public void test_0() throws Exception {
         String sql = "alter table ren_test ALGORITHM=INPLACE,LOCK=NONE,add index idx_name (name) ;";
 

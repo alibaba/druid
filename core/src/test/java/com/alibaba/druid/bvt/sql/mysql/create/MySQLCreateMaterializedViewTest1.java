@@ -23,6 +23,8 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
 import com.alibaba.druid.stat.TableStat;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySQLCreateMaterializedViewTest1 extends MysqlTest {
     public void test_types() throws Exception {
         String sql = //

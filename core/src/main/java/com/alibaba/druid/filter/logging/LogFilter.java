@@ -420,7 +420,7 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
         Savepoint savepoint = chain.connection_setSavepoint(connection);
 
         if (isConnectionLogEnabled()) {
-            connectionLog("{conn " + connection.getId() + "} setSavepoint-" + savepointToString(savepoint));
+            connectionLog("{conn-" + connection.getId() + "} setSavepoint-" + savepointToString(savepoint));
         }
 
         return savepoint;
@@ -432,7 +432,7 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
         Savepoint savepoint = chain.connection_setSavepoint(connection, name);
 
         if (isConnectionLogEnabled()) {
-            connectionLog("{conn " + connection.getId() + "} setSavepoint-" + name);
+            connectionLog("{conn-" + connection.getId() + "} setSavepoint-" + name);
         }
 
         return savepoint;
@@ -469,7 +469,9 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
     @Override
     public void connection_setAutoCommit(FilterChain chain, ConnectionProxy connection, boolean autoCommit)
             throws SQLException {
-        connectionLog("{conn-" + connection.getId() + "} setAutoCommit " + autoCommit);
+        if (isConnectionLogEnabled()) {
+            connectionLog("{conn-" + connection.getId() + "} setAutoCommit " + autoCommit);
+        }
         chain.connection_setAutoCommit(connection, autoCommit);
     }
 
@@ -613,16 +615,15 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
     public void resultSet_close(FilterChain chain, ResultSetProxy resultSet) throws SQLException {
         chain.resultSet_close(resultSet);
 
-        StringBuilder buf = new StringBuilder();
-        buf.append("{conn-");
-        buf.append(resultSet.getStatementProxy().getConnectionProxy().getId());
-        buf.append(", ");
-        buf.append(stmtId(resultSet));
-        buf.append(", rs-");
-        buf.append(resultSet.getId());
-        buf.append("} closed");
-
         if (isResultSetCloseAfterLogEnabled()) {
+            StringBuilder buf = new StringBuilder();
+            buf.append("{conn-");
+            buf.append(resultSet.getStatementProxy().getConnectionProxy().getId());
+            buf.append(", ");
+            buf.append(stmtId(resultSet));
+            buf.append(", rs-");
+            buf.append(resultSet.getId());
+            buf.append("} closed");
             resultSetLog(buf.toString());
         }
     }

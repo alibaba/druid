@@ -3,9 +3,12 @@ package com.alibaba.druid.bvt.sql.polardbx;
 import com.alibaba.druid.sql.repository.SchemaObject;
 import com.alibaba.druid.sql.repository.SchemaRepository;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class PolarDBXTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class PolarDBXTest {
+    @Test
     public void test_polardb_x_1() throws Throwable {
         SchemaRepository repository = new SchemaRepository(JdbcConstants.MYSQL);
         String sql1 = "CREATE TABLE `test1` (\n"
@@ -22,6 +25,7 @@ public class PolarDBXTest extends TestCase {
         System.out.println(table.getStatement());
     }
 
+    @Test
     public void test_polardb_x_2() throws Throwable {
         SchemaRepository repository = new SchemaRepository(JdbcConstants.MYSQL);
         String sql2 = "CREATE TABLE `test2` (\n"
@@ -36,6 +40,7 @@ public class PolarDBXTest extends TestCase {
         System.out.println(table.getStatement());
     }
 
+    @Test
     public void test_polardb_x_3() throws Throwable {
         SchemaRepository repository = new SchemaRepository(JdbcConstants.MYSQL);
         String sql3 = "CREATE TABLE `test3` (\n"
@@ -50,6 +55,7 @@ public class PolarDBXTest extends TestCase {
         System.out.println(table.getStatement());
     }
 
+    @Test
     public void test_polardb_x_4() throws Throwable {
         SchemaRepository repository = new SchemaRepository(JdbcConstants.MYSQL);
         String sql4 = "CREATE TABLE test4(\n"
@@ -76,6 +82,7 @@ public class PolarDBXTest extends TestCase {
         System.out.println(table.getStatement());
     }
 
+    @Test
     public void test_polardb_x_5() throws Throwable {
         SchemaRepository repository = new SchemaRepository(JdbcConstants.MYSQL);
         String sql5 = " CREATE TABLE `test5` (\n"
@@ -105,6 +112,7 @@ public class PolarDBXTest extends TestCase {
         System.out.println(table.getStatement());
     }
 
+    @Test
     public void test_polardb_x_5_1() throws Throwable {
         SchemaRepository repository = new SchemaRepository(JdbcConstants.MYSQL);
         String sql5 = "CREATE TABLE `test` (\t`id` varchar(32) NOT NULL DEFAULT '' COMMENT 'id',\n"
@@ -123,6 +131,7 @@ public class PolarDBXTest extends TestCase {
         System.out.println(table.getStatement());
     }
 
+    @Test
     public void test_polardb_x_6() {
         // test for global index with partition by
         SchemaRepository repository = new SchemaRepository(JdbcConstants.MYSQL);

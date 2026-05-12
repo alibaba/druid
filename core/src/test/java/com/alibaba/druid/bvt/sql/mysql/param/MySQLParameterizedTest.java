@@ -25,11 +25,14 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleParameterizedOutputVisitor;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class MySQLParameterizedTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySQLParameterizedTest {
+    @Test
     public void test() {
     }
 

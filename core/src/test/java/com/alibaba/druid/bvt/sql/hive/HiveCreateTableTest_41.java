@@ -24,6 +24,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class HiveCreateTableTest_41 extends OracleTest {
     public void test_0() throws Exception {
         String sql = "CREATE TABLE IF NOT EXISTS default.create_test (id int COMMENT '学号', name string COMMENT '姓名');";

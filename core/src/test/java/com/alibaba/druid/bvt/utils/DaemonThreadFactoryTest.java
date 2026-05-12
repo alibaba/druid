@@ -1,9 +1,12 @@
 package com.alibaba.druid.bvt.utils;
 
 import com.alibaba.druid.util.DaemonThreadFactory;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class DaemonThreadFactoryTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class DaemonThreadFactoryTest {
+    @Test
     public void test_0() throws Exception {
         Runnable task = new Runnable() {
             public void run() {

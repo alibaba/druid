@@ -20,11 +20,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class OdpsSelectTest12 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OdpsSelectTest12 {
+    @Test
     public void test_select() throws Exception {
         String sql = "select name, sp from abc lateral view explode(split(concat(',','1','2','3'),',')) t as sp;";
         assertEquals("SELECT name, sp\n" +

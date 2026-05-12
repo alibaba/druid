@@ -26,6 +26,8 @@ import com.alibaba.druid.stat.TableStat.Column;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlCreateViewTest3 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "create algorithm = merge view my_view2(col1, col2) as select * from t2 with check option;\n";

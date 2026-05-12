@@ -17,18 +17,25 @@ package com.alibaba.druid.bvt.support.http;
 
 import com.alibaba.druid.stat.DruidStatService;
 import com.alibaba.druid.support.http.StatViewServlet;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockServletConfig;
 
-public class StatViewServletTest_resetEnable extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class StatViewServletTest_resetEnable {
+    @BeforeEach
     protected void setUp() throws Exception {
         DruidStatService.getInstance().setResetEnable(true);
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         DruidStatService.getInstance().setResetEnable(true);
     }
 
+    @Test
     public void test_resetEnable_none() throws Exception {
         assertTrue(DruidStatService.getInstance().isResetEnable());
 
@@ -40,6 +47,7 @@ public class StatViewServletTest_resetEnable extends TestCase {
         assertTrue(DruidStatService.getInstance().isResetEnable());
     }
 
+    @Test
     public void test_resetEnable_true() throws Exception {
         assertTrue(DruidStatService.getInstance().isResetEnable());
 
@@ -52,6 +60,7 @@ public class StatViewServletTest_resetEnable extends TestCase {
         assertTrue(DruidStatService.getInstance().isResetEnable());
     }
 
+    @Test
     public void test_resetEnable_empty() throws Exception {
         assertTrue(DruidStatService.getInstance().isResetEnable());
 
@@ -64,6 +73,7 @@ public class StatViewServletTest_resetEnable extends TestCase {
         assertTrue(DruidStatService.getInstance().isResetEnable());
     }
 
+    @Test
     public void test_resetEnable_false() throws Exception {
         assertTrue(DruidStatService.getInstance().isResetEnable());
 
@@ -76,6 +86,7 @@ public class StatViewServletTest_resetEnable extends TestCase {
         assertFalse(DruidStatService.getInstance().isResetEnable());
     }
 
+    @Test
     public void test_resetEnable_error() throws Exception {
         assertTrue(DruidStatService.getInstance().isResetEnable());
 

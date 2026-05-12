@@ -3,9 +3,12 @@ package com.alibaba.druid.bvt.filter.wall.mysql;
 import com.alibaba.druid.wall.WallCheckResult;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class MySqlWallTest150 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlWallTest150 {
+    @Test
     public void test_false() throws Exception {
         WallProvider provider = new MySqlWallProvider();
 

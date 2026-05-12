@@ -15,14 +15,15 @@
  */
 package com.alibaba.druid.pool;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
 
-public class TestMySqlPing extends TestCase {
+public class TestMySqlPing {
+    @Test
     public void test_ping() throws Exception {
         String url = "jdbc:mysql://a.b.c.d:3308/dragoon_v25_masterdb";
         String user = "dragoon_admin";

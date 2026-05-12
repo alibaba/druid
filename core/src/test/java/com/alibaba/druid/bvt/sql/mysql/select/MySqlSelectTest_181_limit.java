@@ -26,6 +26,8 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_181_limit extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "(select 1) limit 1;";

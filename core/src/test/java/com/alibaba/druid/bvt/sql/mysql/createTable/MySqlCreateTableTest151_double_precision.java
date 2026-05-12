@@ -3,9 +3,11 @@ package com.alibaba.druid.bvt.sql.mysql.createTable;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @version 1.0
@@ -14,7 +16,8 @@ import java.util.List;
  * @Author zzy
  * @Date 2019-05-15 14:07
  */
-public class MySqlCreateTableTest151_double_precision extends TestCase {
+public class MySqlCreateTableTest151_double_precision {
+    @Test
     public void test_0() {
         String sql = "create temporary table tb_etaqf (\n" +
                 "\t `col_mcdw` double precision(10,2)\n" +

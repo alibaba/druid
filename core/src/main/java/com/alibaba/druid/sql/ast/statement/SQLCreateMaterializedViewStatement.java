@@ -85,6 +85,19 @@ public class SQLCreateMaterializedViewStatement extends SQLStatementImpl impleme
     protected SQLExpr comment;
     private List<SQLName> partitionedOn = new ArrayList<SQLName>();
 
+    protected SQLName to;
+
+    public SQLName getTo() {
+        return to;
+    }
+
+    public void setTo(SQLName to) {
+        if (to != null) {
+            to.setParent(this);
+        }
+        this.to = to;
+    }
+
     public SQLName getName() {
         return name;
     }

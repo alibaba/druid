@@ -20,6 +20,8 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_277 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select int_test,double_test,position(int_test-25 in double_test) from test_datatype_list order by 1,2,3";

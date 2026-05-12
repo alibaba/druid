@@ -20,6 +20,8 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_272 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select * from (select product from mysql_olap_t1 \n" +

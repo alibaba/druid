@@ -1,9 +1,12 @@
 package com.alibaba.druid.bvt.sql.odps;
 
 import com.alibaba.druid.sql.SQLUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class OdpsCaseWhenTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OdpsCaseWhenTest {
+    @Test
     public void test_if() throws Exception {
         String sql = "select case when f1 = 'aaa' then 1 when f1 = 'bbb' then 2 else 3 end from dual";
         assertEquals("SELECT CASE"

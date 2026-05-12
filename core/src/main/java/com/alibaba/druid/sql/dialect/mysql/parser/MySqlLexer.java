@@ -34,7 +34,7 @@ public class MySqlLexer extends Lexer {
     public static DialectFeature MYSQL_FEATURE = new DialectFeature(
             Arrays.asList(
                     NextTokenPrefixN,
-                    ScanString2PutDoubleBackslash,
+                    ScanStringDoubleBackslash,
                     JoinRightTableWith,
                     PostNaturalJoin,
                     MultipleJoinOn,
@@ -960,7 +960,7 @@ public class MySqlLexer extends Lexer {
     }
 
     public static boolean isIdentifierChar(char c) {
-        if (c <= identifierFlags.length) {
+        if (c < identifierFlags.length) {
             return identifierFlags[c];
         }
         return c != '　' && c != '，';

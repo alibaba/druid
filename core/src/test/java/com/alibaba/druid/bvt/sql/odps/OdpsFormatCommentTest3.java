@@ -1,9 +1,12 @@
 package com.alibaba.druid.bvt.sql.odps;
 
 import com.alibaba.druid.sql.SQLUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class OdpsFormatCommentTest3 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OdpsFormatCommentTest3 {
+    @Test
     public void test_column_comment() throws Exception {
         String sql = "-- 使用服务模式"
                 + "\nset odps.service.mode=all;"

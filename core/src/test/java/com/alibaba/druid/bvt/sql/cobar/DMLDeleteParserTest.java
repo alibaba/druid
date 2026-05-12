@@ -19,9 +19,12 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class DMLDeleteParserTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class DMLDeleteParserTest {
+    @Test
     public void testDelete_0() throws Exception {
         String sql = "deLetE LOW_PRIORITY from id1.id , id using t1 a where col1 =? ";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -33,6 +36,7 @@ public class DMLDeleteParserTest extends TestCase {
                 "WHERE col1 = ?", output);
     }
 
+    @Test
     public void testDelete_1() throws Exception {
         String sql = "deLetE from id1.id  using t1";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -43,6 +47,7 @@ public class DMLDeleteParserTest extends TestCase {
                 "\nUSING t1", output);
     }
 
+    @Test
     public void testDelete_2() throws Exception {
         String sql = "delete from offer.*,wp_image.* using offer a,wp_image b where a.member_id=b.member_id and a.member_id='abc' ";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -55,6 +60,7 @@ public class DMLDeleteParserTest extends TestCase {
                 "\tAND a.member_id = 'abc'", output);
     }
 
+    @Test
     public void testDelete_3() throws Exception {
         String sql = "deLetE from id1.id where col1='adf' limit 1,?";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -66,6 +72,7 @@ public class DMLDeleteParserTest extends TestCase {
                 "LIMIT 1, ?", output);
     }
 
+    @Test
     public void testDelete_4() throws Exception {
         String sql = "deLetE from id where col1='adf' ordEr by d liMit ? offset 2";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -78,6 +85,7 @@ public class DMLDeleteParserTest extends TestCase {
                 "LIMIT ? OFFSET 2", output);
     }
 
+    @Test
     public void testDelete_5() throws Exception {
         String sql = "deLetE id.* from t1,t2 where col1='adf'            and col2=1";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -90,6 +98,7 @@ public class DMLDeleteParserTest extends TestCase {
                 "\tAND col2 = 1", output);
     }
 
+    @Test
     public void testDelete_6() throws Exception {
         String sql = "deLetE id,id.t from t1";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -100,6 +109,7 @@ public class DMLDeleteParserTest extends TestCase {
                 "FROM t1", output);
     }
 
+    @Test
     public void testDelete_7() throws Exception {
         String sql = "deLetE from t1 where t1.id1='abc' order by a limit 5";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -112,6 +122,7 @@ public class DMLDeleteParserTest extends TestCase {
                 "LIMIT 5", output);
     }
 
+    @Test
     public void testDelete_8() throws Exception {
         String sql = "deLetE from t1";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -121,6 +132,7 @@ public class DMLDeleteParserTest extends TestCase {
         assertEquals("DELETE FROM t1", output);
     }
 
+    @Test
     public void testDelete_9() throws Exception {
         String sql = "deLetE ignore tb1.*,id1.t from t1";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -131,6 +143,7 @@ public class DMLDeleteParserTest extends TestCase {
                 "FROM t1", output);
     }
 
+    @Test
     public void testDelete_10() throws Exception {
         String sql = "deLetE quick tb1.*,id1.t from t1";
         MySqlStatementParser parser = new MySqlStatementParser(sql);

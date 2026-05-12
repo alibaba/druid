@@ -2,11 +2,12 @@ package com.alibaba.druid.bvt.sql;
 
 import com.alibaba.druid.sql.ast.expr.SQLCaseExpr;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleExprParser;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class EqualTest_case extends TestCase {
+public class EqualTest_case {
+    @Test
     public void test_exits() throws Exception {
         String sql = "case x when 1 then 0 else 2 end";
         String sql_c = "case x when 2 then 0 else 2 end";

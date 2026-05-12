@@ -24,6 +24,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class DB2CreateTableTest_07 extends DB2Test {
     public void test_0() throws Exception {
         String sql = "CREATE TABLE EMPLOYEE\n" +

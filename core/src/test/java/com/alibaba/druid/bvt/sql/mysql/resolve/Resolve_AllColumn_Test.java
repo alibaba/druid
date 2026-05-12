@@ -13,11 +13,14 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.repository.SchemaRepository;
 import com.alibaba.druid.sql.repository.SchemaResolveVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitorAdapter;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class Resolve_AllColumn_Test extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class Resolve_AllColumn_Test {
+    @Test
     public void test_resolve() throws Exception {
         SchemaRepository repository = new SchemaRepository(DbType.mysql);
 
@@ -51,6 +54,7 @@ public class Resolve_AllColumn_Test extends TestCase {
         };
     }
 
+    @Test
     public void test_resolve_1() throws Exception {
         SchemaRepository repository = new SchemaRepository(DbType.mysql);
 
@@ -66,6 +70,7 @@ public class Resolve_AllColumn_Test extends TestCase {
                 ") x", stmt.toString());
     }
 
+    @Test
     public void test_resolve_2() throws Exception {
         SchemaRepository repository = new SchemaRepository(DbType.mysql);
 

@@ -7,17 +7,20 @@ import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
 import com.alibaba.fastjson2.JSON;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.regex.Pattern;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * 此测试类用于检测试sql中where拼错导致SQL无效， 但经SQLStatementParser解析却丢失where的严复问题.
  *
  * @author qxo
  */
-public class BugSqlParserIllegalWhere extends TestCase {
+public class BugSqlParserIllegalWhere {
+    @Test
     public void test4deleteWhere() throws Exception {
         Object[][] samples = {
                     {"update test_tab1 set b= 1 swhere a=1", false},

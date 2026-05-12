@@ -23,8 +23,8 @@ import com.jolbox.bonecp.ConnectionHandle;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import com.mchange.v2.c3p0.impl.NewProxyConnection;
 import com.mchange.v2.c3p0.impl.NewProxyPreparedStatement;
-import junit.framework.TestCase;
 import org.apache.commons.dbcp.BasicDataSource;
+import org.junit.jupiter.api.Test;
 
 import javax.sql.DataSource;
 
@@ -32,7 +32,8 @@ import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
-public class TestPSCache extends TestCase {
+public class TestPSCache {
+    @Test
     public void test_boneCP() throws Exception {
         BoneCPDataSource ds = new BoneCPDataSource();
         ds.setJdbcUrl("jdbc:mock:test");

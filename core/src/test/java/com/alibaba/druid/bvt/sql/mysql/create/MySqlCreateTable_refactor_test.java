@@ -7,6 +7,8 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
  * @version 1.0
  * @ClassName MySqlCreateTable_refactor_test

@@ -25,6 +25,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleInsertTest21_encoding_error extends OracleTest {
     public void test_0() throws Exception {
         String sql = "INSERT INTO  x1_use_agent (ID, company_name, company_id, amount, start_time, end_time, is_deleted,attr2) VALUES (seq_fee_use_agent.nextval,'\n" +

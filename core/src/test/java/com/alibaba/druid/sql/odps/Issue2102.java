@@ -2,9 +2,10 @@ package com.alibaba.druid.sql.odps;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class Issue2102 extends TestCase {
+public class Issue2102 {
+    @Test
     public void test_for_issue() throws Exception {
         String sql = "SELECT t1.job_id,t2.lz_id,t1.run_time,t1.submit_time,t1.finish_time,\n" +
                 "  \t\tt2.queue_name,t2.service_level,t2.user_name,\"MAPREDUCE\" as job_type\n" +

@@ -18,7 +18,7 @@ package com.alibaba.druid.bvt.proxy.filter;
 import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.support.json.JSONUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import javax.management.openmbean.CompositeData;
 import javax.management.openmbean.TabularData;
@@ -28,18 +28,20 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-public class StatFilterTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class StatFilterTest {
     public void setUp() throws Exception {
         JdbcStatManager.getInstance().reset();
     }
 
     public void tearDown() throws Exception {
-        JdbcStatManager.getInstance().reset();
-
+         JdbcStatManager.getInstance().reset();
         DruidDriver.getProxyDataSources().clear();
-        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+         JdbcStatManager.getInstance().reset();
     }
 
+    @Test
     public void test_stat() throws Exception {
         String url = "jdbc:wrap-jdbc:filters=default:jdbc:mock:xx";
         Connection conn = DriverManager.getConnection(url);

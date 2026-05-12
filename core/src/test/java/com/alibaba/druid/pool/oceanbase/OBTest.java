@@ -1,13 +1,15 @@
 package com.alibaba.druid.pool.oceanbase;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 
-public class OBTest extends TestCase {
+public class OBTest {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mysql://a.b.c.d:45447/");
@@ -16,6 +18,7 @@ public class OBTest extends TestCase {
         dataSource.setFilters("log4j");
     }
 
+    @Test
     public void test_connect() throws Exception {
         {
             Connection conn = dataSource.getConnection();

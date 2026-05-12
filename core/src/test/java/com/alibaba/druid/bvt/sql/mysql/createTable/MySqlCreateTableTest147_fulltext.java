@@ -3,9 +3,11 @@ package com.alibaba.druid.bvt.sql.mysql.createTable;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @version 1.0
@@ -16,7 +18,8 @@ import java.util.List;
  * @Author zzy
  * @Date 2019-05-14 16:19
  */
-public class MySqlCreateTableTest147_fulltext extends TestCase {
+public class MySqlCreateTableTest147_fulltext {
+    @Test
     public void test_0() throws Exception {
         String sql = "create table tt (b varchar(128), fulltext (b));";
 

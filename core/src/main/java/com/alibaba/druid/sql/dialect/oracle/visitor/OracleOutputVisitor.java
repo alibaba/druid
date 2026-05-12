@@ -2991,7 +2991,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         }
         SQLExpr where = x.getWhere();
         if (where != null) {
-            print0(ucase ? " WHERE " : " where");
+            print0(ucase ? " WHERE " : " where ");
             printExpr(where, parameterized);
         }
         return false;

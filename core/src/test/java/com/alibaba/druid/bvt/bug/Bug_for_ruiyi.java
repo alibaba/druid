@@ -3,11 +3,14 @@ package com.alibaba.druid.bvt.bug;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class Bug_for_ruiyi extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class Bug_for_ruiyi {
+    @Test
     public void test_for_issue() throws Exception {
         String sql = "insert into icshall_guide(id,gmt_create,gmt_modified,subject,content,cat_id)"
                 + "values (8,now(),now(),\"Why my payment is deducted incorrectly?/ Why my payment is deducted twice?\","

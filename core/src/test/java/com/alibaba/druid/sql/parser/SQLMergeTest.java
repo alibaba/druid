@@ -22,29 +22,34 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class SQLMergeTest extends TestCase {
+public class SQLMergeTest {
     protected String sql;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         sql = "SELECT /*mark for picman*/ * FROM WP_ALBUM WHERE MEMBER_ID = ? AND ID IN (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
         sql = "SELECT * FROM my_table WHERE TRUNC(SYSDATE) = DATE '2002-10-03';";
     }
 
+    @Test
     public void test_merge_1() throws Exception {
         String result = merge();
         System.out.println(result);
     }
 
+    @Test
     public void test_merge_2() throws Exception {
         String result = merge2();
         System.out.println(result);
     }
 
+    @Test
     public void test_perf() {
         for (int i = 0; i < 10; ++i) {
             perf();

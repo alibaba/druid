@@ -2,9 +2,12 @@ package com.alibaba.druid.bvt.sql;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.PagerUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class PagerUtilsTest_Limit_hive_0 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class PagerUtilsTest_Limit_hive_0 {
+    @Test
     public void test_hive_0() throws Exception {
         String result = PagerUtils.limit("SELECT * FROM test", DbType.hive, 0, 10);
         System.out.println(result);
@@ -13,6 +16,7 @@ public class PagerUtilsTest_Limit_hive_0 extends TestCase {
                 "LIMIT 10", result);
     }
 
+    @Test
     public void test_odps_0() throws Exception {
         String result = PagerUtils.limit("SELECT * FROM test", DbType.odps, 0, 10);
         System.out.println(result);

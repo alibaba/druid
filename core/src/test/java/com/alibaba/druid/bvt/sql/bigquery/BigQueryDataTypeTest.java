@@ -4,9 +4,9 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class BigQueryDataTypeTest {
     @Test

@@ -5,14 +5,17 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by wenshao on 16/8/5.
  */
-public class MySqlCeateTableTest34 extends TestCase {
+public class MySqlCeateTableTest34 {
+    @Test
     public void test_for_parse() throws Exception {
         String sql = "CREATE TABLE \"item_extra\" (\n" +
                 "  \"id\" int(10) unsigned NOT NULL AUTO_INCREMENT,\n" +

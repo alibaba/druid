@@ -21,15 +21,20 @@ import com.alibaba.druid.pool.DruidPooledPreparedStatement;
 import com.alibaba.druid.pool.DruidPooledResultSet;
 import com.alibaba.druid.test.util.OracleMockDriver;
 import com.alibaba.druid.util.JdbcUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-public class TestOracleWrap extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class TestOracleWrap {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
 
@@ -42,10 +47,12 @@ public class TestOracleWrap extends TestCase {
         // dataSource.setFilters("log4j");
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
     }
 
+    @Test
     public void test_oracle() throws Exception {
         String sql = "SELECT 1";
 

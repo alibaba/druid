@@ -19,11 +19,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat.Column;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class MySqlSchemaStatVisitorTest_Subquery extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlSchemaStatVisitorTest_Subquery {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT id2, name2 FROM (select id, name from users u where id = 22 limit 10) a";
 

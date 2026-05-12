@@ -22,11 +22,16 @@ import com.alibaba.druid.pool.DruidPooledPreparedStatement;
 import com.alibaba.druid.pool.PreparedStatementHolder;
 import com.alibaba.druid.pool.PreparedStatementPool;
 import com.alibaba.druid.util.JdbcUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class PSCacheTest3 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class PSCacheTest3 {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:x1");
@@ -34,10 +39,12 @@ public class PSCacheTest3 extends TestCase {
         dataSource.setMaxOpenPreparedStatements(3);
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
     }
 
+    @Test
     public void test_pscache() throws Exception {
         DruidPooledConnection conn = dataSource.getConnection();
 

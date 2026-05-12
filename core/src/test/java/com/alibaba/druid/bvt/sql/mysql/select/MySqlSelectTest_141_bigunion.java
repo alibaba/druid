@@ -10,6 +10,8 @@ import com.alibaba.druid.wall.WallUtils;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_141_bigunion extends MysqlTest {
     public void test_small_10() throws Exception {
         StringBuilder buf = new StringBuilder();

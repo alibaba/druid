@@ -1,13 +1,14 @@
 package com.alibaba.druid.stat;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.lang.management.ManagementFactory;
 import java.text.NumberFormat;
 
-public class JdbcSqlStatTest1 extends TestCase {
+public class JdbcSqlStatTest1 {
     private JdbcDataSourceStat dataSourceStat = new JdbcDataSourceStat("", "");
 
+    @Test
     public void test_0() throws Exception {
         for (int i = 0; i < 3; ++i) {
             gc();

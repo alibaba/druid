@@ -16,14 +16,17 @@
 package com.alibaba.druid.bvt.proxy.fake;
 
 import com.alibaba.druid.mock.MockDriver;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Properties;
 
-public class FakeDriverTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class FakeDriverTest {
+    @Test
     public void test_0() throws Exception {
         String url = "jdbc:fake:x1";
         Properties info = new Properties();

@@ -21,6 +21,8 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlCreateTriggerTest5 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = " CREATE DEFINER=`test_app`@`%` TRIGGER `trg_xxx_update` AFTER UPDATE ON `txxx` FOR EACH ROW begin"

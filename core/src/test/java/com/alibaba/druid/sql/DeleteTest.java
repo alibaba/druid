@@ -2,7 +2,7 @@ package com.alibaba.druid.sql;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 /**

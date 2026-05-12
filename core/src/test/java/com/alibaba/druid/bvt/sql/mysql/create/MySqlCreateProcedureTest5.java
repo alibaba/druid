@@ -23,6 +23,8 @@ import com.alibaba.druid.stat.TableStat;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
  * Description: procedure begin-end, loop, while use label
  * author zz email:455910092@qq.com

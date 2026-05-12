@@ -26,6 +26,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_82_force_partition extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select\n" +

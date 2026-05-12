@@ -3,11 +3,14 @@ package com.alibaba.druid.bvt.bug;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class Issue2015 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class Issue2015 {
+    @Test
     public void test_for_issue() throws Exception {
         String sql = "update t set a=1,b=2 where a > 1";
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);

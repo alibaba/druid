@@ -21,6 +21,8 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_300_genAlias
         extends MysqlTest {
     public void test_0() throws Exception {

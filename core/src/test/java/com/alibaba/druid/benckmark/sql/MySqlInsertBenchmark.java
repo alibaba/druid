@@ -3,18 +3,21 @@ package com.alibaba.druid.benckmark.sql;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class MySqlInsertBenchmark extends TestCase {
+public class MySqlInsertBenchmark {
     static String sql = "INSERT INTO test_table VALUES (1, '1', '2017-10-10', true, false, '2017-10-10 10:10:10', '10:10:10', 1.111, null);";
     List<SQLStatement> stmtList;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         stmtList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
     }
 
+    @Test
     public void test_perf() throws Exception {
         for (int i = 0; i < 5; ++i) {
             perf();

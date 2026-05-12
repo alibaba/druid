@@ -18,9 +18,12 @@ package com.alibaba.druid.bvt.sql.oracle;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class OraclePivotClauseTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OraclePivotClauseTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT *\n" + "FROM pivot_table\n"
                 + "UNPIVOT (yearly_total FOR order_mode IN (store AS 'direct', internet AS 'online'))\n"
@@ -41,6 +44,7 @@ public class OraclePivotClauseTest extends TestCase {
         System.out.println(text);
     }
 
+    @Test
     public void test_pivot() throws Exception {
         String sql = "SELECT *\n"
                 + "FROM (SELECT EXTRACT(YEAR FROM order_date) year, order_mode, order_total FROM orders)\n"
@@ -61,6 +65,7 @@ public class OraclePivotClauseTest extends TestCase {
         System.out.println(text);
     }
 
+    @Test
     public void test_pivot_1() throws Exception {
         String sql = "SELECT *\n"
                 + "FROM (SELECT EXTRACT(YEAR FROM order_date) as year, order_mode, order_total FROM orders)\n"
@@ -81,6 +86,7 @@ public class OraclePivotClauseTest extends TestCase {
         System.out.println(text);
     }
 
+    @Test
     public void test_pivot_2() throws Exception {
         String sql = "SELECT *\n"
                 + "FROM (SELECT EXTRACT(YEAR FROM order_date) as day, order_mode, order_total FROM orders)\n"
@@ -100,6 +106,7 @@ public class OraclePivotClauseTest extends TestCase {
         System.out.println(text);
     }
 
+    @Test
     public void test_pivot_3() throws Exception {
         String sql = "SELECT *\n"
                 + "FROM (SELECT EXTRACT(YEAR FROM order_date) day, order_mode YEAR, order_total FROM orders)\n"

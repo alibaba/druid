@@ -19,9 +19,12 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class MySqlAlterTableDrop_Test_1 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlAlterTableDrop_Test_1 {
+    @Test
     public void test_alter_first() throws Exception {
         String sql = "ALTER TABLE test.student DROP Column9, DROP Column10;";
         MySqlStatementParser parser = new MySqlStatementParser(sql);

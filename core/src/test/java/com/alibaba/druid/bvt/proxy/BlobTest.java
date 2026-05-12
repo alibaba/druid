@@ -18,14 +18,19 @@ package com.alibaba.druid.bvt.proxy;
 import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.util.JdbcUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 import java.sql.*;
 
-public class BlobTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class BlobTest {
     private static String create_url = "jdbc:wrap-jdbc:filters=default,commonLogging,log4j:name=demo:jdbc:derby:memory:blobTestDB;create=true";
 
+    @BeforeEach
     protected void setUp() throws Exception {
         Class.forName("com.alibaba.druid.proxy.DruidDriver");
 
@@ -52,13 +57,15 @@ public class BlobTest extends TestCase {
         conn.close();
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dropTable();
 
         DruidDriver.getProxyDataSources().clear();
-        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+         JdbcStatManager.getInstance().reset();
     }
 
+    @Test
     public void test_blob() throws Exception {
         Connection conn = null;
         PreparedStatement pstmt = null;

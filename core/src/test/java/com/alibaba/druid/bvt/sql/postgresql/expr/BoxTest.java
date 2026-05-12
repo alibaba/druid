@@ -6,6 +6,8 @@ import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGBoxExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGPointExpr;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGExprParser;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class BoxTest extends PGTest {
     public void test_timestamp() throws Exception {
         String sql = "box '((0,0),(1,1))' + point '(2.0,0)'";

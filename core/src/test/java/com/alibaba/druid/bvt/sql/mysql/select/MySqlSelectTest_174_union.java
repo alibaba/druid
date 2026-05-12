@@ -10,6 +10,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_174_union extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select id from a where a.id < 10 union select id from b where a.id < 10 limit 10";

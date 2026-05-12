@@ -23,6 +23,8 @@ import com.alibaba.druid.stat.TableStat;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleMergeTest6 extends OracleTest {
     public void test_0() throws Exception {
         String sql = "MERGE INTO console_stb_ipstatus T1 " +

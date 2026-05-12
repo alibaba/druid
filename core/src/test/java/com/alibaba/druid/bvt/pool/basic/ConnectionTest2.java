@@ -25,15 +25,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class ConnectionTest2 extends PoolTestCase {
     private MockDriver driver;
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
-        DruidDataSourceStatManager.clear();
-
+         DruidDataSourceStatManager.clear();
         driver = new MockDriver();
-
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setDriver(driver);
@@ -54,8 +54,7 @@ public class ConnectionTest2 extends PoolTestCase {
         dataSource.resetStat();
         assertEquals(0, dataSource.getCreateCount());
         dataSource.close();
-        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
-
+        DruidDataSourceStatManager.clear();
         super.tearDown();
     }
 

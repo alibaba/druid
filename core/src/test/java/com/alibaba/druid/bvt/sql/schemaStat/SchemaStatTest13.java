@@ -8,11 +8,14 @@ import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.Set;
 
-public class SchemaStatTest13 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class SchemaStatTest13 {
+    @Test
     public void test_schemaStat() throws Exception {
         String sql = "select a.id, b.name from (select t1.* from table1 t1 left join table3 t3 on cast(t1.id as bigint) = t3.id) a inner join table2 b on a.id = b.id";
 

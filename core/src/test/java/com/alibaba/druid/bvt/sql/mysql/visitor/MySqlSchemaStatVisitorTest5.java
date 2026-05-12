@@ -18,11 +18,14 @@ package com.alibaba.druid.bvt.sql.mysql.visitor;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class MySqlSchemaStatVisitorTest5 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlSchemaStatVisitorTest5 {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT      distinct a.id \"id\",    a.col \"col\",     a.position \"position\",     a.panel_id \"panelId\"    "
                 + "FROM     (select * from view_position_info) a LEFT JOIN db1.view_portal b ON a.panel_id = b.panel_id     "

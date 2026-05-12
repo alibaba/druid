@@ -2,8 +2,8 @@ package com.alibaba.druid.bvt.sql.bigquery;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.bvt.sql.SQLResourceTest;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
@@ -16,7 +16,7 @@ public class BigQueryDirTest extends SQLResourceTest {
         return new File(path);
     }
 
-    @Ignore
+    @Disabled
     @Test
     public void dirTest() throws Exception {
 //        File dir = new File("/Users/wenshao/Downloads/goto_1894_sql");

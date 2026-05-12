@@ -11,6 +11,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
  * Created by wenshao on 16/8/23.
  */

@@ -1,8 +1,8 @@
 package com.alibaba.druid.test;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.nutz.dao.Chain;
 import org.nutz.dao.Dao;
 import org.nutz.dao.impl.NutDao;
@@ -11,9 +11,12 @@ import org.nutz.trans.Trans;
 
 import javax.sql.DataSource;
 
-public class NutzTransactionTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class NutzTransactionTest {
     private DataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:jtds:sqlserver://192.168.1.105/petstore");
@@ -30,6 +33,7 @@ public class NutzTransactionTest extends TestCase {
         this.dataSource = dataSource;
     }
 
+    @Test
     public void test_trans() throws Exception {
         Dao dao = new NutDao(dataSource);
 
@@ -49,7 +53,7 @@ public class NutzTransactionTest extends TestCase {
             });
         } catch (Exception e) {
         }
-        Assert.assertEquals(0, dao.count("[test]"));
+        assertEquals(0, dao.count("[test]"));
     }
 
     void doTran2(final Dao dao) {
@@ -64,6 +68,6 @@ public class NutzTransactionTest extends TestCase {
         } catch (Exception e) {
             // e.printStackTrace();
         }
-        Assert.assertEquals(0, dao.count("[test]"));
+        assertEquals(0, dao.count("[test]"));
     }
 }

@@ -21,6 +21,8 @@ import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.util.JdbcConstants;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlCreateProcedureTest15 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "     create function `test1`.`proc1`(`a` enum('1','2') charset utf8)\n" +

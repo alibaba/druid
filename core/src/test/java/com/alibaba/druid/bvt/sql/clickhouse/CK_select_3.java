@@ -5,11 +5,14 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2SchemaStatVisitor;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class CK_select_3 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class CK_select_3 {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT name, c FROM test WHERE c NOT ILIKE 'a%'";
 
@@ -47,6 +50,7 @@ public class CK_select_3 extends TestCase {
         "WHERE c NOT ILIKE ?", psql);
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "SELECT name, c FROM test WHERE c ILIKE 'a%'";
 

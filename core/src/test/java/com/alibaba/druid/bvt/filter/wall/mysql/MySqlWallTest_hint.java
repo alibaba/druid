@@ -2,9 +2,12 @@ package com.alibaba.druid.bvt.filter.wall.mysql;
 
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class MySqlWallTest_hint extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlWallTest_hint {
+    @Test
     public void test_false() throws Exception {
         WallConfig config = new WallConfig();
         config.setHintAllow(false);
@@ -12,6 +15,7 @@ public class MySqlWallTest_hint extends TestCase {
         assertFalse(WallUtils.isValidateMySql(sql, config));
     }
 
+    @Test
     public void test_false_1() throws Exception {
         WallConfig config = new WallConfig();
         config.setHintAllow(false);
@@ -20,21 +24,25 @@ public class MySqlWallTest_hint extends TestCase {
         assertFalse(WallUtils.isValidateMySql(sql, config));
     }
 
+    @Test
     public void test_true() throws Exception {
         String sql = "SELECT /*! STRAIGHT_JOIN */ col1 FROM table1,table2";
         assertTrue(WallUtils.isValidateMySql(sql));
     }
 
+    @Test
     public void test_true_1() throws Exception {
         String sql = "/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */";
         assertTrue(WallUtils.isValidateMySql(sql));
     }
 
+    @Test
     public void test_true_2() throws Exception {
         String sql = "/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */";
         assertTrue(WallUtils.isValidateMySql(sql));
     }
 
+    @Test
     public void test_true_3() throws Exception {
         WallConfig config = new WallConfig();
         config.setHintAllow(true);
@@ -52,6 +60,7 @@ public class MySqlWallTest_hint extends TestCase {
         assertTrue(WallUtils.isValidateMySql(sql, config));
     }
 
+    @Test
     public void test_true_4() throws Exception {
         WallConfig config = new WallConfig();
         config.setHintAllow(true);
@@ -60,6 +69,7 @@ public class MySqlWallTest_hint extends TestCase {
         assertTrue(WallUtils.isValidateMySql(sql, config));
     }
 
+    @Test
     public void test_true_5() throws Exception {
         WallConfig config = new WallConfig();
         config.setHintAllow(true);
@@ -76,21 +86,25 @@ public class MySqlWallTest_hint extends TestCase {
         assertTrue(WallUtils.isValidateMySql(sql, config));
     }
 
+    @Test
     public void test_true_6() throws Exception {
         String sql = "START TRANSACTION /*!40100 WITH CONSISTENT SNAPSHOT */";
         assertTrue(WallUtils.isValidateMySql(sql));
     }
 
+    @Test
     public void test_true_7() throws Exception {
         String sql = "LOCK TABLES `m_rpt_adgroupeffect` READ /*!32311 LOCAL */";
         assertTrue(WallUtils.isValidateMySql(sql));
     }
 
+    @Test
     public void test_true_8() throws Exception {
         String sql = "SET SQL_QUOTE_SHOW_CREATE=1/*!40102 ,SQL_MODE=concat(@@sql_mode, _utf8 ',NO_KEY_OPTIONS,NO_TABLE_OPTIONS,NO_FIELD_OPTIONS') */";
         assertTrue(WallUtils.isValidateMySql(sql));
     }
 
+    @Test
     public void test_true_9() throws Exception {
         WallConfig config = new WallConfig();
         config.setHintAllow(true);
@@ -107,6 +121,7 @@ public class MySqlWallTest_hint extends TestCase {
         assertTrue(WallUtils.isValidateMySql(sql, config));
     }
 
+    @Test
     public void test_true_10() throws Exception {
         WallConfig config = new WallConfig();
         config.setHintAllow(true);
@@ -116,6 +131,7 @@ public class MySqlWallTest_hint extends TestCase {
         assertTrue(WallUtils.isValidateMySql(sql, config));
     }
 
+    @Test
     public void test_true_11() throws Exception {
         WallConfig config = new WallConfig();
         config.setHintAllow(true);

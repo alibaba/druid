@@ -20,11 +20,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class InsertSyntaxTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class InsertSyntaxTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "INSERT INTO tbl_name () VALUES();";
 
@@ -36,6 +39,7 @@ public class InsertSyntaxTest extends TestCase {
         assertEquals("INSERT INTO tbl_name\nVALUES ();", text);
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "INSERT INTO tbl_name (col1,col2) VALUES(15,col1*2);";
 
@@ -47,6 +51,7 @@ public class InsertSyntaxTest extends TestCase {
         assertEquals("INSERT INTO tbl_name (col1, col2)\nVALUES (15, col1 * 2);", text);
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "INSERT INTO tbl_name (col1,col2) VALUES(col2*2,15);";
 
@@ -58,6 +63,7 @@ public class InsertSyntaxTest extends TestCase {
         assertEquals("INSERT INTO tbl_name (col1, col2)\nVALUES (col2 * 2, 15);", text);
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = "INSERT INTO tbl_name (a,b,c) VALUES(1,2,3),(4,5,6),(7,8,9);";
 
@@ -71,6 +77,7 @@ public class InsertSyntaxTest extends TestCase {
                 "\n\t(7, 8, 9);", text);
     }
 
+    @Test
     public void test_4() throws Exception {
         String sql = "INSERT INTO tbl_name (a,b,c) VALUES(1,2,3,4,5,6,7,8,9);;";
 
@@ -84,6 +91,7 @@ public class InsertSyntaxTest extends TestCase {
                 "\n\t, 6, 7, 8, 9);", text);
     }
 
+    @Test
     public void test_5() throws Exception {
         String sql = "INSERT LOW_PRIORITY DELAYED HIGH_PRIORITY IGNORE INTO tbl_name (a,b,c) VALUES(1,2,3);";
 
@@ -99,6 +107,7 @@ public class InsertSyntaxTest extends TestCase {
                 SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 
+    @Test
     public void test_6() throws Exception {
         String sql = "INSERT tbl_name (a,b,c) VALUES(1,2,3) ON DUPLICATE KEY UPDATE c=c+1;";
 

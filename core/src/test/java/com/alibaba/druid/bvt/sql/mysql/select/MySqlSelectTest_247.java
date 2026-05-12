@@ -23,6 +23,8 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_247 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select CONVERT(id, char(20))";

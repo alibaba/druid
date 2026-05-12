@@ -1,9 +1,12 @@
 package com.alibaba.druid.bvt.sql.odps;
 
 import com.alibaba.druid.sql.SQLUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class OdpsFormatCommentTest29 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OdpsFormatCommentTest29 {
+    @Test
     public void test_drop_function() throws Exception {
         String sql = "create table xxxx001(   --测试"
                 + "\ncol string,  --测试2"

@@ -3,9 +3,12 @@ package com.alibaba.druid.bvt.sql.odps;
 import com.alibaba.druid.sql.dialect.odps.parser.OdpsLexer;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.Token;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class OdpsLexerTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OdpsLexerTest {
+    @Test
     public void test_0() throws Exception {
         String str = "DESC;";
         OdpsLexer lexer = new OdpsLexer(str);
@@ -15,6 +18,7 @@ public class OdpsLexerTest extends TestCase {
         assertEquals(Token.SEMI, lexer.token());
     }
 
+    @Test
     public void test_1() throws Exception {
         String str = "——\n" +
                 "\n" +
@@ -24,6 +28,7 @@ public class OdpsLexerTest extends TestCase {
         assertEquals(Token.DROP, lexer.token());
     }
 
+    @Test
     public void test_2() throws Exception {
         String str = "drop table graph_embedding_dev.04_s1_${bizdate}_0108;";
         OdpsLexer lexer = new OdpsLexer(str);
@@ -40,6 +45,7 @@ public class OdpsLexerTest extends TestCase {
         assertEquals("04_s1_${bizdate}_0108", lexer.stringVal());
     }
 
+    @Test
     public void test_3() throws Exception {
         String str = "dm_claim_unwww_unsettled_dt@@{yyyyMMdd}_${rundt}";
         OdpsLexer lexer = new OdpsLexer(str);
@@ -50,6 +56,7 @@ public class OdpsLexerTest extends TestCase {
         assertEquals("@{yyyyMMdd}_${rundt}", lexer.stringVal());
     }
 
+    @Test
     public void test_4() throws Exception {
         String str = "${PN}_events";
         OdpsLexer lexer = new OdpsLexer(str);
@@ -58,6 +65,7 @@ public class OdpsLexerTest extends TestCase {
         assertEquals("${PN}_events", lexer.stringVal());
     }
 
+    @Test
     public void test_error_0() throws Exception {
         String str = "1 `aaa\n${PN}_events";
         OdpsLexer lexer = new OdpsLexer(str);
@@ -75,6 +83,7 @@ public class OdpsLexerTest extends TestCase {
         assertEquals("${PN}_events", lexer.stringVal());
     }
 
+    @Test
     public void test_error_1() throws Exception {
         String str = "`aaa\n${PN}_events";
         OdpsLexer lexer = new OdpsLexer(str);

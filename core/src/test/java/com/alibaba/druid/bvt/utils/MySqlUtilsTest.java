@@ -2,12 +2,13 @@ package com.alibaba.druid.bvt.utils;
 
 import com.alibaba.druid.util.MySqlUtils;
 import com.mysql.jdbc.Driver;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Constructor;
 import java.sql.Connection;
 
-public class MySqlUtilsTest extends TestCase {
+public class MySqlUtilsTest {
+    @Test
     public void test_xa() throws Exception {
         Driver driver = new Driver();
         int majorVersion = driver.getMajorVersion();

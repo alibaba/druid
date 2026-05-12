@@ -19,7 +19,9 @@ import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.mock.MockStatement;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 import java.sql.SQLRecoverableException;
@@ -27,9 +29,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class JdbcUtilsTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class JdbcUtilsTest {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setMinIdle(1);
@@ -39,11 +44,13 @@ public class JdbcUtilsTest extends TestCase {
         JdbcUtils.execute(dataSource, "CREATE TABLE user (id INT, name VARCHAR(40))");
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         JdbcUtils.execute(dataSource, "DROP TABLE user");
         JdbcUtils.close(dataSource);
     }
 
+    @Test
     public void test_curd() throws Exception {
         {
             List<Map<String, Object>> list = JdbcUtils.executeQuery(dataSource, "select * from user");
@@ -80,6 +87,7 @@ public class JdbcUtilsTest extends TestCase {
         }
     }
 
+    @Test
     public void test_close() throws Exception {
         MockStatement stmt = new MockStatement(new MockConnection()) {
             public void close() throws SQLException {

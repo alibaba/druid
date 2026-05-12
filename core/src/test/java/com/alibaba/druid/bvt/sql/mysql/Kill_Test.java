@@ -18,11 +18,14 @@ package com.alibaba.druid.bvt.sql.mysql;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class Kill_Test extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class Kill_Test {
+    @Test
     public void test_0() throws Exception {
         String sql = "KILL  QUERY 233";
 
@@ -34,6 +37,7 @@ public class Kill_Test extends TestCase {
         assertEquals("KILL QUERY 233;", text);
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "KILL  CONNECTION 233";
 
@@ -45,6 +49,7 @@ public class Kill_Test extends TestCase {
         assertEquals("KILL CONNECTION 233;", text);
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "KILL 233";
 
@@ -56,6 +61,7 @@ public class Kill_Test extends TestCase {
         assertEquals("KILL 233;", text);
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = "KILL 233,234";
 

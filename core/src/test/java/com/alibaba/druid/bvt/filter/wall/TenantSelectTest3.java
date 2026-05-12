@@ -21,9 +21,12 @@ import com.alibaba.druid.wall.WallCheckResult;
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class TenantSelectTest3 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class TenantSelectTest3 {
     private String sql = "SELECT ID, NAME " +
             "FROM orders o inner join users u ON o.userid = u.id " +
             "WHERE FID = ? OR FID = ?";
@@ -33,9 +36,11 @@ public class TenantSelectTest3 extends TestCase {
             "\nWHERE FID = ?" +
             "\n\tOR FID = ?";
 
+    @BeforeEach
     protected void setUp() throws Exception {
     }
 
+    @Test
     public void testMySql() throws Exception {
         WallConfig config = new WallConfig();
         WallConfig config_callback = new WallConfig();
@@ -53,6 +58,7 @@ public class TenantSelectTest3 extends TestCase {
         assertEquals(expect_sql, resultSql);
     }
 
+    @Test
     public void testMySql2() throws Exception {
         WallConfig config = new WallConfig();
         WallConfig config_callback = new WallConfig();

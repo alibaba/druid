@@ -1,11 +1,11 @@
 package com.alibaba.druid.test;
 
-import junit.framework.TestCase;
-
+import org.junit.jupiter.api.Test;
 /**
  * Created by wenshao on 28/07/2017.
  */
-public class FNVTest extends TestCase {
+public class FNVTest {
+    @Test
     public void test_fnv_32() throws Exception {
         System.out.println(" 0x811c9dc5 : " + 0x811c9dc5);
         long x = 0xcbf29ce484222325L;

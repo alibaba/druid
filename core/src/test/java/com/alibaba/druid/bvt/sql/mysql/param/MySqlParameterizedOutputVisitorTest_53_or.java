@@ -7,15 +7,18 @@ import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
  * Created by wenshao on 16/8/23.
  */
-public class MySqlParameterizedOutputVisitorTest_53_or extends TestCase {
+public class MySqlParameterizedOutputVisitorTest_53_or {
+    @Test
     public void test_for_parameterize() throws Exception {
         final DbType dbType = JdbcConstants.MYSQL;
         String sql = "SELECT p.id as \"id\", p.rule_id as \"ruleId\", p.name as \"name\", p.param_type as \"type\", p.default_value as \"defaultValue\", p.description as \"description\" FROM rules_parameters p WHERE (( p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=? or p.rule_id=?))";

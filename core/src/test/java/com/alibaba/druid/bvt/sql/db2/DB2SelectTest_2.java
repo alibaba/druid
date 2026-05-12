@@ -26,6 +26,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class DB2SelectTest_2 extends DB2Test {
     public void test_0() throws Exception {
         String sql = "SELECT CTRYNUM, FMS_INSTANCE_CD FROM DBEFMSDR.FMSA_O_WW_CTRY_AG WHERE ACCT_YR=? WITH UR";

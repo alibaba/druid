@@ -2,9 +2,12 @@ package com.alibaba.druid.bvt.support.logging;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.logging.Jdk14LoggingImpl;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class Jdk14LoggingImplTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class Jdk14LoggingImplTest {
+    @Test
     public void test_0() throws Exception {
         Jdk14LoggingImpl impl = new Jdk14LoggingImpl(DruidDataSource.class.getName());
 

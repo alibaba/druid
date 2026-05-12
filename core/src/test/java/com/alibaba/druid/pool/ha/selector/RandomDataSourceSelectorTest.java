@@ -1,10 +1,10 @@
 package com.alibaba.druid.pool.ha.selector;
 
 import com.alibaba.druid.pool.ha.MockDataSource;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class RandomDataSourceSelectorTest extends BaseRandomDataSourceSelectorTest {
     @Test

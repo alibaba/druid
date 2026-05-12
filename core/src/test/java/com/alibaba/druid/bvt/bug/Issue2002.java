@@ -2,9 +2,10 @@ package com.alibaba.druid.bvt.bug;
 
 import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class Issue2002 extends TestCase {
+public class Issue2002 {
+    @Test
     public void test_for_issue() throws Exception {
         String sql = "select id,sum(uv[1]) uv1,sum(uv[2]) uv2\n" +
                 "from xxxxx where a in\n" +

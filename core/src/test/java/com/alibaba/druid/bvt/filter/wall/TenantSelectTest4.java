@@ -21,9 +21,12 @@ import com.alibaba.druid.wall.WallCheckResult;
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class TenantSelectTest4 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class TenantSelectTest4 {
     private String sql = "SELECT a.*,b.name " +
             "FROM vote_info a left join vote_item b on a.item_id=b.id " +
             "where 1=1 limit 1,10";
@@ -36,6 +39,7 @@ public class TenantSelectTest4 extends TestCase {
     private WallConfig config = new WallConfig();
     private WallConfig config_callback = new WallConfig();
 
+    @BeforeEach
     protected void setUp() throws Exception {
         config.setTenantTablePattern("*");
         config.setTenantColumn("tenant");
@@ -43,6 +47,7 @@ public class TenantSelectTest4 extends TestCase {
         config_callback.setTenantCallBack(new TenantTestCallBack());
     }
 
+    @Test
     public void testMySql() throws Exception {
         WallProvider.setTenantValue(123);
         MySqlWallProvider provider = new MySqlWallProvider(config);
@@ -58,6 +63,7 @@ public class TenantSelectTest4 extends TestCase {
         assertEquals(1, checkResult.getViolations().size());
     }
 
+    @Test
     public void testMySql2() throws Exception {
         MySqlWallProvider provider = new MySqlWallProvider(config_callback);
         provider.getConfig().setSelectWhereAlwayTrueCheck(false);

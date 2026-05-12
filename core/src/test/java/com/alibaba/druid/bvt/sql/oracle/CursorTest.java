@@ -18,9 +18,12 @@ package com.alibaba.druid.bvt.sql.oracle;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class CursorTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class CursorTest {
+    @Test
     public void test_cursor() throws Exception {
         String sql = "SELECT department_name, CURSOR(SELECT salary, commission_pct FROM employees e WHERE e.department_id = d.department_id) "
                 + "FROM departments d;";

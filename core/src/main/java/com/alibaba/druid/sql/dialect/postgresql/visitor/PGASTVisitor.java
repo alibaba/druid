@@ -255,4 +255,18 @@ public interface PGASTVisitor extends SQLASTVisitor {
         return true;
     }
 
+    default boolean visit(PGCreateExtensionStatement x) {
+        return true;
+    }
+
+    default void endVisit(PGCreateExtensionStatement x) {
+    }
+
+    default boolean visit(PGCopyStatement x) {
+        return true;
+    }
+
+    default void endVisit(PGCopyStatement x) {
+    }
+
 }

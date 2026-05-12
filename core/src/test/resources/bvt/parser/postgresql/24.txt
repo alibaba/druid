@@ -1,0 +1,31 @@
+CREATE EXTENSION hstore
+--------------------
+CREATE EXTENSION hstore
+------------------------------------------------------------------------------------------------------------------------
+CREATE EXTENSION IF NOT EXISTS hstore
+--------------------
+CREATE EXTENSION IF NOT EXISTS hstore
+------------------------------------------------------------------------------------------------------------------------
+CREATE EXTENSION hstore SCHEMA addons
+--------------------
+CREATE EXTENSION hstore SCHEMA addons
+------------------------------------------------------------------------------------------------------------------------
+CREATE EXTENSION pg_trgm VERSION '1.5'
+--------------------
+CREATE EXTENSION pg_trgm VERSION '1.5'
+------------------------------------------------------------------------------------------------------------------------
+CREATE EXTENSION IF NOT EXISTS postgis CASCADE
+--------------------
+CREATE EXTENSION IF NOT EXISTS postgis CASCADE
+------------------------------------------------------------------------------------------------------------------------
+CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public VERSION '3.4' CASCADE
+--------------------
+CREATE EXTENSION IF NOT EXISTS postgis SCHEMA public VERSION '3.4' CASCADE
+------------------------------------------------------------------------------------------------------------------------
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp"
+--------------------
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp"
+------------------------------------------------------------------------------------------------------------------------
+CREATE EXTENSION IF NOT EXISTS pg_stat_statements SCHEMA pg_catalog
+--------------------
+CREATE EXTENSION IF NOT EXISTS pg_stat_statements SCHEMA pg_catalog

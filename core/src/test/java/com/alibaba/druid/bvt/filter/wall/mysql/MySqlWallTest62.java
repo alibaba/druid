@@ -17,7 +17,9 @@ package com.alibaba.druid.bvt.filter.wall.mysql;
 
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * SQLServerWallTest
@@ -26,7 +28,8 @@ import junit.framework.TestCase;
  * @version 1.0, 2012-3-18
  * @see
  */
-public class MySqlWallTest62 extends TestCase {
+public class MySqlWallTest62 {
+    @Test
     public void test_true() throws Exception {
         WallProvider provider = new MySqlWallProvider();
         provider.getConfig().setSchemaCheck(true);
@@ -47,6 +50,7 @@ public class MySqlWallTest62 extends TestCase {
         assertEquals(4, provider.getTableStats().size());
     }
 
+    @Test
     public void test_false() throws Exception {
         WallProvider provider = new MySqlWallProvider();
         provider.getConfig().setSchemaCheck(true);

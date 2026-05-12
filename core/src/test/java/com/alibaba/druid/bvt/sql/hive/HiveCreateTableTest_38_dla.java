@@ -25,6 +25,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class HiveCreateTableTest_38_dla extends OracleTest {
     public void test_0() throws Exception {
         String sql = "-- {\"n_nationkey\":0,\"n_name\":\"ALGERIA\",\"n_regionkey\":0,\"n_comment\":\" haggle. carefully final deposits detect slyly agai\"}\n\nCREATE SCHEMA ddl_json_string with DBPROPERTIES(LOCATION = 'oss://oss-cn-hangzhou-for-openanalytics/datasets/tpch/1x/json_string/' ,catalog = 'oss');\nCREATE EXTERNAL TABLE ddl_json_string.nation_json(n_comment string, n_name string, n_nationkey int, n_regionkey int, ) STORED AS JSON LOCATION 'oss://oss-cn-hangzhou-for-openanalytics/datasets/tpch/1x/json_string/nation_json/' TBLPROPERTIES ( \n'skip.header.line.count'='0',\n'recursive.directories'='false');";

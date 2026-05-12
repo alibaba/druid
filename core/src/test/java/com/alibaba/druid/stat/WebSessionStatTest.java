@@ -1,12 +1,15 @@
 package com.alibaba.druid.stat;
 
 import com.alibaba.druid.support.http.stat.WebSessionStat;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.lang.management.ManagementFactory;
 import java.text.NumberFormat;
 
-public class WebSessionStatTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class WebSessionStatTest {
+    @Test
     public void test_0() throws Exception {
         WebSessionStat item = new WebSessionStat("1b959a6db8489c4c7ef7bf0bd743ab52");
         gc();
@@ -30,6 +33,7 @@ public class WebSessionStatTest extends TestCase {
         }
     }
 
+    @Test
     public void test_addRemoteAddress() throws Exception {
         WebSessionStat item = new WebSessionStat("1b959a6db8489c4c7ef7bf0bd743ab52");
         item.addRemoteAddress("127.0.0.32");

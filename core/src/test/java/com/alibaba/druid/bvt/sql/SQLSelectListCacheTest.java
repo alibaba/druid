@@ -5,11 +5,14 @@ import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLSelectListCache;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class SQLSelectListCacheTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class SQLSelectListCacheTest {
+    @Test
     public void test_selectListCache() throws Exception {
         SQLSelectListCache selectListCache = new SQLSelectListCache(JdbcConstants.MYSQL);
         selectListCache.add("SELECT `mtk_p_mg`.`id` AS `id`, `mtk_p_mg`.`gmt_create` AS `gmtCreate`, `mtk_p_mg`.`gmt_modified` AS `gmtModified`, `mtk_p_mg`.`target` AS `target`, `mtk_p_mg`.`msg_id` AS `msgId` , `mtk_p_mg`.`uuid` AS `uuid`, `mtk_p_mg`.`app_key` AS `appKey`, `mtk_p_mg`.`utdid` AS `utdid`, `mtk_p_mg`.`digest` AS `digest`, `mtk_p_mg`.`content` AS `content` , `mtk_p_mg`.`user_info` AS `userInfo`, `mtk_p_mg`.`status` AS `status`, `mtk_p_mg`.`mesg_status` AS `mesgStatus`, `mtk_p_mg`.`start_time` AS `startTime`, `mtk_p_mg`.`expired` AS `expired` , `mtk_p_mg`.`online` AS `online`, `mtk_p_mg`.`gmt_commit` AS `gmtCommit`, `mtk_p_mg`.`extra_info` AS `extraInfo`, `mtk_p_mg`.`auto_commit` AS `autoCommit`, `mtk_p_mg`.`task_id` AS `taskId` , `mtk_p_mg`.`msg_type` AS `msgType`, `mtk_p_mg`.`push_user_token` AS `pushUserToken`, `mtk_p_mg`.`tb_app_device_token` AS `tbAppDeviceToken`, `mtk_p_mg`.`sdk_version` AS `sdkVersion`, `mtk_p_mg`.`biz_ext_info` AS `bizExtInfo` FROM");

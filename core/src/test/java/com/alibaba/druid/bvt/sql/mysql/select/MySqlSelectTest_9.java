@@ -26,6 +26,8 @@ import com.alibaba.druid.stat.TableStat;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_9 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SELECT `group`.* FROM `group` WHERE (group.group_id=159754)";

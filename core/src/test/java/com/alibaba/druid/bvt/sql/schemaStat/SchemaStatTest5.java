@@ -5,11 +5,14 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class SchemaStatTest5 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class SchemaStatTest5 {
+    @Test
     public void test_schemaStat() throws Exception {
         String sql = "create table t_org (fid int, name varchar(256))";
 

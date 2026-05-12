@@ -19,11 +19,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat.Column;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class MySqlSchemaStatVisitorTest2 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlSchemaStatVisitorTest2 {
+    @Test
     public void test_0() throws Exception {
         String sql = "select id, name FROM users";
 
@@ -48,6 +51,7 @@ public class MySqlSchemaStatVisitorTest2 extends TestCase {
         assertEquals(true, visitor.getColumns().contains(new Column("users", "name")));
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "select id, name FROM users a";
 
@@ -72,6 +76,7 @@ public class MySqlSchemaStatVisitorTest2 extends TestCase {
         assertEquals(true, visitor.getColumns().contains(new Column("users", "name")));
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = "select id, a.name FROM users a";
 

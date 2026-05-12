@@ -2,6 +2,7 @@ package com.alibaba.druid.sql.dialect.clickhouse.parser;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLAlterStatement;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
@@ -11,6 +12,7 @@ import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.ast.statement.SQLWithSubqueryClause;
 import com.alibaba.druid.sql.dialect.clickhouse.ast.CKAlterTableUpdateStatement;
+import com.alibaba.druid.sql.dialect.clickhouse.ast.CKCreateMaterializedViewStatement;
 import com.alibaba.druid.sql.dialect.clickhouse.ast.CKDropTableStatement;
 import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.util.FnvHash;
@@ -165,6 +167,84 @@ public class CKStatementParser extends SQLStatementParser {
 
         // 调用扩展点方法
         parseDropTableAfterName(stmt);
+
+        return stmt;
+    }
+
+    @Override
+    public SQLStatement parseCreateMaterializedView() {
+        accept(Token.CREATE);
+        acceptIdentifier("MATERIALIZED");
+        accept(Token.VIEW);
+
+        CKCreateMaterializedViewStatement stmt = new CKCreateMaterializedViewStatement();
+
+        if (lexer.token() == Token.IF) {
+            lexer.nextToken();
+            accept(Token.NOT);
+            accept(Token.EXISTS);
+            stmt.setIfNotExists(true);
+        }
+
+        stmt.setName(this.exprParser.name());
+
+        if (lexer.token() == Token.ON) {
+            lexer.nextToken();
+            acceptIdentifier("CLUSTER");
+            stmt.setOnCluster(this.exprParser.name().getSimpleName());
+        }
+
+        if (lexer.token() == Token.TO) {
+            lexer.nextToken();
+            stmt.setTo(this.exprParser.name());
+        }
+
+        if (lexer.identifierEquals("ENGINE")) {
+            lexer.nextToken();
+            accept(Token.EQ);
+            stmt.setEngine(this.exprParser.expr());
+        }
+
+        if (lexer.token() == Token.PARTITION) {
+            lexer.nextToken();
+            accept(Token.BY);
+            stmt.setCkPartitionBy(this.exprParser.expr());
+        }
+
+        if (lexer.token() == Token.PRIMARY) {
+            lexer.nextToken();
+            accept(Token.KEY);
+            stmt.setPrimaryKey(this.exprParser.expr());
+        }
+
+        if (lexer.token() == Token.ORDER) {
+            stmt.setOrderBy(this.exprParser.parseOrderBy());
+        }
+
+        if (lexer.identifierEquals("SETTINGS")) {
+            lexer.nextToken();
+            for (;;) {
+                stmt.getSettings().add(this.exprParser.parseAssignItem());
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                    continue;
+                }
+                break;
+            }
+        }
+
+        if (lexer.identifierEquals("POPULATE")) {
+            lexer.nextToken();
+            stmt.setPopulate(true);
+        }
+
+        if (lexer.token() == Token.AS) {
+            lexer.nextToken();
+        }
+
+        if (lexer.token() == Token.SELECT || lexer.token() == Token.LPAREN || lexer.token() == Token.WITH) {
+            stmt.setQuery(createSQLSelectParser().select());
+        }
 
         return stmt;
     }

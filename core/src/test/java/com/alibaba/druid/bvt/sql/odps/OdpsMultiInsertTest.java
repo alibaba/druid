@@ -23,14 +23,17 @@ import com.alibaba.druid.sql.dialect.odps.visitor.OdpsSchemaStatVisitor;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.Utils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.List;
 
-public class OdpsMultiInsertTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OdpsMultiInsertTest {
+    @Test
     public void test_0() throws Exception {
         exec_test("bvt/parser/odps-1.sql");
     }

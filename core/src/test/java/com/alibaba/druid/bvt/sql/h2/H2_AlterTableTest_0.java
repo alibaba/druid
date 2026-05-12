@@ -19,11 +19,14 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class H2_AlterTableTest_0 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class H2_AlterTableTest_0 {
+    @Test
     public void test_0() throws Exception {
         String sql = //
                 "alter table ACT_GE_BYTEARRAY add constraint ACT_FK_BYTEARR_DEPL foreign key (DEPLOYMENT_ID_) references ACT_RE_DEPLOYMENT (ID_);";

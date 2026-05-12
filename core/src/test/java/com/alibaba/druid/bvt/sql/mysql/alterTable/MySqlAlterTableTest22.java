@@ -19,9 +19,12 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class MySqlAlterTableTest22 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlAlterTableTest22 {
+    @Test
     public void test_alter_add_key() throws Exception {
         String sql = "alter table pj_usr_auth add constraint FK_Reference_8 foreign key (usr) references usr (usr) on delete restrict on update restrict;";
         MySqlStatementParser parser = new MySqlStatementParser(sql);

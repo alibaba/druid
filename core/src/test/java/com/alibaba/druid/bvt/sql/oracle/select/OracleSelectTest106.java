@@ -27,6 +27,8 @@ import com.alibaba.druid.stat.TableStat;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleSelectTest106 extends OracleTest {
     public void test_0() throws Exception {
         String sql = //

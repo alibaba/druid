@@ -16,9 +16,12 @@
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
 import com.alibaba.druid.wall.WallUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class MySqlWallPermitFunctionTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlWallPermitFunctionTest {
+    @Test
     public void test_permitTable() throws Exception {
         assertFalse(WallUtils.isValidateMySql("SELECT *FROM T UNION SELECT User,Password FROM mysql.user"));
         assertFalse(WallUtils.isValidateMySql("SELECT *FROM T UNION SELECT User,Password FROM `mysql`.`user`"));
@@ -26,6 +29,7 @@ public class MySqlWallPermitFunctionTest extends TestCase {
         assertFalse(WallUtils.isValidateMySql("SELECT *FROM T UNION SELECT User,Password FROM MYSQL.USER"));
     }
 
+    @Test
     public void test_permitTable_subquery() throws Exception {
         assertTrue(WallUtils.isValidateMySql("select * from(SELECT User,Password FROM mysql.user) a"));
         assertTrue(WallUtils.isValidateMySql("select * from(SELECT User,Password FROM `mysql`.`user`) a"));

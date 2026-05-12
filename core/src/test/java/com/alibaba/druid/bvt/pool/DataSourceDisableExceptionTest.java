@@ -3,6 +3,8 @@ package com.alibaba.druid.bvt.pool;
 import com.alibaba.druid.PoolTestCase;
 import com.alibaba.druid.pool.DataSourceDisableException;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class DataSourceDisableExceptionTest extends PoolTestCase {
     public void test_0() throws Exception {
         DataSourceDisableException ex = new DataSourceDisableException();

@@ -4,7 +4,9 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.Utils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,7 +17,7 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
 
-public class LoggerTest extends TestCase {
+public class LoggerTest {
     private static java.security.ProtectionDomain DOMAIN;
 
     private ClassLoader contextClassLoader;
@@ -81,6 +83,7 @@ public class LoggerTest extends TestCase {
         }
     }
 
+    @Test
     public void test_log() throws Exception {
         TestLoader classLoader = new TestLoader();
 
@@ -92,12 +95,12 @@ public class LoggerTest extends TestCase {
         conn.close();
     }
 
-    @Override
+    @BeforeEach
     protected void setUp() throws Exception {
         contextClassLoader = Thread.currentThread().getContextClassLoader();
     }
 
-    @Override
+    @AfterEach
     protected void tearDown() throws Exception {
         Thread.currentThread().setContextClassLoader(contextClassLoader);
         JdbcUtils.close(dataSource);

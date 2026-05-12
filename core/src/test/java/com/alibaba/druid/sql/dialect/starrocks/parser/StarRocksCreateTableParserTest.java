@@ -2,9 +2,11 @@ package com.alibaba.druid.sql.dialect.starrocks.parser;
 
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.parser.SQLCreateTableParser;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class StarRocksCreateTableParserTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class StarRocksCreateTableParserTest {
     static final String[] caseList = new String[]{
             // 1.普通建表语句
             "CREATE TABLE IF NOT EXISTS `detailDemo` (\n" +
@@ -220,6 +222,7 @@ public class StarRocksCreateTableParserTest extends TestCase {
                     ")"
     };
 
+    @Test
     public void testCreateTable() {
         for (int i = 0; i < caseList.length; i++) {
             final String sql = caseList[i];
@@ -228,7 +231,7 @@ public class StarRocksCreateTableParserTest extends TestCase {
             final SQLCreateTableStatement parsed = sqlCreateTableParser.parseCreateTable();
             final String result = parsed.toString();
             System.out.println(result);
-//            assertEquals("第 " + (i + 1) + "个用例验证失败", sql, result);
+//            assertEquals(sql, result, "第 " + (i + 1) + "个用例验证失败");
         }
     }
 }

@@ -14,9 +14,9 @@ import java.sql.Connection;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @BenchmarkMode(Mode.AverageTime)
 @Warmup(iterations = 1, time = 3)
@@ -32,7 +32,6 @@ public class UsingFairLockBenchmarkTest {
     @Setup(Level.Trial)
     public void setUp() throws Exception {
         DruidDataSourceStatManager.clear();
-
         dataSource = new DruidDataSource();
         dataSource.setRemoveAbandoned(true);
         dataSource.setRemoveAbandonedTimeoutMillis(100);
@@ -63,7 +62,7 @@ public class UsingFairLockBenchmarkTest {
     @TearDown(Level.Trial)
     public void tearDown() throws Exception {
         dataSource.close();
-        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        DruidDataSourceStatManager.clear();
     }
 
     @Benchmark

@@ -1,0 +1,67 @@
+CREATE MATERIALIZED VIEW mv_test TO dest_table AS SELECT id, name FROM source_table
+--------------------
+CREATE MATERIALIZED VIEW mv_test TO dest_table
+AS
+SELECT id, name
+FROM source_table
+------------------------------------------------------------------------------------------------------------------------
+CREATE MATERIALIZED VIEW IF NOT EXISTS mv_test TO dest_table AS SELECT * FROM source_table
+--------------------
+CREATE MATERIALIZED VIEW IF NOT EXISTS mv_test TO dest_table
+AS
+SELECT *
+FROM source_table
+------------------------------------------------------------------------------------------------------------------------
+CREATE MATERIALIZED VIEW mv_test ENGINE = MergeTree() ORDER BY id AS SELECT id, name FROM source_table
+--------------------
+CREATE MATERIALIZED VIEW mv_test
+ENGINE = MergeTree()
+ORDER BY id
+AS
+SELECT id, name
+FROM source_table
+------------------------------------------------------------------------------------------------------------------------
+CREATE MATERIALIZED VIEW mv_test ENGINE = MergeTree() PARTITION BY toYYYYMM(date) ORDER BY (id, date) AS SELECT id, date, count FROM source_table
+--------------------
+CREATE MATERIALIZED VIEW mv_test
+ENGINE = MergeTree()
+PARTITION BY toYYYYMM(date)
+ORDER BY (id, date)
+AS
+SELECT id, date, count
+FROM source_table
+------------------------------------------------------------------------------------------------------------------------
+CREATE MATERIALIZED VIEW mv_test ON CLUSTER my_cluster TO dest_table AS SELECT id, name FROM source_table
+--------------------
+CREATE MATERIALIZED VIEW mv_test ON CLUSTER my_cluster TO dest_table
+AS
+SELECT id, name
+FROM source_table
+------------------------------------------------------------------------------------------------------------------------
+CREATE MATERIALIZED VIEW mv_test ENGINE = MergeTree() ORDER BY id POPULATE AS SELECT id, name FROM source_table
+--------------------
+CREATE MATERIALIZED VIEW mv_test
+ENGINE = MergeTree()
+ORDER BY id
+POPULATE
+AS
+SELECT id, name
+FROM source_table
+------------------------------------------------------------------------------------------------------------------------
+CREATE MATERIALIZED VIEW mv_test TO mydb.dest_table AS SELECT * FROM source_table
+--------------------
+CREATE MATERIALIZED VIEW mv_test TO mydb.dest_table
+AS
+SELECT *
+FROM source_table
+------------------------------------------------------------------------------------------------------------------------
+CREATE MATERIALIZED VIEW mv_daily_stats ENGINE = SummingMergeTree() ORDER BY (date, user_id) AS SELECT toDate(timestamp) AS date, user_id, count() AS cnt, sum(amount) AS total FROM events GROUP BY date, user_id
+--------------------
+CREATE MATERIALIZED VIEW mv_daily_stats
+ENGINE = SummingMergeTree()
+ORDER BY (date, user_id)
+AS
+SELECT toDate(timestamp) AS date, user_id, count() AS cnt
+	, sum(amount) AS total
+FROM events
+GROUP BY date, user_id

@@ -28,7 +28,9 @@ import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.Utils;
 import com.alibaba.druid.util.jdbc.ResultSetMetaDataBase.ColumnMetaData;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.Reader;
 import java.io.StringReader;
@@ -40,7 +42,9 @@ import java.sql.Statement;
 import java.sql.Types;
 import java.util.Collections;
 
-public class EncodingConvertFilterTest2 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class EncodingConvertFilterTest2 {
     private DruidDataSource dataSource;
 
     private static String CLIENT_ENCODING = "UTF-8";
@@ -48,6 +52,7 @@ public class EncodingConvertFilterTest2 extends TestCase {
 
     private static String text = "中华人民共和国";
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
 
@@ -70,10 +75,12 @@ public class EncodingConvertFilterTest2 extends TestCase {
         dataSource.init();
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
     }
 
+    @Test
     public void test_stat() throws Exception {
         assertTrue(dataSource.isInited());
 

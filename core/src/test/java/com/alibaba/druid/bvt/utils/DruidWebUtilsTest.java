@@ -1,11 +1,14 @@
 package com.alibaba.druid.bvt.utils;
 
 import com.alibaba.druid.util.DruidWebUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockServletContext;
 
-public class DruidWebUtilsTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class DruidWebUtilsTest {
+    @Test
     public void test_getContextPath_2_5() throws Exception {
         new DruidWebUtils();
 
@@ -31,6 +34,7 @@ public class DruidWebUtilsTest extends TestCase {
      * @see <a href="https://github.com/alibaba/druid/issues/5180">...</a>
      * see <a href="https://github.com/alibaba/druid/issues/5072">...</a>
      */
+    @Test
     public void test_getxforwardip() throws Exception {
         MockHttpServletRequest request1 = new MockHttpServletRequest() {
             public String getHeader(String name) {

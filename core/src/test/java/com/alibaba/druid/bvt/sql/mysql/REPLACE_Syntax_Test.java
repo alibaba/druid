@@ -20,11 +20,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class REPLACE_Syntax_Test extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class REPLACE_Syntax_Test {
+    @Test
     public void test_0() throws Exception {
         String sql = "REPLACE INTO T SELECT * FROM T;";
 
@@ -36,6 +39,7 @@ public class REPLACE_Syntax_Test extends TestCase {
         assertEquals("REPLACE INTO T\n\tSELECT *\n\tFROM T;", text);
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "REPLACE DELAYED INTO `online_users` SET `session_id`='3580cc4e61117c0785372c426eddd11c', `user_id` = 'XXX', `page` = '/', `lastview` = NOW();";
 
@@ -48,6 +52,7 @@ public class REPLACE_Syntax_Test extends TestCase {
                 text);
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = " replace into t(col1,col2)values(?,?)";
 

@@ -92,4 +92,21 @@ public class DB2CreateTableParser extends SQLCreateTableParser {
     protected DB2CreateTableStatement newCreateStatement() {
         return new DB2CreateTableStatement();
     }
+
+    @Override
+    public void createTableAfterQuery(SQLCreateTableStatement stmt) {
+        Token token = lexer.token();
+        if (token != Token.EOF) {
+            if (lexer.nextIf(Token.WITH)) {
+                if (lexer.nextIfIdentifier("NO")) {
+                    acceptIdentifier("DATA");
+                    ((DB2CreateTableStatement) stmt).setWithNoData(true);
+                } else if (lexer.nextIfIdentifier("DATA")) {
+                    ((DB2CreateTableStatement) stmt).setWithData(true);
+                } else {
+                    throw new ParserException("TODO " + lexer.info());
+                }
+            }
+        }
+    }
 }

@@ -17,7 +17,7 @@ package com.alibaba.druid.proxy;
 
 import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.support.json.JSONUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import javax.management.openmbean.TabularData;
 
@@ -26,7 +26,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-public class TestOracle extends TestCase {
+public class TestOracle {
     private String jdbcUrl;
     private String user;
     private String password;
@@ -38,6 +38,7 @@ public class TestOracle extends TestCase {
         password = "ccbuauto";
     }
 
+    @Test
     public void test_0() throws Exception {
         Connection conn = DriverManager.getConnection(jdbcUrl, user, password);
         Statement stmt = conn.createStatement();

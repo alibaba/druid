@@ -3,9 +3,11 @@ package com.alibaba.druid.bvt.sql.mysql.createTable;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @version 1.0
@@ -20,7 +22,8 @@ import java.util.List;
  * @Author zzy
  * @Date 2019-05-14 17:41
  */
-public class MySqlCreateTableTest149_collate_before_generated extends TestCase {
+public class MySqlCreateTableTest149_collate_before_generated {
+    @Test
     public void test_0() {
         String sql = "create temporary table `tb_dhma` (col_oxqagw int collate utf8_unicode_ci generated always as ( 1+2 ))";
 

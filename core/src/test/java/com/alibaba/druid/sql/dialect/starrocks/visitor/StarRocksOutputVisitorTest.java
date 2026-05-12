@@ -7,10 +7,12 @@ import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateResourceStatement;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
-public class StarRocksOutputVisitorTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class StarRocksOutputVisitorTest {
+    @Test
     public void testStarRocksOutputVisitor() {
         String message = "output error";
 
@@ -60,9 +62,10 @@ public class StarRocksOutputVisitorTest extends TestCase {
         SQLStatement stmt = parser.parseStatement();
         stmt.accept(visitor);
         String result = builder.toString();
-        Assert.assertEquals(message, expected, result);
+        assertEquals(message, expected, result);
     }
 
+    @Test
     public void testCreateResourceStmt() {
         StarRocksCreateResourceStatement stmt = new StarRocksCreateResourceStatement();
         stmt.setExternal(true);

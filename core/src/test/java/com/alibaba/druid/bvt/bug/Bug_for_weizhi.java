@@ -16,9 +16,12 @@
 package com.alibaba.druid.bvt.bug;
 
 import com.alibaba.druid.sql.SQLUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class Bug_for_weizhi extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class Bug_for_weizhi {
+    @Test
     public void test_for_issue() throws Exception {
         String sql = "insert into aaa values(1,2,'这是个反斜杠\\\\');";
 

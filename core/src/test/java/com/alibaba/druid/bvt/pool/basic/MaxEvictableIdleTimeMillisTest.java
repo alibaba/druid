@@ -3,13 +3,18 @@ package com.alibaba.druid.bvt.pool.basic;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.GetConnectionTimeoutException;
 import com.alibaba.druid.util.JdbcUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 
-public class MaxEvictableIdleTimeMillisTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MaxEvictableIdleTimeMillisTest {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
@@ -22,10 +27,12 @@ public class MaxEvictableIdleTimeMillisTest extends TestCase {
         dataSource.init();
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
     }
 
+    @Test
     public void test_error() throws Exception {
         Exception error = null;
         try {
@@ -37,6 +44,7 @@ public class MaxEvictableIdleTimeMillisTest extends TestCase {
         assertEquals(100, dataSource.getMaxEvictableIdleTimeMillis());
     }
 
+    @Test
     public void test_error2() throws Exception {
         Exception error = null;
         try {
@@ -48,6 +56,7 @@ public class MaxEvictableIdleTimeMillisTest extends TestCase {
         assertEquals(100, dataSource.getMaxEvictableIdleTimeMillis());
     }
 
+    @Test
     public void test_max() throws Exception {
         connect(10);
 

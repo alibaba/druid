@@ -2,23 +2,28 @@ package com.alibaba.druid.bvt.pool;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.ValidConnectionCheckerAdapter;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.sql.PooledConnection;
 
 import java.sql.Connection;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
  * 这个场景测试defaultAutoCommit
  *
  * @author wenshao [szujobs@hotmail.com]
  */
-public class DruidDataSourceTest_testOnBorrowFailed extends TestCase {
+public class DruidDataSourceTest_testOnBorrowFailed {
     private DruidDataSource dataSource;
 
     private AtomicInteger validCount = new AtomicInteger();
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
@@ -42,10 +47,12 @@ public class DruidDataSourceTest_testOnBorrowFailed extends TestCase {
         });
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
     }
 
+    @Test
     public void test_conn() throws Exception {
         PooledConnection conn = dataSource.getPooledConnection();
         conn.close();

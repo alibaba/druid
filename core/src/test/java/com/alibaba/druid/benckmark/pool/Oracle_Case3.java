@@ -17,8 +17,9 @@ package com.alibaba.druid.benckmark.pool;
 
 import com.alibaba.druid.TestUtil;
 import com.alibaba.druid.pool.DruidDataSource;
-import junit.framework.TestCase;
 import org.apache.commons.dbcp.BasicDataSource;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.util.Assert;
 
 import javax.sql.DataSource;
@@ -29,7 +30,7 @@ import java.sql.Statement;
 import java.text.NumberFormat;
 import java.util.concurrent.CountDownLatch;
 
-public class Oracle_Case3 extends TestCase {
+public class Oracle_Case3 {
     private String jdbcUrl;
     private String user;
     private String password;
@@ -43,6 +44,7 @@ public class Oracle_Case3 extends TestCase {
     final int LOOP_COUNT = 1000 * 10;
     private boolean testOnBorrow = true;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         jdbcUrl = "jdbc:oracle:thin:@a.b.c.d:1521:ocnauto";
         user = "alibaba";
@@ -50,6 +52,7 @@ public class Oracle_Case3 extends TestCase {
         driverClass = "oracle.jdbc.driver.OracleDriver";
     }
 
+    @Test
     public void test_0() throws Exception {
         DruidDataSource dataSource = new DruidDataSource();
 
@@ -71,6 +74,7 @@ public class Oracle_Case3 extends TestCase {
         System.out.println();
     }
 
+    @Test
     public void test_1() throws Exception {
         final BasicDataSource dataSource = new BasicDataSource();
 

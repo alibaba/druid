@@ -2,11 +2,12 @@ package com.alibaba.druid.bvt.sql;
 
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.parser.SQLExprParser;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class EqualTest_aggreate_over extends TestCase {
+public class EqualTest_aggreate_over {
+    @Test
     public void test_exits() throws Exception {
         String sql = "count(*) OVER (ORDER BY f1)";
         String sql_c = "count(id) OVER (ORDER BY f2)";

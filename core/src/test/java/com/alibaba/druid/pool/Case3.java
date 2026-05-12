@@ -15,14 +15,16 @@
  */
 package com.alibaba.druid.pool;
 
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-public class Case3 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class Case3 {
+    @Test
     public void test_1() throws Exception {
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mysql://a.b.c.d:3306/druid2");
@@ -36,8 +38,8 @@ public class Case3 extends TestCase {
 
         conn.close();
 
-        Assert.assertEquals(true, stmt.isClosed());
-        Assert.assertEquals(true, rs.isClosed());
+        assertEquals(true, stmt.isClosed());
+        assertEquals(true, rs.isClosed());
 
         rs.close();
         stmt.close();

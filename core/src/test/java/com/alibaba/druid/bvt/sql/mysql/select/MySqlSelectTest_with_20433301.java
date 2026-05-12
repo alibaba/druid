@@ -21,6 +21,8 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_with_20433301 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "WITH total AS(\n" +

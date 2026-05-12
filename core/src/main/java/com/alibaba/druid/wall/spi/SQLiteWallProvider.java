@@ -1,11 +1,11 @@
 package com.alibaba.druid.wall.spi;
 
 import com.alibaba.druid.DbType;
-import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlExportParameterVisitor;
+import com.alibaba.druid.sql.dialect.sqlite.parser.SQLiteStatementParser;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
+import com.alibaba.druid.sql.visitor.ExportParameterizedOutputVisitor;
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.WallVisitor;
@@ -23,7 +23,7 @@ public class SQLiteWallProvider extends WallProvider {
 
     @Override
     public SQLStatementParser createParser(String sql) {
-        return new MySqlStatementParser(sql, SQLParserFeature.EnableSQLBinaryOpExprGroup);
+        return new SQLiteStatementParser(sql, SQLParserFeature.EnableSQLBinaryOpExprGroup);
     }
 
     @Override
@@ -33,6 +33,6 @@ public class SQLiteWallProvider extends WallProvider {
 
     @Override
     public ExportParameterVisitor createExportParameterVisitor() {
-        return new MySqlExportParameterVisitor();
+        return new ExportParameterizedOutputVisitor();
     }
 }

@@ -4,9 +4,12 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.odps.parser.OdpsStatementParser;
 import com.alibaba.druid.sql.parser.Token;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class OdpsSetLabelTest2 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OdpsSetLabelTest2 {
+    @Test
     public void test_odps() throws Exception {
         String sql = "SET LABEL S3 TO TABLE xx(f1,f2)";
         OdpsStatementParser parser = new OdpsStatementParser(sql);
@@ -16,6 +19,7 @@ public class OdpsSetLabelTest2 extends TestCase {
         assertEquals("SET LABEL S3 TO TABLE xx(f1, f2)", output);
     }
 
+    @Test
     public void test_odps_1() throws Exception {
         String sql = "set com.alibaba.security.airbus.udf.category.table=adl_tb_category_data,adl_cbu_category_data;";
         OdpsStatementParser parser = new OdpsStatementParser(sql);

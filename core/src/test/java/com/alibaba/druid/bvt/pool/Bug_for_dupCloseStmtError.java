@@ -26,6 +26,8 @@ import com.alibaba.druid.util.JdbcUtils;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class Bug_for_dupCloseStmtError extends PoolTestCase {
     protected DruidDataSource dataSource;
 

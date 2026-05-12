@@ -21,6 +21,8 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class HiveCreateTableTest_46_dla extends OracleTest {
     public void test_0() throws Exception {
         String sql = "CREATE EXTERNAL TABLE parquet_tbl LIKE MAPPING('oss://user/etl/destination/datafile1.dat')" +

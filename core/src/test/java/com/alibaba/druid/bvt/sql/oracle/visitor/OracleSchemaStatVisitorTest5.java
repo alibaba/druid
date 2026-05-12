@@ -19,11 +19,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat.Condition;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class OracleSchemaStatVisitorTest5 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OracleSchemaStatVisitorTest5 {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT B.OBJ_ID AS BDZID,B.BDZMC,count(A.*) "
                 + "FROM ("
@@ -67,7 +70,7 @@ public class OracleSchemaStatVisitorTest5 extends TestCase {
 
         for (Condition condition : visitor.getConditions()) {
             String table = condition.getColumn().getTable();
-            assertTrue("table not exists : " + table, visitor.containsTable(table));
+            assertTrue(visitor.containsTable(table), "table not exists : " + table);
         }
 
         assertEquals(5, visitor.getTables().size());

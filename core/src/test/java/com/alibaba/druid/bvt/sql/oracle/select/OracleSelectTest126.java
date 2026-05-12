@@ -19,11 +19,14 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class OracleSelectTest126 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OracleSelectTest126 {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT *\n" +
                 "FROM insurance_order insurance_order, allot_track at\n" +

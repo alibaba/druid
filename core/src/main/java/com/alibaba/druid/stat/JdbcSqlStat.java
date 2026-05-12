@@ -691,8 +691,12 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean, Comparable<JdbcSqlSt
         runningCountUpdater.decrementAndGet(this);
     }
 
+    /**
+     * @deprecated Use {@link #decrementRunningCount()} instead
+     */
+    @Deprecated
     public void decrementExecutingCount() {
-        runningCountUpdater.decrementAndGet(this);
+        decrementRunningCount();
     }
 
     public long getExecuteSuccessCount() {

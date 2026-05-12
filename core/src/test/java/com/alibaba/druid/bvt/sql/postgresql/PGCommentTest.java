@@ -24,6 +24,8 @@ import com.alibaba.druid.stat.TableStat;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class PGCommentTest extends PGTest {
     public void test_0() {
         String sql = "/*multiline comment test"

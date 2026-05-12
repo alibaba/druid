@@ -2,10 +2,12 @@ package com.alibaba.druid.postgresql;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGSQLStatementParser;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
-public class PGUpsertTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class PGUpsertTest {
+    @Test
     public void testUpsert() {
         String sql = "insert into \"test_dup\" values(1,'2',-100) on conflict(id) do update set \"count\" = test_dup.\"count\" + 1;";
         String targetSql = "INSERT INTO \"test_dup\"\n"
@@ -13,6 +15,6 @@ public class PGUpsertTest extends TestCase {
                 + "ON CONFLICT (id) DO UPDATE SET \"count\" = test_dup.\"count\" + 1";
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
         SQLStatement statement = parser.parseStatement();
-        Assert.assertEquals(targetSql, statement.toString());
+        assertEquals(targetSql, statement.toString());
     }
 }

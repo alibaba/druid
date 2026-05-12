@@ -4,11 +4,14 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class HiveSelectTest_0 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class HiveSelectTest_0 {
+    @Test
     public void test_select() throws Exception {
         String sql = "SELECT page_views.*\n" +
                 "FROM page_views\n" +

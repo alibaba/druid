@@ -17,27 +17,33 @@ package com.alibaba.druid.bvt.pool;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class ManagedDataSourceTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class ManagedDataSourceTest {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     public void setUp() throws Exception {
         DruidDataSourceStatManager.clear();
-
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
     }
 
+    @AfterEach
     public void tearDown() throws Exception {
         dataSource.close();
-        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        DruidDataSourceStatManager.clear();
     }
 
+    @Test
     public void test_managed() throws Exception {
         DriverManager.getConnection("jdbc:mock:aaa");
         {

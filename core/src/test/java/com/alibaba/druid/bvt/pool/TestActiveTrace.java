@@ -17,16 +17,20 @@ package com.alibaba.druid.bvt.pool;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 
-public class TestActiveTrace extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class TestActiveTrace {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         DruidDataSourceStatManager.clear();
-
         dataSource = new DruidDataSource();
         dataSource.setRemoveAbandoned(true);
         dataSource.setRemoveAbandonedTimeoutMillis(100);
@@ -36,11 +40,13 @@ public class TestActiveTrace extends TestCase {
         dataSource.setUrl("jdbc:mock:xxx");
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
-        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        DruidDataSourceStatManager.clear();
     }
 
+    @Test
     public void test_activeTrace() throws Exception {
         for (int i = 0; i < 1000; ++i) {
             dataSource.shrink();
@@ -51,7 +57,7 @@ public class TestActiveTrace extends TestCase {
             Thread.sleep(10);
             // assertEquals(1, dataSource.getPoolingCount());
             dataSource.shrink();
-            assertEquals("createCount : " + dataSource.getCreateCount(), 0, dataSource.getPoolingCount());
+            assertEquals(0, dataSource.getPoolingCount(), "createCount : " + dataSource.getCreateCount());
             assertEquals(0, dataSource.getActiveConnections().size());
         }
     }

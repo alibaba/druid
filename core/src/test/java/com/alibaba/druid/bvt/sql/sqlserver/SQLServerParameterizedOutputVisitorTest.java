@@ -18,11 +18,14 @@ package com.alibaba.druid.bvt.sql.sqlserver;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerOutputVisitor;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class SQLServerParameterizedOutputVisitorTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class SQLServerParameterizedOutputVisitorTest {
+    @Test
     public void test_simple() throws Exception {
         String sql = "select GEN_VAL " +
                 "from ID_GENERATOR with (updlock, rowlock) " +

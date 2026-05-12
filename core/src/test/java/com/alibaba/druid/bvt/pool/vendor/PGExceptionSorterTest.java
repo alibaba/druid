@@ -6,6 +6,8 @@ import org.postgresql.util.GT;
 import org.postgresql.util.PSQLException;
 import org.postgresql.util.PSQLState;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class PGExceptionSorterTest extends PoolTestCase {
     public void test_pg() throws Exception {
         PGExceptionSorter exSorter = new PGExceptionSorter();

@@ -7,9 +7,12 @@ import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class SchemaStatTest6 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class SchemaStatTest6 {
+    @Test
     public void test_schemaStat() throws Exception {
         String sql = "select count(1), name from tg_rpc_user where id < 5 group by name order by id desc";
 

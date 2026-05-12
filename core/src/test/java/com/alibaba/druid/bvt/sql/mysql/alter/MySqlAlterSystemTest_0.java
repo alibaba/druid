@@ -19,9 +19,12 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class MySqlAlterSystemTest_0 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlAlterSystemTest_0 {
+    @Test
     public void test_alter1() {
         String sql = "ALTER SYSTEM SET CONFIG useAuth=true";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -31,6 +34,7 @@ public class MySqlAlterSystemTest_0 extends TestCase {
         assertEquals("ALTER SYSTEM SET CONFIG useAuth = true", SQLUtils.toMySqlString(stmt));
     }
 
+    @Test
     public void test_alter2() {
         String sql = "ALTER SYSTEM SET CONFIG useAuth=true baseURL='http://test.xxx.com/ak'";
         MySqlStatementParser parser = new MySqlStatementParser(sql);

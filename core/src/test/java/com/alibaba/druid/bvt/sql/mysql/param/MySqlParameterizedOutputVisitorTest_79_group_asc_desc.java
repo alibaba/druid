@@ -5,10 +5,12 @@ import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.fastjson2.JSON;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @version 1.0
@@ -17,7 +19,8 @@ import java.util.List;
  * @Author zzy
  * @Date 2019/9/2 13:57
  */
-public class MySqlParameterizedOutputVisitorTest_79_group_asc_desc extends TestCase {
+public class MySqlParameterizedOutputVisitorTest_79_group_asc_desc {
+    @Test
     public void test_group_asc_desc() throws Exception {
         String sql = "select date_test+1 , int_test, id ,sum(double_test) from test_datatype_list group by 1 desc ,2,3 asc order by 4 desc,3 asc;";
         List<Object> outParameters = new ArrayList<Object>(0);

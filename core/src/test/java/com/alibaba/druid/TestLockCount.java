@@ -15,14 +15,16 @@
  */
 package com.alibaba.druid;
 
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class TestLockCount extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class TestLockCount {
+    @Test
     public void test_current() throws Exception {
         DataSource dataSource = new DataSource();
 
@@ -31,28 +33,28 @@ public class TestLockCount extends TestCase {
         concurrent(dataSource, threadCount, loopCount);
         long result = (long) threadCount * ((long) loopCount);
 
-        Assert.assertEquals(result, dataSource.getCount());
-        Assert.assertEquals(result, dataSource.getC0());
-        Assert.assertEquals(result, dataSource.getC1());
-        Assert.assertEquals(result, dataSource.getC2());
-        Assert.assertEquals(result, dataSource.getC3());
-        Assert.assertEquals(result, dataSource.getC4());
-        Assert.assertEquals(result, dataSource.getC5());
-        Assert.assertEquals(result, dataSource.getC6());
-        Assert.assertEquals(result, dataSource.getC7());
-        Assert.assertEquals(result, dataSource.getC8());
-        Assert.assertEquals(result, dataSource.getC9());
+        assertEquals(result, dataSource.getCount());
+        assertEquals(result, dataSource.getC0());
+        assertEquals(result, dataSource.getC1());
+        assertEquals(result, dataSource.getC2());
+        assertEquals(result, dataSource.getC3());
+        assertEquals(result, dataSource.getC4());
+        assertEquals(result, dataSource.getC5());
+        assertEquals(result, dataSource.getC6());
+        assertEquals(result, dataSource.getC7());
+        assertEquals(result, dataSource.getC8());
+        assertEquals(result, dataSource.getC9());
 
-        Assert.assertEquals(result, dataSource.getC10());
-        Assert.assertEquals(result, dataSource.getC11());
-        Assert.assertEquals(result, dataSource.getC12());
-        Assert.assertEquals(result, dataSource.getC13());
-        Assert.assertEquals(result, dataSource.getC14());
-        Assert.assertEquals(result, dataSource.getC15());
-        Assert.assertEquals(result, dataSource.getC16());
-        Assert.assertEquals(result, dataSource.getC17());
-        Assert.assertEquals(result, dataSource.getC18());
-        Assert.assertEquals(result, dataSource.getC19());
+        assertEquals(result, dataSource.getC10());
+        assertEquals(result, dataSource.getC11());
+        assertEquals(result, dataSource.getC12());
+        assertEquals(result, dataSource.getC13());
+        assertEquals(result, dataSource.getC14());
+        assertEquals(result, dataSource.getC15());
+        assertEquals(result, dataSource.getC16());
+        assertEquals(result, dataSource.getC17());
+        assertEquals(result, dataSource.getC18());
+        assertEquals(result, dataSource.getC19());
     }
 
     private void concurrent(final DataSource dataSource, int threadCount, final int loopCount)

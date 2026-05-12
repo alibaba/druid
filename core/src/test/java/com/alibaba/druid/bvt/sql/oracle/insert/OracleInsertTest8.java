@@ -23,6 +23,8 @@ import com.alibaba.druid.stat.TableStat;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleInsertTest8 extends OracleTest {
     public void test_0() throws Exception {
         String sql = "insert into AV_INFO_NEW (ID, GMT_CREATE, GMT_MODIFIED, COMPANY_ID, COMPANY_NAME_CN, COMPANY_NAME_EN, COMPANY_COUNTRY, "

@@ -246,6 +246,35 @@ public class PGSelectParser extends SQLSelectParser {
         return limit;
     }
 
+    @Override
+    public SQLTableSource parseTableSource(boolean forFrom) {
+        if (lexer.token() == Token.LATERAL || lexer.identifierEquals(FnvHash.Constants.LATERAL)) {
+            lexer.nextToken();
+            SQLTableSource lateralSource = parseLateralTableSource();
+            return parseTableSourceRest(lateralSource);
+        }
+        return super.parseTableSource(forFrom);
+    }
+
+    @Override
+    protected SQLTableSource parseLateralView(SQLTableSource tableSource) {
+        if (tableSource != null && "LATERAL".equalsIgnoreCase(tableSource.getAlias())) {
+            tableSource.setAlias(null);
+        }
+
+        if (lexer.token() == Token.VIEW) {
+            return super.parseLateralView(tableSource);
+        }
+
+        SQLTableSource lateralSource = parseLateralTableSource();
+
+        SQLJoinTableSource join = new SQLJoinTableSource();
+        join.setLeft(tableSource);
+        join.setRight(lateralSource);
+        join.setJoinType(SQLJoinTableSource.JoinType.COMMA);
+        return parseTableSourceRest(join);
+    }
+
     public SQLTableSource parseTableSourceRest(SQLTableSource tableSource) {
         if (lexer.token() == Token.AS && tableSource instanceof SQLExprTableSource) {
             lexer.nextToken();

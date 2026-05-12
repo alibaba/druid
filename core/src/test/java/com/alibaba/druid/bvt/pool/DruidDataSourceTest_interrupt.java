@@ -1,14 +1,19 @@
 package com.alibaba.druid.bvt.pool;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class DruidDataSourceTest_interrupt extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class DruidDataSourceTest_interrupt {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource() {
             protected void createAndStartCreatorThread() {
@@ -22,10 +27,12 @@ public class DruidDataSourceTest_interrupt extends TestCase {
         dataSource.setInitialSize(1);
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
     }
 
+    @Test
     public void test_autoCommit() throws Exception {
         final CountDownLatch startLatch = new CountDownLatch(1);
         final CountDownLatch endLatch = new CountDownLatch(1);

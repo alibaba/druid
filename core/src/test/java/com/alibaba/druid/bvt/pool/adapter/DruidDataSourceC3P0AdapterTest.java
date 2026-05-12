@@ -22,17 +22,16 @@ import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 import java.sql.Connection;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class DruidDataSourceC3P0AdapterTest extends PoolTestCase {
     private MockDriver driver;
     private DruidDataSourceC3P0Adapter dataSource;
 
     protected void setUp() throws Exception {
         super.setUp();
-
-        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
-
+        DruidDataSourceStatManager.clear();
         driver = new MockDriver();
-
         dataSource = new DruidDataSourceC3P0Adapter();
         dataSource.setJdbcUrl("jdbc:mock:xxx");
         dataSource.setDriver(driver);

@@ -19,9 +19,12 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class MySqlAlterTableTest34_renameIndex extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlAlterTableTest34_renameIndex {
+    @Test
     public void test_alter_add_key() throws Exception {
         String sql = "alter table test.table rename index idx_status to idx_status_2";
         MySqlStatementParser parser = new MySqlStatementParser(sql);

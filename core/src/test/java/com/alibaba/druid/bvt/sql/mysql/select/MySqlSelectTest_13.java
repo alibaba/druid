@@ -27,6 +27,8 @@ import com.alibaba.druid.stat.TableStat;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_13 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select * from test /*!40101fff*/";

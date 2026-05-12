@@ -7,19 +7,26 @@ import com.alibaba.druid.wall.spi.MySqlWallProvider;
 import com.alibaba.druid.wall.spi.OracleWallProvider;
 import com.alibaba.druid.wall.spi.PGWallProvider;
 import com.alibaba.druid.wall.spi.SQLServerWallProvider;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class WallStatTest_select_1 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class WallStatTest_select_1 {
     private String sql = "SELECT b.* FROM lhwbbs_posts_reply a LEFT JOIN lhwbbs_posts b ON a.pid=b.pid WHERE a.rpid=? AND b.disabled=? ORDER BY a.pid DESC";
 
+    @BeforeEach
     protected void setUp() throws Exception {
         WallContext.clearContext();
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         WallContext.clearContext();
     }
 
+    @Test
     public void testMySql() throws Exception {
         WallProvider provider = new MySqlWallProvider();
         assertTrue(provider.checkValid(sql));
@@ -33,6 +40,7 @@ public class WallStatTest_select_1 extends TestCase {
         }
     }
 
+    @Test
     public void testOracle() throws Exception {
         WallProvider provider = new OracleWallProvider();
         assertTrue(provider.checkValid(sql));
@@ -46,6 +54,7 @@ public class WallStatTest_select_1 extends TestCase {
         }
     }
 
+    @Test
     public void testPG() throws Exception {
         WallProvider provider = new PGWallProvider();
         assertTrue(provider.checkValid(sql));
@@ -59,6 +68,7 @@ public class WallStatTest_select_1 extends TestCase {
         }
     }
 
+    @Test
     public void testSQLServer() throws Exception {
         WallProvider provider = new SQLServerWallProvider();
         assertTrue(provider.checkValid(sql));

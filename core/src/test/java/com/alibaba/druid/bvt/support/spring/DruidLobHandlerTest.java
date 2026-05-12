@@ -4,12 +4,13 @@ import com.alibaba.druid.mock.MockBlob;
 import com.alibaba.druid.mock.MockClob;
 import com.alibaba.druid.mock.MockResultSet;
 import com.alibaba.druid.support.spring.DruidLobHandler;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DruidLobHandlerTest extends TestCase {
+public class DruidLobHandlerTest {
+    @Test
     public void test_0() throws Exception {
         DruidLobHandler handler = new DruidLobHandler();
         List<Object[]> rows = new ArrayList<Object[]>();

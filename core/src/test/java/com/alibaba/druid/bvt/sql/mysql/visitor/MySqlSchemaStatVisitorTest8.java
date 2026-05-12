@@ -18,11 +18,14 @@ package com.alibaba.druid.bvt.sql.mysql.visitor;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class MySqlSchemaStatVisitorTest8 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlSchemaStatVisitorTest8 {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT\n" +
                 "(SELECT count() FROM warn_condition_strategy WHERE user_id = 2510701 AND is_delete = 0 AND strategy_state IN\n" +

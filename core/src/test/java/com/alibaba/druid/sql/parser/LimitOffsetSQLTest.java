@@ -2,13 +2,16 @@ package com.alibaba.druid.sql.parser;
 
 import com.alibaba.druid.sql.dialect.oscar.visitor.OscarStatementParser;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGSQLStatementParser;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by tianzhen.wtz on 2014/12/26 0026 20:44.
  * 类说明：
  */
-public class LimitOffsetSQLTest extends TestCase {
+public class LimitOffsetSQLTest {
+    @Test
     public void testPGLimitOffsetSQL() {
         String sql1 = "SELECT * FROM table1 LIMIT 10 OFFSET 20";
         String sql1Result = new PGSQLStatementParser(sql1).parseSelect().toString()
@@ -24,6 +27,7 @@ public class LimitOffsetSQLTest extends TestCase {
         assertEquals(sql1, sql2Result);
     }
 
+    @Test
     public void testOscarLimitOffsetSQL() {
         String sql1 = "SELECT * FROM table1 LIMIT 10 OFFSET 20";
         String sql1Result = new OscarStatementParser(sql1).parseSelect().toString()

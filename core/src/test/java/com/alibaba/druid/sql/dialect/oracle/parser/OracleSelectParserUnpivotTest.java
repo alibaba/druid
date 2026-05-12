@@ -3,27 +3,28 @@ package com.alibaba.druid.sql.dialect.oracle.parser;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleSelectParserUnpivotTest {
-    @BeforeClass
+    @BeforeAll
     public static void setUpBeforeClass() throws Exception {
     }
 
-    @AfterClass
+    @AfterAll
     public static void tearDownAfterClass() throws Exception {
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
     }
 
@@ -38,7 +39,7 @@ public class OracleSelectParserUnpivotTest {
             + "UNPIVOT (score FOR subject IN (wjf AS '微积分', xxds AS '线性代数', sjjg AS '数据结构', czxt AS '操作系统')) t";
         SQLStatement stat = SQLUtils.parseSingleStatement(sql, DbType.oracle, false);
         System.out.println(stat.toString());
-        Assert.assertEquals(sql, stat.toString());
+        assertEquals(sql, stat.toString());
         System.out.println("=============");
     }
 
@@ -57,7 +58,7 @@ public class OracleSelectParserUnpivotTest {
             + "AS ('操作系统', 'ghk'))) t";
         SQLStatement stat = SQLUtils.parseSingleStatement(sql, DbType.oracle, false);
         System.out.println(stat.toString());
-        Assert.assertEquals(sql, stat.toString());
+        assertEquals(sql, stat.toString());
         System.out.println("=============");
     }
 
@@ -76,7 +77,7 @@ public class OracleSelectParserUnpivotTest {
             + "UNPIVOT ( (NAME, score) FOR subject IN ((STU_NAME, wjf) AS '微积分', (STU_NAME, xxds) AS '线性代数', (STU_NAME, sjjg) AS '数据结构', (STU_NAME, czxt) AS '操作系统')) t";
         SQLStatement stat = SQLUtils.parseSingleStatement(sql, DbType.oracle, false);
         System.out.println(stat.toString());
-        Assert.assertEquals(sql, stat.toString());
+        assertEquals(sql, stat.toString());
         System.out.println("=============");
     }
 
@@ -103,7 +104,7 @@ public class OracleSelectParserUnpivotTest {
             + "AS ('操作系统', 'ghk'))) t";
         SQLStatement stat = SQLUtils.parseSingleStatement(sql, DbType.oracle, false);
         System.out.println(stat.toString());
-        Assert.assertEquals(sql, stat.toString());
+        assertEquals(sql, stat.toString());
         System.out.println("=============");
     }
 
@@ -114,7 +115,7 @@ public class OracleSelectParserUnpivotTest {
             + "UNPIVOT (sales FOR shop IN (shop1 AS 'shop_name_1', shop2 AS 'shop_name_2', shop3 AS 'shop_name_3', shop4 AS 'shop_name_4'))";
         SQLStatement stat = SQLUtils.parseSingleStatement(sql, DbType.oracle, false);
         System.out.println(stat.toString());
-        Assert.assertEquals(sql, stat.toString());
+        assertEquals(sql, stat.toString());
         System.out.println("=============");
     }
 
@@ -125,7 +126,7 @@ public class OracleSelectParserUnpivotTest {
             + "UNPIVOT ( (sales1, sales2) FOR shop IN ((shop1, shop2) AS 'east_shop', (shop3, shop4) AS 'west_shop'))";
         SQLStatement stat = SQLUtils.parseSingleStatement(sql, DbType.oracle, false);
         System.out.println(stat.toString());
-        Assert.assertEquals(sql, stat.toString());
+        assertEquals(sql, stat.toString());
         System.out.println("=============");
     }
 
@@ -138,7 +139,7 @@ public class OracleSelectParserUnpivotTest {
             + "AS ('west_shop', 'west')))";
         SQLStatement stat = SQLUtils.parseSingleStatement(sql, DbType.oracle, false);
         System.out.println(stat.toString());
-        Assert.assertEquals(sql, stat.toString());
+        assertEquals(sql, stat.toString());
         System.out.println("=============");
     }
 }

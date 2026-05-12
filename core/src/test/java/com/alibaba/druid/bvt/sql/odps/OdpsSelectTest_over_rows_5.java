@@ -19,11 +19,14 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class OdpsSelectTest_over_rows_5 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OdpsSelectTest_over_rows_5 {
+    @Test
     public void test_select() throws Exception {
         String sql = "SELECT sum(c) over(order by ds rows UNBOUNDED following) s, ds FROM t1";
         assertEquals("SELECT sum(c) OVER (ORDER BY ds ROWS UNBOUNDED FOLLOWING) AS s, ds\n" +

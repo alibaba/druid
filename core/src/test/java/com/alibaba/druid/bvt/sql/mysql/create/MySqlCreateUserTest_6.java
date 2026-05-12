@@ -19,6 +19,8 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateUserStatement;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlCreateUserTest_6 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "CREATE USER 'jeffrey'@'localhost' IDENTIFIED BY 'password';";

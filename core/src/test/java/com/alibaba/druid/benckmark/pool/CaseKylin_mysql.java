@@ -17,8 +17,9 @@ package com.alibaba.druid.benckmark.pool;
 
 import com.alibaba.druid.TestUtil;
 import com.alibaba.druid.pool.DruidDataSource;
-import junit.framework.TestCase;
 import org.apache.commons.dbcp.BasicDataSource;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.sql.DataSource;
 
@@ -28,7 +29,7 @@ import java.sql.ResultSet;
 import java.text.NumberFormat;
 import java.util.concurrent.CountDownLatch;
 
-public class CaseKylin_mysql extends TestCase {
+public class CaseKylin_mysql {
     private String jdbcUrl;
     private String user;
     private String password;
@@ -52,6 +53,7 @@ public class CaseKylin_mysql extends TestCase {
     private long minEvictableIdleTimeMillis = 1800000;
     private int numTestsPerEvictionRun = 20;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         // jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
         // user = "dragoon25";
@@ -69,6 +71,7 @@ public class CaseKylin_mysql extends TestCase {
         // driverClass = "oracle.jdbc.driver.OracleDriver";
     }
 
+    @Test
     public void test_perf() throws Exception {
         for (int i = 0; i < 5; ++i) {
             druid();

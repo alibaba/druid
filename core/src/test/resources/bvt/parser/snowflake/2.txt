@@ -1,0 +1,42 @@
+CREATE TABLE IF NOT EXISTS my_db.my_schema.my_table (id INTEGER, name VARCHAR(100), created_at TIMESTAMP)
+--------------------
+CREATE TABLE IF NOT EXISTS my_db.my_schema.my_table (
+	id INTEGER,
+	name VARCHAR(100),
+	created_at TIMESTAMP
+)
+------------------------------------------------------------------------------------------------------------------------
+CREATE OR REPLACE TABLE my_table (id INTEGER NOT NULL, name VARCHAR(256) DEFAULT 'unknown', price NUMBER(10,2))
+--------------------
+CREATE OR REPLACE TABLE my_table (
+	id INTEGER NOT NULL,
+	name VARCHAR(256) DEFAULT 'unknown',
+	price NUMBER(10, 2)
+)
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE my_table AS SELECT * FROM other_table WHERE status = 'active'
+--------------------
+CREATE TABLE my_table
+AS
+SELECT *
+FROM other_table
+WHERE status = 'active'
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE my_table CLONE source_table
+--------------------
+CREATE TABLE my_table
+LIKE source_table
+------------------------------------------------------------------------------------------------------------------------
+DROP TABLE IF EXISTS my_table
+--------------------
+DROP TABLE IF EXISTS my_table
+------------------------------------------------------------------------------------------------------------------------
+ALTER TABLE my_table ADD COLUMN email VARCHAR(256)
+--------------------
+ALTER TABLE my_table
+	ADD (email VARCHAR(256))
+------------------------------------------------------------------------------------------------------------------------
+ALTER TABLE my_table DROP COLUMN email
+--------------------
+ALTER TABLE my_table
+	DROP COLUMN email

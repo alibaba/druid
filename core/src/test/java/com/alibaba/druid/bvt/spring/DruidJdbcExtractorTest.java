@@ -21,13 +21,16 @@ import com.alibaba.druid.mock.MockPreparedStatement;
 import com.alibaba.druid.mock.MockStatement;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.spring.DruidNativeJdbcExtractor;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 
-public class DruidJdbcExtractorTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class DruidJdbcExtractorTest {
+    @Test
     public void test_spring() throws Exception {
         DruidDataSource dataSource = new DruidDataSource();
 
@@ -62,6 +65,7 @@ public class DruidJdbcExtractorTest extends TestCase {
         }
     }
 
+    @Test
     public void test_spring_filter() throws Exception {
         DruidDataSource dataSource = new DruidDataSource();
 

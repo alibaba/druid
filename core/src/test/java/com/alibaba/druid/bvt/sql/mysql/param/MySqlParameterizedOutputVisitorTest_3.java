@@ -18,6 +18,8 @@ package com.alibaba.druid.bvt.sql.mysql.param;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlParameterizedOutputVisitorTest_3 extends com.alibaba.druid.bvt.sql.mysql.param.MySQLParameterizedTest {
     protected void setUp() throws Exception {
         System.setProperty("fastsql.parameterized.shardingSupport", "false");

@@ -7,6 +7,8 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlCreateTableTest127_ads_ann extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "CREATE TABLE adl_new_retail.adl_sec_verify_face ( \n" +

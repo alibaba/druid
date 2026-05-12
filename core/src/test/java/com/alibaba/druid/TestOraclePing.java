@@ -15,21 +15,23 @@
  */
 package com.alibaba.druid;
 
-import junit.framework.TestCase;
 import oracle.jdbc.OracleConnection;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class TestOraclePing extends TestCase {
+public class TestOraclePing {
     private String jdbcUrl;
     private String user;
     private String password;
     private String driverClass;
     private String SQL;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         // jdbcUrl = "jdbc:oracle:thin:@a.b.c.d:1521:ocnauto";
         // user = "alibaba";
@@ -44,6 +46,7 @@ public class TestOraclePing extends TestCase {
         driverClass = "oracle.jdbc.driver.OracleDriver";
     }
 
+    @Test
     public void test_o() throws Exception {
         Class.forName(driverClass);
 

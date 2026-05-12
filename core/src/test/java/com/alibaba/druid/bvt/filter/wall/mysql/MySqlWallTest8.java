@@ -16,7 +16,9 @@
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
 import com.alibaba.druid.wall.WallUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * SQLServerWallTest
@@ -25,22 +27,26 @@ import junit.framework.TestCase;
  * @version 1.0, 2012-3-18
  * @see
  */
-public class MySqlWallTest8 extends TestCase {
+public class MySqlWallTest8 {
+    @Test
     public void test_true() throws Exception {
         assertTrue(WallUtils.isValidateMySql(//
                 "SELECT a.* FROM vote_info a where 1=1 AND FID = ?")); // AND永真不拦截
     }
 
+    @Test
     public void test_false_1() throws Exception {
         assertFalse(WallUtils.isValidateMySql(//
                 "SELECT a.* FROM vote_info a where FID = ? OR 1=1")); // 永真，拦截
     }
 
+    @Test
     public void test_false_2() throws Exception {
         assertFalse(WallUtils.isValidateMySql(//
                 "SELECT a.* FROM vote_info a where FID = ? OR (FID = ? OR 1=1)")); // 永真，拦截
     }
 
+    @Test
     public void test_false_3() throws Exception {
         assertFalse(WallUtils.isValidateMySql(//
                 "SELECT a.* FROM vote_info a where FID = ? OR (1=1 or FID = ?)")); // 永真，拦截

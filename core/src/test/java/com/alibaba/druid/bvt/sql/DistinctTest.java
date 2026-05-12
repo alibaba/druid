@@ -18,28 +18,35 @@ package com.alibaba.druid.bvt.sql;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.util.JdbcUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class DistinctTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class DistinctTest {
     private String sql = "select count(distinct *) from t";
 
+    @Test
     public void test_mysql() throws Exception {
         assertEquals("SELECT count(DISTINCT *)\nFROM t", SQLUtils.format(sql, JdbcUtils.MYSQL));
     }
 
+    @Test
     public void test_oracle() throws Exception {
         assertEquals("SELECT count(DISTINCT *)\nFROM t", SQLUtils.format(sql, JdbcUtils.ORACLE));
     }
 
+    @Test
     public void test_oracle_unique() throws Exception {
         assertEquals("SELECT count(UNIQUE *)\nFROM t",
                 SQLUtils.format("select count(unique *) from t", JdbcUtils.ORACLE));
     }
 
+    @Test
     public void test_postgres() throws Exception {
         assertEquals("SELECT count(DISTINCT *)\nFROM t", SQLUtils.format(sql, JdbcUtils.POSTGRESQL));
     }
 
+    @Test
     public void test_sql92() throws Exception {
         assertEquals("SELECT count(DISTINCT *)\nFROM t", SQLUtils.format(sql, (DbType) null));
     }

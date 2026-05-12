@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.alibaba</groupId>
 		<artifactId>druid-parent</artifactId>
-		<version>1.2.28-SNAPSHOT</version>
+		<version>1.2.29-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<artifactId>druid</artifactId>
@@ -16,7 +16,7 @@
 
 	<properties>
 		<spring.version>4.3.20.RELEASE</spring.version>
-		<junit.version>4.13.1</junit.version>
+		<junit-jupiter.version>5.11.4</junit-jupiter.version>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jdk.version>1.8</jdk.version>
@@ -85,6 +85,48 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>sql-tests</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<configuration>
+							<includes>
+								<include>**/bvt/sql/**/*.java</include>
+								<include>**/bvt/filter/wall/**/*.java</include>
+								<include>**/bvt/bug/**/*.java</include>
+							</includes>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>non-sql-tests</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<configuration>
+							<includes>
+								<include>**/bvt/**/*.java</include>
+							</includes>
+							<excludes>
+								<exclude>**/bvt/sql/**/*.java</exclude>
+								<exclude>**/bvt/filter/wall/**/*.java</exclude>
+								<exclude>**/bvt/bug/**/*.java</exclude>
+							</excludes>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 	<dependencies>
 		<dependency>
@@ -368,9 +410,19 @@
 		</dependency>
 
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>${junit.version}</version>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.vintage</groupId>
+			<artifactId>junit-vintage-engine</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest</artifactId>
+			<version>2.2</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>

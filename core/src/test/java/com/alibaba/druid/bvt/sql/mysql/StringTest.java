@@ -20,11 +20,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class StringTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class StringTest {
+    @Test
     public void test_latin() throws Exception {
         String sql = "SELECT _latin1'string' COLLATE latin1_danish_ci;";
 
@@ -36,6 +39,7 @@ public class StringTest extends TestCase {
         assertEquals("SELECT _latin1 'string' COLLATE latin1_danish_ci;", text);
     }
 
+    @Test
     public void test_utf8() throws Exception {
         String sql = "SELECT _utf8'some text';";
 

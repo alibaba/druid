@@ -22,6 +22,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class TestClose_0 extends PoolTestCase {
     public void test_close() throws Exception {
         DruidDataSource dataSource = new DruidDataSource();

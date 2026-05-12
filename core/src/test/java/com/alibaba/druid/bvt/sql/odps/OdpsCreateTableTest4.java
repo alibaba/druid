@@ -19,11 +19,14 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class OdpsCreateTableTest4 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OdpsCreateTableTest4 {
+    @Test
     public void test_select() throws Exception {
         // 1095288847322
         String sql = "CREATE TABLE T1 (a string, b string, c bigint) CLUSTERED BY (c) SORTED by (c) INTO 1024 BUCKETS;";

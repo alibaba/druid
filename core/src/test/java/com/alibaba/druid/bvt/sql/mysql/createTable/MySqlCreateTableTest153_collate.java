@@ -7,6 +7,8 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlCreateTableTest153_collate extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "CREATE TABLE `t_file` (\n" +

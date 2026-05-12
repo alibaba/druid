@@ -2,11 +2,12 @@ package com.alibaba.druid.bvt.sql;
 
 import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleExprParser;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class EqualTest_number extends TestCase {
+public class EqualTest_number {
+    @Test
     public void test_exits() throws Exception {
         String sql = "3.5";
         String sql_c = "3.51";

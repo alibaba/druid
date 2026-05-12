@@ -12,18 +12,23 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.repository.SchemaRepository;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class SQLSelectQueryBlockTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class SQLSelectQueryBlockTest {
     private final DbType dbType = JdbcConstants.MYSQL;
     private SchemaRepository repository;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         repository = new SchemaRepository(dbType);
     }
 
+    @Test
     public void test_findTableSource() throws Exception {
         repository.console("create table t_emp(emp_id bigint, name varchar(20));");
         repository.console("create table t_org(org_id bigint, name varchar(20));");

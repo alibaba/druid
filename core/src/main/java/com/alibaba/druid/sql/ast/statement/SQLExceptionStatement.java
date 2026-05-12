@@ -20,9 +20,8 @@ public class SQLExceptionStatement extends SQLStatementImpl {
     public void addItem(Item item) {
         if (item != null) {
             item.setParent(this);
+            this.items.add(item);
         }
-
-        this.items.add(item);
     }
 
     @Override

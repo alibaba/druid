@@ -23,6 +23,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleSelectTest_param extends OracleTest {
     private DbType dbType = JdbcConstants.ORACLE;
 

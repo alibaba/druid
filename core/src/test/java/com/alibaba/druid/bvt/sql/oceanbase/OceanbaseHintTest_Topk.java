@@ -23,6 +23,8 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OceanbaseHintTest_Topk extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select /*+ topk(90 1000) */ sum(c2), c1 from t1 group by c1 order by sum(c2) limit 10 ";

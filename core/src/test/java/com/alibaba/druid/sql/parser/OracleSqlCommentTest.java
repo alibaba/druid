@@ -17,25 +17,29 @@ package com.alibaba.druid.sql.parser;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 /**
  * for pr #5877
  */
-public class OracleSqlCommentTest extends TestCase {
+public class OracleSqlCommentTest {
+    @Test
     public void test_0() throws Exception {
 //        原来是只要||和/之间连着就会解析报错，中间加了空格就没问题，现在下面的sql也不会解析报错
         String sql = "select id||/*用户Id*/ name||/*用户名称*/age||/*用户年龄*/gender from user";
         System.out.println(SQLUtils.parseSingleStatement(sql, JdbcConstants.ORACLE, true));
     }
+    @Test
     public void test_1() throws Exception {
         String sql = "insert into user (id,name) select '501'||/*啊打发*/'|502|' as id, s,name from order s";
         System.out.println(SQLUtils.parseSingleStatement(sql, JdbcConstants.ORACLE, true));
     }
+    @Test
     public void test_2() throws Exception {
         String sql = "update user set age=3 where id in ( select '501'||/*啊打发*/'|502|' as id from order s)";
         System.out.println(SQLUtils.parseSingleStatement(sql, JdbcConstants.ORACLE, true));
     }
+    @Test
     public void test_3() throws Exception {
         String sql = "delete from user where id in (select '501'||/*啊打发*/'|502|' as id from order s)";
         System.out.println(SQLUtils.parseSingleStatement(sql, JdbcConstants.ORACLE, true));

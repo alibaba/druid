@@ -7,15 +7,18 @@ import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
  * Created by wenshao on 16/8/23.
  */
-public class MySqlParameterizedOutputVisitorTest_48_aggregate extends TestCase {
+public class MySqlParameterizedOutputVisitorTest_48_aggregate {
+    @Test
     public void test_for_parameterize() throws Exception {
         final DbType dbType = JdbcConstants.MYSQL;
         String sql = "select count(1) from t";

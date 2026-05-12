@@ -3,9 +3,11 @@ package com.alibaba.druid.bvt.sql.mysql.createTable;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @version 1.0
@@ -38,7 +40,8 @@ import java.util.List;
  * @Author zzy
  * @Date 2019-05-15 16:26
  */
-public class MySqlCreateTableTest152_table_options extends TestCase {
+public class MySqlCreateTableTest152_table_options {
+    @Test
     public void test_no_comma_no_eq() {
         String sql = "create table tb (a int)" +
                 "auto_increment 1\n" +
@@ -82,6 +85,7 @@ public class MySqlCreateTableTest152_table_options extends TestCase {
                 ") auto_increment = 1 avg_row_length = 1 character set = utf8 checksum = 0 collate = utf8_unicode_ci compression = 'LZ4' connection = 'conn' index directory = 'path' delay_key_write = 1 encryption = 'N' engine = innodb insert_method = no key_block_size = 32 max_rows = 999 min_rows = 1 pack_keys = default password = 'psw' row_format = dynamic stats_auto_recalc = default stats_persistent = default stats_sample_pages = 10 tablespace `tbs_name` storage memory union = (tb1, tb2, tb3) auto_increment = 1 comment 'hehe'", stmt.toLowerCaseString());
     }
 
+    @Test
     public void test_options_comma_eq() {
         String sql = "create table tb (a int)" +
                 "auto_increment = 2,\n" +

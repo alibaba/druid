@@ -24,6 +24,8 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlInsertTest_13 extends MysqlTest {
     public void test_insert_rollback_on_fail() throws Exception {
         String sql = "insert into order (id, name) values (?, ?)";

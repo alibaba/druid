@@ -1,9 +1,12 @@
 package com.alibaba.druid.bvt.sql.odps;
 
 import com.alibaba.druid.sql.SQLUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class OdpsFormatCommentTest2 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OdpsFormatCommentTest2 {
+    @Test
     public void test_column_comment() throws Exception {
         String sql = "--[Subject -]"
                 + "\n--[Author  -高铁/035139]"//

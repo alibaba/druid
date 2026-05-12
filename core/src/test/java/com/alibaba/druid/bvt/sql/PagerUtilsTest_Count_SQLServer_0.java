@@ -2,9 +2,12 @@ package com.alibaba.druid.bvt.sql;
 
 import com.alibaba.druid.sql.PagerUtils;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class PagerUtilsTest_Count_SQLServer_0 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class PagerUtilsTest_Count_SQLServer_0 {
+    @Test
     public void test_sqlserver_0() throws Exception {
         String sql = "select * from t";
         String result = PagerUtils.count(sql, JdbcConstants.SQL_SERVER);
@@ -12,6 +15,7 @@ public class PagerUtilsTest_Count_SQLServer_0 extends TestCase {
                 "FROM t", result);
     }
 
+    @Test
     public void test_sqlserver_1() throws Exception {
         String sql = "select id, name from t";
         String result = PagerUtils.count(sql, JdbcConstants.SQL_SERVER);
@@ -19,6 +23,7 @@ public class PagerUtilsTest_Count_SQLServer_0 extends TestCase {
                 "FROM t", result);
     }
 
+    @Test
     public void test_sqlserver_2() throws Exception {
         String sql = "select id, name from t order by id";
         String result = PagerUtils.count(sql, JdbcConstants.SQL_SERVER);
@@ -26,6 +31,7 @@ public class PagerUtilsTest_Count_SQLServer_0 extends TestCase {
                 "FROM t", result);
     }
 
+    @Test
     public void test_sqlserver_group_0() throws Exception {
         String sql = "select type, count(*) from t group by type";
         String result = PagerUtils.count(sql, JdbcConstants.SQL_SERVER);
@@ -37,6 +43,7 @@ public class PagerUtilsTest_Count_SQLServer_0 extends TestCase {
                 ") ALIAS_COUNT", result);
     }
 
+    @Test
     public void test_sqlserver_union_0() throws Exception {
         String sql = "select id, name from t1 union select id, name from t2 order by id";
         String result = PagerUtils.count(sql, JdbcConstants.SQL_SERVER);

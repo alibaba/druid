@@ -179,6 +179,7 @@ public final class DruidConnectionHolder {
                     || dbType == DbType.db2 //
                     || dbType == DbType.hive //
                     || dbType == DbType.odps //
+                    || dbType == DbType.duckdb //
             ) {
                 initUnderlyHoldability = false;
             }

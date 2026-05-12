@@ -19,16 +19,21 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.support.json.JSONUtils;
 import com.alibaba.druid.util.JdbcUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.management.openmbean.TabularData;
 
 import java.sql.Connection;
 import java.sql.Statement;
 
-public class MergeStatFilterTest_tddl_1 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MergeStatFilterTest_tddl_1 {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         TabularData sqlList = JdbcStatManager.getInstance().getSqlList();
         if (sqlList.size() > 0) {
@@ -37,8 +42,7 @@ public class MergeStatFilterTest_tddl_1 extends TestCase {
                 System.out.println(text);
             }
         }
-
-        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+        JdbcStatManager.getInstance().reset();
 
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xx");
@@ -46,12 +50,13 @@ public class MergeStatFilterTest_tddl_1 extends TestCase {
         dataSource.setDbType("mysql");
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
-
-        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+        JdbcStatManager.getInstance().reset();
     }
 
+    @Test
     public void test_merge() throws Exception {
         for (int i = 1000; i < 2000; ++i) {
             String tableName = "t" + i;

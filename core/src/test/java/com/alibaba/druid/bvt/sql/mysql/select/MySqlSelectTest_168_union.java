@@ -8,6 +8,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_168_union extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select * from tb2 union all(select * from tb2 order by id1);";

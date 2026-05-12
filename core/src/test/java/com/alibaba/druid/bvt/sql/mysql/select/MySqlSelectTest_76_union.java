@@ -26,6 +26,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_76_union extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "((select 1 as a1, 10 as a2)) union all (((select 2, 20))) union distinct (select 3, 30);";

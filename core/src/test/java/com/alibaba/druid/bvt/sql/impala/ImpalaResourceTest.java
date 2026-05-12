@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.impala;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.bvt.sql.SQLResourceTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ImpalaResourceTest extends SQLResourceTest {
     public ImpalaResourceTest() {

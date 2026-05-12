@@ -23,6 +23,8 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OceanbaseHintTest_Index2 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "delete /*+ INDEX(t1 i1) */ from t1 where t1.c1=1;";

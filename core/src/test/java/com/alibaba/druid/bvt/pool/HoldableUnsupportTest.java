@@ -5,14 +5,17 @@ import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class HoldableUnsupportTest extends TestCase {
+public class HoldableUnsupportTest {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
@@ -25,10 +28,12 @@ public class HoldableUnsupportTest extends TestCase {
         dataSource.getProxyFilters().add(filter);
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
     }
 
+    @Test
     public void test_0() throws Exception {
         Connection[] connections = new Connection[8];
         for (int i = 0; i < connections.length; ++i) {

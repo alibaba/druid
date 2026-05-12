@@ -1,9 +1,12 @@
 package com.alibaba.druid.bvt.sql.odps;
 
 import com.alibaba.druid.sql.SQLUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class OdpsMultiInsertTest2 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OdpsMultiInsertTest2 {
+    @Test
     public void test_for_multi_insert() throws Exception {
         String sql = "from sale_detail\n" +
                 "insert overwrite table sale_detail_multi partition (sale_date='2010', region='china' )\n" +

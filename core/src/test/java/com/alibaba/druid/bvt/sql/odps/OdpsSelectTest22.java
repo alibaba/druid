@@ -19,11 +19,14 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class OdpsSelectTest22 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OdpsSelectTest22 {
+    @Test
     public void test_select() throws Exception {
         // 1095288847322
         String sql = "select bucket_id,sum(pv) as pv, sum(clk) as clk,sum(clk)/(sum(pv)+1e-10) as ctr,sum(ut_ad_clk) as ut_ad_clk,sum(ad_clk) as ad_clk,sum(cost) as cost\n" +

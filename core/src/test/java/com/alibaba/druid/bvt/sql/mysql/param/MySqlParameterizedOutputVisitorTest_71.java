@@ -4,12 +4,15 @@ import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.fastjson2.JSON;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MySqlParameterizedOutputVisitorTest_71 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlParameterizedOutputVisitorTest_71 {
+    @Test
     public void test_in() throws Exception {
         String sql = "SELECT (3, 4) IN ((1, 2), (3, 4)) FROM dual";
 

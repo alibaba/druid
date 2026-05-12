@@ -2,12 +2,15 @@ package com.alibaba.druid.bvt.sql.eval;
 
 import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class EvalSelectTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class EvalSelectTest {
+    @Test
     public void test_select() throws Exception {
         List<List<Object>> rows = new ArrayList<List<Object>>();
         List<Object> row = new ArrayList<Object>();

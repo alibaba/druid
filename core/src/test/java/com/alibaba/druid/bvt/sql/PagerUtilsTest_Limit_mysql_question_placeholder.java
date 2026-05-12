@@ -7,17 +7,21 @@ import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class PagerUtilsTest_Limit_mysql_question_placeholder extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class PagerUtilsTest_Limit_mysql_question_placeholder {
+    @Test
     public void testQuestionLimitPlaceholder1() {
         String sql = "select * from test_table limit ?";
         String expected = "select * from test_table limit 0, ?";
         testQuestionLimitPlaceholderInternal(expected, sql);
     }
 
+    @Test
     public void testQuestionLimitPlaceholder2() {
         String sql = "select * from test_table limit 0, ?";
         String expected = "select * from test_table limit 0, ?";

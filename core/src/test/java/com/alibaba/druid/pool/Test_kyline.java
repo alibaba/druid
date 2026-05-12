@@ -15,17 +15,18 @@
  */
 package com.alibaba.druid.pool;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 
-public class Test_kyline extends TestCase {
+public class Test_kyline {
     private String url = "jdbc:mysql://a.b.c.d:8066/amoeba";
     private String user = "root";
     private String password = "12345";
     private String driver = "com.mysql.jdbc.Driver";
 
+    @Test
     public void test_0() throws Exception {
         DruidDataSource ds = new DruidDataSource();
         ds.setUrl(url);

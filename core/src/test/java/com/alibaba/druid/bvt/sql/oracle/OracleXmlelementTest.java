@@ -7,6 +7,8 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleXmlelementTest extends OracleTest {
     public void testOracleXmlelement() {
         String sql = "SELECT XMLELEMENT(NAME foo).getstringval() from dual";

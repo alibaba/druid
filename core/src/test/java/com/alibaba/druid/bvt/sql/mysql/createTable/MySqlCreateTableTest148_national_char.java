@@ -3,9 +3,11 @@ package com.alibaba.druid.bvt.sql.mysql.createTable;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @version 1.0
@@ -15,7 +17,8 @@ import java.util.List;
  * @Author zzy
  * @Date 2019-05-14 17:25
  */
-public class MySqlCreateTableTest148_national_char extends TestCase {
+public class MySqlCreateTableTest148_national_char {
+    @Test
     public void test_0() throws Exception {
         String sql = "create temporary table if not exists `tb_kxipe` (\n" +
                 "\t col_vttevt national char(128),\n" +

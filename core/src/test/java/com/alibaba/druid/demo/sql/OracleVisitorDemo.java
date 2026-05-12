@@ -6,13 +6,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectTableReference;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitorAdapter;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class OracleVisitorDemo extends TestCase {
+public class OracleVisitorDemo {
+    @Test
     public void test_for_demo() throws Exception {
         String sql = "select * from mytable a where a.id = 3";
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, DbType.oracle);

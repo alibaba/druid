@@ -2,11 +2,14 @@ package com.alibaba.druid.bvt.filter.log;
 
 import com.alibaba.druid.filter.logging.Log4jFilter;
 import com.alibaba.druid.filter.logging.LogFilter;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.Properties;
 
-public class LogFilterTest4 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class LogFilterTest4 {
+    @Test
     public void test_properties() throws Exception {
         LogFilter filter = new Log4jFilter();
 
@@ -16,6 +19,7 @@ public class LogFilterTest4 extends TestCase {
         assertEquals(true, filter.isResultSetLogEnabled());
     }
 
+    @Test
     public void test_properties_1() throws Exception {
         System.setProperty("druid.log.conn", "false");
         System.setProperty("druid.log.stmt", "false");

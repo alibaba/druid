@@ -24,6 +24,8 @@ import com.alibaba.druid.sql.parser.SQLStatementParser;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleMergeTest10 extends OracleTest {
     public void test_0() throws Exception {
         String sql = "merge into bonuses d \n" +

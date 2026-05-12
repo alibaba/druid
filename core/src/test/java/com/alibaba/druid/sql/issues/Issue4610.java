@@ -2,7 +2,7 @@ package com.alibaba.druid.sql.issues;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,13 +23,16 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
  * 验证各种类型的参数的格式化sql合法性的用例
  *
  * @author lizongbo 把 com.mysql.cj.NativeQueryBindings.DEFAULT_MYSQL_TYPES 支持的java类型全部都加上参数格式化验证逻辑
  * @see <a href="https://github.com/alibaba/druid/issues/4610">LocalDateTime等类型的输出问题</a>
  */
-public class Issue4610 extends TestCase {
+public class Issue4610 {
+    @Test
     public void test_printParameter_BigDecimal() throws Exception {
         String sql = "update t set bigdecimal_val = ?";
         String sqlNeed = "UPDATE t\nSET bigdecimal_val = 50000000000";
@@ -41,6 +44,7 @@ public class Issue4610 extends TestCase {
         SQLUtils.parseStatements(fromatedSql, DbType.mysql);
     }
 
+    @Test
     public void test_printParameter_BigInteger() throws Exception {
         String sql = "update t set biginteger_val = ?"; // MysqlType.BIGINT
         String sqlNeed = "UPDATE t\nSET biginteger_val = 987654321987654321987654321";
@@ -52,6 +56,7 @@ public class Issue4610 extends TestCase {
         SQLUtils.parseStatements(fromatedSql, DbType.mysql);
     }
 
+    @Test
     public void test_printParameter_Blob() throws Exception {
         String sql = "update t set blob_val = ?"; // MysqlType.BLOB
         String sqlNeed = "UPDATE t\nSET blob_val = '<Blob>'";
@@ -116,6 +121,7 @@ public class Issue4610 extends TestCase {
         SQLUtils.parseStatements(fromatedSql, DbType.mysql);
     }
 
+    @Test
     public void test_printParameter_Boolean() throws Exception {
         String sql = "update t set boolean_val = ?"; // MysqlType.BOOLEAN
         String sqlNeed = "UPDATE t\nSET boolean_val = true";
@@ -127,6 +133,7 @@ public class Issue4610 extends TestCase {
         SQLUtils.parseStatements(fromatedSql, DbType.mysql);
     }
 
+    @Test
     public void test_printParameter_Byte() throws Exception {
         String sql = "update t set byte_val = ?"; // MysqlType.TINYINT
         String sqlNeed = "UPDATE t\nSET byte_val = 32";
@@ -138,6 +145,7 @@ public class Issue4610 extends TestCase {
         SQLUtils.parseStatements(fromatedSql, DbType.mysql);
     }
 
+    @Test
     public void test_printParameter_ByteArray() throws Exception {
         String sql = "update t set bytearr_val = ?"; // MysqlType.BINARY
         String sqlNeed = "UPDATE t\nSET bytearr_val = x'616263'";
@@ -149,6 +157,7 @@ public class Issue4610 extends TestCase {
         SQLUtils.parseStatements(fromatedSql, DbType.mysql);
     }
 
+    @Test
     public void test_printParameter_Calendar() throws Exception {
         Calendar c = Calendar.getInstance();
         String sql = "update t set calendar_val = ?"; // MysqlType.TIMESTAMP
@@ -163,6 +172,7 @@ public class Issue4610 extends TestCase {
         SQLUtils.parseStatements(fromatedSql, DbType.mysql);
     }
 
+    @Test
     public void test_printParameter_NClob() throws Exception {
         String sql = "update t set clob_val = ?"; // MysqlType.TEXT
         String sqlNeed = "UPDATE t\nSET clob_val = '<NClob>'";
@@ -237,6 +247,7 @@ public class Issue4610 extends TestCase {
         SQLUtils.parseStatements(fromatedSql, DbType.mysql);
     }
 
+    @Test
     public void test_printParameter_Clob() throws Exception {
         String sql = "update t set clob_val = ?"; // MysqlType.TEXT
         String sqlNeed = "UPDATE t\nSET clob_val = '<Clob>'";
@@ -311,6 +322,7 @@ public class Issue4610 extends TestCase {
         SQLUtils.parseStatements(fromatedSql, DbType.mysql);
     }
 
+    @Test
     public void test_printParameter_Date() throws Exception {
         java.sql.Date d = new java.sql.Date(System.currentTimeMillis());
         String sql = "update t set date_val = ?"; // MysqlType.DATE
@@ -323,6 +335,7 @@ public class Issue4610 extends TestCase {
         SQLUtils.parseStatements(fromatedSql, DbType.mysql);
     }
 
+    @Test
     public void test_printParameter_JavaUtilDate() throws Exception {
         java.util.Date d = new java.util.Date();
         String sql = "update t set java_util_date_val = ?"; // MysqlType.TIMESTAMP
@@ -336,6 +349,7 @@ public class Issue4610 extends TestCase {
         SQLUtils.parseStatements(fromatedSql, DbType.mysql);
     }
 
+    @Test
     public void test_printParameter_Double() throws Exception {
         Double d = new Double(50000000000000.01);
         String sql = "update t set double_val = ?"; // MysqlType.DOUBLE
@@ -348,6 +362,7 @@ public class Issue4610 extends TestCase {
         SQLUtils.parseStatements(fromatedSql, DbType.mysql);
     }
 
+    @Test
     public void test_printParameter_Duration() throws Exception {
         Duration d = Duration.ofHours(3);
         String sql = "update t set duration_val = ?"; // MysqlType.TIME
@@ -360,6 +375,7 @@ public class Issue4610 extends TestCase {
         SQLUtils.parseStatements(fromatedSql, DbType.mysql);
     }
 
+    @Test
     public void test_printParameter_Float() throws Exception {
         String sql = "update t set float_val = ?"; // MysqlType.FLOAT
         String sqlNeed = "UPDATE t\nSET float_val = 1234.56";
@@ -371,6 +387,7 @@ public class Issue4610 extends TestCase {
         SQLUtils.parseStatements(fromatedSql, DbType.mysql);
     }
 
+    @Test
     public void test_printParameter_InputStream() throws Exception {
         String sql = "update t set inputstream_val = ?"; // MysqlType.BLOB
         String sqlNeed = "UPDATE t\nSET inputstream_val = '<InputStream>'";
@@ -387,6 +404,7 @@ public class Issue4610 extends TestCase {
         SQLUtils.parseStatements(fromatedSql, DbType.mysql);
     }
 
+    @Test
     public void test_printParameter_Instant() throws Exception {
         Instant i = Instant.ofEpochMilli(System.currentTimeMillis());
         String sql = "update t set instant_val = ?"; // MysqlType.TIMESTAMP
@@ -399,6 +417,7 @@ public class Issue4610 extends TestCase {
         SQLUtils.parseStatements(fromatedSql, DbType.mysql);
     }
 
+    @Test
     public void test_printParameter_Integer() throws Exception {
         String sql = "update t set integer_val = ?"; // MysqlType.INT
         String sqlNeed = "UPDATE t\nSET integer_val = 20231126";
@@ -410,6 +429,7 @@ public class Issue4610 extends TestCase {
         SQLUtils.parseStatements(fromatedSql, DbType.mysql);
     }
 
+    @Test
     public void test_printParameter_LocalDate() throws Exception {
         LocalDate ld = LocalDate.now();
         String sql = "update t set localdate_val = ?"; // MysqlType.DATE
@@ -422,6 +442,7 @@ public class Issue4610 extends TestCase {
         SQLUtils.parseStatements(fromatedSql, DbType.mysql);
     }
 
+    @Test
     public void test_printParameter_LocalDateTime() throws Exception {
         LocalDateTime ldt = LocalDateTime.now();
         String sql = "update t set localdatetime_val = ?"; // MysqlType.DATETIME  // default JDBC mapping is TIMESTAMP
@@ -434,6 +455,7 @@ public class Issue4610 extends TestCase {
         SQLUtils.parseStatements(fromatedSql, DbType.mysql);
     }
 
+    @Test
     public void test_printParameter_LocalTime() throws Exception {
         LocalTime lt = LocalTime.now();
         String sql = "update t set localtime_val = ?"; // MysqlType.TIME
@@ -446,6 +468,7 @@ public class Issue4610 extends TestCase {
         SQLUtils.parseStatements(fromatedSql, DbType.mysql);
     }
 
+    @Test
     public void test_printParameter_Long() throws Exception {
         String sql = "update t set long_val = ?"; // MysqlType.BIGINT
         String sqlNeed = "UPDATE t\nSET long_val = 2023112320231123";
@@ -457,6 +480,7 @@ public class Issue4610 extends TestCase {
         SQLUtils.parseStatements(fromatedSql, DbType.mysql);
     }
 
+    @Test
     public void test_printParameter_OffsetDateTime() throws Exception {
         OffsetDateTime odt = OffsetDateTime.now();
         String sql = "update t set offsetdatetime_val = ?"; // MysqlType.TIMESTAMP  // default JDBC mapping is TIMESTAMP_WITH_TIMEZONE
@@ -469,6 +493,7 @@ public class Issue4610 extends TestCase {
         SQLUtils.parseStatements(fromatedSql, DbType.mysql);
     }
 
+    @Test
     public void test_printParameter_OffsetTime() throws Exception {
         OffsetTime ot = OffsetTime.now();
         String sql = "update t set offsettime_val = ?"; // MysqlType.TIME  // default JDBC mapping is TIME_WITH_TIMEZONE
@@ -481,6 +506,7 @@ public class Issue4610 extends TestCase {
         SQLUtils.parseStatements(fromatedSql, DbType.mysql);
     }
 
+    @Test
     public void test_printParameter_Reader() throws Exception {
         String sql = "update t set reader_val = ?"; // MysqlType.TEXT
         String sqlNeed = "UPDATE t\nSET reader_val = '<Reader>'";
@@ -501,6 +527,7 @@ public class Issue4610 extends TestCase {
         SQLUtils.parseStatements(fromatedSql, DbType.mysql);
     }
 
+    @Test
     public void test_printParameter_Short() throws Exception {
         String sql = "update t set short_val = ?"; // MysqlType.SMALLINT
         String sqlNeed = "UPDATE t\nSET short_val = 1234";
@@ -511,6 +538,7 @@ public class Issue4610 extends TestCase {
         assertEquals(sqlNeed, fromatedSql);
     }
 
+    @Test
     public void test_printParameter_String() throws Exception {
         String sql = "update t set string_val = ?"; // MysqlType.VARCHAR
         String sqlNeed = "UPDATE t\nSET string_val = 'lizongbo'";
@@ -521,6 +549,7 @@ public class Issue4610 extends TestCase {
         assertEquals(sqlNeed, fromatedSql);
     }
 
+    @Test
     public void test_printParameter_Time() throws Exception {
         java.sql.Time t = new java.sql.Time(System.currentTimeMillis());
         String sql = "update t set time_val = ?"; // MysqlType.TIME
@@ -532,6 +561,7 @@ public class Issue4610 extends TestCase {
         assertEquals(sqlNeed, fromatedSql);
     }
 
+    @Test
     public void test_printParameter_Timestamp() throws Exception {
         java.sql.Timestamp t = new java.sql.Timestamp(System.currentTimeMillis());
         String sql = "update t set timestamp_val = ?"; // MysqlType.TIMESTAMP
@@ -543,6 +573,7 @@ public class Issue4610 extends TestCase {
         assertEquals(sqlNeed, fromatedSql);
     }
 
+    @Test
     public void test_printParameter_ZonedDateTime() throws Exception {
         ZonedDateTime zdt = ZonedDateTime.now();
         String sql = "update t set zoneddatetime_val = ?"; // MysqlType.TIMESTAMP  // no JDBC mapping is defined

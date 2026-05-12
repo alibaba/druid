@@ -18,9 +18,12 @@ package com.alibaba.druid.bvt.sql.oracle;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class OracleFlashbackQueryTest2 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OracleFlashbackQueryTest2 {
+    @Test
     public void test_isEmpty() throws Exception {
         String sql = "SELECT salary FROM employees\n"
                 + "VERSIONS BETWEEN TIMESTAMP SYSTIMESTAMP - INTERVAL '10' MINUTE AND SYSTIMESTAMP - INTERVAL '1' MINUTE\n"

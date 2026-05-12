@@ -18,16 +18,21 @@ package com.alibaba.druid.bvt.bug;
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 
-public class Bug_for_happyday517_3 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class Bug_for_happyday517_3 {
     private DruidDataSource dataSource;
     private MockDriver driver;
 
     private int originalDataSourceCount;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         originalDataSourceCount = DruidDataSourceStatManager.getInstance().getDataSourceList().size();
 
@@ -39,11 +44,13 @@ public class Bug_for_happyday517_3 extends TestCase {
         dataSource.setDefaultAutoCommit(false);
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
         assertEquals(originalDataSourceCount, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
+    @Test
     public void test_bug() throws Exception {
         Connection conn = dataSource.getConnection();
         assertEquals(false, conn.getAutoCommit());

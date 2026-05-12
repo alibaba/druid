@@ -2,20 +2,25 @@ package com.alibaba.druid.bvt.pool;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.util.Properties;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
  * Created by wenshao on 21/01/2017.
  */
-public class KeepAliveTest_scheduler extends TestCase {
+public class KeepAliveTest_scheduler {
     private DruidDataSource dataSource;
     private ScheduledExecutorService scheduler;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         scheduler = Executors.newScheduledThreadPool(10);
 
@@ -36,10 +41,12 @@ public class KeepAliveTest_scheduler extends TestCase {
         dataSource.setCreateScheduler(scheduler);
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
     }
 
+    @Test
     public void test_keepAlive() throws Exception {
         dataSource.init();
 

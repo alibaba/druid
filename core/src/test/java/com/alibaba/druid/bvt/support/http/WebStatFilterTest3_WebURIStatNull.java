@@ -20,7 +20,7 @@ import com.alibaba.druid.support.http.WebStatFilter;
 import com.alibaba.druid.support.http.stat.WebAppStat;
 import com.alibaba.druid.support.http.stat.WebAppStatManager;
 import com.alibaba.druid.support.http.stat.WebURIStat;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockFilterChain;
 import org.springframework.mock.web.MockFilterConfig;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -29,7 +29,10 @@ import org.springframework.mock.web.MockServletContext;
 
 import java.util.Map;
 
-public class WebStatFilterTest3_WebURIStatNull extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class WebStatFilterTest3_WebURIStatNull {
+    @Test
     public void test_sessionStatDisable() throws Exception {
         MockServletContext servletContext = new MockServletContext();
 

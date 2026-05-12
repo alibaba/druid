@@ -4,16 +4,19 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by wenshao on 25/06/2017.
  */
-public class Issue1762 extends TestCase {
+public class Issue1762 {
     private final DbType dbType = DbType.mysql;
 
+    @Test
     public void test_0() throws Exception {
         String sql = "-- table-name-bean-name:some --\n" +
                 "CREATE TABLE `some_table` (\n" +

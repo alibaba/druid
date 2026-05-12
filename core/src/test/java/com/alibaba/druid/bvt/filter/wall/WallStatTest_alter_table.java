@@ -4,9 +4,12 @@ import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.WallTableStat;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
 import com.alibaba.druid.wall.spi.OracleWallProvider;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class WallStatTest_alter_table extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class WallStatTest_alter_table {
+    @Test
     public void testMySql() throws Exception {
         String sql = "alter table t add column fname varchar(50)";
         WallProvider provider = new MySqlWallProvider();
@@ -17,6 +20,7 @@ public class WallStatTest_alter_table extends TestCase {
         assertEquals(1, tableStat.getAlterCount());
     }
 
+    @Test
     public void testOracle() throws Exception {
         String sql = "alter table t add (fname varchar(50))";
         WallProvider provider = new OracleWallProvider();

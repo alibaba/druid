@@ -23,6 +23,8 @@ import com.alibaba.druid.support.logging.Log;
 import java.lang.reflect.Field;
 import java.sql.Connection;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class ConnectPropertiesChangeTest1 extends PoolTestCase {
     private DruidDataSource dataSource;
 

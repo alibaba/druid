@@ -22,6 +22,8 @@ import com.alibaba.druid.sql.parser.ParserException;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_95_error_orderBy extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select * from xx ordor by name desc";

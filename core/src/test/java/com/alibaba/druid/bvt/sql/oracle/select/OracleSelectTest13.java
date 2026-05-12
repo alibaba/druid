@@ -23,6 +23,8 @@ import com.alibaba.druid.stat.TableStat;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleSelectTest13 extends OracleTest {
     public void test_0() throws Exception {
         String sql = "select id,     table_id,     event_type,     pk_data,     transaction_id,     ignore_node_cluster_id,     gmt_create "

@@ -19,7 +19,9 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidStatService;
 import com.alibaba.druid.support.json.JSONUtils;
 import com.alibaba.druid.util.JdbcUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -31,16 +33,17 @@ import java.util.Map;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Multiple data source test case.
  */
-public class DruidStatServiceTest2 extends TestCase {
+public class DruidStatServiceTest2 {
     private DruidDataSource dataSource;
     private DruidDataSource dataSource2;
 
     // every test, two data source initialized.
+    @BeforeEach
     public void setUp() throws Exception {
         // DruidStatService is singleton, reset all for other testcase.
         DruidStatService.getInstance().service("/reset-all.json");
@@ -58,11 +61,13 @@ public class DruidStatServiceTest2 extends TestCase {
         dataSource2.init();
     }
 
+    @AfterEach
     public void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
         JdbcUtils.close(dataSource2);
     }
 
+    @Test
     public void test_statService_getSqlList() throws Exception {
         String sql = "select 1";
 
@@ -100,6 +105,7 @@ public class DruidStatServiceTest2 extends TestCase {
         }
     }
 
+    @Test
     public void test_statService_getSqlById() throws Exception {
         String sql = "select 1";
 
@@ -148,6 +154,7 @@ public class DruidStatServiceTest2 extends TestCase {
         assertThat(resultMap.get("Content"), is(nullValue()));
     }
 
+    @Test
     public void test_statService_getDataSourceList() throws Exception {
         DruidStatService.getInstance().service("/reset-all.json");
         String result = DruidStatService.getInstance().service("/datasource.json");
@@ -161,6 +168,7 @@ public class DruidStatServiceTest2 extends TestCase {
         //assertThat((Integer) dataSourceStat.get("ActiveCount"), equalTo(0));
     }
 
+    @Test
     public void test_getWallStatMap() throws Exception {
         DruidStatService.getInstance().getWallStatMap(Collections.<String, String>emptyMap());
     }

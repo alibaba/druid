@@ -24,6 +24,8 @@ import com.alibaba.druid.stat.TableStat;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlDropIndexTest2 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "drop index index2 on t2 algorithm=default lock none;";

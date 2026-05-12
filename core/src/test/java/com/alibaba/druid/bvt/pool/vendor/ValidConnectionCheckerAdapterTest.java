@@ -3,6 +3,8 @@ package com.alibaba.druid.bvt.pool.vendor;
 import com.alibaba.druid.PoolTestCase;
 import com.alibaba.druid.pool.ValidConnectionCheckerAdapter;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class ValidConnectionCheckerAdapterTest extends PoolTestCase {
     public void test_adapter() throws Exception {
         ValidConnectionCheckerAdapter adapter = new ValidConnectionCheckerAdapter();

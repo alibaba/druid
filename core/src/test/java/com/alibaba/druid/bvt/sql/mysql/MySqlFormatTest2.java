@@ -17,9 +17,12 @@ package com.alibaba.druid.bvt.sql.mysql;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.util.JdbcUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class MySqlFormatTest2 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlFormatTest2 {
+    @Test
     public void test_0() throws Exception {
         String text = "SELECT cq.uuid FROM ce_queue cq "
                 + "WHERE cq.status = ? AND NOT EXISTS (SELECT ? FROM ce_queue cq2 WHERE cq.component_uuid = cq2.component_uuid AND cq2.status <> ?) "

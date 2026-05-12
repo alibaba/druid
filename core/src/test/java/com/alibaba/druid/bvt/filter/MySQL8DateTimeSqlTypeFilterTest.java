@@ -23,7 +23,9 @@ import com.alibaba.druid.mock.MockStatementBase;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.util.JdbcUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -32,12 +34,15 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
  * lizongbo
  */
-public class MySQL8DateTimeSqlTypeFilterTest extends TestCase {
+public class MySQL8DateTimeSqlTypeFilterTest {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
 
@@ -57,10 +62,12 @@ public class MySQL8DateTimeSqlTypeFilterTest extends TestCase {
         dataSource.init();
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
     }
 
+    @Test
     public void test_mysql8datetime() throws Exception {
         assertTrue(dataSource.isInited());
 

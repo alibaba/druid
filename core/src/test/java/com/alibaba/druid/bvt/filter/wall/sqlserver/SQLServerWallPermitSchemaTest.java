@@ -16,7 +16,11 @@
 package com.alibaba.druid.bvt.filter.wall.sqlserver;
 
 import com.alibaba.druid.wall.WallUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * SQLServerWallPermitSchemaTest
@@ -25,28 +29,22 @@ import junit.framework.TestCase;
  * @version 1.0, 2012-3-18
  * @see
  */
-public class SQLServerWallPermitSchemaTest extends TestCase {
-    /**
-     * @param name
-     */
-    public SQLServerWallPermitSchemaTest(String name) {
-        super(name);
-    }
-
+public class SQLServerWallPermitSchemaTest {
     /* (non-Javadoc)
      * @see junit.framework.TestCase#setUp()
      */
+    @BeforeEach
     protected void setUp() throws Exception {
-        super.setUp();
     }
 
     /* (non-Javadoc)
      * @see junit.framework.TestCase#tearDown()
      */
+    @AfterEach
     protected void tearDown() throws Exception {
-        super.tearDown();
     }
 
+    @Test
     public void test_master() throws Exception {
         assertFalse(WallUtils.isValidateSqlServer("SELECT *FROM T UNION SELECT name, password FROM master..sysxlogins"));
         assertFalse(WallUtils.isValidateSqlServer("SELECT *FROM T UNION SELECT permission_name FROM master..fn_my_permissions(null, ‘DATABASE’); "));

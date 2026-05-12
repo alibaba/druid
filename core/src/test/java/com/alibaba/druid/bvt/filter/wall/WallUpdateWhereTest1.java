@@ -17,15 +17,18 @@ package com.alibaba.druid.bvt.filter.wall;
 
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author wenshao
  */
-public class WallUpdateWhereTest1 extends TestCase {
+public class WallUpdateWhereTest1 {
     private String sql = "update wx_shop set shop_view = shop_view + 1 where id = 118 OR 69=69 LIMIT 100 --";
     private String sql1 = "update wx_shop set shop_view = shop_view + 1 where id = 118 OR 69=69 LIMIT 100 #and c=1";
 
+    @Test
     public void test_check_true() throws Exception {
         WallConfig config = new WallConfig();
         config.setUpdateWhereAlwayTrueCheck(true);
@@ -36,6 +39,7 @@ public class WallUpdateWhereTest1 extends TestCase {
         assertFalse(WallUtils.isValidateMySql(sql1, config));
     }
 
+    @Test
     public void test_check_false() throws Exception {
         WallConfig config = new WallConfig();
         config.setUpdateWhereAlwayTrueCheck(false);

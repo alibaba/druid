@@ -20,11 +20,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class DateAndTimeValuesTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class DateAndTimeValuesTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT '2008-12-31 23:59:59' + INTERVAL 1 SECOND;";
 
@@ -36,6 +39,7 @@ public class DateAndTimeValuesTest extends TestCase {
         assertEquals("SELECT '2008-12-31 23:59:59' + INTERVAL 1 SECOND;", text);
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "SELECT '2008-02-31' + INTERVAL 0 DAY";
 
@@ -47,6 +51,7 @@ public class DateAndTimeValuesTest extends TestCase {
         assertEquals("SELECT '2008-02-31' + INTERVAL 0 DAY", text);
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "SELECT '2008-02-31' + INTERVAL 0 MONTH";
 

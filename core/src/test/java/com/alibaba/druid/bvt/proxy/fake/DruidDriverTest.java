@@ -16,12 +16,15 @@
 package com.alibaba.druid.bvt.proxy.fake;
 
 import com.alibaba.druid.proxy.DruidDriver;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.util.Properties;
 
-public class DruidDriverTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class DruidDriverTest {
+    @Test
     public void test_0() throws Exception {
         String url = "jdbc:wrap-jdbc:filters=default,commonLogging,log4j:name=preCallTest:jdbc:fake:c1";
         Properties info = new Properties();

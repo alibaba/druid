@@ -23,6 +23,8 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_187 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select coach_id, tournament_name ,tournament_id, season_id, season, count(1) as num,\n" +

@@ -17,15 +17,18 @@ package com.alibaba.druid.bvt.filter.wall;
 
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author wenshao
  */
-public class WallDeleteWhereTest extends TestCase {
+public class WallDeleteWhereTest {
     private String sql = "DELETE FROM T WHERE 1 = 1";
     private String sql2 = "DELETE FROM T WHERE id = 0 and 1 = 1";
 
+    @Test
     public void testMySql() throws Exception {
         assertFalse(WallUtils.isValidateMySql(sql));
         assertTrue(WallUtils.isValidateMySql(sql2));
@@ -37,6 +40,7 @@ public class WallDeleteWhereTest extends TestCase {
         assertFalse(WallUtils.isValidateMySql(sql, wallConfig));
     }
 
+    @Test
     public void testORACLE() throws Exception {
         assertFalse(WallUtils.isValidateOracle(sql));
         assertTrue(WallUtils.isValidateOracle(sql2));

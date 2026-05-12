@@ -15,14 +15,17 @@
  */
 package com.alibaba.druid.pool;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.TimeUnit;
 
-public class ConcurrentTest2 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class ConcurrentTest2 {
     private String jdbcUrl;
     private String user;
     private String password;
@@ -31,6 +34,7 @@ public class ConcurrentTest2 extends TestCase {
     private int maxPoolSize = 8;
     private int maxActive = 500;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         // jdbcUrl =
         // "jdbc:mysql://a.b.c.d/dragoon_v25masterdb?useUnicode=true&characterEncoding=UTF-8";
@@ -44,6 +48,7 @@ public class ConcurrentTest2 extends TestCase {
         driverClass = "com.alibaba.druid.mock.MockDriver";
     }
 
+    @Test
     public void test_concurrent_2() throws Exception {
         final DruidDataSource dataSource = new DruidDataSource();
 
@@ -100,9 +105,9 @@ public class ConcurrentTest2 extends TestCase {
         endLatch.await();
         System.out.println("connectCount : " + dataSource.getConnectCount());
 
-//        Assert.assertEquals(THREAD_COUNT * LOOP_COUNT, dataSource.getConnectCount());
-//        Assert.assertEquals(THREAD_COUNT * LOOP_COUNT, dataSource.getCloseCount());
-//        Assert.assertEquals(0, dataSource.getConnectErrorCount());
-//        Assert.assertEquals(0, dataSource.getActiveCount());
+//        assertEquals(THREAD_COUNT * LOOP_COUNT, dataSource.getConnectCount());
+//        assertEquals(THREAD_COUNT * LOOP_COUNT, dataSource.getCloseCount());
+//        assertEquals(0, dataSource.getConnectErrorCount());
+//        assertEquals(0, dataSource.getActiveCount());
     }
 }

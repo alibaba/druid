@@ -12,6 +12,8 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_trim extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select trim('x' from 'xxdxx')";

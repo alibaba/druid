@@ -17,9 +17,12 @@ package com.alibaba.druid.bvt.sql.mysql;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.util.JdbcUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class MySqlFormatTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlFormatTest {
+    @Test
     public void test_0() throws Exception {
         String text = "CREATE TABLE customer (a INT, b CHAR (20), INDEX (a));";
         assertEquals("CREATE TABLE customer (\n" +

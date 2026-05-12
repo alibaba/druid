@@ -7,7 +7,9 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 import com.alibaba.druid.proxy.jdbc.StatementProxy;
 import com.alibaba.druid.util.JdbcUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Clob;
 import java.sql.Connection;
@@ -16,9 +18,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Types;
 
-public class FilterChainImplTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class FilterChainImplTest {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
 
@@ -31,23 +36,28 @@ public class FilterChainImplTest extends TestCase {
         dataSource.init();
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
     }
 
+    @Test
     public void test_size() {
         assertEquals(dataSource.getProxyFilters().size(), new FilterChainImpl(dataSource).getFilterSize());
     }
 
+    @Test
     public void test_unwrap() throws Exception {
         assertNull(new FilterChainImpl(dataSource).unwrap(null, null));
     }
 
+    @Test
     public void test_unwrap_5() throws Exception {
         assertNull(new FilterChainImpl(dataSource).wrap((ConnectionProxy) dataSource.getConnection().getConnection(),
                 (Clob) null));
     }
 
+    @Test
     public void test_unwrap_6() throws Exception {
         Connection conn = dataSource.getConnection();
         assertTrue(new FilterChainImpl(dataSource).wrap((ConnectionProxy) dataSource.getConnection().getConnection(),
@@ -55,6 +65,7 @@ public class FilterChainImplTest extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_unwrap_8() throws Exception {
         Connection conn = dataSource.getConnection();
         assertTrue(new FilterChainImpl(dataSource).wrap((ConnectionProxy) dataSource.getConnection().getConnection(),
@@ -62,15 +73,18 @@ public class FilterChainImplTest extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_unwrap_7() throws Exception {
         assertNull(new FilterChainImpl(dataSource).wrap((ConnectionProxy) dataSource.getConnection().getConnection(),
                 (NClob) null));
     }
 
+    @Test
     public void test_unwrap_9() throws Exception {
         assertNull(new FilterChainImpl(dataSource).wrap((StatementProxy) null, (NClob) null));
     }
 
+    @Test
     public void test_getUnicodeStream() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("select ?");
@@ -85,6 +99,7 @@ public class FilterChainImplTest extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_getUnicodeStream_1() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("select ?");
@@ -99,6 +114,7 @@ public class FilterChainImplTest extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_getRef() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("select ?");
@@ -113,6 +129,7 @@ public class FilterChainImplTest extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_getRef_1() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("select ?");
@@ -127,6 +144,7 @@ public class FilterChainImplTest extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_getArray() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("select ?");
@@ -141,6 +159,7 @@ public class FilterChainImplTest extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_getArray_1() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("select ?");
@@ -155,6 +174,7 @@ public class FilterChainImplTest extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_getURL() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("select ?");
@@ -169,6 +189,7 @@ public class FilterChainImplTest extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_getURL_1() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("select ?");
@@ -183,6 +204,7 @@ public class FilterChainImplTest extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_getRowId() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("select ?");
@@ -197,6 +219,7 @@ public class FilterChainImplTest extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_getRowId_1() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("select ?");
@@ -211,6 +234,7 @@ public class FilterChainImplTest extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_getNClob() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("select ?");
@@ -225,6 +249,7 @@ public class FilterChainImplTest extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_getNClob_1() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("select ?");
@@ -239,6 +264,7 @@ public class FilterChainImplTest extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_getSQLXML() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("select ?");
@@ -253,6 +279,7 @@ public class FilterChainImplTest extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_getSQLXML_1() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("select ?");
@@ -267,6 +294,7 @@ public class FilterChainImplTest extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_getNString() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("select ?");
@@ -281,6 +309,7 @@ public class FilterChainImplTest extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_getNString_1() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("select ?");
@@ -295,6 +324,7 @@ public class FilterChainImplTest extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_getNCharacterStream() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("select ?");
@@ -309,6 +339,7 @@ public class FilterChainImplTest extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_getNCharacterStream_1() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("select ?");
@@ -323,6 +354,7 @@ public class FilterChainImplTest extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_getObject() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("select ?");
@@ -337,6 +369,7 @@ public class FilterChainImplTest extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_getObject_1() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("select ?");

@@ -16,12 +16,15 @@
 package com.alibaba.druid.bvt.support.json;
 
 import com.alibaba.druid.support.json.JSONParser;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Map;
 
-public class JSONParserTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class JSONParserTest {
+    @Test
     public void test_parse() throws Exception {
         JSONParser parser = new JSONParser("{ \"id\":33,\"name\":\"jobs\",\"values\":[1,2,3,4], \"f1\":true, \"f2\":false,\"f3\":-234,\"f4\":3.5}");
         Map<String, Object> map = (Map<String, Object>) parser.parse();

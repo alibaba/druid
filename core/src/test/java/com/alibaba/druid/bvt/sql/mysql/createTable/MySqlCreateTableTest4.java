@@ -24,6 +24,8 @@ import com.alibaba.druid.stat.TableStat.Column;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlCreateTableTest4 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "create table t_temp_11593685fc3244cf81468209484078a0 (" +

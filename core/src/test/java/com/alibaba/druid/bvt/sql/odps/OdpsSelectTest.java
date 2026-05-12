@@ -16,9 +16,12 @@
 package com.alibaba.druid.bvt.sql.odps;
 
 import com.alibaba.druid.sql.SQLUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class OdpsSelectTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OdpsSelectTest {
+    @Test
     public void test_distribute_by() throws Exception {
         String sql = "select region from sale_detail distribute by region;";
         assertEquals("SELECT region"
@@ -26,6 +29,7 @@ public class OdpsSelectTest extends TestCase {
                 + "\nDISTRIBUTE BY region;", SQLUtils.formatOdps(sql));
     }
 
+    @Test
     public void test_distribute_by_1() throws Exception {
         String sql = " select region from sale_detail distribute by region sort by f1;";
         assertEquals("SELECT region"
@@ -34,6 +38,7 @@ public class OdpsSelectTest extends TestCase {
                 "SORT BY f1;", SQLUtils.formatOdps(sql));
     }
 
+    @Test
     public void test_distribute_by_2() throws Exception {
         String sql = " select region from sale_detail distribute by region sort by f1 asc;";
         assertEquals("SELECT region"

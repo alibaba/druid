@@ -23,6 +23,8 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.Timestamp;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MockExecuteTest extends PoolTestCase {
     public void test_0() throws Exception {
         Connection conn = DriverManager.getConnection("jdbc:mock:");

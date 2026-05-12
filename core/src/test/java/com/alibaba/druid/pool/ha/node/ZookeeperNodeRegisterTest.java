@@ -4,20 +4,20 @@ import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.test.TestingServer;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ZookeeperNodeRegisterTest {
     private static final Log LOG = LogFactory.getLog(ZookeeperNodeRegisterTest.class);
@@ -25,17 +25,17 @@ public class ZookeeperNodeRegisterTest {
     private final String PATH = "/ha-druid-datasource";
     private ZookeeperNodeRegister register;
 
-    @BeforeClass
+    @BeforeAll
     public static void init() throws Exception {
         server = new TestingServer();
     }
 
-    @AfterClass
+    @AfterAll
     public static void destroy() throws Exception {
         server.close();
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         register = new ZookeeperNodeRegister();
         register.setZkConnectString(server.getConnectString());
@@ -43,7 +43,7 @@ public class ZookeeperNodeRegisterTest {
         register.init();
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         register.destroy();
         register.getClient().close();

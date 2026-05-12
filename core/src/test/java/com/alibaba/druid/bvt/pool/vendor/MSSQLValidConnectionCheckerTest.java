@@ -6,6 +6,8 @@ import com.alibaba.druid.pool.vendor.MSSQLValidConnectionChecker;
 
 import java.sql.SQLException;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MSSQLValidConnectionCheckerTest extends PoolTestCase {
     public void test_0() throws Exception {
         MSSQLValidConnectionChecker checker = new MSSQLValidConnectionChecker();

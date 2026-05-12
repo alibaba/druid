@@ -18,9 +18,12 @@ package com.alibaba.druid.bvt.sql.oracle;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class OracleSubqueryFactoringTest2 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OracleSubqueryFactoringTest2 {
+    @Test
     public void test_interval() throws Exception {
         String sql = "WITH org_chart (eid, emp_last, mgr_id, reportLevel, salary, job_id) AS\n"
                 + "(\n"

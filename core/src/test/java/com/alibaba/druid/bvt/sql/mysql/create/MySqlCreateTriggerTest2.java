@@ -21,6 +21,8 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlCreateTriggerTest2 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "create trigger employee_trigger after insert,update,delete on employee for each row call \"test.redisson.h2cluster.trigger.ClusterTrigger\"";

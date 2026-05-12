@@ -15,14 +15,17 @@
  */
 package com.alibaba.druid.bvt.jmx;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import javax.management.ObjectName;
 
 import java.lang.management.ManagementFactory;
 
-public class JMXExporterTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class JMXExporterTest {
+    @Test
     public void test_export() throws Exception {
         String file = "com/alibaba/druid/jmx/spring_stat_export.xml";
 

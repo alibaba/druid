@@ -23,6 +23,8 @@ import com.alibaba.druid.util.JMXUtils;
 import java.sql.Connection;
 import java.util.Properties;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
  * 类Case2.java的实现描述：TODO 类实现描述
  *

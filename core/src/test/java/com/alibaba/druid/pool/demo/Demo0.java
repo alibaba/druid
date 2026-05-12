@@ -17,11 +17,12 @@ package com.alibaba.druid.pool.demo;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JMXUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 
-public class Demo0 extends TestCase {
+public class Demo0 {
     private String jdbcUrl;
     private String user;
     private String password;
@@ -31,6 +32,7 @@ public class Demo0 extends TestCase {
     private int maxIdle = 5;
     private int maxActive = 12;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
         user = "dragoon25";
@@ -38,6 +40,7 @@ public class Demo0 extends TestCase {
         driverClass = "com.alibaba.druid.mock.MockDriver";
     }
 
+    @Test
     public void test_0() throws Exception {
         DruidDataSource dataSource = new DruidDataSource();
 

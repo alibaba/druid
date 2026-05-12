@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.support.http;
 
 import com.alibaba.druid.support.http.WebStatFilter;
 import com.alibaba.druid.support.http.stat.WebAppStat;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockFilterChain;
 import org.springframework.mock.web.MockFilterConfig;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -25,7 +25,10 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.mock.web.MockServletContext;
 
-public class WebStatFilterTest2 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class WebStatFilterTest2 {
+    @Test
     public void test_lru() throws Exception {
         MockServletContext servletContext = new MockServletContext();
 

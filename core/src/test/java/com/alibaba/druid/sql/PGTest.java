@@ -18,12 +18,12 @@ package com.alibaba.druid.sql;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGSQLStatementParser;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGOutputVisitor;
-import junit.framework.TestCase;
-import org.junit.Assert;
 
 import java.util.List;
 
-public class PGTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class PGTest {
     protected String output(List<SQLStatement> stmtList) {
         StringBuilder out = new StringBuilder();
         PGOutputVisitor visitor = new PGOutputVisitor(out);
@@ -49,12 +49,12 @@ public class PGTest extends TestCase {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statement = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
-        Assert.assertTrue(type.isAssignableFrom(statement.getClass()));
+        assertEquals(1, statementList.size());
+        assertTrue(type.isAssignableFrom(statement.getClass()));
 
         StringBuilder sb = new StringBuilder();
         PGOutputVisitor visitor = new PGOutputVisitor(sb);
         statement.accept(visitor);
-        Assert.assertEquals(expectedSql, sb.toString());
+        assertEquals(expectedSql, sb.toString());
     }
 }

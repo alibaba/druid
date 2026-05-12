@@ -24,6 +24,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleDropFunctionTest extends OracleTest {
     public void testDropFunction() {
         String sql = "DROP FUNCTION oe.SecondMax";

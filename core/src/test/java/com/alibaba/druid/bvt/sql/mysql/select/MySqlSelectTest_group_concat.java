@@ -27,6 +27,8 @@ import com.alibaba.druid.stat.TableStat;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_group_concat extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SELECT GROUP_CONCAT(ext_customer_id Separator '.') "

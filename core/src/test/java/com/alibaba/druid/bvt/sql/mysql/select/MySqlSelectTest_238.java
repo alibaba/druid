@@ -19,6 +19,8 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_238 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select a.cat_id1,a.cat_name1,a.cat_id2,a.cat_name2,a.cat_id3,a.cat_name3,a.leaf_cat_id,a.leaf_cat_name,\n" +

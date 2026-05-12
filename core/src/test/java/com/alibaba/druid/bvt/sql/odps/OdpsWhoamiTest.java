@@ -18,11 +18,14 @@ package com.alibaba.druid.bvt.sql.odps;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class OdpsWhoamiTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OdpsWhoamiTest {
+    @Test
     public void test_select() throws Exception {
         String sql = "WHOAMI";
         assertEquals("WHOAMI", SQLUtils.formatOdps(sql));

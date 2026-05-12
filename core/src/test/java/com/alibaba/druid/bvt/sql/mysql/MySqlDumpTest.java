@@ -22,6 +22,8 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlDumpTest extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "dump data into 'odps://ktv_market_analyzing/bohan_test_001/ds=20171233/seller_bucket=9727' " +

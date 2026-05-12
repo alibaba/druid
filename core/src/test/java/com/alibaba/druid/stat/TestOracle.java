@@ -15,13 +15,14 @@
  */
 package com.alibaba.druid.stat;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 
-public class TestOracle extends TestCase {
+public class TestOracle {
+    @Test
     public void test_0() throws Exception {
         String url = "jdbc:oracle:thin:@a.b.c.d:1521:orcl";
         Class.forName("oracle.jdbc.driver.OracleDriver");

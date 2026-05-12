@@ -10,15 +10,18 @@ import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONWriter;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
  * Created by wenshao on 16/8/23.
  */
-public class MySqlParameterizedOutputVisitorTest_44 extends TestCase {
+public class MySqlParameterizedOutputVisitorTest_44 {
+    @Test
     public void test_for_parameterize() throws Exception {
         final DbType dbType = JdbcConstants.MYSQL;
         String sql = "select 1 from a where c1 in (date_format(date_add(curdate(), INTERVAL -7 DAY), '%Y%m%d'))";

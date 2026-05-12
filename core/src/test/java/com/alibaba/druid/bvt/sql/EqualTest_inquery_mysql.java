@@ -2,11 +2,12 @@ package com.alibaba.druid.bvt.sql;
 
 import com.alibaba.druid.sql.ast.expr.SQLInSubQueryExpr;
 import com.alibaba.druid.sql.parser.SQLExprParser;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class EqualTest_inquery_mysql extends TestCase {
+public class EqualTest_inquery_mysql {
+    @Test
     public void test_exits() throws Exception {
         String sql = "fstate in (select state from t_status)";
         String sql_c = "fstate_c in (select state from t_status)";

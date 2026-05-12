@@ -4,6 +4,8 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlCreateTableTest155
         extends MysqlTest {
     public void test_0() throws Exception {

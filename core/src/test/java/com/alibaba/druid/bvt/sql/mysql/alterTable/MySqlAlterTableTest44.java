@@ -18,11 +18,14 @@ package com.alibaba.druid.bvt.sql.mysql.alterTable;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class MySqlAlterTableTest44 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlAlterTableTest44 {
+    @Test
     public void test_0() throws Exception {
         String sql = "ALTER TABLE logical_db.logical_tb SET TBLPROPERTIES ('read_only'=1)";
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
@@ -33,6 +36,7 @@ public class MySqlAlterTableTest44 extends TestCase {
                 "\tSET TBLPROPERTIES ('read_only' = 1)", output);
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "ALTER TABLE logical_db.logical_tb SET TBLPROPERTIES ('read_only'=1) ON physical_db.physical_tb";
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);

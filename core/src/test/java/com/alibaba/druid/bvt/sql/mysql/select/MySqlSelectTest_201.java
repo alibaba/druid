@@ -23,6 +23,8 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_201 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select * from test_type2 inner join (values (1, 'a'), (2, 'b'), (3, 'c')) as t (id, name) on v_int = t.id;";

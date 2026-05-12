@@ -23,6 +23,8 @@ import com.alibaba.druid.stat.TableStat;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleSelectTest15 extends OracleTest {
     public void test_0() throws Exception {
         String sql = "SELECT CURRENT_TIMESTAMP(6) AT TIME ZONE 'PST' FROM \"DUAL\" \"A1\"";

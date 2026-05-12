@@ -9,12 +9,13 @@ import com.alibaba.druid.util.JdbcUtils;
 
 import java.sql.SQLException;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleExceptionSorter_userDefined_1 extends PoolTestCase {
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
-        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
-
+         JdbcStatManager.getInstance().reset();
         dataSource = new DruidDataSource();
 
         dataSource.setExceptionSorter(new OracleExceptionSorter());

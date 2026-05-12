@@ -12,6 +12,8 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.sql.Types;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlCreateTableTest121_fulltext extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "CREATE TABLE IF NOT EXISTS ddd ( pk int NOT NULL PRIMARY KEY AUTO_INCREMENT" +

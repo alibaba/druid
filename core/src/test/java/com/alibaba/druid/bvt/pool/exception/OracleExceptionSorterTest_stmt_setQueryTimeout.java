@@ -13,16 +13,15 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleExceptionSorterTest_stmt_setQueryTimeout extends PoolTestCase {
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
         super.setUp();
-
-        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
-
+        JdbcStatManager.getInstance().reset();
         dataSource = new DruidDataSource();
-
         dataSource.setExceptionSorter(new OracleExceptionSorter());
 
         dataSource.setDriver(new OracleMockDriver());

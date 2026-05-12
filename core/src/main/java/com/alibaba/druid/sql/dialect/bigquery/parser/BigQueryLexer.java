@@ -121,6 +121,9 @@ public class BigQueryLexer extends Lexer {
         map.put("EXCEPTION", Token.EXCEPTION);
         map.put("RAISE", Token.RAISE);
         map.put("ELSEIF", Token.ELSEIF);
+        map.put("SCHEMA", Token.SCHEMA);
+        map.put("PROCEDURE", Token.PROCEDURE);
+        map.put("DATABASE", Token.DATABASE);
 
         BIGQUERY_KEYWORDS = new Keywords(map);
     }

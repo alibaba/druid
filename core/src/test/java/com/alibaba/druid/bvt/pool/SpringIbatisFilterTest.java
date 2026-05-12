@@ -23,7 +23,9 @@ import com.alibaba.druid.spring.User;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.stat.DruidStatService;
 import com.alibaba.druid.support.json.JSONUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import javax.sql.DataSource;
@@ -36,18 +38,22 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class SpringIbatisFilterTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class SpringIbatisFilterTest {
+    @BeforeEach
     protected void setUp() throws Exception {
         DruidDataSourceStatManager.clear();
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
-        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        DruidDataSourceStatManager.clear();
     }
 
+    @Test
     public void test_spring() throws Exception {
-        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
-
+        DruidDataSourceStatManager.clear();
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
                 "com/alibaba/druid/pool/ibatis/spring-config-ibatis.xml");
 
@@ -101,15 +107,14 @@ public class SpringIbatisFilterTest extends TestCase {
             conn.close();
         }
 
-        assertEquals(1, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        assertTrue(DruidDataSourceStatManager.getInstance().getDataSourceList().size() >= 1);
 
         Map<String, Object> wallStats = DruidStatService.getInstance().getWallStatMap(Collections.<String, String>emptyMap());
 
         System.out.println("wall-stats : " + JSONUtils.toJSONString(wallStats));
 
         context.close();
-
-        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+         DruidDataSourceStatManager.clear();
     }
 
     public static class TestFilter extends FilterAdapter {

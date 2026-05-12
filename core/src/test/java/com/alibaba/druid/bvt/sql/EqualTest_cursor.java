@@ -2,11 +2,12 @@ package com.alibaba.druid.bvt.sql;
 
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleCursorExpr;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleExprParser;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class EqualTest_cursor extends TestCase {
+public class EqualTest_cursor {
+    @Test
     public void test_exits() throws Exception {
         String sql = "CURSOR(select id from t)";
         String sql_c = "CURSOR(select id from t1)";

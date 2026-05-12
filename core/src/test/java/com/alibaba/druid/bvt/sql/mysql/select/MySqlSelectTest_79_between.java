@@ -26,6 +26,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_79_between extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select 1 = 16/4 between 3 and 5 as c;";

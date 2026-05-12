@@ -5,14 +5,16 @@ import com.alibaba.druid.wall.Violation;
 import com.alibaba.druid.wall.WallCheckResult;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.FileInputStream;
 
-public class ResourceTest extends TestCase {
+public class ResourceTest {
     private String[] items;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         File file = new File("D:\\scan_error.txt");
         FileInputStream is = new FileInputStream(file);
@@ -22,6 +24,7 @@ public class ResourceTest extends TestCase {
         items = all.split("\\|\\r\\n\\|");
     }
 
+    @Test
     public void test_xx() throws Exception {
         WallProvider provider = new MySqlWallProvider();
 

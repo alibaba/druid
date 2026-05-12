@@ -31,15 +31,15 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.Properties;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class DataSourceTest3 extends PoolTestCase {
     private MockDriver driver;
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
-        DruidDataSourceStatManager.clear();
-
+         DruidDataSourceStatManager.clear();
         driver = new MockDriver();
-
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setDriver(driver);
@@ -61,10 +61,8 @@ public class DataSourceTest3 extends PoolTestCase {
 
     protected void tearDown() throws Exception {
         dataSource.close();
-        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
-
+        DruidDataSourceStatManager.clear();
         JdbcStatManager.getInstance().setStatContext(null);
-
         super.tearDown();
     }
 

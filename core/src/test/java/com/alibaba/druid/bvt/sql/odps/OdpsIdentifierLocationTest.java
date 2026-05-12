@@ -5,9 +5,12 @@ import com.alibaba.druid.sql.dialect.odps.ast.OdpsCreateTableStatement;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class OdpsIdentifierLocationTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OdpsIdentifierLocationTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "--odps sql\n" +
                 "--********************************************************************--\n" +

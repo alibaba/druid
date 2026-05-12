@@ -21,9 +21,12 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.stat.TableStat.Column;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class MySqlAlterTableTest4 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlAlterTableTest4 {
+    @Test
     public void test_alter_first() throws Exception {
         String sql = "alter table test   add  dspcode  char(200)";
         MySqlStatementParser parser = new MySqlStatementParser(sql);

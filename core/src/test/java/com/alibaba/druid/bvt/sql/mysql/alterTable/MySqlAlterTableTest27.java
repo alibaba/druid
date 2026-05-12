@@ -19,9 +19,12 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class MySqlAlterTableTest27 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlAlterTableTest27 {
+    @Test
     public void test_alter_add_key() throws Exception {
         String sql = "ALTER TABLE app_key ROW_FORMAT = DEFAULT";
         MySqlStatementParser parser = new MySqlStatementParser(sql);

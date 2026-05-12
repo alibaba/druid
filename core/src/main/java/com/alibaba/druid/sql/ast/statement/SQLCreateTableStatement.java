@@ -503,7 +503,7 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
     }
 
     public boolean containsColumn(String columName) {
-        return findColumn(columName) == null;
+        return findColumn(columName) != null;
     }
 
     public SQLColumnDefinition findColumn(String columName) {

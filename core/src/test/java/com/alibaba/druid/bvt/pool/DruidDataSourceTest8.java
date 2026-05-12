@@ -4,14 +4,19 @@ import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 import java.util.Properties;
 
-public class DruidDataSourceTest8 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class DruidDataSourceTest8 {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
@@ -24,10 +29,12 @@ public class DruidDataSourceTest8 extends TestCase {
         });
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
     }
 
+    @Test
     public void testInitError() throws Exception {
         assertEquals(0, dataSource.getCreateErrorCount());
         Throwable error = null;

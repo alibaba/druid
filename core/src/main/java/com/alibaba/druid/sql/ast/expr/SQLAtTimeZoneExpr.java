@@ -32,6 +32,9 @@ public class SQLAtTimeZoneExpr extends SQLExprImpl {
     }
 
     public void setExpr(SQLExpr expr) {
+        if (expr != null) {
+            expr.setParent(this);
+        }
         this.expr = expr;
     }
 
@@ -40,6 +43,9 @@ public class SQLAtTimeZoneExpr extends SQLExprImpl {
     }
 
     public void setTimeZone(SQLExpr timeZone) {
+        if (timeZone != null) {
+            timeZone.setParent(this);
+        }
         this.timeZone = timeZone;
     }
 

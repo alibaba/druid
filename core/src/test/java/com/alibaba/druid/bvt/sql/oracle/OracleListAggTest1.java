@@ -11,6 +11,8 @@ import com.alibaba.druid.wall.WallUtils;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleListAggTest1 extends OracleTest {
     private final DbType dbType = JdbcConstants.ORACLE;
 

@@ -23,6 +23,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class Oracle_pl_5 extends OracleTest {
     public void test_0() throws Exception {
         String sql = "create or replace procedure cursor_insert_user(inarea in number) is\n" +

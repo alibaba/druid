@@ -8,9 +8,12 @@ import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class HiveKeywordsTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class HiveKeywordsTest {
+    @Test
     public void test_keywords() {
         DbType dbType = DbType.hive;
         String sql = "select 1 as TIMESTAMPLOCALTZ";
@@ -24,6 +27,7 @@ public class HiveKeywordsTest extends TestCase {
         assertEquals(expectedSql, result);
     }
 
+    @Test
     public void test_keywords2() {
         DbType dbType = DbType.hive;
         String sql = "select date(d) from t";

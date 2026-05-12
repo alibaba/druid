@@ -8,9 +8,12 @@ import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class HoloKeywordsTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class HoloKeywordsTest {
+    @Test
     public void test_keywords() {
         DbType dbType = DbType.hologres;
         String sql = "select 1 as default";
@@ -24,6 +27,7 @@ public class HoloKeywordsTest extends TestCase {
         assertEquals(expectedSql, result);
     }
 
+    @Test
     public void test_keywords2() {
         DbType dbType = DbType.hologres;
         String sql = "select a from default.test";

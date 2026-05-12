@@ -7,14 +7,17 @@ import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import junit.framework.TestCase;
 import org.apache.commons.io.FileUtils;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.util.List;
 import java.util.Set;
 
-public class SchemaStatTest_odps extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class SchemaStatTest_odps {
+    @Test
     public void test_schemaStat() throws Exception {
         File file = new File("/Users/wenshao/Downloads/odps_sql_1.txt");
         String sql = FileUtils.readFileToString(file);
@@ -41,8 +44,8 @@ public class SchemaStatTest_odps extends TestCase {
         System.out.println(statVisitor.getConditions());
 //        assertEquals(3, relationships.size());
 //
-//        Assert.assertEquals(21, statVisitor.getColumns().size());
-//        Assert.assertEquals(20, statVisitor.getConditions().size());
+//        assertEquals(21, statVisitor.getColumns().size());
+//        assertEquals(20, statVisitor.getConditions().size());
 //        assertEquals(1, statVisitor.getFunctions().size());
     }
 }

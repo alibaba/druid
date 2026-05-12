@@ -18,11 +18,14 @@ package com.alibaba.druid.bvt.sql.mysql;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class Reset_Test extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class Reset_Test {
+    @Test
     public void test_0() throws Exception {
         String sql = "binlog  'str'";
 

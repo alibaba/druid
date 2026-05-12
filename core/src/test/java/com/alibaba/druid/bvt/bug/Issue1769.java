@@ -3,12 +3,15 @@ package com.alibaba.druid.bvt.bug;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlExportParameterVisitor;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by wenshao on 25/06/2017.
  */
-public class Issue1769 extends TestCase {
+public class Issue1769 {
+    @Test
     public void test_for_issue() throws Exception {
         String sql = "SELECT id FROM test WHERE type = 9 AND name = ? AND orderId in (1, 2, 3);";
         MySqlStatementParser parser = new MySqlStatementParser(sql);

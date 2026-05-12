@@ -1,13 +1,15 @@
 package com.alibaba.druid.pool;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class DruidDataSourceTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+public class DruidDataSourceTest {
     /**
      * 验证将mysql jdbc url中可能出现的密码信息全都掩码的效果，目前会出现的密码key名有password,password1,password2,password3,trustCertificateKeyStorePassword,clientCertificateKeyStorePassword
      * @see  <a href="https://dev.mysql.com/doc/connector-j/en/connector-j-connp-props-authentication.html">...</a>
      * @see <a href="https://dev.mysql.com/doc/connector-j/en/connector-j-connp-props-security.html">...</a>
      */
+    @Test
     public void test_sanitizedUrl() {
         String url = "jdbc:mysql://127.0.0.1:3306/druid?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowMultiQueries=true";
         String expectedUrl = url;

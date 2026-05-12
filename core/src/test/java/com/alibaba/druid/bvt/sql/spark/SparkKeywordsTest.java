@@ -8,9 +8,12 @@ import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class SparkKeywordsTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class SparkKeywordsTest {
+    @Test
     public void test_keywords() {
         DbType dbType = DbType.spark;
         String sql = "select 1 as authorization";

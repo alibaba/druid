@@ -26,6 +26,8 @@ import com.alibaba.druid.stat.TableStat.Column;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlCreateViewTest1 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "CREATE ALGORITHM=UNDEFINED DEFINER=root@localhost SQL SECURITY DEFINER VIEW view_audit_enroll AS " +

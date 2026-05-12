@@ -2,11 +2,12 @@ package com.alibaba.druid.bvt.sql;
 
 import com.alibaba.druid.sql.ast.expr.SQLBetweenExpr;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleExprParser;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class EqualTest_between extends TestCase {
+public class EqualTest_between {
+    @Test
     public void test_exits() throws Exception {
         String sql = "x between 1 AND 2";
         String sql_c = "x between 1 AND 3";

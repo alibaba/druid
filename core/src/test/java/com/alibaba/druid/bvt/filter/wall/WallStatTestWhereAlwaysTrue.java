@@ -9,9 +9,13 @@ import com.alibaba.druid.wall.spi.MySqlWallProvider;
 import com.alibaba.druid.wall.spi.OracleWallProvider;
 import com.alibaba.druid.wall.spi.PGWallProvider;
 import com.alibaba.druid.wall.spi.SQLServerWallProvider;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class WallStatTestWhereAlwaysTrue extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class WallStatTestWhereAlwaysTrue {
     private String[] sqls = new String[]{
             "select * from T where a=1 or 1=1",
             "update T set name='N' where a=1 or 1=1",
@@ -36,10 +40,12 @@ public class WallStatTestWhereAlwaysTrue extends TestCase {
             "select * from T where a=1 ",
     };
 
+    @BeforeEach
     protected void setUp() throws Exception {
         WallContext.clearContext();
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         WallContext.clearContext();
     }
@@ -50,37 +56,42 @@ public class WallStatTestWhereAlwaysTrue extends TestCase {
         //config.setUpdateWhereAlwayTrueCheck(true);
         config.setSelectWhereAlwayTrueCheck(true);
         for (final String sql : sqls) {
-            assertFalse(sql, provider.checkValid(sql));
+            assertFalse(provider.checkValid(sql), sql);
             final WallTableStat tableStat = provider.getTableStat("t");
             if (sql.startsWith("delete")) {
                 assertTrue(tableStat.getDeleteCount() > 0);
             }
         }
         for (final String sql : okSqls) {
-            assertTrue(sql, provider.checkValid(sql));
+            assertTrue(provider.checkValid(sql), sql);
         }
     }
 
+    @Test
     public void testMySql() throws Exception {
         final WallProvider provider = new MySqlWallProvider();
         doTest(provider);
     }
 
+    @Test
     public void testOracle() throws Exception {
         final WallProvider provider = new OracleWallProvider();
         doTest(provider);
     }
 
+    @Test
     public void testPG() throws Exception {
         final WallProvider provider = new PGWallProvider();
         doTest(provider);
     }
 
+    @Test
     public void testDB2Server() throws Exception {
         final WallProvider provider = new DB2WallProvider();
         doTest(provider);
     }
 
+    @Test
     public void testSQLServer() throws Exception {
         final WallProvider provider = new SQLServerWallProvider();
         doTest(provider);

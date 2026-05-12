@@ -25,6 +25,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class DB2SelectTest_10 extends DB2Test {
     public void test_0() throws Exception {
         String sql = "select * from ( select inner2_.*, rownumber() over(order by order of inner2_) as rownumber_ from ("

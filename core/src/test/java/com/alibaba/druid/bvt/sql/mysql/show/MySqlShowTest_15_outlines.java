@@ -25,6 +25,8 @@ import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlShowTest_15_outlines extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SHOW OUTLINES";

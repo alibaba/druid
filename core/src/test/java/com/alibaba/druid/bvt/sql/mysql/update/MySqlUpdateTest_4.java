@@ -25,6 +25,8 @@ import com.alibaba.druid.stat.TableStat.Column;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlUpdateTest_4 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "insert into darenai_stat_url SET user='nologin',ip='58.101.223.183',reffer='http://item.taobao.com/item.htm?spm=a230r.1.14.419.KDVewC&amp;id=17052767689',url='/d/jingpinhui?spm=2013.1.0.0.zr4nLz&amp;ac=shop&amp;imageid=1019937265&amp;s=1259538&amp;s=1259538',shopnick='零利润3232',time=NOW()";

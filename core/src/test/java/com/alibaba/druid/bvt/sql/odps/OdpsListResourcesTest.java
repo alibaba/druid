@@ -27,14 +27,17 @@ import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.support.opds.udf.SqlCodeStat;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.Utils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.List;
 
-public class OdpsListResourcesTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OdpsListResourcesTest {
+    @Test
     public void test_0() throws Exception {
         exec_test("bvt/parser/odps-3.sql");
     }
@@ -46,6 +49,7 @@ public class OdpsListResourcesTest extends TestCase {
         return input;
     }
 
+    @Test
     public void test_8() throws Exception {
         exec_test("bvt/parser/odps-8.txt");
     }

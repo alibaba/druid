@@ -19,6 +19,8 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_adsHintAndTypeConvert extends MysqlTest {
     public void test_1() throws Exception {
         String sql = "/*+engine=mpp*/ select timestamp '2017-01-01 11:11:11'";

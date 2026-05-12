@@ -16,9 +16,12 @@
 package com.alibaba.druid.bvt.filter.wall.oracle;
 
 import com.alibaba.druid.wall.WallUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class OracleWallTest4 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OracleWallTest4 {
+    @Test
     public void test_true() throws Exception {
         String sql = //
                 "select sequence_name from all_sequences  "

@@ -2,9 +2,12 @@ package com.alibaba.druid.bvt.sql.eval;
 
 import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class EvalMethodSinTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class EvalMethodSinTest {
+    @Test
     public void test_reverse() throws Exception {
         assertEquals(Math.sin(1), SQLEvalVisitorUtils.evalExpr(JdbcConstants.MYSQL, "sin(1)"));
         assertEquals(Math.sin(1.001), SQLEvalVisitorUtils.evalExpr(JdbcConstants.MYSQL, "sin(1.001)"));
@@ -12,6 +15,7 @@ public class EvalMethodSinTest extends TestCase {
         assertEquals(Math.sin(2), SQLEvalVisitorUtils.evalExpr(JdbcConstants.MYSQL, "sin(2)"));
     }
 
+    @Test
     public void test_error() throws Exception {
         Exception error = null;
         try {
@@ -22,6 +26,7 @@ public class EvalMethodSinTest extends TestCase {
         assertNotNull(error);
     }
 
+    @Test
     public void test_error_1() throws Exception {
         Exception error = null;
         try {

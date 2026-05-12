@@ -24,6 +24,8 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlInsertTest_1 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "INSERT INTO tbl_name () VALUES();";

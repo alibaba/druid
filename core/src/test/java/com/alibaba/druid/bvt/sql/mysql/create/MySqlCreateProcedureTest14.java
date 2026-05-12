@@ -23,6 +23,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlCreateProcedureTest14 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "CREATE DEFINER = 'admin'@'localhost' PROCEDURE account_count()\n" +

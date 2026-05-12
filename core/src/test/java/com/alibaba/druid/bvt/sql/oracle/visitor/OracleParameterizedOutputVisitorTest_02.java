@@ -2,15 +2,18 @@ package com.alibaba.druid.bvt.sql.oracle.visitor;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
  * Created by wenshao on 16/8/23.
  */
-public class OracleParameterizedOutputVisitorTest_02 extends TestCase {
+public class OracleParameterizedOutputVisitorTest_02 {
+    @Test
     public void test_for_parameterize() throws Exception {
         String sql = "/*\n" +
                 "  The name + type results of these queries will be used by the Code Assistant\n" +

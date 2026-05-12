@@ -20,11 +20,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class SHOW_DATABASES_Syntax_Test extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class SHOW_DATABASES_Syntax_Test {
+    @Test
     public void test_0() throws Exception {
         String sql = "SHOW DATABASES;";
 

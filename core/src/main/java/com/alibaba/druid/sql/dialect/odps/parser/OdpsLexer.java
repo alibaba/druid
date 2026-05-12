@@ -44,7 +44,7 @@ public class OdpsLexer extends HiveLexer {
                     ScanHiveCommentDoubleSpace,
                     QueryRestSemi,
                     JoinAt,
-                    UDJ,
+                    UserDefinedJoin,
                     TwoConsecutiveUnion,
                     RewriteGroupByCubeRollupToFunction,
                     PrimaryTwoConsecutiveSet,

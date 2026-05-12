@@ -2,16 +2,18 @@ package com.alibaba.druid.sql.parser;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by tianzhen.wtz on 2015/10/31.
  * 类说明：
  */
-public class MySQLCharSetTest extends TestCase {
+public class MySQLCharSetTest {
+    @Test
     public void testCreateCharset() {
         String targetSql = "CREATE TABLE `test_idb`.`acct_certificate` (\n" +
                 "    `id` bigint(20) NOT NULL auto_increment COMMENT '',\n" +
@@ -36,6 +38,7 @@ public class MySQLCharSetTest extends TestCase {
         equal(targetSql, resultSql);
     }
 
+    @Test
     public void testAlterCharset() {
         String targetSql = "ALTER TABLE acct_certificate MODIFY COLUMN `nodeid` varchar(5) CHARSET `gbk` COLLATE `gbk_chinese_ci` NULL COMMENT ''";
 
@@ -48,6 +51,6 @@ public class MySQLCharSetTest extends TestCase {
         MySqlStatementParser parser = new MySqlStatementParser(targetSql);
         List<SQLStatement> sqlStatements = parser.parseStatementList();
         System.out.println(sqlStatements.get(0).toString());
-        Assert.assertTrue(sqlStatements.get(0).toString().equals(resultSql));
+        assertTrue(sqlStatements.get(0).toString().equals(resultSql));
     }
 }

@@ -2,12 +2,15 @@ package com.alibaba.druid.bvt.sql.mysql.param;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class MySqlParameterizedOutputVisitorTest_77 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlParameterizedOutputVisitorTest_77 {
+    @Test
     public void test_restore() throws Exception {
         String sql = "select\n" +
                 "    cbm_name as cbm_name,\n" +

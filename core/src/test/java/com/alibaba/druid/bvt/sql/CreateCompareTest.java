@@ -3,14 +3,17 @@ package com.alibaba.druid.bvt.sql;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by wenshao on 18/07/2017.
  */
-public class CreateCompareTest extends TestCase {
+public class CreateCompareTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "create table t7 (\n" +
                 "\tint bigint,\n" +

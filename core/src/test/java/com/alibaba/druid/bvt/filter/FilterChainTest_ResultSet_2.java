@@ -24,19 +24,24 @@ import com.alibaba.druid.proxy.jdbc.CallableStatementProxyImpl;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxyImpl;
 import com.alibaba.druid.proxy.jdbc.ResultSetProxy;
 import com.alibaba.druid.util.JdbcUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.Properties;
 
-public class FilterChainTest_ResultSet_2 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class FilterChainTest_ResultSet_2 {
     private DruidDataSource dataSource;
     private CallableStatementProxy statement;
 
     private int invokeCount;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         ConnectionProxyImpl conn = new ConnectionProxyImpl(dataSource, null, new Properties(), 0);
@@ -51,12 +56,14 @@ public class FilterChainTest_ResultSet_2 extends TestCase {
         statement = new CallableStatementProxyImpl(conn, mockStmt, "", 1);
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
 
         invokeCount = 0;
     }
 
+    @Test
     public void test_getObject() throws Exception {
         FilterChainImpl chain = new FilterChainImpl(dataSource);
 
@@ -66,6 +73,7 @@ public class FilterChainTest_ResultSet_2 extends TestCase {
         assertEquals(1, invokeCount);
     }
 
+    @Test
     public void test_getObject_1() throws Exception {
         FilterChainImpl chain = new FilterChainImpl(dataSource);
 
@@ -75,6 +83,7 @@ public class FilterChainTest_ResultSet_2 extends TestCase {
         assertEquals(1, invokeCount);
     }
 
+    @Test
     public void test_getObject_2() throws Exception {
         FilterChainImpl chain = new FilterChainImpl(dataSource);
 
@@ -84,6 +93,7 @@ public class FilterChainTest_ResultSet_2 extends TestCase {
         assertEquals(1, invokeCount);
     }
 
+    @Test
     public void test_getObject_3() throws Exception {
         FilterChainImpl chain = new FilterChainImpl(dataSource);
 

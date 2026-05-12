@@ -6,13 +6,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MySqlVisitorDemo extends TestCase {
+public class MySqlVisitorDemo {
+    @Test
     public void test_for_demo() throws Exception {
         String sql = "select * from mytable a where a.id = 3";
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, DbType.mysql);

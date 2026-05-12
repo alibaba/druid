@@ -3,13 +3,18 @@ package com.alibaba.druid.bvt.pool;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.pool.DruidPooledPreparedStatement;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 
-public class DruidPooledConnectionTest1 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class DruidPooledConnectionTest1 {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
@@ -18,10 +23,12 @@ public class DruidPooledConnectionTest1 extends TestCase {
         dataSource.setPoolPreparedStatements(true);
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
     }
 
+    @Test
     public void test_conn() throws Exception {
         DruidPooledConnection conn = (DruidPooledConnection) dataSource.getConnection();
 
@@ -41,6 +48,7 @@ public class DruidPooledConnectionTest1 extends TestCase {
         assertEquals(0, dataSource.getActiveCount());
     }
 
+    @Test
     public void test_handleException_1() throws Exception {
         DruidPooledConnection conn = (DruidPooledConnection) dataSource.getConnection();
 
@@ -60,6 +68,7 @@ public class DruidPooledConnectionTest1 extends TestCase {
         assertEquals(0, dataSource.getActiveCount());
     }
 
+    @Test
     public void test_closePoolableStatement() throws Exception {
         DruidPooledConnection conn = (DruidPooledConnection) dataSource.getConnection();
         DruidPooledPreparedStatement stmt = (DruidPooledPreparedStatement) conn.prepareStatement("select 1");
@@ -67,6 +76,7 @@ public class DruidPooledConnectionTest1 extends TestCase {
         conn.closePoolableStatement(stmt);
     }
 
+    @Test
     public void test_dup_close() throws Exception {
         DruidPooledConnection conn = (DruidPooledConnection) dataSource.getConnection();
 
@@ -79,6 +89,7 @@ public class DruidPooledConnectionTest1 extends TestCase {
         assertEquals(0, dataSource.getActiveCount());
     }
 
+    @Test
     public void test_recycle() throws Exception {
         DruidPooledConnection conn = (DruidPooledConnection) dataSource.getConnection();
         int defaultIsolation = conn.getTransactionIsolation();
@@ -97,6 +108,7 @@ public class DruidPooledConnectionTest1 extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_recycle_2() throws Exception {
         DruidPooledConnection conn = (DruidPooledConnection) dataSource.getConnection();
         int defaultIsolation = conn.getTransactionIsolation();

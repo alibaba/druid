@@ -19,11 +19,14 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class InformixSelectTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class InformixSelectTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "select skip 500 first 500 * from pub_menu ";
 

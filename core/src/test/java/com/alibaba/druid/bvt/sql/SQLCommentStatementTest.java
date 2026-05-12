@@ -3,9 +3,12 @@ package com.alibaba.druid.bvt.sql;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class SQLCommentStatementTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class SQLCommentStatementTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "COMMENT on table t1 IS 'xxx'";
 

@@ -16,17 +16,21 @@
 package com.alibaba.druid.pool;
 
 import com.alibaba.druid.util.JdbcUtils;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-public class TestRollBack extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class TestRollBack {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mysql://a.b.c.d/druid?useUnicode=true&characterEncoding=UTF-8");
@@ -38,11 +42,13 @@ public class TestRollBack extends TestCase {
         createTable();
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dropTable();
         dataSource.close();
     }
 
+    @Test
     public void test_druid() throws Exception {
         Connection conn = null;
         try {
@@ -56,7 +62,7 @@ public class TestRollBack extends TestCase {
             JdbcUtils.close(conn);
         }
 
-        Assert.assertEquals(0, count());
+        assertEquals(0, count());
     }
 
     public int count() throws Exception {

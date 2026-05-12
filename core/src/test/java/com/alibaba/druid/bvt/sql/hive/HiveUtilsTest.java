@@ -1,9 +1,12 @@
 package com.alibaba.druid.bvt.sql.hive;
 
 import com.alibaba.druid.util.HiveUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class HiveUtilsTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class HiveUtilsTest {
+    @Test
     public void test_for_hive() {
         assertTrue(HiveUtils.isBuiltinDataType("STRING"));
         assertTrue(HiveUtils.isBuiltinDataType("VARCHAR"));

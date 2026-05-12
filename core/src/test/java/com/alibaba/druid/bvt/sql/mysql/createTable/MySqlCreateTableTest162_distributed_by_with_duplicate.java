@@ -6,6 +6,8 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlCreateTableTest162_distributed_by_with_duplicate extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "CREATE TABLE `test_user` ( `id` int(11) NOT NULL AUTO_INCREMENT ) DISTRIBUTE BY DUPLICATE(g1,g2);";

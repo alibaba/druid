@@ -2,12 +2,17 @@ package com.alibaba.druid.bvt.filter.wall;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.wall.WallFilter;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class WallFilterConfigSpiForNoMatchDbTypeTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class WallFilterConfigSpiForNoMatchDbTypeTest {
     private DruidDataSource dataSource;
     private WallFilter wallFilter;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setDriverClassName("com.alibaba.druid.mock.MockDriver");
@@ -18,10 +23,12 @@ public class WallFilterConfigSpiForNoMatchDbTypeTest extends TestCase {
         wallFilter = (WallFilter) dataSource.getProxyFilters().get(0);
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
     }
 
+    @Test
     public void test_wallFilter() throws Exception {
         System.out.println("wallFilter= " + wallFilter);
         System.out.println("wallFilter.getConfig()= " + wallFilter.getConfig());

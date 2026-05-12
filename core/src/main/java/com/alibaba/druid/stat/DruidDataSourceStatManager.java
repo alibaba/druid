@@ -74,6 +74,8 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
                     LOG.error(e.getMessage(), e);
                 }
             }
+
+            dataSources.clear();
         } finally {
             staticLock.unlock();
         }

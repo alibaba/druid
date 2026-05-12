@@ -5,6 +5,8 @@ import com.alibaba.druid.pool.vendor.MySqlExceptionSorter;
 
 import java.sql.SQLException;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlExceptionSorterTest extends PoolTestCase {
     public void test_true() throws Exception {
         MySqlExceptionSorter sorter = new MySqlExceptionSorter();

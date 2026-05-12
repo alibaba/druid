@@ -13,11 +13,15 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.repository.SchemaObject;
 import com.alibaba.druid.sql.repository.SchemaRepository;
 import com.alibaba.druid.sql.visitor.SQLASTVisitorAdapter;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class ResolveTest_1 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class ResolveTest_1 {
     private SchemaRepository repository = new SchemaRepository(DbType.mysql, DbType.hive);
 
+    @BeforeEach
     protected void setUp() throws Exception {
         repository.setSchemaLoader(new SchemaRepository.SchemaLoader() {
             @Override
@@ -45,6 +49,7 @@ public class ResolveTest_1 extends TestCase {
                 ")";
     }
 
+    @Test
     public void test_0() throws Exception {
         String sql = "select * from a.b";
         SQLSelectStatement stmt = (SQLSelectStatement) SQLUtils.parseStatements(sql, DbType.mysql).get(0);
@@ -65,6 +70,7 @@ public class ResolveTest_1 extends TestCase {
         System.out.println(queryBlock.toString());
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "insert into foo select * from bar";
         SQLInsertStatement stmt = (SQLInsertStatement) SQLUtils.parseStatements(sql, DbType.mysql).get(0);

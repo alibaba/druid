@@ -5499,7 +5499,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         SQLExpr onError = x.getOnError();
         if (onError != null) {
             print(' ');
-            if (!(onEmpty instanceof SQLNullExpr || onEmpty instanceof SQLIdentifierExpr)) {
+            if (!(onError instanceof SQLNullExpr || onError instanceof SQLIdentifierExpr)) {
                 print0(ucase ? "DEFAULT " : "default ");
             }
             onError.accept(this);

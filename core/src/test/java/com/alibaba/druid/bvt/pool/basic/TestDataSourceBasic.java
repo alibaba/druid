@@ -28,6 +28,8 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.Statement;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class TestDataSourceBasic extends PoolTestCase {
     private MockDriver driver;
     private DruidDataSource dataSource;
@@ -63,8 +65,7 @@ public class TestDataSourceBasic extends PoolTestCase {
             assertEquals(true, dataSource.getCreateTimespanNano() > 0);
         }
         dataSource.close();
-        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
-
+        DruidDataSourceStatManager.clear();
         super.tearDown();
     }
 

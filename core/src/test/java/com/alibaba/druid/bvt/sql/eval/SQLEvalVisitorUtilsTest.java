@@ -4,18 +4,22 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryExpr;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
 import com.alibaba.druid.util.JdbcUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class SQLEvalVisitorUtilsTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class SQLEvalVisitorUtilsTest {
+    @Test
     public void test_instance() throws Exception {
         new SQLEvalVisitorUtils();
     }
 
+    @Test
     public void test_evalExpr() throws Exception {
         assertEquals(5, SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "? + ?", 2, 3));
         assertEquals(6, SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "? * ?", 2, 3));
@@ -23,6 +27,7 @@ public class SQLEvalVisitorUtilsTest extends TestCase {
         assertEquals(2, SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "? / ?", 6, 3));
     }
 
+    @Test
     public void test_evalExpr_2() throws Exception {
         assertEquals(5, SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "? + ?", Arrays.<Object>asList(2, 3)));
         assertEquals(6, SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "? * ?", Arrays.<Object>asList(2, 3)));
@@ -30,6 +35,7 @@ public class SQLEvalVisitorUtilsTest extends TestCase {
         assertEquals(2, SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "? / ?", Arrays.<Object>asList(6, 3)));
     }
 
+    @Test
     public void test_evalExpr_3() throws Exception {
         assertEquals(5.0f, SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "? + ?", "2.0", 3));
         assertEquals(6.0f, SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "? * ?", "2.0", 3));
@@ -37,24 +43,28 @@ public class SQLEvalVisitorUtilsTest extends TestCase {
         assertEquals(2.0f, SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "? / ?", "6.0", 3));
     }
 
+    @Test
     public void test_add() throws Exception {
         assertEquals(5, SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "? + ?", Arrays.<Object>asList(2, 3)));
         assertEquals(6, SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "? + ?", Arrays.<Object>asList(3, 3)));
         assertEquals(7, SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "? + ?", Arrays.<Object>asList(4, 3)));
     }
 
+    @Test
     public void test_add_1() throws Exception {
         assertEquals(5.0, SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "? + ?", Arrays.<Object>asList(2.0, 3)));
         assertEquals(6.0, SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "? + ?", Arrays.<Object>asList(3.0, 3)));
         assertEquals(7.0, SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "? + ?", Arrays.<Object>asList(4.0, 3)));
     }
 
+    @Test
     public void test_add_2() throws Exception {
         assertEquals(5.1, SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "? + ?", Arrays.<Object>asList(2.1, 3)));
         assertEquals(6.2, SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "? + ?", Arrays.<Object>asList(3.2, 3)));
         assertEquals(7.3, SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "? + ?", Arrays.<Object>asList(4.3, 3)));
     }
 
+    @Test
     public void test_add_3() throws Exception {
         assertEquals(5.1D,
                 SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "? + ?", Arrays.<Object>asList(2.1D, 3)));
@@ -64,12 +74,14 @@ public class SQLEvalVisitorUtilsTest extends TestCase {
                 SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "? + ?", Arrays.<Object>asList(4.3D, 3)));
     }
 
+    @Test
     public void test_add_4() throws Exception {
         assertEquals(5.0, SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "? + ?", Arrays.<Object>asList(2, 3.0)));
         assertEquals(6.0, SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "? + ?", Arrays.<Object>asList(3, 3.0)));
         assertEquals(7.0, SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "? + ?", Arrays.<Object>asList(4, 3.0)));
     }
 
+    @Test
     public void test_add_5() throws Exception {
         assertEquals(new BigInteger("5"),
                 SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "? + ?",
@@ -82,6 +94,7 @@ public class SQLEvalVisitorUtilsTest extends TestCase {
                         Arrays.<Object>asList(4, new BigInteger("3"))));
     }
 
+    @Test
     public void test_add_6() throws Exception {
         assertEquals(new BigDecimal("5"),
                 SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "? + ?",
@@ -94,12 +107,14 @@ public class SQLEvalVisitorUtilsTest extends TestCase {
                         Arrays.<Object>asList(4, new BigDecimal("3"))));
     }
 
+    @Test
     public void test_sub() throws Exception {
         assertEquals(-1, SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "? - ?", Arrays.<Object>asList(2, 3)));
         assertEquals(0, SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "? - ?", Arrays.<Object>asList(3, 3)));
         assertEquals(1, SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "? - ?", Arrays.<Object>asList(4, 3)));
     }
 
+    @Test
     public void test_sub_1() throws Exception {
         assertEquals(-1.0,
                 SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "? - ?", Arrays.<Object>asList(2.0, 3)));
@@ -107,6 +122,7 @@ public class SQLEvalVisitorUtilsTest extends TestCase {
         assertEquals(1.0, SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "? - ?", Arrays.<Object>asList(4.0, 3)));
     }
 
+    @Test
     public void test_sub_2() throws Exception {
         assertEquals(2.1 - 3,
                 SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "? - ?", Arrays.<Object>asList(2.1, 3)));
@@ -116,6 +132,7 @@ public class SQLEvalVisitorUtilsTest extends TestCase {
                 SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "? - ?", Arrays.<Object>asList(4.3, 3)));
     }
 
+    @Test
     public void test_sub_3() throws Exception {
         assertEquals(2.1D - 3,
                 SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "? - ?", Arrays.<Object>asList(2.1D, 3)));
@@ -125,12 +142,14 @@ public class SQLEvalVisitorUtilsTest extends TestCase {
                 SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "? - ?", Arrays.<Object>asList(4.3D, 3)));
     }
 
+    @Test
     public void test_lt() throws Exception {
         assertEquals(true, SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "? < ?", Arrays.<Object>asList(2, 3)));
         assertEquals(false, SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "? < ?", Arrays.<Object>asList(3, 3)));
         assertEquals(false, SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "? < ?", Arrays.<Object>asList(4, 3)));
     }
 
+    @Test
     public void test_lt_1() throws Exception {
         assertEquals(true,
                 SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "? < ?", Arrays.<Object>asList(2.0, 3)));
@@ -140,6 +159,7 @@ public class SQLEvalVisitorUtilsTest extends TestCase {
                 SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "? < ?", Arrays.<Object>asList(4.0, 3)));
     }
 
+    @Test
     public void test_ltEq() throws Exception {
         assertEquals(true, SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "? <= ?", Arrays.<Object>asList(2, 3)));
         assertEquals(true, SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "? <= ?", Arrays.<Object>asList(3, 3)));
@@ -147,6 +167,7 @@ public class SQLEvalVisitorUtilsTest extends TestCase {
                 SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "? <= ?", Arrays.<Object>asList(4, 3)));
     }
 
+    @Test
     public void test_ltEq_1() throws Exception {
         assertEquals(true,
                 SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "? <= ?", Arrays.<Object>asList(2.0, 3)));
@@ -156,12 +177,14 @@ public class SQLEvalVisitorUtilsTest extends TestCase {
                 SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "? <= ?", Arrays.<Object>asList(4.0, 3)));
     }
 
+    @Test
     public void test_gt() throws Exception {
         assertEquals(false, SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "? > ?", Arrays.<Object>asList(2, 3)));
         assertEquals(false, SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "? > ?", Arrays.<Object>asList(3, 3)));
         assertEquals(true, SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "? > ?", Arrays.<Object>asList(4, 3)));
     }
 
+    @Test
     public void test_gtEq() throws Exception {
         assertEquals(false,
                 SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "? >= ?", Arrays.<Object>asList(2, 3)));
@@ -169,6 +192,7 @@ public class SQLEvalVisitorUtilsTest extends TestCase {
         assertEquals(true, SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "? >= ?", Arrays.<Object>asList(4, 3)));
     }
 
+    @Test
     public void test_binary() throws Exception {
         assertEquals(1L, SQLEvalVisitorUtils.eval(JdbcUtils.MYSQL, new SQLBinaryExpr("01"), new ArrayList<Object>()));
         assertEquals(2L, SQLEvalVisitorUtils.eval(JdbcUtils.MYSQL, new SQLBinaryExpr("10"), new ArrayList<Object>()));
@@ -177,6 +201,7 @@ public class SQLEvalVisitorUtilsTest extends TestCase {
         assertEquals(new BigInteger("36893488147419103231"), SQLEvalVisitorUtils.eval(JdbcUtils.MYSQL, new SQLBinaryExpr("11111111111111111111111111111111111111111111111111111111111111111"), new ArrayList<Object>()));
     }
 
+    @Test
     public void test_LessThanOrGreater() throws Exception {
         assertEquals(false, SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "1<>1"));
         assertEquals(false, SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "?<>?", Arrays.<Object>asList(1, 1)));
@@ -186,6 +211,7 @@ public class SQLEvalVisitorUtilsTest extends TestCase {
      * @see <a href="https://dev.mysql.com/doc/refman/8.0/en/string-functions.html#function_lpad">MySQL lapd</a>
      * @throws Exception
      */
+    @Test
     public void test_string_lpad() throws Exception {
         String sql = "LPAD('hi',4,'??')";
         Object val = SQLEvalVisitorUtils.evalExpr(DbType.mysql, sql);
@@ -210,6 +236,7 @@ public class SQLEvalVisitorUtilsTest extends TestCase {
      * @see <a href="https://dev.mysql.com/doc/refman/8.0/en/string-functions.html#function_rpad">MySQL rapd</a>
      * @throws Exception
      */
+    @Test
     public void test_string_rpad() throws Exception {
         String sql = "RPAD('hi',5,'?')";
         Object val = SQLEvalVisitorUtils.evalExpr(DbType.mysql, sql);
@@ -237,6 +264,7 @@ public class SQLEvalVisitorUtilsTest extends TestCase {
      * @see <a href="https://dev.mysql.com/doc/refman/8.0/en/string-functions.html#function_right">MySQL right</a>
      * @throws Exception
      */
+    @Test
     public void test_string_right() throws Exception {
         String sql = "RIGHT('foobarbar', 4)";
         Object val = SQLEvalVisitorUtils.evalExpr(DbType.mysql, sql);
@@ -247,6 +275,7 @@ public class SQLEvalVisitorUtilsTest extends TestCase {
         System.out.println(sql + ": " + val);
         assertEquals("ar", val);
     }
+    @Test
     public void test_string_replace() throws Exception {
         String sql = "replace('abcb','b','B')";
         Object val = SQLEvalVisitorUtils.evalExpr(DbType.mysql, sql);

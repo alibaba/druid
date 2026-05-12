@@ -20,6 +20,8 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_271 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SELECT `EXTRACT` AS id, `OVER` AS order_id, `DECIMAL` AS user_id, `INDEX` AS car_id, `ADD` AS plate_number\n" +

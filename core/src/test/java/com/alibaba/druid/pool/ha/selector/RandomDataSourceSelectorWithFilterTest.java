@@ -5,9 +5,9 @@ import com.alibaba.druid.pool.ha.CounterValidConnectionChecker;
 import com.alibaba.druid.pool.ha.HighAvailableDataSource;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.sql.DataSource;
 
@@ -16,15 +16,15 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class RandomDataSourceSelectorWithFilterTest {
     private static final Log LOG = LogFactory.getLog(RandomDataSourceSelectorWithFilterTest.class);
     private HighAvailableDataSource highAvailableDataSource;
     private CounterValidConnectionChecker checker;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         LOG.info("setUp()");
         checker = new CounterValidConnectionChecker();
@@ -44,7 +44,7 @@ public class RandomDataSourceSelectorWithFilterTest {
         initChecker();
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         LOG.info("tearDown()");
         highAvailableDataSource.destroy();

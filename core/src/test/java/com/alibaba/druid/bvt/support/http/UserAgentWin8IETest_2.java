@@ -16,9 +16,12 @@
 package com.alibaba.druid.bvt.support.http;
 
 import com.alibaba.druid.support.http.stat.WebAppStat;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class UserAgentWin8IETest_2 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class UserAgentWin8IETest_2 {
+    @Test
     public void test_mac_firefox() throws Exception {
         WebAppStat stat = new WebAppStat("");
         stat.computeUserAgent("Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; Win64; x64; Trident/6.0)");

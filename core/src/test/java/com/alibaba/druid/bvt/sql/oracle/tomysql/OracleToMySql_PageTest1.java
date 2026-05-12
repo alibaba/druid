@@ -1,9 +1,12 @@
 package com.alibaba.druid.bvt.sql.oracle.tomysql;
 
 import com.alibaba.druid.sql.SQLUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class OracleToMySql_PageTest1 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OracleToMySql_PageTest1 {
+    @Test
     public void test_page() throws Exception {
         String sql = "SELECT *" +
                 "\nFROM (SELECT XX.*, ROWNUM AS RN" +

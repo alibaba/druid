@@ -6,11 +6,14 @@ import com.alibaba.druid.sql.dialect.hive.parser.HiveStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class HiveCreateTableTest_0 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class HiveCreateTableTest_0 {
+    @Test
     public void test_select() throws Exception {
         String sql = "CREATE EXTERNAL TABLE students (name VARCHAR(64), age INT, gpa DECIMAL(3, 2))\n" +
                 "  CLUSTERED BY (age) INTO 2 BUCKETS STORED AS ORC;";
@@ -53,6 +56,7 @@ public class HiveCreateTableTest_0 extends TestCase {
         assertTrue(visitor.containsColumn("students", "gpa"));
     }
 
+    @Test
     public void test_create_table_without_as_1() throws Exception {
         //https://cwiki.apache.org/confluence/display/Hive/LanguageManual+DDL#LanguageManualDDL-CreateTable
         String sql = "CREATE TABLE new_key_value_store\n"
@@ -79,6 +83,7 @@ public class HiveCreateTableTest_0 extends TestCase {
         System.out.println("orderBy : " + visitor.getOrderByColumns());
     }
 
+    @Test
     public void test_create_table_without_as_2() throws Exception {
         //https://cwiki.apache.org/confluence/display/Hive/LanguageManual+DDL#LanguageManualDDL-CreateTable
         String sql = "CREATE TABLE new_key_value_store\n"

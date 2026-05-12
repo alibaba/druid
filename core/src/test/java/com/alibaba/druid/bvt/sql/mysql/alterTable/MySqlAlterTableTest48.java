@@ -3,16 +3,19 @@ package com.alibaba.druid.bvt.sql.mysql.alterTable;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author shicai.xsc 2018/9/13 下午3:35
  * @desc
  * @since 5.0.0.0
  */
-public class MySqlAlterTableTest48 extends TestCase {
+public class MySqlAlterTableTest48 {
+    @Test
     public void test_0() throws Exception {
         String sql = "ALTER TABLE `aop_sample_pool`\n" +
                 "  ADD COLUMN `properties` json NULL COMMENT '样本属性',\n" +

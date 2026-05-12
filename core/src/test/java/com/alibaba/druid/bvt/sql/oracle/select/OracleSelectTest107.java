@@ -17,6 +17,8 @@ package com.alibaba.druid.bvt.sql.oracle.select;
 
 import com.alibaba.druid.sql.OracleTest;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleSelectTest107 extends OracleTest {
     //xml 解析 暂不支持，明宣 反馈的
 

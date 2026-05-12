@@ -23,6 +23,8 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlGrantTest_20 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "GRANT GRANT OPTION ON mydb.* TO 'someuser'@'somehost';";

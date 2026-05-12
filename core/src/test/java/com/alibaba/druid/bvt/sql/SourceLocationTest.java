@@ -5,9 +5,9 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SourceLocationTest {
     @Test
@@ -24,7 +24,7 @@ public class SourceLocationTest {
 
             SQLExpr expr = stmt.getSelect().getQueryBlock().getSelectList().get(0).getExpr();
             assertEquals(2, expr.getSourceLine());
-            assertEquals(dbType.name(), 8, expr.getSourceColumn());
+            assertEquals(8, expr.getSourceColumn(), dbType.name());
         }
     }
 }

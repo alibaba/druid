@@ -16,20 +16,23 @@
 package com.alibaba.druid.bvt.filter.wall;
 
 import com.alibaba.druid.wall.WallUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * 这个场景，检测可疑的Where条件
  *
  * @author wenshao
  */
-public class WallSelectWhereTest4 extends TestCase {
+public class WallSelectWhereTest4 {
     private String sql = "select * from t WHERE FID = 256 OR CHR(67)||CHR(65)||CHR(84) = 'CAT'";
 
 //    public void testMySql() throws Exception {
 //        assertFalse(WallUtils.isValidateMySql(sql));
 //    }
 
+    @Test
     public void testORACLE() throws Exception {
         assertFalse(WallUtils.isValidateOracle(sql));
     }

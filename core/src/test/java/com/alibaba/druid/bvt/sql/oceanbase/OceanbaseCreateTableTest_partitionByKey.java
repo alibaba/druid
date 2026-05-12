@@ -23,6 +23,8 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OceanbaseCreateTableTest_partitionByKey extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "create table k2(id int primary key, name varchar(20)) partition by key() partitions 2";

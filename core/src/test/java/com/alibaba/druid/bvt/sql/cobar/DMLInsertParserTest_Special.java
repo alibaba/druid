@@ -19,9 +19,12 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class DMLInsertParserTest_Special extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class DMLInsertParserTest_Special {
+    @Test
     public void testInsert_7() throws Exception {
         String sql = "insErt LOW_PRIORITY t1 (col1, t1.col2) VALUE (123,'123\\'4') oN dupLicatE key UPDATE ex.col1=?";
         MySqlStatementParser parser = new MySqlStatementParser(sql);

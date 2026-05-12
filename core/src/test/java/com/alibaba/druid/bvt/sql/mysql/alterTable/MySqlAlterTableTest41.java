@@ -18,11 +18,14 @@ package com.alibaba.druid.bvt.sql.mysql.alterTable;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class MySqlAlterTableTest41 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlAlterTableTest41 {
+    @Test
     public void test_alter_1() throws Exception {
         String sql = "alter table test COLLATE utf8mb4_unicode_ci";
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
@@ -33,6 +36,7 @@ public class MySqlAlterTableTest41 extends TestCase {
                 "\tCOLLATE = utf8mb4_unicode_ci", output);
     }
 
+    @Test
     public void test_alter_2() throws Exception {
         String sql = "alter table test storage_type = 'oss'";
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
@@ -43,6 +47,7 @@ public class MySqlAlterTableTest41 extends TestCase {
                 "\tSTORAGE_TYPE = 'oss'", output);
     }
 
+    @Test
     public void test_alter_3() throws Exception {
         String sql = "alter table test storage_policy = 'hot'";
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);

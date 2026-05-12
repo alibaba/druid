@@ -25,15 +25,20 @@ import com.alibaba.druid.wall.spi.MySqlWallProvider;
 import com.alibaba.druid.wall.spi.OracleWallProvider;
 import com.alibaba.druid.wall.spi.PGWallProvider;
 import com.alibaba.druid.wall.spi.SQLServerWallProvider;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class WallSelectLimitTest_2 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class WallSelectLimitTest_2 {
     private WallConfig config = new WallConfig();
 
+    @BeforeEach
     protected void setUp() throws Exception {
         config.setSelectLimit(1000);
     }
 
+    @Test
     public void testMySql() throws Exception {
         String sql = "select * from t limit 10";
         WallProvider provider = new MySqlWallProvider(config);
@@ -45,6 +50,7 @@ public class WallSelectLimitTest_2 extends TestCase {
                 "LIMIT 0, 10", resultSql);
     }
 
+    @Test
     public void testMySql_0() throws Exception {
         String sql = "select * from t";
         WallProvider provider = new MySqlWallProvider(config);
@@ -66,6 +72,7 @@ public class WallSelectLimitTest_2 extends TestCase {
         }
     }
 
+    @Test
     public void testPG() throws Exception {
         String sql = "select * from t limit 10";
         WallProvider provider = new PGWallProvider(config);
@@ -77,6 +84,7 @@ public class WallSelectLimitTest_2 extends TestCase {
                 "LIMIT 10 OFFSET 0", resultSql);
     }
 
+    @Test
     public void testDB2() throws Exception {
         String sql = PagerUtils.limit("select * from t", JdbcConstants.DB2, 0, 10);
         WallProvider provider = new DB2WallProvider(config);
@@ -88,6 +96,7 @@ public class WallSelectLimitTest_2 extends TestCase {
                 "FETCH FIRST 10 ROWS ONLY", resultSql);
     }
 
+    @Test
     public void testSQLServer() throws Exception {
         String sql = PagerUtils.limit("select * from t", JdbcConstants.SQL_SERVER, 0, 10);
         WallProvider provider = new SQLServerWallProvider(config);
@@ -98,6 +107,7 @@ public class WallSelectLimitTest_2 extends TestCase {
                 "FROM t", resultSql);
     }
 
+    @Test
     public void testOracle() throws Exception {
         String sql = PagerUtils.limit("select * from t", JdbcConstants.ORACLE, 0, 10);
         WallProvider provider = new OracleWallProvider(config);

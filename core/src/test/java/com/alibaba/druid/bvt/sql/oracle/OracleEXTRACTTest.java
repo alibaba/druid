@@ -18,9 +18,12 @@ package com.alibaba.druid.bvt.sql.oracle;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class OracleEXTRACTTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OracleEXTRACTTest {
+    @Test
     public void test_Extract() throws Exception {
         String sql = "SELECT EXTRACT(YEAR FROM DATE '1998-03-07') FROM DUAL;";
 

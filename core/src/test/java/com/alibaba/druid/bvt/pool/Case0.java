@@ -24,6 +24,8 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class Case0 extends PoolTestCase {
     public void test_0() throws Exception {
         final DruidDataSource dataSource = new DruidDataSource();

@@ -25,6 +25,8 @@ import com.alibaba.druid.stat.TableStat.Column;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlDeleteTest_2 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "DELETE t1 FROM t1 LEFT JOIN t2 ON t1.id=t2.id WHERE t2.id IS NULL;";

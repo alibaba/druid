@@ -1,3 +1,4 @@
+import static org.junit.jupiter.api.Assertions.*;
 //package com.alibaba.druid.bvt.sql.starrocks.issues;
 //
 //import java.util.List;
@@ -10,7 +11,7 @@
 //
 //import org.junit.Test;
 //
-//import static org.junit.Assert.assertEquals;
+//import static org.junit.assertEquals;
 //
 ///**
 // * @author lizongbo

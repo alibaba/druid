@@ -1,19 +1,24 @@
 package com.alibaba.druid.bvt.pool;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * 这个场景测试minIdle > maxActive
  *
  * @author wenshao [szujobs@hotmail.com]
  */
-public class DruidDataSourceTest_clearCache extends TestCase {
+public class DruidDataSourceTest_clearCache {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
@@ -21,10 +26,12 @@ public class DruidDataSourceTest_clearCache extends TestCase {
         dataSource.setPoolPreparedStatements(true);
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
     }
 
+    @Test
     public void test_clearStatementCache() throws Exception {
         {
             Connection conn = dataSource.getConnection();

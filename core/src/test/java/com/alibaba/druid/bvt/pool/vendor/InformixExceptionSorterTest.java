@@ -5,6 +5,8 @@ import com.alibaba.druid.pool.vendor.InformixExceptionSorter;
 
 import java.sql.SQLException;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class InformixExceptionSorterTest extends PoolTestCase {
     public void test_informix() throws Exception {
         InformixExceptionSorter sorter = new InformixExceptionSorter();

@@ -16,13 +16,16 @@
 package com.alibaba.druid.bvt.proxy.filter.encoding;
 
 import com.alibaba.druid.filter.encoding.CharsetParameter;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author gang.su
  */
 @Deprecated
-public class CharsetParameterTest extends TestCase {
+public class CharsetParameterTest {
+    @Test
     public void testQ() {
         CharsetParameter c = new CharsetParameter();
         c.setClientEncoding("1");

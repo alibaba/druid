@@ -16,9 +16,12 @@
 package com.alibaba.druid.bvt.filter.wall.oracle;
 
 import com.alibaba.druid.wall.WallUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class OracleWallPermitTableTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OracleWallPermitTableTest {
+    @Test
     public void test_permitTable() throws Exception {
         assertFalse(WallUtils.isValidateOracle("SELECT * FROM T UNION select * from TAB"));
         assertFalse(WallUtils.isValidateOracle("SELECT * FROM T UNION select * from tab"));
@@ -28,6 +31,7 @@ public class OracleWallPermitTableTest extends TestCase {
         assertFalse(WallUtils.isValidateOracle("SELECT * FROM T UNION select * from all_users"));
     }
 
+    @Test
     public void test_permitTable_subquery() throws Exception {
         assertTrue(WallUtils.isValidateOracle("select * from(select * from TAB) a"));
         assertTrue(WallUtils.isValidateOracle("select * from(select * from tab) a"));
@@ -35,6 +39,7 @@ public class OracleWallPermitTableTest extends TestCase {
         assertTrue(WallUtils.isValidateOracle("select * from(select * from SYS.\"TAB\") a"));
     }
 
+    @Test
     public void test_permitTable_join() throws Exception {
         assertTrue(WallUtils.isValidateOracle("select * from t1, TAB"));
         assertTrue(WallUtils.isValidateOracle("select * from t1, tab"));

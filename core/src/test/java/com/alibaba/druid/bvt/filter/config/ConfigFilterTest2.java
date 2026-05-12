@@ -3,20 +3,27 @@ package com.alibaba.druid.bvt.filter.config;
 import com.alibaba.druid.filter.config.ConfigFilter;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class ConfigFilterTest2 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class ConfigFilterTest2 {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setFilters("config");
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
     }
 
+    @Test
     public void test_decrypt() throws Exception {
         dataSource.addConnectionProperty(ConfigFilter.CONFIG_FILE, "bvt/config/config-0.properties");
         assertEquals(1, dataSource.getProxyFilters().size());
@@ -28,6 +35,7 @@ public class ConfigFilterTest2 extends TestCase {
         assertEquals(10, dataSource.getMaxActive());
     }
 
+    @Test
     public void test_decrypt1() throws Exception {
         dataSource.addConnectionProperty(ConfigFilter.CONFIG_FILE, "bvt/config/config-1.properties");
         assertEquals(1, dataSource.getProxyFilters().size());
@@ -40,6 +48,7 @@ public class ConfigFilterTest2 extends TestCase {
         assertEquals(3, dataSource.getProxyFilters().size());
     }
 
+    @Test
     public void test_decrypt2() throws Exception {
         dataSource.addConnectionProperty(ConfigFilter.CONFIG_FILE, "bvt/config/config-2.properties");
         dataSource.addConnectionProperty(ConfigFilter.CONFIG_DECRYPT, "true");
@@ -53,6 +62,7 @@ public class ConfigFilterTest2 extends TestCase {
         assertEquals("abcdefg1234567890", dataSource.getPassword());
     }
 
+    @Test
     public void test_decrypt3() throws Exception {
         dataSource.addConnectionProperty(ConfigFilter.CONFIG_FILE, "bvt/config/config-3.properties");
         assertEquals(1, dataSource.getProxyFilters().size());
@@ -65,6 +75,7 @@ public class ConfigFilterTest2 extends TestCase {
         assertEquals("abcdefg1234567890", dataSource.getPassword());
     }
 
+    @Test
     public void test_decrypt4() throws Exception {
         String file = Thread.currentThread().getContextClassLoader().getResource("bvt/config/config-3.properties").getFile();
         dataSource.addConnectionProperty(ConfigFilter.CONFIG_FILE, "file://" + file);
@@ -78,6 +89,7 @@ public class ConfigFilterTest2 extends TestCase {
         assertEquals("abcdefg1234567890", dataSource.getPassword());
     }
 
+    @Test
     public void test_decrypt5() throws Exception {
         assertEquals(1, dataSource.getProxyFilters().size());
 

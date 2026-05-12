@@ -1,8 +1,9 @@
 package com.alibaba.druid.pvt.pool;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -11,13 +12,16 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class AsyncCloseTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class AsyncCloseTest {
     protected DruidDataSource dataSource;
     private ExecutorService connExecutor;
     private ExecutorService closeExecutor;
 
     final AtomicInteger errorCount = new AtomicInteger();
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:");
@@ -29,10 +33,12 @@ public class AsyncCloseTest extends TestCase {
         closeExecutor = Executors.newFixedThreadPool(100);
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
     }
 
+    @Test
     public void test_0() throws Exception {
         for (int i = 0; i < 16; ++i) {
             loop();
@@ -64,8 +70,8 @@ public class AsyncCloseTest extends TestCase {
 
     protected void loop() throws InterruptedException {
         dataSource.shrink();
-        Assert.assertEquals(0, dataSource.getActiveCount());
-        Assert.assertEquals(0, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getActiveCount());
+        assertEquals(0, dataSource.getPoolingCount());
 
         final int COUNT = 1024 * 128;
         final CountDownLatch closeLatch = new CountDownLatch(COUNT * 2);
@@ -91,7 +97,7 @@ public class AsyncCloseTest extends TestCase {
         }
 
         closeLatch.await();
-        Assert.assertEquals(0, dataSource.getActiveCount());
-        Assert.assertEquals(16, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getActiveCount());
+        assertEquals(16, dataSource.getPoolingCount());
     }
 }

@@ -6,9 +6,9 @@ import com.alibaba.druid.pool.ha.HighAvailableDataSource;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import org.apache.curator.test.TestingServer;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,23 +18,23 @@ import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class ZookeeperNodeListenerTest {
     private static final Log LOG = LogFactory.getLog(ZookeeperNodeListenerTest.class);
     private static TestingServer server;
     private final String PATH = "/ha-druid-datasource";
 
-    @BeforeClass
+    @BeforeAll
     public static void init() throws Exception {
         server = new TestingServer();
     }
 
-    @AfterClass
+    @AfterAll
     public static void destroy() throws Exception {
         server.close();
     }

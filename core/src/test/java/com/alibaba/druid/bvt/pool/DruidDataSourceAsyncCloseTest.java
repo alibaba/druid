@@ -4,22 +4,22 @@ import com.alibaba.druid.mock.MockConnectionClosedException;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.util.JdbcUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DruidDataSourceAsyncCloseTest {
     protected DruidDataSource dataSource;
     protected ExecutorService executor;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
@@ -27,7 +27,7 @@ public class DruidDataSourceAsyncCloseTest {
         executor = Executors.newFixedThreadPool(2);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         JdbcUtils.close(dataSource);
         executor.shutdownNow();

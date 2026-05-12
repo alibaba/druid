@@ -4,11 +4,13 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class HiveSelectTest_47 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class HiveSelectTest_47 {
     static String sql = "with temp1 AS ( \n" +
             "    SELECT datetrunc(gmv_time,'mm') as report_month\n" +
             "    ,seller_user_id\n" +
@@ -117,6 +119,7 @@ public class HiveSelectTest_47 extends TestCase {
             "group by datetrunc(a.gmv_time,'mm') \n" +
             ";";
 
+    @Test
     public void test_select() throws Exception {
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ODPS);
         SQLStatement stmt = statementList.get(0);

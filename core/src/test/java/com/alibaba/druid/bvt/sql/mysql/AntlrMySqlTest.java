@@ -6,14 +6,17 @@ import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
-import junit.framework.TestCase;
 import org.apache.commons.io.FileUtils;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.net.URL;
 import java.util.List;
 
-public class AntlrMySqlTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class AntlrMySqlTest {
+    @Test
     public void test_for_antlr_examples() throws Exception {
         SchemaStatVisitor schemaStatVisitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.MYSQL);
         WallConfig config = new WallConfig();
@@ -38,7 +41,7 @@ public class AntlrMySqlTest extends TestCase {
                 String stmtSql = stmt.toString();
 
                 stmt.accept(schemaStatVisitor);
-                assertTrue(stmtSql, provider.checkValid(stmtSql));
+                assertTrue(provider.checkValid(stmtSql), stmtSql);
             }
 
             // test different style newline.

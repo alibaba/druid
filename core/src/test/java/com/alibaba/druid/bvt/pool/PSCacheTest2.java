@@ -18,14 +18,19 @@ package com.alibaba.druid.bvt.pool;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledPreparedStatement;
 import com.alibaba.druid.util.JdbcUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
-public class PSCacheTest2 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class PSCacheTest2 {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:x1");
@@ -34,10 +39,12 @@ public class PSCacheTest2 extends TestCase {
         dataSource.setSharePreparedStatements(true);
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
     }
 
+    @Test
     public void test_0() throws Exception {
         Connection conn = dataSource.getConnection();
 
@@ -64,6 +71,7 @@ public class PSCacheTest2 extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_txn() throws Exception {
         Connection conn = dataSource.getConnection();
 

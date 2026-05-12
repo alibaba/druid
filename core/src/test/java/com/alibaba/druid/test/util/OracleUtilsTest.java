@@ -16,15 +16,17 @@
 package com.alibaba.druid.test.util;
 
 import com.alibaba.druid.util.OracleUtils;
-import junit.framework.TestCase;
 import oracle.jdbc.OracleConnection;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
-public class OracleUtilsTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OracleUtilsTest {
+    @Test
     public void test_oracle() throws Exception {
         InvocationHandler handler = new InvocationHandler() {
             @Override
@@ -39,8 +41,8 @@ public class OracleUtilsTest extends TestCase {
         };
         OracleConnection conn = (OracleConnection) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class<?>[]{OracleConnection.class}, handler);
 
-        Assert.assertNotNull(OracleUtils.unwrap(conn));
+        assertNotNull(OracleUtils.unwrap(conn));
 
-        Assert.assertEquals(1, OracleUtils.pingDatabase(conn));
+        assertEquals(1, OracleUtils.pingDatabase(conn));
     }
 }

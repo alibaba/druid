@@ -21,6 +21,8 @@ import com.alibaba.druid.pool.DruidDataSource;
 
 import java.sql.Connection;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class ClosedTest extends PoolTestCase {
     public void test_close() throws Exception {
         DruidDataSource dataSource = new DruidDataSource();

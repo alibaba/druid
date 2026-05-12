@@ -2,7 +2,7 @@ package com.alibaba.druid.bvt.bug;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +10,8 @@ import java.util.List;
 /**
  *
  */
-public class Issue5845 extends TestCase {
+public class Issue5845 {
+    @Test
     public void test_for_issue() throws Exception {
         String sql = "delete from table01 t where t.id=1";
         List<DbType> dbTypes = new ArrayList<>();

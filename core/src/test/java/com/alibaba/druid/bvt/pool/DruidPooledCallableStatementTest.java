@@ -6,7 +6,9 @@ import com.alibaba.druid.mock.MockCallableStatement;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledCallableStatement;
 import com.alibaba.druid.proxy.jdbc.CallableStatementProxy;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -14,11 +16,14 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 
-public class DruidPooledCallableStatementTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class DruidPooledCallableStatementTest {
     private DruidDataSource dataSource;
 
     private boolean throwError = true;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
 
@@ -38,10 +43,12 @@ public class DruidPooledCallableStatementTest extends TestCase {
         });
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
     }
 
+    @Test
     public void test_wasNull_noerror() throws Exception {
         Connection conn = dataSource.getConnection();
         CallableStatement stmt = conn.prepareCall("select 1");
@@ -58,6 +65,7 @@ public class DruidPooledCallableStatementTest extends TestCase {
         assertEquals(1, dataSource.getPoolingCount());
     }
 
+    @Test
     public void test_wasNull_error() throws Exception {
         Connection conn = dataSource.getConnection();
         CallableStatement stmt = conn.prepareCall("select 1");
@@ -81,6 +89,7 @@ public class DruidPooledCallableStatementTest extends TestCase {
         assertEquals(1, dataSource.getPoolingCount());
     }
 
+    @Test
     public void test_getObject() throws Exception {
         Connection conn = dataSource.getConnection();
         DruidPooledCallableStatement stmt = (DruidPooledCallableStatement) conn.prepareCall("select 1");
@@ -104,6 +113,7 @@ public class DruidPooledCallableStatementTest extends TestCase {
         assertEquals(1, dataSource.getPoolingCount());
     }
 
+    @Test
     public void test_getObject_1() throws Exception {
         Connection conn = dataSource.getConnection();
         DruidPooledCallableStatement stmt = (DruidPooledCallableStatement) conn.prepareCall("select 1");
@@ -127,6 +137,7 @@ public class DruidPooledCallableStatementTest extends TestCase {
         assertEquals(1, dataSource.getPoolingCount());
     }
 
+    @Test
     public void test_wrap() throws Exception {
         Connection conn = dataSource.getConnection();
         CallableStatement stmt = conn.prepareCall("select 1");
@@ -138,6 +149,7 @@ public class DruidPooledCallableStatementTest extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_wrap_1() throws Exception {
         Connection conn = dataSource.getConnection();
         CallableStatement stmt = conn.prepareCall("select 1");
@@ -149,6 +161,7 @@ public class DruidPooledCallableStatementTest extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_wrap_2() throws Exception {
         dataSource.getProxyFilters().clear();
 

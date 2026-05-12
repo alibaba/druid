@@ -4,21 +4,28 @@ import com.alibaba.druid.filter.config.ConfigFilter;
 import com.alibaba.druid.filter.config.ConfigTools;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class ConfigFilterTest1 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class ConfigFilterTest1 {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setFilters("config");
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
     }
 
+    @Test
     public void test_decrypt() throws Exception {
         String plainPassword = "abcdefg1234567890";
 

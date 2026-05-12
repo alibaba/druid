@@ -4,9 +4,10 @@ import com.alibaba.druid.sql.ast.SQLOver;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.visitor.SQLASTVisitorAdapter;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class SQLASTVisitorAdapterTest extends TestCase {
+public class SQLASTVisitorAdapterTest {
+    @Test
     public void test_adapter() throws Exception {
         SQLASTVisitorAdapter adapter = new SQLASTVisitorAdapter();
         new SQLBinaryOpExpr().accept(adapter);

@@ -25,6 +25,8 @@ import com.alibaba.druid.stat.TableStat.Column;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlUpdateTest_3 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "update scheme.table set col_1 = 1, col2 = '2' "

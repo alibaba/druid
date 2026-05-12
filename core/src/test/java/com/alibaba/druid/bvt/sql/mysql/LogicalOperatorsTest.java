@@ -20,11 +20,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class LogicalOperatorsTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class LogicalOperatorsTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT 10 IS TRUE;";
 
@@ -36,6 +39,7 @@ public class LogicalOperatorsTest extends TestCase {
         assertEquals("SELECT 10 IS true;", text);
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "SELECT -10 IS TRUE;";
 
@@ -47,6 +51,7 @@ public class LogicalOperatorsTest extends TestCase {
         assertEquals("SELECT -10 IS true;", text);
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "SELECT 'string' IS NOT NULL;";
 
@@ -58,6 +63,7 @@ public class LogicalOperatorsTest extends TestCase {
         assertEquals("SELECT 'string' IS NOT NULL;", text);
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = "SELECT NOT 10;";
 
@@ -69,6 +75,7 @@ public class LogicalOperatorsTest extends TestCase {
         assertEquals("SELECT NOT 10;", text);
     }
 
+    @Test
     public void test_4() throws Exception {
         String sql = "SELECT NOT 0;";
 
@@ -80,6 +87,7 @@ public class LogicalOperatorsTest extends TestCase {
         assertEquals("SELECT NOT 0;", text);
     }
 
+    @Test
     public void test_5() throws Exception {
         String sql = "SELECT NOT NULL;";
 
@@ -91,6 +99,7 @@ public class LogicalOperatorsTest extends TestCase {
         assertEquals("SELECT NOT NULL;", text);
     }
 
+    @Test
     public void test_6() throws Exception {
         String sql = "SELECT ! (1+1);";
 
@@ -102,6 +111,7 @@ public class LogicalOperatorsTest extends TestCase {
         assertEquals("SELECT !(1 + 1);", text);
     }
 
+    @Test
     public void test_7() throws Exception {
         String sql = "SELECT ! 1+1;";
 
@@ -113,6 +123,7 @@ public class LogicalOperatorsTest extends TestCase {
         assertEquals("SELECT !1 + 1;", text);
     }
 
+    @Test
     public void test_8() throws Exception {
         String sql = "SELECT 1 && 1;";
 
@@ -124,6 +135,7 @@ public class LogicalOperatorsTest extends TestCase {
         assertEquals("SELECT 1\n\tAND 1;", text);
     }
 
+    @Test
     public void test_9() throws Exception {
         String sql = "SELECT 1 AND NULL;";
 
@@ -135,6 +147,7 @@ public class LogicalOperatorsTest extends TestCase {
         assertEquals("SELECT 1\n\tAND NULL;", text);
     }
 
+    @Test
     public void test_10() throws Exception {
         String sql = "SELECT 0 OR NULL;";
 
@@ -146,6 +159,7 @@ public class LogicalOperatorsTest extends TestCase {
         assertEquals("SELECT 0\n\tOR NULL;", text);
     }
 
+    @Test
     public void test_11() throws Exception {
         String sql = "SELECT 0 || NULL;";
 
@@ -157,6 +171,7 @@ public class LogicalOperatorsTest extends TestCase {
         assertEquals("SELECT 0\n\tOR NULL;", text);
     }
 
+    @Test
     public void test_12() throws Exception {
         String sql = "SELECT 0 XOR NULL;";
 
@@ -168,6 +183,7 @@ public class LogicalOperatorsTest extends TestCase {
         assertEquals("SELECT 0 XOR NULL;", text);
     }
 
+    @Test
     public void test_13() throws Exception {
         String sql = "SELECT 1 XOR 1 XOR 1;";
 
@@ -179,6 +195,7 @@ public class LogicalOperatorsTest extends TestCase {
         assertEquals("SELECT 1 XOR 1 XOR 1;", text);
     }
 
+    @Test
     public void test14() {
         String sql = "SELECT ~1;";
 
@@ -199,6 +216,7 @@ public class LogicalOperatorsTest extends TestCase {
         assertEquals("SELECT ~(1 + 1);", text);
     }
 
+    @Test
     public void test15() {
         String sql = "SELECT * FROM SUNTEST WHERE ~ID = 1;";
 

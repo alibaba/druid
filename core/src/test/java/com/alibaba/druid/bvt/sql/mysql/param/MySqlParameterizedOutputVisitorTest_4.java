@@ -18,6 +18,8 @@ package com.alibaba.druid.bvt.sql.mysql.param;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlParameterizedOutputVisitorTest_4 extends MySQLParameterizedTest {
     public void test_0() throws Exception {
         String sql = "select user0_.id as id0_, user0_.email as email0_, "

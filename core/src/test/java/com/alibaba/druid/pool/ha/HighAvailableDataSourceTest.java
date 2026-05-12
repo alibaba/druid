@@ -1,15 +1,15 @@
 package com.alibaba.druid.pool.ha;
 
 import com.alibaba.druid.mock.MockConnection;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.sql.DataSource;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class HighAvailableDataSourceTest {
     @Test

@@ -18,13 +18,15 @@ package com.alibaba.druid.bvt.sql.sqlite;
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
+import com.alibaba.druid.sql.dialect.sqlite.visitor.SQLiteSchemaStatVisitor;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SQLite_SelectTest_1 extends MysqlTest {
     public void test_0() throws Exception {
@@ -36,7 +38,7 @@ public class SQLite_SelectTest_1 extends MysqlTest {
 
         assertEquals(1, statementList.size());
 
-        SchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
+        SchemaStatVisitor visitor = new SQLiteSchemaStatVisitor();
         stmt.accept(visitor);
 
         System.out.println("Tables : " + visitor.getTables());

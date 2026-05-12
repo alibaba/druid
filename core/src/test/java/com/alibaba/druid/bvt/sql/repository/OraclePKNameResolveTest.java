@@ -4,14 +4,15 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableStatement;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.repository.SchemaRepository;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 /**
  * Created by wenshao on 03/08/2017.
  */
-public class OraclePKNameResolveTest extends TestCase {
+public class OraclePKNameResolveTest {
     protected SchemaRepository repository = new SchemaRepository(JdbcConstants.ORACLE);
 
+    @Test
     public void test_for_issue() throws Exception {
         String sql_1 = "create table a(\n" +
                 " WORKITEMID VARCHAR(40) NOT NULL,\n" +

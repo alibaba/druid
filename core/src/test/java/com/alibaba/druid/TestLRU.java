@@ -15,11 +15,12 @@
  */
 package com.alibaba.druid;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.LinkedHashMap;
 
-public class TestLRU extends TestCase {
+public class TestLRU {
+    @Test
     public void test_lru() throws Exception {
         LinkedHashMap<Integer, Object> cache = new LinkedHashMap<Integer, Object>(100, 0.75f, true);
 

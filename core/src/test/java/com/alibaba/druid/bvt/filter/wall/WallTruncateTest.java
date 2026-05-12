@@ -17,31 +17,39 @@ package com.alibaba.druid.bvt.filter.wall;
 
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class WallTruncateTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class WallTruncateTest {
     private String sql = "TRUNCATE TABLE T1";
 
+    @BeforeEach
     protected void setUp() throws Exception {
         //config.setTruncateAllow(true);
     }
 
+    @Test
     public void testMySql() throws Exception {
         WallConfig config = new WallConfig();
         assertTrue(WallUtils.isValidateMySql(sql, config));
     }
 
+    @Test
     public void testORACLE() throws Exception {
         WallConfig config = new WallConfig();
         assertTrue(WallUtils.isValidateOracle(sql, config));
     }
 
+    @Test
     public void testMySql_false() throws Exception {
         WallConfig config = new WallConfig();
         config.setTruncateAllow(false);
         assertFalse(WallUtils.isValidateMySql(sql, config));
     }
 
+    @Test
     public void testORACLE_false() throws Exception {
         WallConfig config = new WallConfig();
         config.setTruncateAllow(false);

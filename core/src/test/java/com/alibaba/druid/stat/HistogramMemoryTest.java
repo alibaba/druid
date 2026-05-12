@@ -1,11 +1,12 @@
 package com.alibaba.druid.stat;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.lang.management.ManagementFactory;
 import java.text.NumberFormat;
 
-public class HistogramMemoryTest extends TestCase {
+public class HistogramMemoryTest {
+    @Test
     public void test_0() throws Exception {
         long memoryStart = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getUsed();
 

@@ -3,7 +3,7 @@ package com.alibaba.druid.bvt.pool;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.vendor.MySqlExceptionSorter;
 import com.alibaba.druid.util.JdbcUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.DriverPropertyInfo;
@@ -12,12 +12,14 @@ import java.sql.SQLFeatureNotSupportedException;
 import java.util.Properties;
 import java.util.logging.Logger;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
  * 这个场景测试exceptionSorter_extend
  *
  * @author xiaoying [caohongxi001@gmail.com]
  */
-public class DruidDataSourceTest_exceptionSorter_extend extends TestCase {
+public class DruidDataSourceTest_exceptionSorter_extend {
     public static class SubDriver extends com.mysql.jdbc.Driver {
         /**
          * Construct a new driver and register it with DriverManager
@@ -78,6 +80,7 @@ public class DruidDataSourceTest_exceptionSorter_extend extends TestCase {
      *
      * @throws Exception
      */
+    @Test
     public void testExceptionSorter() throws Exception {
         DruidDataSource dataSource1 = new DruidDataSource();
         try {
@@ -95,12 +98,13 @@ public class DruidDataSourceTest_exceptionSorter_extend extends TestCase {
      *
      * @throws Exception
      */
+    @Test
     public void testExceptionSorterNull() throws Exception {
         DruidDataSource dataSource1 = new DruidDataSource();
         try {
             dataSource1.setDriverClassName(SubDriver1.class.getName());
             dataSource1.init();
-            assertEquals("sorter is not null", null, dataSource1.getExceptionSorter());
+            assertEquals(null, dataSource1.getExceptionSorter(), "sorter is not null");
         } finally {
             JdbcUtils.close(dataSource1);
         }

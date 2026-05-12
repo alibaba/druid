@@ -2,12 +2,15 @@ package com.alibaba.druid.bvt.sql.oracle;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by wenshao on 19/06/2017.
  */
-public class DesensitizationTest_update extends TestCase {
+public class DesensitizationTest_update {
+    @Test
     public void test_for_desensitization() throws Exception {
         String sql = "UPDATE customers\n" +
                 "SET last_name = 'Anderson'\n" +

@@ -20,11 +20,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class OdpsSelectTest7 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OdpsSelectTest7 {
+    @Test
     public void test_select() throws Exception {
         String sql = "select name as close from abc";
         assertEquals("SELECT name AS close"

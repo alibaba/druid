@@ -19,7 +19,9 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * SQLServerWallTest
@@ -28,7 +30,7 @@ import junit.framework.TestCase;
  * @version 1.0, 2012-3-18
  * @see
  */
-public class MySqlWallTest91 extends TestCase {
+public class MySqlWallTest91 {
     private WallProvider initWallProvider() {
         WallProvider provider = new MySqlWallProvider();
 
@@ -45,6 +47,7 @@ public class MySqlWallTest91 extends TestCase {
         return provider;
     }
 
+    @Test
     public void test_false() throws Exception {
         WallProvider provider = initWallProvider();
         {
@@ -54,6 +57,7 @@ public class MySqlWallTest91 extends TestCase {
         }
     }
 
+    @Test
     public void test_false1() throws Exception {
         WallProvider provider = initWallProvider();
         {
@@ -62,6 +66,7 @@ public class MySqlWallTest91 extends TestCase {
         }
     }
 
+    @Test
     public void test_false2() throws Exception {
         WallProvider provider = initWallProvider();
         {
@@ -70,6 +75,7 @@ public class MySqlWallTest91 extends TestCase {
         }
     }
 
+    @Test
     public void test_false3() throws Exception {
         WallProvider provider = initWallProvider();
         {
@@ -78,6 +84,7 @@ public class MySqlWallTest91 extends TestCase {
         }
     }
 
+    @Test
     public void test_false4() throws Exception {
         WallProvider provider = initWallProvider();
         {
@@ -86,6 +93,7 @@ public class MySqlWallTest91 extends TestCase {
         }
     }
 
+    @Test
     public void test_false5() throws Exception {
         WallProvider provider = initWallProvider();
         {
@@ -94,6 +102,7 @@ public class MySqlWallTest91 extends TestCase {
         }
     }
 
+    @Test
     public void test_false6() throws Exception {
         WallProvider provider = initWallProvider();
         {
@@ -102,6 +111,7 @@ public class MySqlWallTest91 extends TestCase {
         }
     }
 
+    @Test
     public void test_false7() throws Exception {
         WallProvider provider = initWallProvider();
         {
@@ -110,6 +120,7 @@ public class MySqlWallTest91 extends TestCase {
         }
     }
 
+    @Test
     public void test_false8() throws Exception {
         WallProvider provider = initWallProvider();
         {
@@ -118,6 +129,7 @@ public class MySqlWallTest91 extends TestCase {
         }
     }
 
+    @Test
     public void test_false10() {
         WallProvider provider = initWallProvider();
         {
@@ -126,6 +138,7 @@ public class MySqlWallTest91 extends TestCase {
         }
     }
 
+    @Test
     public void test_false11() {
         WallProvider provider = initWallProvider();
         {
@@ -134,6 +147,7 @@ public class MySqlWallTest91 extends TestCase {
         }
     }
 
+    @Test
     public void test_false12() {
         WallProvider provider = initWallProvider();
         {
@@ -142,6 +156,7 @@ public class MySqlWallTest91 extends TestCase {
         }
     }
 
+    @Test
     public void test_false13() {
         WallProvider provider = initWallProvider();
         {
@@ -150,6 +165,7 @@ public class MySqlWallTest91 extends TestCase {
         }
     }
 
+    @Test
     public void test_true1() throws Exception {
         WallProvider provider = initWallProvider();
         {
@@ -158,6 +174,7 @@ public class MySqlWallTest91 extends TestCase {
         }
     }
 
+    @Test
     public void test_true2() throws Exception {
         WallProvider provider = initWallProvider();
         {
@@ -170,6 +187,7 @@ public class MySqlWallTest91 extends TestCase {
         }
     }
 
+    @Test
     public void test_false9() throws Exception {
         WallProvider provider = initWallProvider();
         {
@@ -182,6 +200,7 @@ public class MySqlWallTest91 extends TestCase {
         }
     }
 
+    @Test
     public void test_true4() {
         WallProvider provider = initWallProvider();
         {
@@ -190,6 +209,7 @@ public class MySqlWallTest91 extends TestCase {
         }
     }
 
+    @Test
     public void test_true5() {
         WallProvider provider = initWallProvider();
         {
@@ -198,6 +218,7 @@ public class MySqlWallTest91 extends TestCase {
         }
     }
 
+    @Test
     public void test_true() throws Exception {
         WallProvider provider = initWallProvider();
         {
@@ -237,6 +258,7 @@ public class MySqlWallTest91 extends TestCase {
         }
     }
 
+    @Test
     public void test() throws Exception {
         WallProvider provider = initWallProvider();
         {

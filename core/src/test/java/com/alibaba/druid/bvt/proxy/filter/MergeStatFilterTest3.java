@@ -17,15 +17,20 @@ package com.alibaba.druid.bvt.proxy.filter;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.Utils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.Statement;
 
-public class MergeStatFilterTest3 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MergeStatFilterTest3 {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xx");
@@ -33,10 +38,12 @@ public class MergeStatFilterTest3 extends TestCase {
         dataSource.setDbType("postgresql");
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
     }
 
+    @Test
     public void test_merge() throws Exception {
         String sqllist = Utils.read(new InputStreamReader(this.getClass().getResourceAsStream("/bvt/parser/postgresql/16.txt")));
         String[] ss = sqllist.split("--------------------");

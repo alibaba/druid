@@ -2,9 +2,12 @@ package com.alibaba.druid.bvt.support.logging;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.logging.NoLoggingImpl;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class NoLoggingImplTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class NoLoggingImplTest {
+    @Test
     public void test_0() throws Exception {
         NoLoggingImpl impl = new NoLoggingImpl(DruidDataSource.class.getName());
 

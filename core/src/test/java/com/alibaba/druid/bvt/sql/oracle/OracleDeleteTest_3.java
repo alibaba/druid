@@ -24,6 +24,8 @@ import com.alibaba.druid.stat.TableStat;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleDeleteTest_3 extends OracleTest {
     public void test_0() throws Exception {
         String sql = "delete from credit_corp_baseinfo o where o.applyid in(24032,23942,23579,23511,23408,23327,23322,23230,23228,23218);";

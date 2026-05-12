@@ -2,7 +2,7 @@ package com.alibaba.druid.bvt.sql.bigquery;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.bvt.sql.SQLResourceTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class BigQueryResourceTest extends SQLResourceTest {
     public BigQueryResourceTest() {

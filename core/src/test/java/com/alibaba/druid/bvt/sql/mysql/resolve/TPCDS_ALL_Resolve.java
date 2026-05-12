@@ -11,17 +11,22 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.repository.SchemaRepository;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class TPCDS_ALL_Resolve extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class TPCDS_ALL_Resolve {
     private SchemaRepository repository = new SchemaRepository(DbType.mysql);
 
+    @BeforeEach
     protected void setUp() throws Exception {
         repository.acceptDDL(TPCDS.getDDL());
     }
 
+    @Test
     public void test_q01() throws Exception {
         for (int q = 1; q <= 99; ++q) {
             System.out.println("tpcds query-" + q);

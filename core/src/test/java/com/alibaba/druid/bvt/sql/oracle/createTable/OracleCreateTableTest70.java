@@ -22,6 +22,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleCreateTableTest70 extends OracleTest {
     public void test_types() throws Exception {
         String sql = //

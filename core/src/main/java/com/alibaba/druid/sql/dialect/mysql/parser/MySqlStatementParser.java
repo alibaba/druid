@@ -1484,7 +1484,6 @@ public class MySqlStatementParser extends SQLStatementParser {
                 } else if (lexer.identifierEquals(FnvHash.Constants.LOW_PRIORITY)) {
                     lexer.nextToken();
                     acceptIdentifier(WRITE);
-                    lexer.nextToken();
                     item.setLockType(LockType.LOW_PRIORITY_WRITE);
                 } else {
                     throw new ParserException(

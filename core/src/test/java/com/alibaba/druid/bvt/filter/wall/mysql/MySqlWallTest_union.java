@@ -17,9 +17,12 @@ package com.alibaba.druid.bvt.filter.wall.mysql;
 
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class MySqlWallTest_union extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlWallTest_union {
+    @Test
     public void testUnion() throws Exception {
         WallConfig config = new WallConfig();
         config.setSelectUnionCheck(true);
@@ -41,6 +44,7 @@ public class MySqlWallTest_union extends TestCase {
         assertTrue(WallUtils.isValidateMySql("select f1, f2 from t where id=1 union select 'u1' as u1, 'u2' as u2", config)); // union select item has alias
     }
 
+    @Test
     public void testUnion2() throws Exception {
 //        assertFalse(
 //                WallUtils.isValidateMySql("SELECT name, surname FROM users WHERE name='' UNION SELECT @@version, 'string1'")

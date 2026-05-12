@@ -19,11 +19,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class IdentifierTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class IdentifierTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT t.1c FROM tab t";
 
@@ -35,6 +38,7 @@ public class IdentifierTest extends TestCase {
         assertEquals("SELECT t.1c\nFROM tab t;", text);
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "SELECT tid,seller_nick,jdp_response from 2df1479e96cb4ac8b57f2502b5425bb5";
 

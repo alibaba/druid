@@ -26,6 +26,8 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlInsertTest_27_str_concat extends MysqlTest {
     public void test_insert_concat() throws Exception {
         String sql = "insert ignore into ktv_sms_test (cp) values ('a' 'b')";

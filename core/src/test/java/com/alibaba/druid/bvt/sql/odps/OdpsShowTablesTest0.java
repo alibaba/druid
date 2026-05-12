@@ -4,9 +4,12 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.odps.parser.OdpsStatementParser;
 import com.alibaba.druid.sql.parser.Token;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class OdpsShowTablesTest0 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OdpsShowTablesTest0 {
+    @Test
     public void test_0() throws Exception {
         String sql = "show tables";
         OdpsStatementParser parser = new OdpsStatementParser(sql);
@@ -16,6 +19,7 @@ public class OdpsShowTablesTest0 extends TestCase {
         assertEquals("SHOW TABLES", output);
     }
 
+    @Test
     public void test_from() throws Exception {
         String sql = "show tables from xx";
         OdpsStatementParser parser = new OdpsStatementParser(sql);
@@ -26,6 +30,7 @@ public class OdpsShowTablesTest0 extends TestCase {
         assertEquals("show tables from xx", SQLUtils.toOdpsString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 
+    @Test
     public void test_from_like() throws Exception {
         String sql = "show tables from xx like '*'";
         OdpsStatementParser parser = new OdpsStatementParser(sql);

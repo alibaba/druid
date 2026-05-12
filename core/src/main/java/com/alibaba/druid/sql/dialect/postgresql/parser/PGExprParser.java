@@ -361,6 +361,41 @@ public class PGExprParser extends SQLExprParser {
         return intervalExpr;
     }
 
+    private SQLExpr tryParseJsonPathOperator(SQLExpr expr) {
+        String name;
+        if (expr instanceof SQLIdentifierExpr) {
+            name = ((SQLIdentifierExpr) expr).getName();
+        } else if (expr instanceof SQLPropertyExpr) {
+            name = ((SQLPropertyExpr) expr).getName();
+        } else {
+            return null;
+        }
+
+        if (name.length() <= 1 || name.charAt(name.length() - 1) != '#') {
+            return null;
+        }
+
+        SQLBinaryOperator jsonPathOp = null;
+        if (lexer.token() == Token.GT) {
+            jsonPathOp = SQLBinaryOperator.PoundGt;
+        } else if (lexer.token() == Token.GTGT) {
+            jsonPathOp = SQLBinaryOperator.PoundGtGt;
+        }
+
+        if (jsonPathOp == null) {
+            return null;
+        }
+
+        if (expr instanceof SQLIdentifierExpr) {
+            ((SQLIdentifierExpr) expr).setName(name.substring(0, name.length() - 1));
+        } else {
+            ((SQLPropertyExpr) expr).setName(name.substring(0, name.length() - 1));
+        }
+        lexer.nextToken();
+        SQLExpr rightExp = primary();
+        return new SQLBinaryOpExpr(expr, jsonPathOp, rightExp, dbType);
+    }
+
     public SQLExpr primaryRest(SQLExpr expr) {
         if (lexer.nextIf(Token.COLONCOLON)) {
             SQLDataType dataType = this.parseDataType();
@@ -380,6 +415,14 @@ public class PGExprParser extends SQLExprParser {
             this.exprList(array.getValues(), array);
             accept(Token.RBRACKET);
             return primaryRest(array);
+        }
+
+        // Handle #> and #>> JSON path operators (lexer consumes # as part of identifier)
+        {
+            SQLExpr jsonPathResult = tryParseJsonPathOperator(expr);
+            if (jsonPathResult != null) {
+                return jsonPathResult;
+            }
         }
 
         if (expr.getClass() == SQLIdentifierExpr.class) {

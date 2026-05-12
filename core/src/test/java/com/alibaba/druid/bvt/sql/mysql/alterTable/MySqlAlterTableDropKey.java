@@ -22,9 +22,12 @@ import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class MySqlAlterTableDropKey extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlAlterTableDropKey {
+    @Test
     public void test_alter_first() throws Exception {
         String sql = "alter table t6 drop key v";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -45,6 +48,7 @@ public class MySqlAlterTableDropKey extends TestCase {
         assertEquals(1, tableStat.getDropIndexCount());
     }
 
+    @Test
     public void test_alter_2() throws Exception {
         String sql = "alter table t6 drop clustered key v";
         MySqlStatementParser parser = new MySqlStatementParser(sql);

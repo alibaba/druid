@@ -19,11 +19,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat.Column;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class OracleSchemaStatVisitorTest1 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OracleSchemaStatVisitorTest1 {
+    @Test
     public void test_0() throws Exception {
         String sql = "select a.name, b.name FROM users a, usergroups b on a.groupId = b.id";
 
@@ -55,6 +58,7 @@ public class OracleSchemaStatVisitorTest1 extends TestCase {
         assertEquals("users.groupId = usergroups.id", visitor.getRelationships().iterator().next().toString());
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "select a.name, b.name FROM users a, usergroups b on a.groupId = b.id where a.groupID = ?";
 

@@ -19,9 +19,12 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.odps.parser.OdpsStatementParser;
 import com.alibaba.druid.sql.parser.Token;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class OdpsGrantTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OdpsGrantTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "grant update, Select on table adl_register_baseline_sdt to user DXP_71074213@aliyun.com";
         OdpsStatementParser parser = new OdpsStatementParser(sql);
@@ -33,6 +36,7 @@ public class OdpsGrantTest extends TestCase {
                 output);
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "grant role_project_admin to aliyun$DXP_xxxxx@aliyun.com";
         OdpsStatementParser parser = new OdpsStatementParser(sql);
@@ -43,6 +47,7 @@ public class OdpsGrantTest extends TestCase {
         assertEquals("GRANT ROLE_PROJECT_ADMIN TO aliyun$DXP_xxxxx@aliyun.com", output);
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "grant super Write to user aliyun$DXP_xxxxx@aliyun.com";
         OdpsStatementParser parser = new OdpsStatementParser(sql);
@@ -53,6 +58,7 @@ public class OdpsGrantTest extends TestCase {
         assertEquals("GRANT SUPER WRITE TO USER aliyun$DXP_xxxxx@aliyun.com", output);
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = "grant label 2 on table adl_register_baseline_sdt(c1, c2) to user aliyun$DXP_xxxxx@aliyun.com with exp 5";
         OdpsStatementParser parser = new OdpsStatementParser(sql);
@@ -64,6 +70,7 @@ public class OdpsGrantTest extends TestCase {
                 output);
     }
 
+    @Test
     public void test_4() throws Exception {
         String sql = "grant CreateInstance, CreateResource, CreateFunction, CreateTable, List ON PROJECT test_project TO ROLE worker";
         OdpsStatementParser parser = new OdpsStatementParser(sql);

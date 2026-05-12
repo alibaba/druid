@@ -9,7 +9,9 @@ import com.alibaba.druid.proxy.jdbc.ResultSetProxyImpl;
 import com.alibaba.druid.proxy.jdbc.StatementProxy;
 import com.alibaba.druid.util.DruidPasswordCallback;
 import com.alibaba.druid.util.JdbcUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.security.auth.callback.NameCallback;
 
@@ -19,12 +21,15 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class DruidDataSourceTest6 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class DruidDataSourceTest6 {
     private DruidDataSource dataSource;
 
     private final AtomicInteger errorCount = new AtomicInteger();
     private final AtomicInteger returnEmptyCount = new AtomicInteger();
 
+    @BeforeEach
     protected void setUp() throws Exception {
         returnEmptyCount.set(0);
 
@@ -64,10 +69,12 @@ public class DruidDataSourceTest6 extends TestCase {
         });
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
     }
 
+    @Test
     public void testValidate() throws Exception {
         returnEmptyCount.set(1);
 

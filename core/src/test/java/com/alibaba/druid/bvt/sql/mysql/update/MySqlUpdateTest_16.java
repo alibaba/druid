@@ -27,6 +27,8 @@ import com.alibaba.druid.wall.WallUtils;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlUpdateTest_16 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "update am_activity_prize set lock_left_count=lock_left_count-120.0, lock_count=lock_count+0.0 where id=?";

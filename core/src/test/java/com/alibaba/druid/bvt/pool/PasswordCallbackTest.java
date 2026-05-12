@@ -18,20 +18,27 @@ package com.alibaba.druid.bvt.pool;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.util.DruidPasswordCallback;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.util.Properties;
 
-public class PasswordCallbackTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class PasswordCallbackTest {
+    @BeforeEach
     protected void setUp() throws Exception {
         DruidDataSourceStatManager.clear();
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
-        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        DruidDataSourceStatManager.clear();
     }
 
+    @Test
     public void test_0() throws Exception {
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:");

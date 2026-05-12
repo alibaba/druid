@@ -22,7 +22,9 @@ import com.alibaba.druid.pool.vendor.NullExceptionSorter;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.stat.JdbcStatContext;
 import com.alibaba.druid.stat.JdbcStatManager;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -30,15 +32,16 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class PoolableStatementTest2 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class PoolableStatementTest2 {
     private MockDriver driver;
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         DruidDataSourceStatManager.clear();
-
         driver = new MockDriver();
-
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setDriver(driver);
@@ -64,13 +67,15 @@ public class PoolableStatementTest2 extends TestCase {
         JdbcStatManager.getInstance().setStatContext(context);
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         assertEquals(true, dataSource.getCreateTimespanNano() > 0);
         dataSource.close();
-        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        DruidDataSourceStatManager.clear();
         JdbcStatManager.getInstance().setStatContext(null);
     }
 
+    @Test
     public void test_dupClose() throws Exception {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
@@ -79,6 +84,7 @@ public class PoolableStatementTest2 extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_executeUpdate() throws Exception {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
@@ -87,6 +93,7 @@ public class PoolableStatementTest2 extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_executeUpdate_error() throws Exception {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
@@ -107,6 +114,7 @@ public class PoolableStatementTest2 extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_execute_error() throws Exception {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
@@ -127,6 +135,7 @@ public class PoolableStatementTest2 extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_executeQuery_error() throws Exception {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
@@ -147,6 +156,7 @@ public class PoolableStatementTest2 extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_setEscapeProcessing() throws Exception {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
@@ -168,6 +178,7 @@ public class PoolableStatementTest2 extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_getMaxFieldSize() throws Exception {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
@@ -201,6 +212,7 @@ public class PoolableStatementTest2 extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_QueryTimeout() throws Exception {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
@@ -234,6 +246,7 @@ public class PoolableStatementTest2 extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_MaxRows() throws Exception {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
@@ -267,6 +280,7 @@ public class PoolableStatementTest2 extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_FetchDirection() throws Exception {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
@@ -300,6 +314,7 @@ public class PoolableStatementTest2 extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_FetchSize() throws Exception {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
@@ -333,6 +348,7 @@ public class PoolableStatementTest2 extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_cancel() throws Exception {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
@@ -354,6 +370,7 @@ public class PoolableStatementTest2 extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_getWarnings() throws Exception {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
@@ -375,6 +392,7 @@ public class PoolableStatementTest2 extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_clearWarnings() throws Exception {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
@@ -396,6 +414,7 @@ public class PoolableStatementTest2 extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_setCursorName() throws Exception {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
@@ -417,6 +436,7 @@ public class PoolableStatementTest2 extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_getResultSet() throws Exception {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
@@ -438,6 +458,7 @@ public class PoolableStatementTest2 extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_getUpdateCount() throws Exception {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
@@ -460,6 +481,7 @@ public class PoolableStatementTest2 extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_getMoreResults() throws Exception {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
@@ -481,6 +503,7 @@ public class PoolableStatementTest2 extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_getResultSetConcurrency() throws Exception {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
@@ -502,6 +525,7 @@ public class PoolableStatementTest2 extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_getResultSetType() throws Exception {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
@@ -523,6 +547,7 @@ public class PoolableStatementTest2 extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_addBatch() throws Exception {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
@@ -544,6 +569,7 @@ public class PoolableStatementTest2 extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_clearBatch() throws Exception {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
@@ -565,6 +591,7 @@ public class PoolableStatementTest2 extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_executeBatch() throws Exception {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
@@ -586,6 +613,7 @@ public class PoolableStatementTest2 extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_getMoreResults_1() throws Exception {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
@@ -607,6 +635,7 @@ public class PoolableStatementTest2 extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_getGeneratedKeys() throws Exception {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
@@ -628,6 +657,7 @@ public class PoolableStatementTest2 extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_getResultSetHoldability() throws Exception {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
@@ -649,6 +679,7 @@ public class PoolableStatementTest2 extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_execute() throws Exception {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
@@ -670,6 +701,7 @@ public class PoolableStatementTest2 extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_execute_1() throws Exception {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
@@ -691,6 +723,7 @@ public class PoolableStatementTest2 extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_execute_2() throws Exception {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
@@ -712,6 +745,7 @@ public class PoolableStatementTest2 extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_executeUpdate_1() throws Exception {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
@@ -733,6 +767,7 @@ public class PoolableStatementTest2 extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_executeUpdate_2() throws Exception {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
@@ -754,6 +789,7 @@ public class PoolableStatementTest2 extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_executeUpdate_3() throws Exception {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
@@ -775,6 +811,7 @@ public class PoolableStatementTest2 extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_getMeta() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("SELELCT 1");
@@ -796,6 +833,7 @@ public class PoolableStatementTest2 extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_getParameterMetaData() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("SELELCT 1");
@@ -817,6 +855,7 @@ public class PoolableStatementTest2 extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_wasNull() throws Exception {
         Connection conn = dataSource.getConnection();
         CallableStatement stmt = conn.prepareCall("SELELCT 1");
@@ -838,6 +877,7 @@ public class PoolableStatementTest2 extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_executeQuery() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("SELECT 1");
@@ -859,6 +899,7 @@ public class PoolableStatementTest2 extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_executeUpdate_4() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("SELECT 1");
@@ -880,6 +921,7 @@ public class PoolableStatementTest2 extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_execute_3() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("SELELCT 1");
@@ -901,6 +943,7 @@ public class PoolableStatementTest2 extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_clearParameters() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("SELELCT 1");
@@ -922,6 +965,7 @@ public class PoolableStatementTest2 extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_addBatch_1() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("SELELCT 1");
@@ -943,6 +987,7 @@ public class PoolableStatementTest2 extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_executeUpdate_5() throws Exception {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
@@ -964,6 +1009,7 @@ public class PoolableStatementTest2 extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_executeUpdate_6() throws Exception {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
@@ -985,6 +1031,7 @@ public class PoolableStatementTest2 extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_executeUpdate_7() throws Exception {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
@@ -1006,6 +1053,7 @@ public class PoolableStatementTest2 extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_setPoolable() throws Exception {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();

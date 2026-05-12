@@ -24,6 +24,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleSelectTest_hierarchical_CONNECT_BY_ISCYCLE extends OracleTest {
     public void test_0() throws Exception {
         String sql = "SELECT last_name \"Employee\", CONNECT_BY_ISCYCLE \"Cycle\",\n" +

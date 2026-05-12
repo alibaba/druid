@@ -3,15 +3,18 @@ package com.alibaba.druid.mysql;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by tianzhen.wtz on 2016/6/7.
  * 类说明：
  */
-public class MysqlLimitTest extends TestCase {
+public class MysqlLimitTest {
+    @Test
     public void testLimit() {
         String sql = "select * from aaa limit 20exx";
         SQLStatementParser statementParser = SQLParserUtils.createSQLStatementParser(sql, "mysql");

@@ -1,0 +1,60 @@
+SELECT m.name AS mname, pname FROM manufacturers m LEFT JOIN LATERAL get_product_names(m.id) pname ON true
+--------------------
+SELECT m.name AS mname, pname
+FROM manufacturers m
+	LEFT JOIN LATERAL get_product_names(m.id) pname ON true
+------------------------------------------------------------------------------------------------------------------------
+SELECT * FROM t1 CROSS JOIN LATERAL (SELECT * FROM t2 WHERE t2.id = t1.id) AS sub
+--------------------
+SELECT *
+FROM t1
+	CROSS JOIN LATERAL(
+		SELECT *
+		FROM t2
+		WHERE t2.id = t1.id
+	) sub
+------------------------------------------------------------------------------------------------------------------------
+SELECT * FROM foo, LATERAL (SELECT * FROM bar WHERE bar.id = foo.bar_id) ss
+--------------------
+SELECT *
+FROM foo, LATERAL(
+		SELECT *
+		FROM bar
+		WHERE bar.id = foo.bar_id
+	) ss
+------------------------------------------------------------------------------------------------------------------------
+SELECT p1.id, v1 FROM polygons p1, LATERAL vertices(p1.poly) v1
+--------------------
+SELECT p1.id, v1
+FROM polygons p1, LATERAL vertices(p1.poly) v1
+------------------------------------------------------------------------------------------------------------------------
+SELECT * FROM orders o INNER JOIN LATERAL (SELECT * FROM order_items WHERE order_id = o.id LIMIT 3) items ON true
+--------------------
+SELECT *
+FROM orders o
+	INNER JOIN LATERAL(
+		SELECT *
+		FROM order_items
+		WHERE order_id = o.id
+		LIMIT 3
+	) items
+	ON true
+------------------------------------------------------------------------------------------------------------------------
+SELECT m.name FROM manufacturers m LEFT JOIN LATERAL get_product_names(m.id) pname ON true WHERE pname IS NULL
+--------------------
+SELECT m.name
+FROM manufacturers m
+	LEFT JOIN LATERAL get_product_names(m.id) pname ON true
+WHERE pname IS NULL
+------------------------------------------------------------------------------------------------------------------------
+SELECT * FROM LATERAL generate_series(1, 5) AS s
+--------------------
+SELECT *
+FROM LATERAL generate_series(1, 5) s
+------------------------------------------------------------------------------------------------------------------------
+SELECT * FROM LATERAL (SELECT 1 AS a) sub
+--------------------
+SELECT *
+FROM LATERAL(
+	SELECT 1 AS a
+) sub

@@ -21,12 +21,15 @@ import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.athena.visitor.AthenaOutputVisitor;
 import com.alibaba.druid.sql.dialect.bigquery.visitor.BigQueryOutputVisitor;
+import com.alibaba.druid.sql.dialect.bigquery.visitor.BigQuerySchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.blink.vsitor.BlinkOutputVisitor;
 import com.alibaba.druid.sql.dialect.clickhouse.visitor.CKOutputVisitor;
 import com.alibaba.druid.sql.dialect.clickhouse.visitor.CKStatVisitor;
 import com.alibaba.druid.sql.dialect.databricks.visitor.DatabricksOutputASTVisitor;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2OutputVisitor;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2SchemaStatVisitor;
+import com.alibaba.druid.sql.dialect.dm.visitor.DmOutputVisitor;
+import com.alibaba.druid.sql.dialect.dm.visitor.DmSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.doris.visitor.DorisOutputVisitor;
 import com.alibaba.druid.sql.dialect.gaussdb.visitor.GaussDbOutputVisitor;
 import com.alibaba.druid.sql.dialect.h2.visitor.H2OutputVisitor;
@@ -66,6 +69,8 @@ import com.alibaba.druid.sql.dialect.presto.visitor.PrestoOutputVisitor;
 import com.alibaba.druid.sql.dialect.redshift.visitor.RedshiftOutputVisitor;
 import com.alibaba.druid.sql.dialect.spark.visitor.SparkOutputASTVisitor;
 import com.alibaba.druid.sql.dialect.spark.visitor.SparkSchemaStatASTVisitor;
+import com.alibaba.druid.sql.dialect.sqlite.visitor.SQLiteOutputVisitor;
+import com.alibaba.druid.sql.dialect.sqlite.visitor.SQLiteSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerOutputVisitor;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.starrocks.visitor.StarRocksOutputVisitor;
@@ -585,6 +590,8 @@ public class SQLUtils {
                 return new CKOutputVisitor(out);
             case oscar:
                 return new OscarOutputVisitor(out);
+            case dm:
+                return new DmOutputVisitor(out);
             case starrocks:
                 return new StarRocksOutputVisitor(out);
             case bigquery:
@@ -595,6 +602,8 @@ public class SQLUtils {
                 return new DorisOutputVisitor(out);
             case teradata:
                 return new TDOutputVisitor(out);
+            case sqlite:
+                return new SQLiteOutputVisitor(out);
             default:
                 return new SQLASTOutputVisitor(out, dbType);
         }
@@ -653,6 +662,12 @@ public class SQLUtils {
                 return new SparkSchemaStatASTVisitor(repository);
             case clickhouse:
                 return new CKStatVisitor(repository);
+            case bigquery:
+                return new BigQuerySchemaStatVisitor(repository);
+            case dm:
+                return new DmSchemaStatVisitor(repository);
+            case sqlite:
+                return new SQLiteSchemaStatVisitor(repository);
             default:
                 return new SchemaStatVisitor(repository);
         }

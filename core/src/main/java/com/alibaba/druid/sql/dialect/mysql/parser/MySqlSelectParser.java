@@ -784,6 +784,26 @@ public class MySqlSelectParser extends SQLSelectParser {
         return super.parseTableSourceRest(tableSource);
     }
 
+    @Override
+    protected SQLTableSource parseLateralView(SQLTableSource tableSource) {
+        if (tableSource != null && "LATERAL".equalsIgnoreCase(tableSource.getAlias())) {
+            tableSource.setAlias(null);
+        }
+
+        if (lexer.token() == Token.VIEW) {
+            return super.parseLateralView(tableSource);
+        }
+
+        // MySQL 8.0.14+ LATERAL derived table: LATERAL (SELECT ...)
+        SQLTableSource lateralSource = parseLateralTableSource();
+
+        SQLJoinTableSource join = new SQLJoinTableSource();
+        join.setLeft(tableSource);
+        join.setRight(lateralSource);
+        join.setJoinType(SQLJoinTableSource.JoinType.COMMA);
+        return parseTableSourceRest(join);
+    }
+
     private void parseIndexHintList(SQLTableSource tableSource) {
         if (lexer.token() == Token.USE) {
             lexer.nextToken();

@@ -2,15 +2,17 @@ package com.alibaba.druid.bvt.sql;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
  * Created by wenshao on 16/9/25.
  */
-public class MappingTest_createTable extends TestCase {
+public class MappingTest_createTable {
     String sql = "create table user (\n" +
             "source_key int,\n" +
             "source_value varchar(32),\n" +
@@ -19,6 +21,7 @@ public class MappingTest_createTable extends TestCase {
 
     Map<String, String> mapping = Collections.singletonMap("user", "user_01");
 
+    @Test
     public void test_mapping_createTable() throws Exception {
         String result = SQLUtils.refactor(sql, null, mapping);
         assertEquals("CREATE TABLE user_01 (\n" +
@@ -28,6 +31,7 @@ public class MappingTest_createTable extends TestCase {
                 ");", result);
     }
 
+    @Test
     public void test_mapping_createTable_mysql() throws Exception {
         String result = SQLUtils.refactor(sql, JdbcConstants.MYSQL, mapping);
         assertEquals("CREATE TABLE user_01 (\n" +
@@ -37,6 +41,7 @@ public class MappingTest_createTable extends TestCase {
                 ");", result);
     }
 
+    @Test
     public void test_mapping_createTable_oracle() throws Exception {
         String result = SQLUtils.refactor(sql, JdbcConstants.ORACLE, mapping);
         assertEquals("CREATE TABLE user_01 (\n" +
@@ -46,6 +51,7 @@ public class MappingTest_createTable extends TestCase {
                 ");", result);
     }
 
+    @Test
     public void test_mapping_createTable_pg() throws Exception {
         String result = SQLUtils.refactor(sql, JdbcConstants.POSTGRESQL, mapping);
         assertEquals("CREATE TABLE user_01 (\n" +
@@ -55,6 +61,7 @@ public class MappingTest_createTable extends TestCase {
                 ");", result);
     }
 
+    @Test
     public void test_mapping_createTable_sqlserver() throws Exception {
         String result = SQLUtils.refactor(sql, JdbcConstants.SQL_SERVER, mapping);
         assertEquals("CREATE TABLE user_01 (\n" +
@@ -64,6 +71,7 @@ public class MappingTest_createTable extends TestCase {
                 ");", result);
     }
 
+    @Test
     public void test_mapping_createTable_db2() throws Exception {
         String result = SQLUtils.refactor(sql, JdbcConstants.DB2, mapping);
         assertEquals("CREATE TABLE user_01 (\n" +

@@ -5,7 +5,9 @@ import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -14,14 +16,17 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
  * 这个场景测试initialSize > maxActive
  *
  * @author wenshao [szujobs@hotmail.com]
  */
-public class DruidDataSourceTest_recycle2 extends TestCase {
+public class DruidDataSourceTest_recycle2 {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
@@ -33,10 +38,12 @@ public class DruidDataSourceTest_recycle2 extends TestCase {
         });
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
     }
 
+    @Test
     public void test_recycle() throws Exception {
         DruidPooledConnection conn = dataSource.getConnection();
 
@@ -52,6 +59,7 @@ public class DruidDataSourceTest_recycle2 extends TestCase {
         assertEquals(0, dataSource.getActiveCount());
     }
 
+    @Test
     public void test_recycle_error() throws Exception {
         DruidPooledConnection conn = dataSource.getConnection();
         conn.setAutoCommit(false);

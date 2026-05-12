@@ -4,14 +4,17 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.parser.SQLExprParser;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by wenshao on 04/06/2017.
  */
-public class SplitTest extends TestCase {
+public class SplitTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "((1 + 2) + (3 + 4) + 5) + ((6 + 7) + (8 + 9) + 10)";
 //        sql = "(1 + 2) + (3 + 4)";

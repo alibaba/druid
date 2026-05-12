@@ -17,9 +17,9 @@ package com.alibaba.druid.pool;
 
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.OracleUtils;
-import junit.framework.TestCase;
 import oracle.jdbc.OracleConnection;
 import oracle.jdbc.OraclePreparedStatement;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -27,7 +27,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-public class TestOraclePreparedStatement extends TestCase {
+public class TestOraclePreparedStatement {
     private String jdbcUrl;
     private String user;
     private String password;
@@ -58,6 +58,7 @@ public class TestOraclePreparedStatement extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_0() throws Exception {
         Connection conn = DriverManager.getConnection(jdbcUrl, user, password);
 

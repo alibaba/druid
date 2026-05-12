@@ -25,6 +25,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class DB2SelectTest_35_lockRequest extends DB2Test {
     public void test_0() throws Exception {
         String sql = "SELECT KEYID, KEYVALUE FROM KEYIDS WHERE KEYID = ? FOR READ ONLY WITH RS USE AND KEEP UPDATE LOCKS;";

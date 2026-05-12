@@ -17,30 +17,37 @@ package com.alibaba.druid.bvt.filter.wall;
 
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * 这个场景，检测可疑的Having条件
  *
  * @author wenshao
  */
-public class WallAllowSelectAllColumnTest1 extends TestCase {
+public class WallAllowSelectAllColumnTest1 {
     private String sql = "select count(*) from t where fid = ?";
 
     private WallConfig config = new WallConfig();
 
+    @BeforeEach
     protected void setUp() throws Exception {
         config.setSelectAllColumnAllow(false);
     }
 
+    @Test
     public void testMySql() throws Exception {
         assertTrue(WallUtils.isValidateMySql(sql, config));
     }
 
+    @Test
     public void testORACLE() throws Exception {
         assertTrue(WallUtils.isValidateMySql(sql, config));
     }
 
+    @Test
     public void testSQLServer() throws Exception {
         assertTrue(WallUtils.isValidateSqlServer(sql, config));
     }

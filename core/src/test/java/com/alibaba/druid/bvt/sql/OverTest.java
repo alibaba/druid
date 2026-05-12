@@ -3,11 +3,14 @@ package com.alibaba.druid.bvt.sql;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class OverTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OverTest {
+    @Test
     public void test_over() throws Exception {
         String sql = "SELECT SalesOrderID, ProductID, OrderQty" +
                 "    ,SUM(OrderQty) OVER(PARTITION BY SalesOrderID) AS 'Total'" +

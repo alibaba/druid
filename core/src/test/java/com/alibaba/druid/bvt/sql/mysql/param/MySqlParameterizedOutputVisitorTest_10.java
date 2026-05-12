@@ -9,14 +9,17 @@ import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by wenshao on 16/8/23.
  */
-public class MySqlParameterizedOutputVisitorTest_10 extends TestCase {
+public class MySqlParameterizedOutputVisitorTest_10 {
+    @Test
     public void test_for_parameterize() throws Exception {
          /*String instance = "100.81.152.9"+"_"+3314;
         int urlNum = Math.abs(instance.hashCode()) % 2;

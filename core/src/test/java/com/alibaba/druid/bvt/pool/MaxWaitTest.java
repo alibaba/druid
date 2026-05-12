@@ -3,15 +3,20 @@ package com.alibaba.druid.bvt.pool;
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
 
-public class MaxWaitTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MaxWaitTest {
     protected DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:driver");
@@ -29,10 +34,12 @@ public class MaxWaitTest extends TestCase {
         });
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
     }
 
+    @Test
     public void test_wait() throws Exception {
         Exception error = null;
         try {

@@ -2,9 +2,12 @@ package com.alibaba.druid.bvt.sql;
 
 import com.alibaba.druid.sql.PagerUtils;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class PagerUtilsTest_Limit_oracle_0 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class PagerUtilsTest_Limit_oracle_0 {
+    @Test
     public void test_oracle_oderby_0() throws Exception {
         String sql = "select * from t order by id";
         String result = PagerUtils.limit(sql, JdbcConstants.ORACLE, 0, 10);
@@ -17,6 +20,7 @@ public class PagerUtilsTest_Limit_oracle_0 extends TestCase {
                 "WHERE ROWNUM <= 10", result);
     }
 
+    @Test
     public void test_oracle_0() throws Exception {
         String sql = "select * from t";
         String result = PagerUtils.limit(sql, JdbcConstants.ORACLE, 0, 10);
@@ -25,6 +29,7 @@ public class PagerUtilsTest_Limit_oracle_0 extends TestCase {
                 "\nWHERE ROWNUM <= 10", result);
     }
 
+    @Test
     public void test_oracle_1() throws Exception {
         String sql = "select * from t";
         String result = PagerUtils.limit(sql, JdbcConstants.ORACLE, 10, 10);
@@ -40,6 +45,7 @@ public class PagerUtilsTest_Limit_oracle_0 extends TestCase {
                 "WHERE RN > 10", result);
     }
 
+    @Test
     public void test_oracle_2() throws Exception {
         String sql = "select * from t";
         String result = PagerUtils.limit(sql, JdbcConstants.ORACLE, 20, 10);
@@ -55,6 +61,7 @@ public class PagerUtilsTest_Limit_oracle_0 extends TestCase {
                 "WHERE RN > 20", result);
     }
 
+    @Test
     public void test_oracle_3() throws Exception {
         String sql = "select id, name, salary from t order by id, name";
         String result = PagerUtils.limit(sql, JdbcConstants.ORACLE, 20, 10);
@@ -71,6 +78,7 @@ public class PagerUtilsTest_Limit_oracle_0 extends TestCase {
                 "WHERE RN > 20", result);
     }
 
+    @Test
     public void test_oracle_4() throws Exception {
         String sql = "SELECT TO_CHAR(ADD_MONTHS(TO_DATE('2014', 'yyyy'), (ROWNUM) * 12), 'yyyy') as YEAR\n" +
                 "FROM DUAL\n" +

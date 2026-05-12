@@ -17,30 +17,36 @@ package com.alibaba.druid.bvt.filter.wall;
 
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * 这个场景，被攻击者用于测试当前SQL拥有多少字段
  *
  * @author wenshao
  */
-public class WallDropTest extends TestCase {
+public class WallDropTest {
+    @Test
     public void testMySql() throws Exception {
         WallConfig config = new WallConfig();
         config.setDropTableAllow(false);
         assertFalse(WallUtils.isValidateMySql("DROP TABLE T1", config));
     }
 
+    @Test
     public void testOracle() throws Exception {
         WallConfig config = new WallConfig();
         config.setDropTableAllow(false);
         assertFalse(WallUtils.isValidateOracle("DROP TABLE T1", config));
     }
 
+    @Test
     public void testMySql_true() throws Exception {
         assertTrue(WallUtils.isValidateMySql("DROP TABLE T1"));
     }
 
+    @Test
     public void testOracle_true() throws Exception {
         assertTrue(WallUtils.isValidateOracle("DROP TABLE T1"));
     }

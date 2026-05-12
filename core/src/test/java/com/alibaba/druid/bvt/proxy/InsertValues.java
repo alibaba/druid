@@ -7,14 +7,17 @@ import com.alibaba.druid.proxy.jdbc.DataSourceProxyConfig;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxyImpl;
 import com.alibaba.druid.proxy.jdbc.JdbcParameter;
 import com.alibaba.druid.proxy.jdbc.PreparedStatementProxyImpl;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by wenshao on 12/07/2017.
  */
-public class InsertValues extends TestCase {
+public class InsertValues {
+    @Test
     public void test_insert_values() throws Exception {
         String sql = "insert into t (f0, f1, f2, f3, f4) values ";
         for (int i = 0; i < 1000; ++i) {

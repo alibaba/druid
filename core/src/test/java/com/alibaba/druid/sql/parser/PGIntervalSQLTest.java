@@ -5,15 +5,18 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectStatement;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGSQLStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by tianzhen.wtz on 2014/12/26 0026 20:44.
  * 类说明：
  */
-public class PGIntervalSQLTest extends TestCase {
+public class PGIntervalSQLTest {
+    @Test
     public void testIntervalSQL() {
         String sql1 = "select timestamp '2001-09-28 01:00' + interval '23 hours'";
         String sql1Result = "SELECT TIMESTAMP '2001-09-28 01:00' + INTERVAL '23 hours'";
@@ -34,6 +37,7 @@ public class PGIntervalSQLTest extends TestCase {
         assertEquals(statement.toString(), resultSql);
     }
 
+    @Test
     public void testIntervalSQL_OracleToPg() {
         String sql = "SELECT (SYSTIMESTAMP - order_date) DAY(9) TO SECOND from orders WHERE order_id = 2458";
         OracleStatementParser parser = new OracleStatementParser(sql);

@@ -16,7 +16,9 @@
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
 import com.alibaba.druid.wall.WallUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * SQLServerWallTest
@@ -25,7 +27,8 @@ import junit.framework.TestCase;
  * @version 1.0, 2012-3-18
  * @see
  */
-public class MySqlWallTest3 extends TestCase {
+public class MySqlWallTest3 {
+    @Test
     public void test_stuff() throws Exception {
         assertTrue(WallUtils.isValidateMySql(//
                 "SELECT COUNT(p.id) FROM TB_PRO p" +

@@ -15,31 +15,36 @@
  */
 package com.alibaba.druid.util;
 
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MapComparatorTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MapComparatorTest {
     private String orderByKey = "orderby";
 
+    @Test
     public void test_comparator_date() throws Exception {
         test_comparator_date_0(true);
         test_comparator_date_0(false);
     }
 
+    @Test
     public void test_comparator_String() throws Exception {
         test_comparator_string_0(true);
         test_comparator_string_0(false);
     }
 
+    @Test
     public void test_comparator_number() throws Exception {
         test_comparator_number_0(true);
         test_comparator_number_0(false);
     }
 
+    @Test
     public void test_comparator_array() throws Exception {
         test_comparator_array_0(true);
         test_comparator_array_0(false);
@@ -55,24 +60,24 @@ public class MapComparatorTest extends TestCase {
 
         map1.put(orderByKey, new Date[]{new Date(now)});
         map2.put(orderByKey, new Date[]{new Date(now - 1)});
-        Assert.assertEquals(!desc, comparator.compare(map1, map2) > 0);
+        assertEquals(!desc, comparator.compare(map1, map2) > 0);
 
         map2.put(orderByKey, new Date[]{new Date(now)});
-        Assert.assertEquals(true, comparator.compare(map1, map2) == 0);
+        assertEquals(true, comparator.compare(map1, map2) == 0);
 
         map2.put(orderByKey, new Date[]{new Date(now + 1)});
-        Assert.assertEquals(!desc, comparator.compare(map1, map2) < 0);
+        assertEquals(!desc, comparator.compare(map1, map2) < 0);
 
         map2.put(orderByKey, null);
-        Assert.assertEquals(!desc, comparator.compare(map1, map2) > 0);
+        assertEquals(!desc, comparator.compare(map1, map2) > 0);
 
         map1.put(orderByKey, null);
         map2.put(orderByKey, new Date[]{new Date(now)});
-        Assert.assertEquals(!desc, comparator.compare(map1, map2) < 0);
+        assertEquals(!desc, comparator.compare(map1, map2) < 0);
 
         map1.put(orderByKey, null);
         map2.put(orderByKey, null);
-        Assert.assertEquals(true, comparator.compare(map1, map2) == 0);
+        assertEquals(true, comparator.compare(map1, map2) == 0);
     }
 
     private void test_comparator_date_0(boolean desc) throws Exception {
@@ -84,24 +89,24 @@ public class MapComparatorTest extends TestCase {
 
         map1.put(orderByKey, new Date(now));
         map2.put(orderByKey, new Date(now - 1));
-        Assert.assertEquals(!desc, comparator.compare(map1, map2) > 0);
+        assertEquals(!desc, comparator.compare(map1, map2) > 0);
 
         map2.put(orderByKey, new Date(now));
-        Assert.assertEquals(true, comparator.compare(map1, map2) == 0);
+        assertEquals(true, comparator.compare(map1, map2) == 0);
 
         map2.put(orderByKey, new Date(now + 1));
-        Assert.assertEquals(!desc, comparator.compare(map1, map2) < 0);
+        assertEquals(!desc, comparator.compare(map1, map2) < 0);
 
         map2.put(orderByKey, null);
-        Assert.assertEquals(!desc, comparator.compare(map1, map2) > 0);
+        assertEquals(!desc, comparator.compare(map1, map2) > 0);
 
         map1.put(orderByKey, null);
         map2.put(orderByKey, new Date(now));
-        Assert.assertEquals(!desc, comparator.compare(map1, map2) < 0);
+        assertEquals(!desc, comparator.compare(map1, map2) < 0);
 
         map1.put(orderByKey, null);
         map2.put(orderByKey, null);
-        Assert.assertEquals(true, comparator.compare(map1, map2) == 0);
+        assertEquals(true, comparator.compare(map1, map2) == 0);
     }
 
     private void test_comparator_string_0(boolean desc) throws Exception {
@@ -112,24 +117,24 @@ public class MapComparatorTest extends TestCase {
 
         map1.put(orderByKey, "opq");
         map2.put(orderByKey, "xyz");
-        Assert.assertEquals(desc, comparator.compare(map1, map2) > 0);
+        assertEquals(desc, comparator.compare(map1, map2) > 0);
 
         map2.put(orderByKey, "opq");
-        Assert.assertEquals(true, comparator.compare(map1, map2) == 0);
+        assertEquals(true, comparator.compare(map1, map2) == 0);
 
         map2.put(orderByKey, "abc");
-        Assert.assertEquals(desc, comparator.compare(map1, map2) < 0);
+        assertEquals(desc, comparator.compare(map1, map2) < 0);
 
         map2.put(orderByKey, null);
-        Assert.assertEquals(!desc, comparator.compare(map1, map2) > 0);
+        assertEquals(!desc, comparator.compare(map1, map2) > 0);
 
         map1.put(orderByKey, null);
         map2.put(orderByKey, "opq");
-        Assert.assertEquals(!desc, comparator.compare(map1, map2) < 0);
+        assertEquals(!desc, comparator.compare(map1, map2) < 0);
 
         map1.put(orderByKey, null);
         map2.put(orderByKey, null);
-        Assert.assertEquals(true, comparator.compare(map1, map2) == 0);
+        assertEquals(true, comparator.compare(map1, map2) == 0);
     }
 
     private void test_comparator_number_0(boolean desc) throws Exception {
@@ -141,23 +146,23 @@ public class MapComparatorTest extends TestCase {
 
         map1.put(orderByKey, baseNumber);
         map2.put(orderByKey, baseNumber - 1);
-        Assert.assertEquals(!desc, comparator.compare(map1, map2) > 0);
+        assertEquals(!desc, comparator.compare(map1, map2) > 0);
 
         map2.put(orderByKey, baseNumber);
-        Assert.assertEquals(true, comparator.compare(map1, map2) == 0);
+        assertEquals(true, comparator.compare(map1, map2) == 0);
 
         map2.put(orderByKey, baseNumber + 1);
-        Assert.assertEquals(!desc, comparator.compare(map1, map2) < 0);
+        assertEquals(!desc, comparator.compare(map1, map2) < 0);
 
         map2.put(orderByKey, null);
-        Assert.assertEquals(!desc, comparator.compare(map1, map2) > 0);
+        assertEquals(!desc, comparator.compare(map1, map2) > 0);
 
         map1.put(orderByKey, null);
         map2.put(orderByKey, baseNumber);
-        Assert.assertEquals(!desc, comparator.compare(map1, map2) < 0);
+        assertEquals(!desc, comparator.compare(map1, map2) < 0);
 
         map1.put(orderByKey, null);
         map2.put(orderByKey, null);
-        Assert.assertEquals(true, comparator.compare(map1, map2) == 0);
+        assertEquals(true, comparator.compare(map1, map2) == 0);
     }
 }

@@ -23,6 +23,8 @@ import com.alibaba.druid.stat.TableStat;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlShowTest_41_partitions extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SHOW PARTITIONS FROM t WHERE x = 1";

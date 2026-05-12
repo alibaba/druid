@@ -26,6 +26,8 @@ import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleSelectTest108 extends OracleTest {
     public void test_0() throws Exception {
         String sql = //

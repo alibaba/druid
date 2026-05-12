@@ -1,9 +1,12 @@
 package com.alibaba.druid.bvt.bug;
 
 import com.alibaba.druid.sql.SQLUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class Issue_697 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class Issue_697 {
+    @Test
     public void test_for_issue() throws Exception {
         String sql = "insert into tag_rule_detail(id, gmt_create, gmt_modified, group_id, priority, rule_condition, rule_action) values(1010102, now(), now(), 10101, 0, 'flow=''trustLogin''', 'be:login,dev:pc, env:web, type:trust_login, from:$loginfrom, result:true') ;\n"
                 + "insert into tag_rule_detail(id, gmt_create, gmt_modified, group_id, priority, rule_condition, rule_action) values(1010103, now(), now(), 10101, 0, 'flow=''Ctr''', 'be:login,dev:pc, env:web, type:ctr, from:$loginfrom, result:true') ;";

@@ -27,12 +27,13 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectTableReference;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitorAdapter;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Demo1 extends TestCase {
+public class Demo1 {
+    @Test
     public void test_0() throws Exception {
         String sql = "select * from user where uid = ? and uname = ?";
         List<Object> parameters = new ArrayList<Object>();

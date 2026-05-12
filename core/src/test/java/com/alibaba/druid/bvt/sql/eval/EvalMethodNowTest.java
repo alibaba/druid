@@ -2,11 +2,14 @@ package com.alibaba.druid.bvt.sql.eval;
 
 import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.Date;
 
-public class EvalMethodNowTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class EvalMethodNowTest {
+    @Test
     public void test_now() throws Exception {
         assertEquals(true, SQLEvalVisitorUtils.evalExpr(JdbcConstants.MYSQL, "now()") instanceof Date);
     }

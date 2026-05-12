@@ -12,9 +12,12 @@ import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.repository.SchemaRepository;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class SchemaStatTest22_yiran extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class SchemaStatTest22_yiran {
+    @Test
     public void test_schemaStat() throws Exception {
         SchemaRepository repository = new SchemaRepository(JdbcConstants.MYSQL);
         repository.console("CREATE TABLE DEPT (depno INT4, dname ENC_TEXT)");

@@ -5,6 +5,8 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGExprParser;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class ArrayTest extends PGTest {
     public void test_timestamp() throws Exception {
         String sql = "cast(xx as varchar(12)[])";

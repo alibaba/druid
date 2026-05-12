@@ -5,11 +5,14 @@ import com.alibaba.druid.sql.dialect.odps.parser.OdpsStatementParser;
 import com.alibaba.druid.sql.dialect.odps.visitor.OdpsSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class OdpsDoubleQuoteTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OdpsDoubleQuoteTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT my_udtf(1,2,3) as (a, b, c) from employee t1 WHERE t1.name = \"aaa\";";
 

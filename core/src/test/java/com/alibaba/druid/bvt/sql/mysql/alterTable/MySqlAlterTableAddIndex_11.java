@@ -7,7 +7,9 @@ import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @version 1.0
@@ -16,7 +18,8 @@ import junit.framework.TestCase;
  * @Author zzy
  * @Date 2019-05-06 15:45
  */
-public class MySqlAlterTableAddIndex_11 extends TestCase {
+public class MySqlAlterTableAddIndex_11 {
+    @Test
     public void test_alter_table_add_index_with_options() throws Exception {
         String sql = "ALTER TABLE aliyun_poc_db.tbl_custom_analyzer2 ADD FULLTEXT INDEX title_fulltext_idx (title) WITH INDEX ANALYZER index_analyzer2 WITH QUERY ANALYZER query_analyzer2 WITH DICT user_dict;";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -37,6 +40,7 @@ public class MySqlAlterTableAddIndex_11 extends TestCase {
         assertEquals(1, tableStat.getCreateIndexCount());
     }
 
+    @Test
     public void test_alter_table_add_index_with_options2() throws Exception {
         String sql = "ALTER TABLE aliyun_poc_db.tbl_custom_analyzer2 ADD FULLTEXT INDEX title_fulltext_idx (title) WITH INDEX ANALYZER index_analyzer2";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -57,6 +61,7 @@ public class MySqlAlterTableAddIndex_11 extends TestCase {
         assertEquals(1, tableStat.getCreateIndexCount());
     }
 
+    @Test
     public void test_alter_table_add_index_with_options3() throws Exception {
         String sql = "ALTER TABLE aliyun_poc_db.tbl_custom_analyzer2 ADD FULLTEXT INDEX title_fulltext_idx (title) WITH QUERY ANALYZER query_analyzer2 WITH DICT user_dict;";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -77,6 +82,7 @@ public class MySqlAlterTableAddIndex_11 extends TestCase {
         assertEquals(1, tableStat.getCreateIndexCount());
     }
 
+    @Test
     public void test_alter_table_add_index_with_options4() throws Exception {
         String sql = "ALTER TABLE aliyun_poc_db.tbl_custom_analyzer2 ADD FULLTEXT INDEX title_fulltext_idx (title) WITH DICT user_dict;";
         MySqlStatementParser parser = new MySqlStatementParser(sql);

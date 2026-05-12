@@ -20,9 +20,12 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.Token;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class MySqlAlterTableTest_drop_constraint extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlAlterTableTest_drop_constraint {
+    @Test
     public void test_alter_constraint() throws Exception {
         String sql = "alter table TUSER drop constraint UK_084c17821a8f47e8b31fbb126b6";
         MySqlStatementParser parser = new MySqlStatementParser(sql);

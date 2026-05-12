@@ -22,9 +22,12 @@ import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class MySqlAlterTableAddIndex_8 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlAlterTableAddIndex_8 {
+    @Test
     public void test_alter_first() throws Exception {
         String sql =
                 "alter table `seller_table2` rename `seller_table3` , add key `idx_create`(`gmt_create`)";

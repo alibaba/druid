@@ -17,17 +17,20 @@ package com.alibaba.druid.bvt.filter.wall;
 
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * 这个场景，检测可疑的Having条件
  *
  * @author wenshao
  */
-public class WallUpdateWhereTest extends TestCase {
+public class WallUpdateWhereTest {
     private String sql = "UPDATE T SET F1 = 0 WHERE 1 = 1";
     private String sql2 = "UPDATE T SET F1 = 0 WHERE id=0 and 1 = 1";
 
+    @Test
     public void testMySql() throws Exception {
         assertFalse(WallUtils.isValidateMySql(sql));
         assertTrue(WallUtils.isValidateMySql(sql2));
@@ -43,6 +46,7 @@ public class WallUpdateWhereTest extends TestCase {
         assertFalse(WallUtils.isValidateMySql(sql2, config));
     }
 
+    @Test
     public void testORACLE() throws Exception {
         assertFalse(WallUtils.isValidateOracle(sql));
         assertTrue(WallUtils.isValidateOracle(sql2));

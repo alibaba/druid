@@ -17,14 +17,17 @@ package com.alibaba.druid.bvt.filter.wall.oracle;
 
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * 这个场景测试访问Oracle系统对象
  *
  * @author admin
  */
-public class OracleWallPermitObjectTest extends TestCase {
+public class OracleWallPermitObjectTest {
+    @Test
     public void test_permitTable() throws Exception {
         assertFalse(WallUtils.isValidateOracle("select  sys.LinxReadFile('c:/boot.ini') from dual"));
         assertFalse(WallUtils.isValidateOracle("select  sys.LinxRunCMD('cmd /c net user linx /add') from dual"));
@@ -34,6 +37,7 @@ public class OracleWallPermitObjectTest extends TestCase {
         assertFalse(WallUtils.isValidateOracle("select SYS.DBMS_EXPORT_EXTENSION.GET_DOMAIN_INDEX_TABLES()"));
     }
 
+    @Test
     public void test_permitTable_allow() throws Exception {
         WallConfig config = new WallConfig();
         config.setObjectCheck(false);

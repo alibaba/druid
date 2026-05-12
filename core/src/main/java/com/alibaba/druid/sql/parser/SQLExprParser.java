@@ -126,6 +126,9 @@ public class SQLExprParser extends SQLParser {
             parenthesized = false;
             ((SQLQueryExpr) expr).setParenthesized(true);
         }
+        if (parenthesized && expr instanceof SQLNotExpr) {
+            parenthesized = false;
+        }
         if (parenthesized && expr instanceof SQLIdentifierExpr) {
             parenthesized = false;
             ((SQLIdentifierExpr) expr).setParenthesized(true);
@@ -470,37 +473,7 @@ public class SQLExprParser extends SQLParser {
 
         switch (tok) {
             case LPAREN:
-                lexer.nextToken();
-                if (lexer.token == Token.RPAREN) {
-                    lexer.nextToken();
-                    sqlExpr = new SQLMethodInvokeExpr();
-                    break;
-                }
-                sqlExpr = expr();
-
-                if (lexer.token == Token.COMMA) {
-                    SQLListExpr listExpr = new SQLListExpr();
-                    listExpr.addItem(sqlExpr);
-                    do {
-                        lexer.nextToken();
-                        listExpr.addItem(expr());
-                    } while (lexer.token == Token.COMMA);
-
-                    sqlExpr = listExpr;
-                }
-                if (sqlExpr instanceof SQLExprImpl) {
-                    ((SQLExprImpl) sqlExpr).setParenthesized(true);
-                }
-
-                if ((lexer.token == Token.UNION || lexer.token == Token.MINUS || lexer.token == Token.EXCEPT)
-                        && sqlExpr instanceof SQLQueryExpr) {
-                    SQLQueryExpr queryExpr = (SQLQueryExpr) sqlExpr;
-
-                    SQLSelectQuery query = this.createSelectParser().queryRest(queryExpr.getSubQuery().getQuery(), true);
-                    queryExpr.getSubQuery().setQuery(query);
-                }
-
-                accept(Token.RPAREN);
+                sqlExpr = primaryLParen();
                 break;
             case INSERT:
                 lexer.nextToken();
@@ -510,104 +483,10 @@ public class SQLExprParser extends SQLParser {
                 sqlExpr = new SQLIdentifierExpr("INSERT");
                 break;
             case IDENTIFIER:
-                String ident = lexer.stringVal();
-                long hash_lower = lexer.hashLCase();
-
-                int sourceLine = -1, sourceColumn = -1;
-                if (lexer.keepSourceLocation) {
-                    lexer.computeRowAndColumn();
-                    sourceLine = lexer.posLine;
-                    sourceColumn = lexer.posColumn;
-                }
-
-                lexer.nextToken();
-                if (lexer.identifierEquals("COLLATE")) {
-                    acceptIdentifier("COLLATE");
-                    String collateValue = lexer.stringVal();
-                    if (lexer.token == Token.IDENTIFIER || lexer.token == Token.LITERAL_ALIAS || lexer.token == Token.LITERAL_CHARS) {
-                        SQLIdentifierExpr identifierExpr = new SQLIdentifierExpr(ident);
-                        identifierExpr.setCollate(collateValue);
-                        lexer.nextToken();
-                        sqlExpr = identifierExpr;
-                    } else {
-                        throw new ParserException("syntax error. " + lexer.info());
-                    }
-                } else if (hash_lower == FnvHash.Constants.TRY_CAST) {
-                    accept(Token.LPAREN);
-                    SQLCastExpr cast = new SQLCastExpr();
-                    cast.setTry(true);
-                    cast.setExpr(expr());
-                    accept(Token.AS);
-                    cast.setDataType(parseDataType(false));
-                    accept(Token.RPAREN);
-
-                    sqlExpr = cast;
-                } else if (hash_lower == FnvHash.Constants.DATE
-                        && (lexer.token == Token.LITERAL_CHARS || lexer.token == Token.VARIANT)
-                        && (dialectFeatureEnabled(SQLDateExpr))) {
-                    String literal = lexer.token == Token.LITERAL_CHARS ? lexer.stringVal() : "?";
-                    lexer.nextToken();
-                    SQLDateExpr dateExpr = new SQLDateExpr();
-                    dateExpr.setValue(literal);
-                    sqlExpr = dateExpr;
-                } else if (hash_lower == FnvHash.Constants.TIMESTAMP
-                        && (lexer.token == Token.LITERAL_CHARS || lexer.token == Token.VARIANT)
-                        && dialectFeatureEnabled(SQLTimestampExpr)) {
-                    SQLTimestampExpr dateExpr = new SQLTimestampExpr(lexer.stringVal());
-                    lexer.nextToken();
-                    sqlExpr = dateExpr;
-                } else if (hash_lower == FnvHash.Constants.TIME
-                        && (lexer.token == Token.LITERAL_CHARS || lexer.token == Token.VARIANT)) {
-                    SQLTimeExpr dateExpr = new SQLTimeExpr(lexer.stringVal());
-                    lexer.nextToken();
-                    sqlExpr = dateExpr;
-                } else if (hash_lower == FnvHash.Constants.TIME && lexer.token == Token.LITERAL_ALIAS) {
-                    SQLTimeExpr dateExpr = new SQLTimeExpr(SQLUtils.normalize(lexer.stringVal()));
-                    lexer.nextToken();
-                    sqlExpr = dateExpr;
-                } else if (hash_lower == FnvHash.Constants.DATETIME
-                        && (lexer.token == Token.LITERAL_CHARS || lexer.token == Token.VARIANT)) {
-                    SQLDateTimeExpr dateExpr = new SQLDateTimeExpr(lexer.stringVal());
-                    lexer.nextToken();
-                    sqlExpr = dateExpr;
-                } else if (hash_lower == FnvHash.Constants.DATETIME && lexer.token == Token.LITERAL_ALIAS) {
-                    SQLDateTimeExpr dateExpr = new SQLDateTimeExpr(SQLUtils.normalize(lexer.stringVal()));
-                    lexer.nextToken();
-                    sqlExpr = dateExpr;
-                } else if (hash_lower == FnvHash.Constants.BOOLEAN && lexer.token == Token.LITERAL_CHARS) {
-                    sqlExpr = new SQLBooleanExpr(Boolean.valueOf(lexer.stringVal()));
-                    lexer.nextToken();
-                } else if (hash_lower == FnvHash.Constants.DATE && lexer.token == Token.LITERAL_ALIAS) {
-                    sqlExpr = new SQLDateExpr(lexer.stringVal());
-                    lexer.nextToken();
-                } else if (hash_lower == FnvHash.Constants.DATETIME && lexer.token == Token.LITERAL_ALIAS) {
-                    sqlExpr = new SQLDateTimeExpr(lexer.stringVal());
-                    lexer.nextToken();
-                } else if (hash_lower == FnvHash.Constants.TIMESTAMP && lexer.token == Token.LITERAL_ALIAS) {
-                    sqlExpr = new SQLTimestampExpr(lexer.stringVal());
-                    lexer.nextToken();
-                } else if (hash_lower == FnvHash.Constants.ARRAY && (lexer.token == Token.LBRACKET || lexer.token == Token.LT)) {
-                    sqlExpr = parseArrayExpr(ident);
-                } else {
-                    sqlExpr = primaryIdentifierRest(hash_lower, ident);
-                    if (sqlExpr == null) {
-                        char c0 = ident.charAt(0);
-                        if (c0 == '`' || c0 == '[' || c0 == '"') {
-                            if (lexer.isEnabled(SQLParserFeature.IgnoreNameQuotes)) {
-                                ident = ident.substring(1, ident.length() - 1);
-                            }
-                            hash_lower = FnvHash.hashCode64(ident);
-                        }
-                        SQLIdentifierExpr identifierExpr = new SQLIdentifierExpr(ident, hash_lower);
-                        if (sourceLine != -1) {
-                            identifierExpr.setSource(sourceLine, sourceColumn);
-                        }
-                        sqlExpr = identifierExpr;
-                    }
-                }
+                sqlExpr = primaryIdentifier();
                 break;
             case NEW:
-                throw new ParserException("TODO " + lexer.info());
+                throw new ParserException("NEW expression is not supported for current dialect. " + lexer.info());
             case LITERAL_INT:
                 Number number = lexer.integerValue();
                 lexer.nextToken();
@@ -644,33 +523,7 @@ public class SQLExprParser extends SQLParser {
                 sqlExpr = primaryLiteralNCharsRest(sqlExpr);
                 break;
             case VARIANT: {
-                if (lexer.keepSourceLocation) {
-                    lexer.computeRowAndColumn();
-                }
-                int line = lexer.getPosLine(), column = lexer.getPosColumn();
-                String varName = lexer.stringVal();
-                lexer.nextToken();
-
-                if (varName.equals(":") && lexer.token == Token.IDENTIFIER && dialectFeatureEnabled(PrimaryVariantColon)) {
-                    String part2 = lexer.stringVal();
-                    lexer.nextToken();
-                    varName += part2;
-                }
-
-                SQLVariantRefExpr varRefExpr = new SQLVariantRefExpr(varName);
-                varRefExpr.setSource(line, column);
-                if (varName.startsWith(":")) {
-                    varRefExpr.setIndex(lexer.nextVarIndex());
-                }
-                if (varRefExpr.getName().equals("@")
-                        && (lexer.token == Token.LITERAL_CHARS || (lexer.token == Token.VARIANT && lexer.stringVal().startsWith("@")))) {
-                    varRefExpr.setName("@'" + lexer.stringVal() + "'");
-                    lexer.nextToken();
-                } else if (varRefExpr.getName().equals("@@") && lexer.token == Token.LITERAL_CHARS) {
-                    varRefExpr.setName("@@'" + lexer.stringVal() + "'");
-                    lexer.nextToken();
-                }
-                sqlExpr = varRefExpr;
+                sqlExpr = primaryVariant();
             }
             break;
             case DEFAULT:
@@ -784,36 +637,7 @@ public class SQLExprParser extends SQLParser {
                 lexer.nextToken();
                 break;
             case CASE:
-                SQLCaseExpr caseExpr = new SQLCaseExpr();
-                lexer.nextToken();
-                if (lexer.token != Token.WHEN) {
-                    caseExpr.setValueExpr(expr());
-                }
-
-                accept(Token.WHEN);
-                SQLExpr testExpr = expr();
-                accept(Token.THEN);
-                SQLExpr valueExpr = expr();
-                SQLCaseExpr.Item caseItem = new SQLCaseExpr.Item(testExpr, valueExpr);
-                caseExpr.addItem(caseItem);
-
-                while (lexer.token == Token.WHEN) {
-                    lexer.nextToken();
-                    testExpr = expr();
-                    accept(Token.THEN);
-                    valueExpr = expr();
-                    caseItem = new SQLCaseExpr.Item(testExpr, valueExpr);
-                    caseExpr.addItem(caseItem);
-                }
-
-                if (lexer.token == Token.ELSE) {
-                    lexer.nextToken();
-                    caseExpr.setElseExpr(expr());
-                }
-
-                accept(Token.END);
-
-                sqlExpr = caseExpr;
+                sqlExpr = primaryCase();
                 break;
             case EXISTS: {
                 String strVal = lexer.stringVal();
@@ -834,49 +658,7 @@ public class SQLExprParser extends SQLParser {
                 break;
             }
             case NOT:
-                lexer.nextToken();
-                if (lexer.token == Token.EXISTS) {
-                    lexer.nextToken();
-                    accept(Token.LPAREN);
-                    SQLExistsExpr exists = new SQLExistsExpr(createSelectParser().select(), true);
-                    accept(Token.RPAREN);
-
-                    parseQueryPlanHint(exists);
-                    if (lexer.token == Token.EQ) {
-                        exists.setNot(false);
-                        SQLExpr relational = this.relationalRest(exists);
-                        sqlExpr = new SQLNotExpr(relational);
-                    } else {
-                        sqlExpr = exists;
-                    }
-                } else if (lexer.token == Token.LPAREN) {
-                    lexer.nextToken();
-
-                    SQLExpr notTarget = expr();
-                    if (notTarget instanceof SQLBinaryOpExpr) {
-                        ((SQLBinaryOpExpr) notTarget).setParenthesized(true);
-                    }
-                    if (notTarget instanceof SQLUnaryExpr) {
-                        ((SQLUnaryExpr) notTarget).setParenthesized(true);
-                    }
-                    accept(Token.RPAREN);
-                    notTarget = bitXorRest(notTarget);
-                    notTarget = multiplicativeRest(notTarget);
-                    notTarget = additiveRest(notTarget);
-                    notTarget = shiftRest(notTarget);
-                    notTarget = bitAndRest(notTarget);
-                    notTarget = bitOrRest(notTarget);
-                    notTarget = inRest(notTarget);
-                    notTarget = relationalRest(notTarget);
-                    sqlExpr = new SQLNotExpr(notTarget);
-
-                    parseQueryPlanHint(sqlExpr);
-                    return primaryRest(sqlExpr);
-                } else {
-                    SQLExpr restExpr = relational();
-                    sqlExpr = new SQLNotExpr(restExpr);
-                    parseQueryPlanHint(sqlExpr);
-                }
+                sqlExpr = primaryNot();
                 break;
             case FROM:
             case SELECT:
@@ -886,128 +668,10 @@ public class SQLExprParser extends SQLParser {
                 sqlExpr = parseCast();
                 break;
             case SUB:
-                lexer.nextToken();
-                switch (lexer.token) {
-                    case LITERAL_INT:
-                        Number integerValue = lexer.integerValue();
-                        if (integerValue instanceof Integer) {
-                            int intVal = integerValue.intValue();
-                            if (intVal == Integer.MIN_VALUE) {
-                                integerValue = Long.valueOf(((long) intVal) * -1);
-                            } else {
-                                integerValue = Integer.valueOf(intVal * -1);
-                            }
-                        } else if (integerValue instanceof Long) {
-                            long longVal = ((Long) integerValue).longValue();
-                            if (longVal == 2147483648L) {
-                                integerValue = Integer.valueOf((int) (((long) longVal) * -1));
-                            } else {
-                                integerValue = Long.valueOf(longVal * -1);
-                            }
-                        } else {
-                            integerValue = ((BigInteger) integerValue).negate();
-                        }
-                        sqlExpr = new SQLIntegerExpr(integerValue);
-                        lexer.nextToken();
-                        break;
-                    case LITERAL_FLOAT:
-                        sqlExpr = lexer.numberExpr(true);
-                        lexer.nextToken();
-                        break;
-                    case LITERAL_CHARS:
-                    case LITERAL_ALIAS:
-                        sqlExpr = primarySubLiteralAliasRest();
-                        lexer.nextToken();
-
-                        if (lexer.token == Token.LPAREN
-                                || lexer.token == Token.LBRACKET
-                                || lexer.token == Token.DOT) {
-                            sqlExpr = primaryRest(sqlExpr);
-                        }
-                        sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Negative, sqlExpr);
-
-                        break;
-                    case QUES: {
-                        SQLVariantRefExpr variantRefExpr = new SQLVariantRefExpr("?");
-                        variantRefExpr.setIndex(lexer.nextVarIndex());
-                        sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Negative, variantRefExpr);
-                        lexer.nextToken();
-                        break;
-                    }
-                    case PLUS:
-                    case SUB:
-                    case LPAREN:
-                    case IDENTIFIER:
-                    case BANG:
-                    case CASE:
-                    case CAST:
-                    case NULL:
-                    case INTERVAL:
-                    case LBRACE:
-                    case IF:
-                    case CHECK:
-                    case INDEX:
-                    case PRIMARY:
-                    case KEY:
-                    case REPLACE:
-                        sqlExpr = primary();
-
-                        while (lexer.token == Token.HINT) {
-                            lexer.nextToken();
-                        }
-
-                        sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Negative, sqlExpr);
-                        break;
-                    case VARIANT:
-                        sqlExpr = primary();
-                        sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Negative, sqlExpr);
-                        break;
-                    default:
-                        throw new ParserException("TODO : " + lexer.info());
-                }
+                sqlExpr = primarySub();
                 break;
             case PLUS:
-                lexer.nextToken();
-                switch (lexer.token) {
-                    case LITERAL_CHARS:
-                    case LITERAL_ALIAS:
-                        sqlExpr = new SQLIdentifierExpr(lexer.stringVal());
-                        sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Plus, sqlExpr);
-                        lexer.nextToken();
-                        break;
-                    case QUES: {
-                        SQLVariantRefExpr variantRefExpr = new SQLVariantRefExpr("?");
-                        variantRefExpr.setIndex(lexer.nextVarIndex());
-                        sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Plus, variantRefExpr);
-                        lexer.nextToken();
-                        break;
-                    }
-                    case PLUS:
-                    case SUB:
-                    case LITERAL_FLOAT:
-                    case LITERAL_INT:
-                    case LPAREN:
-                    case IDENTIFIER:
-                    case BANG:
-                    case CASE:
-                    case CAST:
-                    case NULL:
-                    case INTERVAL:
-                    case LBRACE:
-                    case IF:
-                    case CHECK:
-                    case REPLACE:
-                        sqlExpr = primary();
-
-                        while (lexer.token == Token.HINT) {
-                            lexer.nextToken();
-                        }
-
-                        sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Plus, sqlExpr);
-                        break;
-                    default:
-                        throw new ParserException("TODO " + lexer.info());
-                }
+                sqlExpr = primaryPlus();
                 break;
             case TILDE:
                 lexer.nextToken();
@@ -1139,43 +803,7 @@ public class SQLExprParser extends SQLParser {
                 break;
             }
             case LBRACE: {
-                lexer.nextToken();
-                if (lexer.identifierEquals(FnvHash.Constants.TS)) {
-                    lexer.nextToken();
-                    String literal = lexer.stringVal();
-                    lexer.nextToken();
-                    sqlExpr = new SQLTimestampExpr(literal);
-                } else if (lexer.identifierEquals(FnvHash.Constants.D)
-                        || lexer.identifierEquals(FnvHash.Constants.DATE)
-                ) {
-                    lexer.nextToken();
-                    String literal = lexer.stringVal();
-                    if (literal.length() > 2
-                            && literal.charAt(0) == '"'
-                            && literal.charAt(literal.length() - 1) == '"') {
-                        literal = literal.substring(1, literal.length() - 1);
-                    }
-                    lexer.nextToken();
-                    sqlExpr = new SQLDateExpr(literal);
-                } else if (lexer.identifierEquals(FnvHash.Constants.T)) {
-                    lexer.nextToken();
-                    String literal = lexer.stringVal();
-                    lexer.nextToken();
-                    sqlExpr = new SQLTimeExpr(literal);
-                } else if (lexer.identifierEquals(FnvHash.Constants.FN)) {
-                    lexer.nextToken();
-                    sqlExpr = this.expr();
-                } else if (dialectFeatureEnabled(PrimaryLbraceOdbcEscape)) {
-                    sqlExpr = this.expr(); // {identifier expr} is ODBC escape syntax and is accepted for ODBC compatibility.
-                } else if (lexer.nextIf(LBRACE)) {
-                    // support dbt style: {{ source(a,b) }} as identifier
-                    sqlExpr = new SQLPatternExpr(this.expr());
-                    // skip }
-                    accept(RBRACE);
-                } else {
-                    throw new ParserException("ERROR. " + lexer.info());
-                }
-                accept(Token.RBRACE);
+                sqlExpr = primaryLBrace();
                 break;
             }
             case VALUES:
@@ -1268,6 +896,435 @@ public class SQLExprParser extends SQLParser {
              expr.addAfterComment(lexer.readAndResetComments());
         }
         return expr;
+    }
+
+    private SQLExpr primaryLParen() {
+        lexer.nextToken();
+        if (lexer.token == Token.RPAREN) {
+            lexer.nextToken();
+            return new SQLMethodInvokeExpr();
+        }
+
+        SQLExpr sqlExpr = expr();
+
+        if (lexer.token == Token.COMMA) {
+            SQLListExpr listExpr = new SQLListExpr();
+            listExpr.addItem(sqlExpr);
+            do {
+                lexer.nextToken();
+                listExpr.addItem(expr());
+            } while (lexer.token == Token.COMMA);
+
+            sqlExpr = listExpr;
+        }
+        if (sqlExpr instanceof SQLExprImpl) {
+            ((SQLExprImpl) sqlExpr).setParenthesized(true);
+        }
+
+        if ((lexer.token == Token.UNION || lexer.token == Token.MINUS || lexer.token == Token.EXCEPT)
+                && sqlExpr instanceof SQLQueryExpr) {
+            SQLQueryExpr queryExpr = (SQLQueryExpr) sqlExpr;
+
+            SQLSelectQuery query = this.createSelectParser().queryRest(queryExpr.getSubQuery().getQuery(), true);
+            queryExpr.getSubQuery().setQuery(query);
+        }
+
+        accept(Token.RPAREN);
+        return sqlExpr;
+    }
+
+    private SQLExpr primaryIdentifier() {
+        String ident = lexer.stringVal();
+        long hash_lower = lexer.hashLCase();
+
+        int sourceLine = -1, sourceColumn = -1;
+        if (lexer.keepSourceLocation) {
+            lexer.computeRowAndColumn();
+            sourceLine = lexer.posLine;
+            sourceColumn = lexer.posColumn;
+        }
+
+        lexer.nextToken();
+        if (lexer.identifierEquals("COLLATE")) {
+            acceptIdentifier("COLLATE");
+            String collateValue = lexer.stringVal();
+            if (lexer.token == Token.IDENTIFIER || lexer.token == Token.LITERAL_ALIAS || lexer.token == Token.LITERAL_CHARS) {
+                SQLIdentifierExpr identifierExpr = new SQLIdentifierExpr(ident);
+                identifierExpr.setCollate(collateValue);
+                lexer.nextToken();
+                return identifierExpr;
+            }
+            throw new ParserException("syntax error. " + lexer.info());
+        }
+
+        if (hash_lower == FnvHash.Constants.TRY_CAST) {
+            accept(Token.LPAREN);
+            SQLCastExpr cast = new SQLCastExpr();
+            cast.setTry(true);
+            cast.setExpr(expr());
+            accept(Token.AS);
+            cast.setDataType(parseDataType(false));
+            accept(Token.RPAREN);
+            return cast;
+        }
+
+        if (hash_lower == FnvHash.Constants.DATE
+                && (lexer.token == Token.LITERAL_CHARS || lexer.token == Token.VARIANT)
+                && (dialectFeatureEnabled(SQLDateExpr))) {
+            String literal = lexer.token == Token.LITERAL_CHARS ? lexer.stringVal() : "?";
+            lexer.nextToken();
+            SQLDateExpr dateExpr = new SQLDateExpr();
+            dateExpr.setValue(literal);
+            return dateExpr;
+        }
+
+        if (hash_lower == FnvHash.Constants.TIMESTAMP
+                && (lexer.token == Token.LITERAL_CHARS || lexer.token == Token.VARIANT)
+                && dialectFeatureEnabled(SQLTimestampExpr)) {
+            SQLTimestampExpr dateExpr = new SQLTimestampExpr(lexer.stringVal());
+            lexer.nextToken();
+            return dateExpr;
+        }
+
+        if (hash_lower == FnvHash.Constants.TIME
+                && (lexer.token == Token.LITERAL_CHARS || lexer.token == Token.VARIANT)) {
+            SQLTimeExpr dateExpr = new SQLTimeExpr(lexer.stringVal());
+            lexer.nextToken();
+            return dateExpr;
+        }
+        if (hash_lower == FnvHash.Constants.TIME && lexer.token == Token.LITERAL_ALIAS) {
+            SQLTimeExpr dateExpr = new SQLTimeExpr(SQLUtils.normalize(lexer.stringVal()));
+            lexer.nextToken();
+            return dateExpr;
+        }
+
+        if (hash_lower == FnvHash.Constants.DATETIME
+                && (lexer.token == Token.LITERAL_CHARS || lexer.token == Token.VARIANT)) {
+            SQLDateTimeExpr dateExpr = new SQLDateTimeExpr(lexer.stringVal());
+            lexer.nextToken();
+            return dateExpr;
+        }
+        if (hash_lower == FnvHash.Constants.DATETIME && lexer.token == Token.LITERAL_ALIAS) {
+            SQLDateTimeExpr dateExpr = new SQLDateTimeExpr(SQLUtils.normalize(lexer.stringVal()));
+            lexer.nextToken();
+            return dateExpr;
+        }
+
+        if (hash_lower == FnvHash.Constants.BOOLEAN && lexer.token == Token.LITERAL_CHARS) {
+            SQLExpr sqlExpr = new SQLBooleanExpr(Boolean.valueOf(lexer.stringVal()));
+            lexer.nextToken();
+            return sqlExpr;
+        }
+        if (hash_lower == FnvHash.Constants.DATE && lexer.token == Token.LITERAL_ALIAS) {
+            SQLExpr sqlExpr = new SQLDateExpr(lexer.stringVal());
+            lexer.nextToken();
+            return sqlExpr;
+        }
+        if (hash_lower == FnvHash.Constants.DATETIME && lexer.token == Token.LITERAL_ALIAS) {
+            SQLExpr sqlExpr = new SQLDateTimeExpr(lexer.stringVal());
+            lexer.nextToken();
+            return sqlExpr;
+        }
+        if (hash_lower == FnvHash.Constants.TIMESTAMP && lexer.token == Token.LITERAL_ALIAS) {
+            SQLExpr sqlExpr = new SQLTimestampExpr(lexer.stringVal());
+            lexer.nextToken();
+            return sqlExpr;
+        }
+        if (hash_lower == FnvHash.Constants.ARRAY && (lexer.token == Token.LBRACKET || lexer.token == Token.LT)) {
+            return parseArrayExpr(ident);
+        }
+
+        SQLExpr sqlExpr = primaryIdentifierRest(hash_lower, ident);
+        if (sqlExpr != null) {
+            return sqlExpr;
+        }
+
+        char c0 = ident.charAt(0);
+        if (c0 == '`' || c0 == '[' || c0 == '"') {
+            if (lexer.isEnabled(SQLParserFeature.IgnoreNameQuotes)) {
+                ident = ident.substring(1, ident.length() - 1);
+            }
+            hash_lower = FnvHash.hashCode64(ident);
+        }
+        SQLIdentifierExpr identifierExpr = new SQLIdentifierExpr(ident, hash_lower);
+        if (sourceLine != -1) {
+            identifierExpr.setSource(sourceLine, sourceColumn);
+        }
+        return identifierExpr;
+    }
+
+    private SQLExpr primaryVariant() {
+        if (lexer.keepSourceLocation) {
+            lexer.computeRowAndColumn();
+        }
+        int line = lexer.getPosLine(), column = lexer.getPosColumn();
+        String varName = lexer.stringVal();
+        lexer.nextToken();
+
+        if (varName.equals(":") && lexer.token == Token.IDENTIFIER && dialectFeatureEnabled(PrimaryVariantColon)) {
+            String part2 = lexer.stringVal();
+            lexer.nextToken();
+            varName += part2;
+        }
+
+        SQLVariantRefExpr varRefExpr = new SQLVariantRefExpr(varName);
+        varRefExpr.setSource(line, column);
+        if (varName.startsWith(":")) {
+            varRefExpr.setIndex(lexer.nextVarIndex());
+        }
+        if (varRefExpr.getName().equals("@")
+                && (lexer.token == Token.LITERAL_CHARS || (lexer.token == Token.VARIANT && lexer.stringVal().startsWith("@")))) {
+            varRefExpr.setName("@'" + lexer.stringVal() + "'");
+            lexer.nextToken();
+        } else if (varRefExpr.getName().equals("@@") && lexer.token == Token.LITERAL_CHARS) {
+            varRefExpr.setName("@@'" + lexer.stringVal() + "'");
+            lexer.nextToken();
+        }
+        return varRefExpr;
+    }
+
+    private SQLExpr primaryCase() {
+        SQLCaseExpr caseExpr = new SQLCaseExpr();
+        lexer.nextToken();
+        if (lexer.token != Token.WHEN) {
+            caseExpr.setValueExpr(expr());
+        }
+
+        accept(Token.WHEN);
+        SQLExpr testExpr = expr();
+        accept(Token.THEN);
+        SQLExpr valueExpr = expr();
+        SQLCaseExpr.Item caseItem = new SQLCaseExpr.Item(testExpr, valueExpr);
+        caseExpr.addItem(caseItem);
+
+        while (lexer.token == Token.WHEN) {
+            lexer.nextToken();
+            testExpr = expr();
+            accept(Token.THEN);
+            valueExpr = expr();
+            caseItem = new SQLCaseExpr.Item(testExpr, valueExpr);
+            caseExpr.addItem(caseItem);
+        }
+
+        if (lexer.token == Token.ELSE) {
+            lexer.nextToken();
+            caseExpr.setElseExpr(expr());
+        }
+
+        accept(Token.END);
+        return caseExpr;
+    }
+
+    private SQLExpr primaryNot() {
+        lexer.nextToken();
+        if (lexer.token == Token.EXISTS) {
+            lexer.nextToken();
+            accept(Token.LPAREN);
+            SQLExistsExpr exists = new SQLExistsExpr(createSelectParser().select(), true);
+            accept(Token.RPAREN);
+
+            parseQueryPlanHint(exists);
+            if (lexer.token == Token.EQ) {
+                exists.setNot(false);
+                SQLExpr relational = this.relationalRest(exists);
+                return new SQLNotExpr(relational);
+            }
+            return exists;
+        }
+
+        if (lexer.token == Token.LPAREN) {
+            lexer.nextToken();
+
+            SQLExpr notTarget = expr();
+            if (notTarget instanceof SQLBinaryOpExpr) {
+                ((SQLBinaryOpExpr) notTarget).setParenthesized(true);
+            } else if (notTarget instanceof SQLUnaryExpr) {
+                ((SQLUnaryExpr) notTarget).setParenthesized(true);
+            } else if (notTarget instanceof SQLIdentifierExpr) {
+                ((SQLIdentifierExpr) notTarget).setParenthesized(true);
+            }
+            accept(Token.RPAREN);
+            notTarget = bitXorRest(notTarget);
+            notTarget = multiplicativeRest(notTarget);
+            notTarget = additiveRest(notTarget);
+            notTarget = shiftRest(notTarget);
+            notTarget = bitAndRest(notTarget);
+            notTarget = bitOrRest(notTarget);
+            notTarget = inRest(notTarget);
+            notTarget = relationalRest(notTarget);
+            SQLExpr sqlExpr = new SQLNotExpr(notTarget);
+
+            parseQueryPlanHint(sqlExpr);
+            return primaryRest(sqlExpr);
+        }
+
+        SQLExpr restExpr = relational();
+        SQLExpr sqlExpr = new SQLNotExpr(restExpr);
+        parseQueryPlanHint(sqlExpr);
+        return sqlExpr;
+    }
+
+    private SQLExpr primarySub() {
+        lexer.nextToken();
+        switch (lexer.token) {
+            case LITERAL_INT:
+                Number integerValue = lexer.integerValue();
+                if (integerValue instanceof Integer) {
+                    int intVal = integerValue.intValue();
+                    if (intVal == Integer.MIN_VALUE) {
+                        integerValue = Long.valueOf(((long) intVal) * -1);
+                    } else {
+                        integerValue = Integer.valueOf(intVal * -1);
+                    }
+                } else if (integerValue instanceof Long) {
+                    long longVal = ((Long) integerValue).longValue();
+                    if (longVal == 2147483648L) {
+                        integerValue = Integer.valueOf((int) (((long) longVal) * -1));
+                    } else {
+                        integerValue = Long.valueOf(longVal * -1);
+                    }
+                } else {
+                    integerValue = ((BigInteger) integerValue).negate();
+                }
+                SQLExpr sqlExpr = new SQLIntegerExpr(integerValue);
+                lexer.nextToken();
+                return sqlExpr;
+            case LITERAL_FLOAT:
+                sqlExpr = lexer.numberExpr(true);
+                lexer.nextToken();
+                return sqlExpr;
+            case LITERAL_CHARS:
+            case LITERAL_ALIAS:
+                sqlExpr = primarySubLiteralAliasRest();
+                lexer.nextToken();
+
+                if (lexer.token == Token.LPAREN
+                        || lexer.token == Token.LBRACKET
+                        || lexer.token == Token.DOT) {
+                    sqlExpr = primaryRest(sqlExpr);
+                }
+                return new SQLUnaryExpr(SQLUnaryOperator.Negative, sqlExpr);
+            case QUES: {
+                SQLVariantRefExpr variantRefExpr = new SQLVariantRefExpr("?");
+                variantRefExpr.setIndex(lexer.nextVarIndex());
+                sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Negative, variantRefExpr);
+                lexer.nextToken();
+                return sqlExpr;
+            }
+            case PLUS:
+            case SUB:
+            case LPAREN:
+            case IDENTIFIER:
+            case BANG:
+            case CASE:
+            case CAST:
+            case NULL:
+            case INTERVAL:
+            case LBRACE:
+            case IF:
+            case CHECK:
+            case INDEX:
+            case PRIMARY:
+            case KEY:
+            case REPLACE:
+                sqlExpr = primary();
+
+                while (lexer.token == Token.HINT) {
+                    lexer.nextToken();
+                }
+
+                return new SQLUnaryExpr(SQLUnaryOperator.Negative, sqlExpr);
+            case VARIANT:
+                sqlExpr = primary();
+                return new SQLUnaryExpr(SQLUnaryOperator.Negative, sqlExpr);
+            default:
+                throw new ParserException("unexpected token after unary minus: " + lexer.token + ". " + lexer.info());
+        }
+    }
+
+    private SQLExpr primaryPlus() {
+        lexer.nextToken();
+        switch (lexer.token) {
+            case LITERAL_CHARS:
+            case LITERAL_ALIAS:
+                SQLExpr sqlExpr = new SQLIdentifierExpr(lexer.stringVal());
+                sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Plus, sqlExpr);
+                lexer.nextToken();
+                return sqlExpr;
+            case QUES: {
+                SQLVariantRefExpr variantRefExpr = new SQLVariantRefExpr("?");
+                variantRefExpr.setIndex(lexer.nextVarIndex());
+                sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Plus, variantRefExpr);
+                lexer.nextToken();
+                return sqlExpr;
+            }
+            case PLUS:
+            case SUB:
+            case LITERAL_FLOAT:
+            case LITERAL_INT:
+            case LPAREN:
+            case IDENTIFIER:
+            case BANG:
+            case CASE:
+            case CAST:
+            case NULL:
+            case INTERVAL:
+            case LBRACE:
+            case IF:
+            case CHECK:
+            case REPLACE:
+                sqlExpr = primary();
+
+                while (lexer.token == Token.HINT) {
+                    lexer.nextToken();
+                }
+
+                return new SQLUnaryExpr(SQLUnaryOperator.Plus, sqlExpr);
+            default:
+                throw new ParserException("unexpected token after unary plus: " + lexer.token + ". " + lexer.info());
+        }
+    }
+
+    private SQLExpr primaryLBrace() {
+        lexer.nextToken();
+        SQLExpr sqlExpr;
+        if (lexer.identifierEquals(FnvHash.Constants.TS)) {
+            lexer.nextToken();
+            String literal = lexer.stringVal();
+            lexer.nextToken();
+            sqlExpr = new SQLTimestampExpr(literal);
+        } else if (lexer.identifierEquals(FnvHash.Constants.D)
+                || lexer.identifierEquals(FnvHash.Constants.DATE)
+        ) {
+            lexer.nextToken();
+            String literal = lexer.stringVal();
+            if (literal.length() > 2
+                    && literal.charAt(0) == '"'
+                    && literal.charAt(literal.length() - 1) == '"') {
+                literal = literal.substring(1, literal.length() - 1);
+            }
+            lexer.nextToken();
+            sqlExpr = new SQLDateExpr(literal);
+        } else if (lexer.identifierEquals(FnvHash.Constants.T)) {
+            lexer.nextToken();
+            String literal = lexer.stringVal();
+            lexer.nextToken();
+            sqlExpr = new SQLTimeExpr(literal);
+        } else if (lexer.identifierEquals(FnvHash.Constants.FN)) {
+            lexer.nextToken();
+            sqlExpr = this.expr();
+        } else if (dialectFeatureEnabled(PrimaryLbraceOdbcEscape)) {
+            sqlExpr = this.expr(); // {identifier expr} is ODBC escape syntax and is accepted for ODBC compatibility.
+        } else if (lexer.nextIf(LBRACE)) {
+            // support dbt style: {{ source(a,b) }} as identifier
+            sqlExpr = new SQLPatternExpr(this.expr());
+            // skip }
+            accept(RBRACE);
+        } else {
+            throw new ParserException("ERROR. " + lexer.info());
+        }
+        accept(Token.RBRACE);
+        return sqlExpr;
     }
 
     protected SQLExpr parseArrayExpr(String ident) {
@@ -3035,7 +3092,7 @@ public class SQLExprParser extends SQLParser {
                 lexer.nextToken();
                 item.setNullsOrderType(SQLSelectOrderByItem.NullsOrderType.NullsLast);
             } else {
-                throw new ParserException("TODO " + lexer.info());
+                throw new ParserException("syntax error, expect FIRST or LAST after NULLS, actual " + lexer.stringVal() + ". " + lexer.info());
             }
         }
 
@@ -3454,7 +3511,7 @@ public class SQLExprParser extends SQLParser {
                 } else if (expr instanceof SQLObjectImpl) {
                     ((SQLExprImpl) expr).setHint(new SQLCommentHint(text));
                 } else {
-                    throw new ParserException("TODO : " + lexer.info());
+                    throw new ParserException("hint cannot be applied to expression type " + expr.getClass().getSimpleName() + ". " + lexer.info());
                 }
                 this.lexer.nextToken();
             }
@@ -3752,8 +3809,12 @@ public class SQLExprParser extends SQLParser {
             case EQGT: {
                 lexer.nextToken();
                 rightExp = expr();
-                String argumentName = ((SQLIdentifierExpr) expr).getName();
-                expr = new OracleArgumentExpr(argumentName, rightExp);
+                if (expr instanceof SQLIdentifierExpr) {
+                    String argumentName = ((SQLIdentifierExpr) expr).getName();
+                    expr = new OracleArgumentExpr(argumentName, rightExp);
+                } else {
+                    expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.Assignment, rightExp, dbType);
+                }
             }
             break;
             case BANGEQ:
@@ -4182,7 +4243,7 @@ public class SQLExprParser extends SQLParser {
                 }
                 break;
             default:
-                throw new ParserException("TODO " + lexer.info());
+                throw new ParserException("unexpected token in NOT expression: " + lexer.token + ". " + lexer.info());
         }
 
         return expr;
@@ -4806,12 +4867,23 @@ public class SQLExprParser extends SQLParser {
                 }
                 column.addConstraint(new SQLColumnUniqueKey());
                 return parseColumnRest(column);
+            case ENABLE: {
+                lexer.nextToken();
+                List<SQLColumnConstraint> constraints = column.getConstraints();
+                if (!constraints.isEmpty()) {
+                    SQLColumnConstraint lastConstraint = constraints.get(constraints.size() - 1);
+                    if (lastConstraint instanceof SQLConstraintImpl) {
+                        ((SQLConstraintImpl) lastConstraint).setEnable(true);
+                    }
+                }
+                return parseColumnRest(column);
+            }
             case DISABLE:
                 lexer.nextToken();
-                if (lexer.stringVal.equalsIgnoreCase("novalidate")) {
+                if (lexer.stringVal != null && lexer.stringVal.equalsIgnoreCase("novalidate")) {
                     column.setDisableNovalidate(true);
+                    lexer.nextToken();
                 }
-                lexer.nextToken();
                 return parseColumnRest(column);
             case KEY:
                 lexer.nextToken();
@@ -4876,7 +4948,7 @@ public class SQLExprParser extends SQLParser {
                     return parseColumnRest(column);
                 }
 
-                throw new ParserException("TODO : " + lexer.info());
+                throw new ParserException("unsupported column constraint after CONSTRAINT keyword. " + lexer.info());
             case CHECK:
                 SQLColumnCheck check = parseColumnCheck();
                 column.addConstraint(check);
@@ -4926,7 +4998,7 @@ public class SQLExprParser extends SQLParser {
                                 if (lexer.hashLCase() == FnvHash.Constants.CACHE) {
                                     column.setSequenceType(AutoIncrementType.SIMPLE_CACHE);
                                 } else {
-                                    throw new ParserException("TODO : " + lexer.info());
+                                    throw new ParserException("syntax error, expect CACHE after SIMPLE WITH, actual " + lexer.stringVal() + ". " + lexer.info());
                                 }
                                 lexer.nextToken();
                                 return parseColumnRest(column);
@@ -5004,7 +5076,7 @@ public class SQLExprParser extends SQLParser {
             ident.setSeed(lexer.integerValue().intValue());
             lexer.nextToken();
         } else {
-            throw new ParserException("TODO : " + lexer.info());
+            throw new ParserException("syntax error, expect integer for IDENTITY seed, actual " + lexer.token + ". " + lexer.info());
         }
 
         if (lexer.token == Token.COMMA) {
@@ -5013,7 +5085,7 @@ public class SQLExprParser extends SQLParser {
                 ident.setIncrement(lexer.integerValue().intValue());
                 lexer.nextToken();
             } else {
-                throw new ParserException("TODO : " + lexer.info());
+                throw new ParserException("syntax error, expect integer for IDENTITY increment, actual " + lexer.token + ". " + lexer.info());
             }
         }
 
@@ -5043,7 +5115,7 @@ public class SQLExprParser extends SQLParser {
                 fk.setReferenceMatch(SQLForeignKeyImpl.Match.SIMPLE);
                 lexer.nextToken();
             } else {
-                throw new ParserException("TODO : " + lexer.info());
+                throw new ParserException("syntax error, expect FULL, PARTIAL or SIMPLE after MATCH, actual " + lexer.stringVal() + ". " + lexer.info());
             }
         }
 
@@ -5204,6 +5276,55 @@ public class SQLExprParser extends SQLParser {
         }
 
         return unique;
+    }
+
+    /**
+     * Parse constraint state options: ENABLE/DISABLE, VALIDATE/NOVALIDATE, RELY/NORELY.
+     * Common across Oracle, base SQL, and other dialects.
+     * Callers can use this to avoid duplicating the same if-else chain.
+     *
+     * @param constraint the unique constraint to set options on
+     * @return true if at least one option was parsed
+     */
+    protected boolean parseConstraintStateOptions(SQLUnique constraint) {
+        boolean parsed = false;
+        for (; ; ) {
+            if (lexer.token == Token.ENABLE) {
+                lexer.nextToken();
+                constraint.setEnable(Boolean.TRUE);
+                parsed = true;
+            } else if (lexer.token == Token.DISABLE) {
+                lexer.nextToken();
+                SavePoint savePoint = lexer.mark();
+                if ("NOVALIDATE".equalsIgnoreCase(lexer.stringVal())) {
+                    constraint.setDisableNovalidate(true);
+                    lexer.nextToken();
+                } else {
+                    lexer.reset(savePoint);
+                    constraint.setEnable(Boolean.FALSE);
+                }
+                parsed = true;
+            } else if (lexer.identifierEquals(FnvHash.Constants.VALIDATE)) {
+                lexer.nextToken();
+                constraint.setValidate(Boolean.TRUE);
+                parsed = true;
+            } else if (lexer.identifierEquals(FnvHash.Constants.NOVALIDATE)) {
+                lexer.nextToken();
+                constraint.setValidate(Boolean.FALSE);
+                parsed = true;
+            } else if (lexer.identifierEquals(FnvHash.Constants.RELY)) {
+                lexer.nextToken();
+                constraint.setRely(Boolean.TRUE);
+                parsed = true;
+            } else if (lexer.identifierEquals(FnvHash.Constants.NORELY)) {
+                lexer.nextToken();
+                constraint.setRely(Boolean.FALSE);
+                parsed = true;
+            } else {
+                break;
+            }
+        }
+        return parsed;
     }
 
     public void parseAssignItem(List<SQLAssignItem> outList, SQLObject parent) {
@@ -5531,7 +5652,7 @@ public class SQLExprParser extends SQLParser {
                 constraint = parseDefault();
                 break;
             default:
-                throw new ParserException("TODO : " + lexer.info());
+                throw new ParserException("unsupported constraint type: " + lexer.token + ". " + lexer.info());
         }
 
         if (name == null && lexer.token == Token.IDENTIFIER) {
@@ -6168,7 +6289,7 @@ public class SQLExprParser extends SQLParser {
                 acceptIdentifier(FnvHash.Constants.THAN);
                 values = new SQLPartitionValue(SQLPartitionValue.Operator.LessThan);
                 if (lexer.nextIfIdentifier(FnvHash.Constants.MAXVALUE)) {
-                    SQLIdentifierExpr maxValue = new SQLIdentifierExpr(lexer.stringVal());
+                    SQLIdentifierExpr maxValue = new SQLIdentifierExpr("MAXVALUE");
                     maxValue.setParent(values);
                     values.addItem(maxValue);
                 } else {

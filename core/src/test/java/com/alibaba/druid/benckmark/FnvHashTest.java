@@ -1,12 +1,15 @@
 package com.alibaba.druid.benckmark;
 
 import com.alibaba.druid.util.FnvHash;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class FnvHashTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class FnvHashTest {
     static String sql = "SELECT id, item_id, rule_id, tag_id, ext , gmt_create, gmt_modified FROM wukong_preview_item_tag WHERE item_id = ? AND rule_id = ?";
     static char[] chars = sql.toCharArray();
 
+    @Test
     public void test_perf_fnv() throws Exception {
         for (int i = 0; i < 5; ++i) {
 //            perf_hashCode64(sql); // 168
@@ -36,6 +39,7 @@ public class FnvHashTest extends TestCase {
         return val;
     }
 
+    @Test
     public void test_fnv_hash_1a() throws Exception {
         assertEquals(FnvHash.fnv1a_64("bcd"), FnvHash.fnv1a_64("abcde", 1, 4));
     }

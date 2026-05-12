@@ -16,11 +16,14 @@
 package com.alibaba.druid.bvt.support.http;
 
 import com.alibaba.druid.support.http.StatViewServlet;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockServletConfig;
 
-public class StatViewSerlvetTest_allow extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class StatViewSerlvetTest_allow {
+    @Test
     public void test_allow() throws Exception {
         MockServletConfig servletConfig = new MockServletConfig();
         servletConfig.addInitParameter(StatViewServlet.PARAM_NAME_ALLOW, "128.242.127.2");
@@ -35,6 +38,7 @@ public class StatViewSerlvetTest_allow extends TestCase {
         assertFalse(servlet.isPermittedRequest("128.242.127.3"));
     }
 
+    @Test
     public void test_allow_1() throws Exception {
         MockServletConfig servletConfig = new MockServletConfig();
         servletConfig.addInitParameter(StatViewServlet.PARAM_NAME_ALLOW, "128.242.127.2,xx");
@@ -49,6 +53,7 @@ public class StatViewSerlvetTest_allow extends TestCase {
         assertFalse(servlet.isPermittedRequest("128.242.127.3"));
     }
 
+    @Test
     public void test_allow_2() throws Exception {
         MockServletConfig servletConfig = new MockServletConfig();
         servletConfig.addInitParameter(StatViewServlet.PARAM_NAME_ALLOW, "128.242.127.2,,, ");
@@ -63,6 +68,7 @@ public class StatViewSerlvetTest_allow extends TestCase {
         assertFalse(servlet.isPermittedRequest("128.242.127.3"));
     }
 
+    @Test
     public void test_allow_3() throws Exception {
         MockServletConfig servletConfig = new MockServletConfig();
         servletConfig.addInitParameter(StatViewServlet.PARAM_NAME_ALLOW, "128.242.127.2/24");
@@ -79,6 +85,7 @@ public class StatViewSerlvetTest_allow extends TestCase {
         assertFalse(servlet.isPermittedRequest("128.242.128.1"));
     }
 
+    @Test
     public void test_allow_4() throws Exception {
         MockServletConfig servletConfig = new MockServletConfig();
         servletConfig.addInitParameter(StatViewServlet.PARAM_NAME_ALLOW, "128.242.127.2/24");

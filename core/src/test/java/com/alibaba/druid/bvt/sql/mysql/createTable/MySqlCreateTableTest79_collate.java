@@ -22,6 +22,8 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat.Column;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlCreateTableTest79_collate extends MysqlTest {
     public void test_one() throws Exception {
         String sql = "CREATE TABLE tb_custom_vip_show_message (custom_vip_show_message_seq INT(11) NOT NULL AUTO_INCREMENT,show_channel_type TINYINT(4) NOT NULL COMMENT '通道类型',PRIMARY KEY (custom_vip_show_message_seq))COMMENT='自定VIP显示表' COLLATE='utf8_general_ci' ENGINE=InnoDB;";

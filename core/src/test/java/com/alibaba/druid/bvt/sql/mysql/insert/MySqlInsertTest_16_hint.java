@@ -24,6 +24,8 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlInsertTest_16_hint extends MysqlTest {
     public void test_insert_rollback_on_fail() throws Exception {
         String sql = "insert into mytable /*!(col2, col3, col1) */ values (load_file('sompath'), 'str1', 2);";

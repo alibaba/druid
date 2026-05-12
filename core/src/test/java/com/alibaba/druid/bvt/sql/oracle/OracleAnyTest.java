@@ -18,9 +18,12 @@ package com.alibaba.druid.bvt.sql.oracle;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class OracleAnyTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OracleAnyTest {
+    @Test
     public void test_any() throws Exception {
         String sql = "SELECT country, prod, year, s FROM sales_view " + "MODEL PARTITION BY (country) "
                 + "DIMENSION BY (prod, year) MEASURES (sale s) " + "IGNORE NAV "

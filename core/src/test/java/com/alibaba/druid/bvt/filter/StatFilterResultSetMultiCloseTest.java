@@ -24,6 +24,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class StatFilterResultSetMultiCloseTest extends PoolTestCase {
     private DruidDataSource dataSource;
 
@@ -60,11 +62,11 @@ public class StatFilterResultSetMultiCloseTest extends PoolTestCase {
         sqlStat = dataSource.getDataSourceStat().getSqlStat(sql);
         assertNotNull(sqlStat);
 
-        assertEquals("first failed", 1, sqlStat.getExecuteAndResultHoldTimeHistogramSum());
+        assertEquals(1, sqlStat.getExecuteAndResultHoldTimeHistogramSum(), "first failed");
 
         rs.close();
 
-        assertEquals("second failed", 1, sqlStat.getExecuteAndResultHoldTimeHistogramSum());
+        assertEquals(1, sqlStat.getExecuteAndResultHoldTimeHistogramSum(), "second failed");
 
         stmt.close();
 

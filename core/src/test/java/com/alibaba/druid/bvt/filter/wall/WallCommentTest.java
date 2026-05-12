@@ -18,12 +18,15 @@ package com.alibaba.druid.bvt.filter.wall;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
 import com.alibaba.druid.wall.spi.OracleWallProvider;
 import com.alibaba.druid.wall.spi.SQLServerWallProvider;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author wenshao
  */
-public class WallCommentTest extends TestCase {
+public class WallCommentTest {
+    @Test
     public void testORACLE() throws Exception {
         String sql = "SELECT F1, F2 FROM ABC --test";
 
@@ -33,6 +36,7 @@ public class WallCommentTest extends TestCase {
         assertEquals(1, provider.getCommentDenyStat().getDenyCount());
     }
 
+    @Test
     public void testmysql() throws Exception {
         String sql = "SELECT F1, F2 FROM ABC -- test";
 
@@ -42,6 +46,7 @@ public class WallCommentTest extends TestCase {
         assertEquals(1, provider.getCommentDenyStat().getDenyCount());
     }
 
+    @Test
     public void testsqlserver() throws Exception {
         String sql = "SELECT F1, F2 FROM ABC --test";
 

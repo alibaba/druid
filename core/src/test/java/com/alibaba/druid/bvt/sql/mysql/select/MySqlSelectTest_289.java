@@ -20,6 +20,8 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_289 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SELECT supplier AS 'supplier', offline_num AS 'offlineCount', online_num AS 'onlineCount', current_all_num AS 'currentAllCount'\n" +

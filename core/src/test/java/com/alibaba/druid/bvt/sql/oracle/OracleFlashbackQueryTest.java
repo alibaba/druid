@@ -18,9 +18,12 @@ package com.alibaba.druid.bvt.sql.oracle;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class OracleFlashbackQueryTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OracleFlashbackQueryTest {
+    @Test
     public void test_isEmpty() throws Exception {
         String sql = "SELECT salary FROM employees AS OF TIMESTAMP (SYSTIMESTAMP - INTERVAL '1' DAY) WHERE last_name = 'Chung';";
 

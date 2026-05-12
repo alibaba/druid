@@ -6,6 +6,8 @@ import com.alibaba.druid.pool.vendor.MySqlValidConnectionChecker;
 
 import java.sql.Connection;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySQLValidConnectionCheckerTest extends PoolTestCase {
     private DruidDataSource dataSource;
 

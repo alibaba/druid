@@ -7,6 +7,8 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_119_date extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select * from test1 where DATE '2019-1-1' = testcol";

@@ -1,9 +1,12 @@
 package com.alibaba.druid.bvt.sql.odps;
 
 import com.alibaba.druid.sql.SQLUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class OdpsAlterTableDisableLifecycle extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OdpsAlterTableDisableLifecycle {
+    @Test
     public void test_no_partition() throws Exception {
         String sql = "ALTER TABLE trans  DISABLE LIFECYCLE;";
         assertEquals("ALTER TABLE trans"
@@ -13,6 +16,7 @@ public class OdpsAlterTableDisableLifecycle extends TestCase {
                 + "\n\tdisable lifecycle;", SQLUtils.formatOdps(sql, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 
+    @Test
     public void test_has_partition() throws Exception {
         String sql = "ALTER TABLE trans PARTITION(dt='20141111') DISABLE LIFECYCLE;";
         assertEquals("ALTER TABLE trans"

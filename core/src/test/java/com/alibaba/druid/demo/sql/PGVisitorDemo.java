@@ -6,13 +6,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitorAdapter;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class PGVisitorDemo extends TestCase {
+public class PGVisitorDemo {
+    @Test
     public void test_for_demo() throws Exception {
         String sql = "select * from mytable a where a.id = 3";
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, DbType.postgresql);

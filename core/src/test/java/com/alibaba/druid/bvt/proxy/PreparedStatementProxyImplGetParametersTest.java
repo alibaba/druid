@@ -3,24 +3,31 @@ package com.alibaba.druid.bvt.proxy;
 import com.alibaba.druid.proxy.jdbc.JdbcParameter;
 import com.alibaba.druid.proxy.jdbc.PreparedStatementProxy;
 import com.alibaba.druid.util.JdbcUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.Map;
 
-public class PreparedStatementProxyImplGetParametersTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class PreparedStatementProxyImplGetParametersTest {
     private String url = "jdbc:wrap-jdbc:filters=default:name=driverTest:jdbc:mock:xxx";
     private Connection conn;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         conn = DriverManager.getConnection(url);
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         JdbcUtils.close(conn);
     }
 
+    @Test
     public void test_get_parameters() throws Exception {
         final PreparedStatementProxy stmt = (PreparedStatementProxy) conn.prepareStatement("select 1");
 

@@ -8,6 +8,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlCreateTableTest98_keyword extends MysqlTest {
     public void test_0() throws Exception {
         String sql = " CREATE TABLE IF NOT EXISTS meta.view (\n" +

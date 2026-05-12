@@ -19,9 +19,12 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class DMLSelectParserTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class DMLSelectParserTest {
+    @Test
     public void test_union_0() throws Exception {
         String sql = "(select id from t1) union all (select id from t2) union all (select id from t3) ordeR By d desC limit 1 offset ?";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -40,6 +43,7 @@ public class DMLSelectParserTest extends TestCase {
                 "LIMIT 1 OFFSET ?", output);
     }
 
+    @Test
     public void test_union_1() throws Exception {
         String sql = "(select id from t1) union  select id from t2 order by id union aLl (select id from t3) ordeR By d asC";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -58,6 +62,7 @@ public class DMLSelectParserTest extends TestCase {
                 "ORDER BY d ASC", output);
     }
 
+    @Test
     public void test_union_2() throws Exception {
         String sql = "(select id from t1) union distInct (select id from t2) union  select id from t3";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -74,6 +79,7 @@ public class DMLSelectParserTest extends TestCase {
                 "FROM t3", output);
     }
 
+    @Test
     public void test_select_0() throws Exception {
         String sql = "SELect t1.id , t2.* from t1, test.t2 where test.t1.id=1 and t1.id=test.t2.id";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -86,6 +92,7 @@ public class DMLSelectParserTest extends TestCase {
                 "\tAND t1.id = test.t2.id", output);
     }
 
+    @Test
     public void test_select_1() throws Exception {
         String sql = "select * from  offer  a  straight_join wp_image b use key for join(t1,t2) on a.member_id=b.member_id inner join product_visit c where a.member_id=c.member_id and c.member_id='abc' ";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -100,6 +107,7 @@ public class DMLSelectParserTest extends TestCase {
                 "\tAND c.member_id = 'abc'", output);
     }
 
+    @Test
     public void test_select_2() throws Exception {
         String sql = "SELect all tb1.id,tb2.id from tb1,tb2 where tb1.id2=tb2.id2";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -111,6 +119,7 @@ public class DMLSelectParserTest extends TestCase {
                 "WHERE tb1.id2 = tb2.id2", output);
     }
 
+    @Test
     public void test_select_3() throws Exception {
         String sql = "SELect distinct high_priority tb1.id,tb2.id from tb1,tb2 where tb1.id2=tb2.id2";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -121,6 +130,7 @@ public class DMLSelectParserTest extends TestCase {
                 output);
     }
 
+    @Test
     public void test_select_4() throws Exception {
         String sql = "SELect distinctrow high_priority sql_small_result tb1.id,tb2.id from tb1,tb2 where tb1.id2=tb2.id2";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -131,6 +141,7 @@ public class DMLSelectParserTest extends TestCase {
                 output);
     }
 
+    @Test
     public void test_select_5() throws Exception {
         String sql = "SELect  sql_cache id1,id2 from tb1,tb2 where tb1.id1=tb2.id1 ";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -140,6 +151,7 @@ public class DMLSelectParserTest extends TestCase {
         assertEquals("SELECT SQL_CACHE id1, id2\nFROM tb1, tb2\nWHERE tb1.id1 = tb2.id1", output);
     }
 
+    @Test
     public void test_select_6() throws Exception {
         String sql = "SELect distinct high_priority tb1.id,tb2.id from tb1,tb2 where tb1.id2=tb2.id2";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -150,6 +162,7 @@ public class DMLSelectParserTest extends TestCase {
                 output);
     }
 
+    @Test
     public void test_select_7() throws Exception {
         String sql = "SELect distinctrow high_priority sql_small_result tb1.id,tb2.id "
                 + "from tb1,tb2 where tb1.id2=tb2.id2";
@@ -161,6 +174,7 @@ public class DMLSelectParserTest extends TestCase {
                 output);
     }
 
+    @Test
     public void test_select_8() throws Exception {
         String sql = "SELect  sql_cache id1,id2 from tb1,tb2 where tb1.id1=tb2.id1 ";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -170,6 +184,7 @@ public class DMLSelectParserTest extends TestCase {
         assertEquals("SELECT SQL_CACHE id1, id2\nFROM tb1, tb2\nWHERE tb1.id1 = tb2.id1", output);
     }
 
+    @Test
     public void test_select_9() throws Exception {
         String sql = "SELect  sql_cache id1,max(id2) from tb1 group by id1 having id1>10 order by id3 desc";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -180,6 +195,7 @@ public class DMLSelectParserTest extends TestCase {
                 output);
     }
 
+    @Test
     public void test_select_10() throws Exception {
         String sql = "SELect  SQL_BUFFER_RESULT tb1.id1,id2 from tb1";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -189,6 +205,7 @@ public class DMLSelectParserTest extends TestCase {
         assertEquals("SELECT SQL_BUFFER_RESULT tb1.id1, id2\nFROM tb1", output);
     }
 
+    @Test
     public void test_select_11() throws Exception {
         String sql = "SELect  SQL_no_cache tb1.id1,id2 from tb1";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -198,6 +215,7 @@ public class DMLSelectParserTest extends TestCase {
         assertEquals("SELECT SQL_NO_CACHE tb1.id1, id2\nFROM tb1", output);
     }
 
+    @Test
     public void test_select_12() throws Exception {
         String sql = "SELect  SQL_CALC_FOUND_ROWS tb1.id1,id2 from tb1";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -207,6 +225,7 @@ public class DMLSelectParserTest extends TestCase {
         assertEquals("SELECT SQL_CALC_FOUND_ROWS tb1.id1, id2\nFROM tb1", output);
     }
 
+    @Test
     public void test_select_13() throws Exception {
         String sql = "SELect 1+1 ";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -216,6 +235,7 @@ public class DMLSelectParserTest extends TestCase {
         assertEquals("SELECT 1 + 1", output);
     }
 
+    @Test
     public void test_select_14() throws Exception {
         String sql = "SELect t1.* from tb ";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -225,6 +245,7 @@ public class DMLSelectParserTest extends TestCase {
         assertEquals("SELECT t1.*\nFROM tb", output);
     }
 
+    @Test
     public void test_select_15() throws Exception {
         String sql = "SELect distinct high_priority straight_join sql_big_result sql_cache tb1.id,tb2.id "
                 + "from tb1,tb2 where tb1.id2=tb2.id2";
@@ -236,6 +257,7 @@ public class DMLSelectParserTest extends TestCase {
                 + " SQL_CACHE tb1.id, tb2.id\nFROM tb1, tb2\nWHERE tb1.id2 = tb2.id2", output);
     }
 
+    @Test
     public void test_select_16() throws Exception {
         String sql = "SELect distinct id1,id2 from tb1,tb2 where tb1.id1=tb2.id2 for update";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -245,6 +267,7 @@ public class DMLSelectParserTest extends TestCase {
         assertEquals("SELECT DISTINCT id1, id2\nFROM tb1, tb2\nWHERE tb1.id1 = tb2.id2\nFOR UPDATE", output);
     }
 
+    @Test
     public void test_select_17() throws Exception {
         String sql = "SELect distinct id1,id2 from tb1,tb2 where tb1.id1=tb2.id2 lock in share mode";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -255,6 +278,7 @@ public class DMLSelectParserTest extends TestCase {
                 output);
     }
 
+    @Test
     public void test_select_18() throws Exception {
         String sql = "SELect t1.id , t2.* from t1, test.t2 where test.t1.id='中''‘文' and t1.id=test.t2.id";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -265,6 +289,7 @@ public class DMLSelectParserTest extends TestCase {
                 output);
     }
 
+    @Test
     public void test_select_19() throws Exception {
         String sql = "select * from  offer  a  straight_join wp_image b force index for join(t1,t2) on a.member_id=b.member_id inner join product_visit c where a.member_id=c.member_id and c.member_id='abc' ";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -279,6 +304,7 @@ public class DMLSelectParserTest extends TestCase {
                 "\n\tAND c.member_id = 'abc'", output);
     }
 
+    @Test
     public void test_select_20() throws Exception {
         String sql = "select * from  offer  a  straight_join wp_image b ignore index for join(t1,t2) on a.member_id=b.member_id inner join product_visit c where a.member_id=c.member_id and c.member_id='abc' ";
         MySqlStatementParser parser = new MySqlStatementParser(sql);

@@ -18,11 +18,14 @@ package com.alibaba.druid.bvt.sql.hive;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class HiveSelectTest_44_issue_3973 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class HiveSelectTest_44_issue_3973 {
+    @Test
     public void test_0() throws Exception {
         String sql = "WITH t AS (SELECT * FROM t1 ) INSERT OVERWRITE TABLE t2 SELECT * FROM t;";
 

@@ -2,7 +2,8 @@ package com.alibaba.druid;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,7 +14,7 @@ import java.util.Properties;
 /**
  * Created by wenshao on 18/05/2017.
  */
-public abstract class DbTestCase extends TestCase {
+public abstract class DbTestCase {
     protected DruidDataSource dataSource;
 
     protected final String resource;
@@ -22,6 +23,7 @@ public abstract class DbTestCase extends TestCase {
         this.resource = resource;
     }
 
+    @BeforeEach
     protected void setUp() throws Exception {
         this.dataSource = createDataSourceFromResource(resource);
     }
@@ -42,6 +44,7 @@ public abstract class DbTestCase extends TestCase {
         return dataSource;
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
     }

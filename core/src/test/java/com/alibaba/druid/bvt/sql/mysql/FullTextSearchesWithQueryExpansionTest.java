@@ -19,11 +19,14 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class FullTextSearchesWithQueryExpansionTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class FullTextSearchesWithQueryExpansionTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT * FROM articles WHERE MATCH (title,body) AGAINST ('database' IN NATURAL LANGUAGE MODE)";
 

@@ -25,6 +25,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleInsertTest20_first extends OracleTest {
     public void test_0() throws Exception {
         String sql = "INSERT FIRST\n" +

@@ -23,11 +23,14 @@ import com.alibaba.druid.sql.ast.statement.SQLUnique;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class MySqlSchemaStatVisitorTest_pk_0 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlSchemaStatVisitorTest_pk_0 {
+    @Test
     public void test_0() throws Exception {
         String sql = "CREATE TABLE `m_dt` (\n" +
                 "  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',\n" +

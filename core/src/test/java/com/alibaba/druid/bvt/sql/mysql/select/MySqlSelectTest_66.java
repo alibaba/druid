@@ -26,6 +26,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_66 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SELECT * FROM (SELECT number_ios,type,subtype,displayname,source FROM hot_number_20170921 WHERE day_modify > 20170921 AND priority >= 4499000 ORDER BY priority DESC LIMIT 500000) ORDER BY number_ios ASC";

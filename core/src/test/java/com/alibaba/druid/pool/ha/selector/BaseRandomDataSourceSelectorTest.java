@@ -2,8 +2,8 @@ package com.alibaba.druid.pool.ha.selector;
 
 import com.alibaba.druid.pool.ha.HighAvailableDataSource;
 import com.alibaba.druid.pool.ha.MockDataSource;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 import javax.sql.DataSource;
 
@@ -14,7 +14,7 @@ public class BaseRandomDataSourceSelectorTest {
     protected Map<String, DataSource> dataSourceMap;
     protected HighAvailableDataSource dataSource;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         dataSourceMap = new HashMap<String, DataSource>();
         for (int i = 0; i < 10; i++) {
@@ -24,7 +24,7 @@ public class BaseRandomDataSourceSelectorTest {
         dataSource.setDataSourceMap(dataSourceMap);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         dataSourceMap = null;
         dataSource.destroy();

@@ -20,6 +20,8 @@ import com.alibaba.druid.sql.repository.SchemaObject;
 import com.alibaba.druid.sql.repository.SchemaRepository;
 import com.alibaba.druid.util.JdbcConstants;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlCreateTable_showColumns_test_2 extends MysqlTest {
     public void test_0() throws Exception {
         SchemaRepository repository = new SchemaRepository(JdbcConstants.MYSQL);

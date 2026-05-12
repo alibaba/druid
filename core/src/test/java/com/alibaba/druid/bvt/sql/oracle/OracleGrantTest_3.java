@@ -24,6 +24,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleGrantTest_3 extends OracleTest {
     public void test_0() throws Exception {
         String sql = "GRANT INHERIT PRIVILEGES ON USER sh TO hr;";

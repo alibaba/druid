@@ -24,6 +24,8 @@ import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.repository.SchemaRepository;
 import com.alibaba.druid.util.JdbcConstants;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlCreateTableTest84 extends MysqlTest {
     public void test_one() throws Exception {
         String sql = "CREATE TABLE `test` (\n" +

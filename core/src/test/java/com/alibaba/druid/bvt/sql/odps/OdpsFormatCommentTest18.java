@@ -1,9 +1,12 @@
 package com.alibaba.druid.bvt.sql.odps;
 
 import com.alibaba.druid.sql.SQLUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class OdpsFormatCommentTest18 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OdpsFormatCommentTest18 {
+    @Test
     public void test_column_comment() throws Exception {
         String sql = "create table t (f1 string comment \"xxx\")";
         assertEquals("CREATE TABLE t ("
@@ -11,6 +14,7 @@ public class OdpsFormatCommentTest18 extends TestCase {
                 + "\n)", SQLUtils.formatOdps(sql));
     }
 
+    @Test
     public void test_column_comment_2() throws Exception {
         String sql = "create table t (f1 string comment \"xxx's\")";
         assertEquals("CREATE TABLE t ("

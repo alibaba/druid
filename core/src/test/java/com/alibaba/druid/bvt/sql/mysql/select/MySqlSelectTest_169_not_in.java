@@ -9,6 +9,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_169_not_in extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SELECT ((10)!=(( (HEX ('abc' )) is FALSE )) ),( (( (( (( 'a')&& (null )) "

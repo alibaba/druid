@@ -18,11 +18,14 @@ package com.alibaba.druid.bvt.sql.oracle;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class OracleSQLParserTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OracleSQLParserTest {
+    @Test
     public void test_1() throws Exception {
         String sql = "SELECT employees_seq.nextval FROM DUAL;";
 
@@ -35,6 +38,7 @@ public class OracleSQLParserTest extends TestCase {
         System.out.println(text);
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "SELECT LPAD(' ',2*(LEVEL-1)) || last_name org_chart, employee_id, manager_id, job_id FROM employees WHERE job_id != 'FI_MGR' START WITH job_id = 'AD_VP' CONNECT BY PRIOR employee_id = manager_id; ";
 

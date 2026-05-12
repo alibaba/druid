@@ -17,9 +17,12 @@ package com.alibaba.druid.bvt.filter.wall;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.wall.spi.WallVisitorUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class CountTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class CountTest {
+    @Test
     public void test_isTrue() throws Exception {
         assertEquals(Boolean.TRUE, WallVisitorUtils.getValue(SQLUtils.toSQLExpr("(select count(*) from t) > 0")));
         assertEquals(Boolean.TRUE,

@@ -6,14 +6,19 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.proxy.jdbc.CallableStatementProxy;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 import com.alibaba.druid.proxy.jdbc.PreparedStatementProxy;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class DruidPooledConnectionTest_prepareError extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class DruidPooledConnectionTest_prepareError {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
@@ -87,10 +92,12 @@ public class DruidPooledConnectionTest_prepareError extends TestCase {
         });
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
     }
 
+    @Test
     public void test_prepare_error() throws Exception {
         Connection conn = dataSource.getConnection();
 
@@ -108,6 +115,7 @@ public class DruidPooledConnectionTest_prepareError extends TestCase {
         assertEquals(1, dataSource.getErrorCount());
     }
 
+    @Test
     public void test_prepare_error_1() throws Exception {
         Connection conn = dataSource.getConnection();
 
@@ -125,6 +133,7 @@ public class DruidPooledConnectionTest_prepareError extends TestCase {
         assertEquals(1, dataSource.getErrorCount());
     }
 
+    @Test
     public void test_prepare_error_2() throws Exception {
         Connection conn = dataSource.getConnection();
 
@@ -142,6 +151,7 @@ public class DruidPooledConnectionTest_prepareError extends TestCase {
         assertEquals(1, dataSource.getErrorCount());
     }
 
+    @Test
     public void test_prepare_error_3() throws Exception {
         Connection conn = dataSource.getConnection();
 
@@ -159,6 +169,7 @@ public class DruidPooledConnectionTest_prepareError extends TestCase {
         assertEquals(1, dataSource.getErrorCount());
     }
 
+    @Test
     public void test_prepare_error_4() throws Exception {
         Connection conn = dataSource.getConnection();
 
@@ -176,6 +187,7 @@ public class DruidPooledConnectionTest_prepareError extends TestCase {
         assertEquals(1, dataSource.getErrorCount());
     }
 
+    @Test
     public void test_prepare_error_5() throws Exception {
         Connection conn = dataSource.getConnection();
 
@@ -193,6 +205,7 @@ public class DruidPooledConnectionTest_prepareError extends TestCase {
         assertEquals(1, dataSource.getErrorCount());
     }
 
+    @Test
     public void test_prepareCall_error_1() throws Exception {
         Connection conn = dataSource.getConnection();
 
@@ -210,6 +223,7 @@ public class DruidPooledConnectionTest_prepareError extends TestCase {
         assertEquals(1, dataSource.getErrorCount());
     }
 
+    @Test
     public void test_prepareCall_error_2() throws Exception {
         Connection conn = dataSource.getConnection();
 
@@ -227,6 +241,7 @@ public class DruidPooledConnectionTest_prepareError extends TestCase {
         assertEquals(1, dataSource.getErrorCount());
     }
 
+    @Test
     public void test_prepareCall_error_3() throws Exception {
         Connection conn = dataSource.getConnection();
 

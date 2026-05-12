@@ -17,21 +17,27 @@ package com.alibaba.druid.bvt.filter.wall;
 
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class MustParameterizedTest4 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MustParameterizedTest4 {
     private String sql = "select * from t where id not in (3, 5)";
 
     private WallConfig config = new WallConfig();
 
+    @BeforeEach
     protected void setUp() throws Exception {
         config.setMustParameterized(true);
     }
 
+    @Test
     public void testMySql() throws Exception {
         assertFalse(WallUtils.isValidateMySql(sql, config));
     }
 
+    @Test
     public void testORACLE() throws Exception {
         assertFalse(WallUtils.isValidateOracle(sql, config));
     }

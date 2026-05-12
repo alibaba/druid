@@ -6,11 +6,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
 import com.alibaba.druid.util.JdbcUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class OracleHintTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OracleHintTest {
+    @Test
     public void test_hint1() throws Exception {
         String sql = "SELECT /*+leading(e) index(e ORD_ORDER_ITEM_GS_BS_DI_IND)*/ distinct e.id from ord_order_item e where e.F1 = Date '2011-10-01'";
 
@@ -25,18 +28,21 @@ public class OracleHintTest extends TestCase {
         assertEquals("SELECT /*+leading(e) index(e ORD_ORDER_ITEM_GS_BS_DI_IND)*/ DISTINCT e.id\nFROM ord_order_item e\nWHERE e.F1 = DATE '2011-10-01'", newSQL);
     }
 
+    @Test
     public void test_hint2() throws Exception {
         String sql = "SELECT /*+leading(e) index(e ORD_ORDER_ITEM_GS_BS_DI_IND)*/ distinct e.id from ord_order_item e where e.F1 = Date '2011-10-01'";
         String countSQL = PagerUtils.count(sql, JdbcUtils.ORACLE);
         assertEquals("SELECT /*+leading(e) index(e ORD_ORDER_ITEM_GS_BS_DI_IND)*/ COUNT(DISTINCT e.id)\nFROM ord_order_item e\nWHERE e.F1 = DATE '2011-10-01'", countSQL);
     }
 
+    @Test
     public void test_hint3() throws Exception {
         String sql = "SELECT /*+index(a MTN_SMS_LOG_PK)*/ * from MTN_SMS_LOG a";
         String formattedSql = SQLUtils.formatOracle(sql);
         assertEquals("SELECT /*+index(a MTN_SMS_LOG_PK)*/ *" + "\nFROM MTN_SMS_LOG a", formattedSql);
     }
 
+    @Test
     public void test_hint4() throws Exception {
         String sql = "UPDATE /*+index(a MTN_SMS_LOG_PK)*/  MTN_SMS_LOG  a SET GMT_MODIFIED = sysdate WHERE id=1";
         String formattedSql = SQLUtils.formatOracle(sql);
@@ -45,12 +51,14 @@ public class OracleHintTest extends TestCase {
                 + "\nWHERE id = 1", formattedSql);
     }
 
+    @Test
     public void test_hint5() throws Exception {
         String sql = "SELECT /*+index(clk) use_nl(clk) */ distinct log.id log_id from t";
         String formattedSql = SQLUtils.formatOracle(sql);
         assertEquals("SELECT /*+index(clk) use_nl(clk) */ DISTINCT log.id AS log_id" + "\nFROM t", formattedSql);
     }
 
+    @Test
     public void test_hint6() throws Exception {
         String sql = "insert /*+APPEND*/ into emp_new select a.no, sysdate, a.name, b.service_duration from emp a, work b where a.no=b.no";
         String formattedSql = SQLUtils.formatOracle(sql);
@@ -58,6 +66,7 @@ public class OracleHintTest extends TestCase {
                 + "\nFROM emp a, work b" + "\nWHERE a.no = b.no", formattedSql);
     }
 
+    @Test
     public void test_hint7() throws Exception {
         String sql = "delete /*+PARALLEL(semp, 5) */ from semp";
         String formattedSql = SQLUtils.formatOracle(sql);

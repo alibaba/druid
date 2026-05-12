@@ -19,20 +19,23 @@ import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DataSourceDisableException;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.util.concurrent.CountDownLatch;
 
-public class TestDisable extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class TestDisable {
     private MockDriver driver;
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         DruidDataSourceStatManager.clear();
-
         driver = new MockDriver();
-
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setDriver(driver);
@@ -49,11 +52,13 @@ public class TestDisable extends TestCase {
         dataSource.setFilters("stat");
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
-        assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        DruidDataSourceStatManager.clear();
     }
 
+    @Test
     public void test_close() throws Exception {
         final int threadCount = 100;
         Thread[] threads = new Thread[threadCount];

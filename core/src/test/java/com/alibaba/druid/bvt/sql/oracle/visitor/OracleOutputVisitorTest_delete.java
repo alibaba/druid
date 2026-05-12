@@ -20,11 +20,14 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat.Column;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class OracleOutputVisitorTest_delete extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OracleOutputVisitorTest_delete {
+    @Test
     public void test_0() throws Exception {
         String sql = "DELETE FROM employee where id = 3";
 

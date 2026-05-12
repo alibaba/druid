@@ -16,24 +16,27 @@
 
 package com.alibaba.druid.util;
 
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
 import java.time.ZoneId;
 import java.util.TimeZone;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author: ruansheng
  * @date: 2024-01-22
  */
-public class MySqlUtilsTest extends TestCase {
+public class MySqlUtilsTest {
+    @Test
     public void testParseMillis() {
-        Assert.assertThrows(IllegalArgumentException.class,
+        assertThrows(IllegalArgumentException.class,
                 () -> MySqlUtils.parseMillis(null, TimeZone.getTimeZone("GMT+8")));
     }
 
+    @Test
     public void testParseDateTime() {
-        Assert.assertThrows(IllegalArgumentException.class,
+        assertThrows(IllegalArgumentException.class,
                 () -> MySqlUtils.parseDateTime(null, 0, 0, ZoneId.systemDefault()));
     }
 }

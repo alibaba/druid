@@ -19,19 +19,22 @@ import com.alibaba.druid.bvt.proxy.DruidDriverTest.PublicJdbcFilterAdapter;
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.FilterManager;
 import com.alibaba.druid.util.Utils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
  * druidLoader util 测试
  *
  * @author gang.su
  */
-public class DruidLoaderUtilsTest extends TestCase {
+public class DruidLoaderUtilsTest {
+    @Test
     public void testLoadFilter() throws SQLException {
         List<Filter> filters = new ArrayList<Filter>();
         // log4j

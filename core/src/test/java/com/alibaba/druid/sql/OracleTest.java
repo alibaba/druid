@@ -17,11 +17,10 @@ package com.alibaba.druid.sql;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
-import junit.framework.TestCase;
 
 import java.util.List;
 
-public class OracleTest extends TestCase {
+public class OracleTest {
     protected String output(List<SQLStatement> stmtList) {
         StringBuilder out = new StringBuilder();
         OracleOutputVisitor visitor = new OracleOutputVisitor(out);

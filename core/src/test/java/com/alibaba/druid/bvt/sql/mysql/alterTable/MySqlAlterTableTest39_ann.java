@@ -18,11 +18,14 @@ package com.alibaba.druid.bvt.sql.mysql.alterTable;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class MySqlAlterTableTest39_ann extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlAlterTableTest39_ann {
+    @Test
     public void test_alter_modify_clustered_by() throws Exception {
         String sql = "ALTER TABLE face_feature ADD ANN INDEX facefea_index2  (facefea) DistanceMeasure = DotProduct ALGORITHM = IVF;";
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);

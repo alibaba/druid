@@ -4,11 +4,14 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class HiveInsert_3 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class HiveInsert_3 {
+    @Test
     public void test_select() throws Exception {
         String sql = "FROM sale_detail\n" +
                 "INSERT OVERWRITE TABLE sale_detail_multi partition (sale_date='2010', region='china' )\n" +

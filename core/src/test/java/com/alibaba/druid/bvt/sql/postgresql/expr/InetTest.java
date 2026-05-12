@@ -4,6 +4,8 @@ import com.alibaba.druid.sql.PGTest;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGInetExpr;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGExprParser;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class InetTest extends PGTest {
     public void test_timestamp() throws Exception {
         String sql = "inet '0.0.0.255'";

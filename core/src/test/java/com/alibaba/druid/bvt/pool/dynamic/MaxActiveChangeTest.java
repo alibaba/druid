@@ -22,6 +22,8 @@ import com.alibaba.druid.util.JdbcUtils;
 
 import java.sql.Connection;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MaxActiveChangeTest extends PoolTestCase {
     private DruidDataSource dataSource;
 

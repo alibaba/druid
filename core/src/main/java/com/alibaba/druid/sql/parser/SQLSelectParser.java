@@ -1129,7 +1129,7 @@ public class SQLSelectParser extends SQLParser {
         if (lexer.token == Token.HINT) {
             SQLCommentHint hint = this.exprParser.parseHint(); // skip
             if (item instanceof SQLObjectImpl) {
-                ((SQLExprImpl) item).setHint(hint);
+                ((SQLObjectImpl) item).setHint(hint);
             }
         }
 
@@ -1326,7 +1326,7 @@ public class SQLSelectParser extends SQLParser {
         }
 
         if (lexer.token == Token.SELECT) {
-            throw new ParserException("TODO " + lexer.info());
+            throw new ParserException("unexpected SELECT in table source, subquery must be wrapped in parentheses. " + lexer.info());
         }
 
         SQLTableSource unnestTableSource = parseUnnestTableSource();
@@ -1384,6 +1384,48 @@ public class SQLSelectParser extends SQLParser {
         }
 
         tableReference.setExpr(expr);
+    }
+
+    protected SQLTableSource parseLateralTableSource() {
+        if (lexer.token == Token.LPAREN) {
+            Lexer.SavePoint mark = lexer.mark();
+            lexer.nextToken();
+            if (lexer.token == Token.SELECT || lexer.token == Token.WITH || lexer.token == Token.VALUES) {
+                SQLSelect select = select();
+                accept(Token.RPAREN);
+                SQLSubqueryTableSource subquery = new SQLSubqueryTableSource(select);
+                subquery.setLateral(true);
+                String alias = tableAlias();
+                if (alias != null) {
+                    subquery.setAlias(alias);
+                }
+                if (lexer.token == Token.LPAREN) {
+                    lexer.nextToken();
+                    this.exprParser.names(subquery.getColumns(), subquery);
+                    accept(Token.RPAREN);
+                }
+                return subquery;
+            } else {
+                lexer.reset(mark);
+                SQLExpr funcExpr = this.exprParser.expr();
+                SQLExprTableSource funcTableSource = new SQLExprTableSource(funcExpr);
+                funcTableSource.setLateral(true);
+                String alias = tableAlias();
+                if (alias != null) {
+                    funcTableSource.setAlias(alias);
+                }
+                return funcTableSource;
+            }
+        } else {
+            SQLExpr funcExpr = this.exprParser.expr();
+            SQLExprTableSource funcTableSource = new SQLExprTableSource(funcExpr);
+            funcTableSource.setLateral(true);
+            String alias = tableAlias();
+            if (alias != null) {
+                funcTableSource.setAlias(alias);
+            }
+            return funcTableSource;
+        }
     }
 
     protected SQLTableSource parseUnnestTableSource() {
@@ -1866,7 +1908,10 @@ public class SQLSelectParser extends SQLParser {
                     }
                 }
             } else {
-                if (lexer.token == Token.VALUES) {
+                if (lexer.token == Token.LATERAL || lexer.identifierEquals(FnvHash.Constants.LATERAL)) {
+                    lexer.nextToken();
+                    rightTableSource = parseLateralTableSource();
+                } else if (lexer.token == Token.VALUES) {
                     rightTableSource = this.parseValues();
                 } else {
                     SQLTableSource unnestTableSource = parseUnnestTableSource();
@@ -2052,7 +2097,7 @@ public class SQLSelectParser extends SQLParser {
                     join.addCondition(joinOn2);
                 }
 
-                if (dialectFeatureEnabled(UDJ) && lexer.identifierEquals(FnvHash.Constants.USING)) {
+                if (dialectFeatureEnabled(UserDefinedJoin) && lexer.identifierEquals(FnvHash.Constants.USING)) {
                     SQLJoinTableSource.UDJ udj = new SQLJoinTableSource.UDJ();
                     lexer.nextToken();
                     udj.setFunction(this.exprParser.name());
@@ -2483,7 +2528,7 @@ public class SQLSelectParser extends SQLParser {
             accept(Token.LPAREN);
 
             if (lexer.token() == (Token.SELECT)) {
-                throw new ParserException("TODO. " + lexer.info());
+                throw new ParserException("subquery in UNPIVOT IN clause is not supported. " + lexer.info());
             }
             parsePivotIn(unPivot, unPivot.getPivotIn());
 

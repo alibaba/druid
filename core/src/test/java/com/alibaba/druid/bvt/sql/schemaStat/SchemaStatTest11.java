@@ -8,11 +8,14 @@ import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.Set;
 
-public class SchemaStatTest11 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class SchemaStatTest11 {
+    @Test
     public void test_schemaStat() throws Exception {
         String sql = "select a.id, b.name from (select * from table1) a inner join table2 b on a.id = b.id";
 

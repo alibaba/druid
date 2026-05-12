@@ -19,9 +19,12 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class DB2AlterTableTest_1_setNotNull extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class DB2AlterTableTest_1_setNotNull {
+    @Test
     public void test_alter_constraint() throws Exception {
         String sql = "alter table T_ORG alter column ORG_NAME set not null";
         SQLStatement stmt = SQLUtils.parseStatements(sql, JdbcConstants.DB2).get(0);

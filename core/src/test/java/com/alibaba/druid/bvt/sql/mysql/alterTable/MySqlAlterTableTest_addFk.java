@@ -22,9 +22,12 @@ import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class MySqlAlterTableTest_addFk extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlAlterTableTest_addFk {
+    @Test
     public void test_alter_first() throws Exception {
         String sql = "alter table Test2 add index FK4CF5DC0F5DD7C31 (test1_name), " +
                 "add constraint FK4CF5DC0F5DD7C31 foreign key (test1_name) references Test1 (name)";

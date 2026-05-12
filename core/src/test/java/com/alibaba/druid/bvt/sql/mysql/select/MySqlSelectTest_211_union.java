@@ -22,6 +22,8 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_211_union extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select count(*) from ((select k from linxi3 except select id from linxi1 where id =1) union select k from linxi50);";

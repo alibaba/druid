@@ -7,11 +7,12 @@ import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2ASTVisitorAdapter;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class Issue2038 extends TestCase {
+public class Issue2038 {
+    @Test
     public void test_for_demo() throws Exception {
         String sql = "select * from (select * from t union all select * from t1 union all select * from t3) xx";
 

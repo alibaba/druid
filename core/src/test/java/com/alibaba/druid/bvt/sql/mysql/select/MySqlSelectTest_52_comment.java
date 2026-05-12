@@ -23,6 +23,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_52_comment extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SELECT comment.id,user.id AS user_id,user.username,user.avatar,comment.created_at,\n" +

@@ -23,6 +23,8 @@ import com.alibaba.druid.sql.parser.SQLParserFeature;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlShowTest_35_PHYSICAL_PROCESSLIST extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SHOW PHYSICAL_PROCESSLIST";

@@ -17,9 +17,12 @@ package com.alibaba.druid.bvt.bug;
 
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class Issue_728 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class Issue_728 {
+    @Test
     public void test1() throws Exception {
         String sql = "select * from city_list where city_id = 3-1";
 
@@ -29,6 +32,7 @@ public class Issue_728 extends TestCase {
         assertFalse(WallUtils.isValidateMySql(sql, config));
     }
 
+    @Test
     public void test2() throws Exception {
         String sql = "SELECT * from city_list where 2 = case when 2=1 then 1 else 2 END";
 
@@ -38,6 +42,7 @@ public class Issue_728 extends TestCase {
         assertFalse(WallUtils.isValidateMySql(sql, config));
     }
 
+    @Test
     public void test3() throws Exception {
         String sql = "SELECT * from city_list where city_id = 1 & 2";
 

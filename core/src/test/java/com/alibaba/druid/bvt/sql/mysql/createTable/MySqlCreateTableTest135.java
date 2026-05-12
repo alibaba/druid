@@ -3,15 +3,18 @@ package com.alibaba.druid.bvt.sql.mysql.createTable;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Dagon0577
  * @date 2020/5/14 10:51
  */
-public class MySqlCreateTableTest135 extends TestCase {
+public class MySqlCreateTableTest135 {
+    @Test
     public void test_0() throws Exception {
         String sql =
                 "create table MQ_TOPIC_RECORD(\n"

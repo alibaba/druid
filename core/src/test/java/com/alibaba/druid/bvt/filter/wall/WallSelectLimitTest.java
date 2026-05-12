@@ -23,17 +23,22 @@ import com.alibaba.druid.wall.spi.MySqlWallProvider;
 import com.alibaba.druid.wall.spi.OracleWallProvider;
 import com.alibaba.druid.wall.spi.PGWallProvider;
 import com.alibaba.druid.wall.spi.SQLServerWallProvider;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class WallSelectLimitTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class WallSelectLimitTest {
     private String sql = "select * from t";
 
     private WallConfig config = new WallConfig();
 
+    @BeforeEach
     protected void setUp() throws Exception {
         config.setSelectLimit(1000);
     }
 
+    @Test
     public void testMySql() throws Exception {
         WallProvider provider = new MySqlWallProvider(config);
         WallCheckResult checkResult = provider.check(sql);
@@ -44,6 +49,7 @@ public class WallSelectLimitTest extends TestCase {
                 "LIMIT 1000", resultSql);
     }
 
+    @Test
     public void testDB2() throws Exception {
         WallProvider provider = new DB2WallProvider(config);
         WallCheckResult checkResult = provider.check(sql);
@@ -54,6 +60,7 @@ public class WallSelectLimitTest extends TestCase {
                 "FETCH FIRST 1000 ROWS ONLY", resultSql);
     }
 
+    @Test
     public void testSQLServer() throws Exception {
         WallProvider provider = new SQLServerWallProvider(config);
         WallCheckResult checkResult = provider.check(sql);
@@ -63,6 +70,7 @@ public class WallSelectLimitTest extends TestCase {
                 "FROM t", resultSql);
     }
 
+    @Test
     public void testOracle() throws Exception {
         WallProvider provider = new OracleWallProvider(config);
         WallCheckResult checkResult = provider.check(sql);
@@ -73,6 +81,7 @@ public class WallSelectLimitTest extends TestCase {
                 "WHERE ROWNUM <= 1000", resultSql);
     }
 
+    @Test
     public void testPG() throws Exception {
         WallProvider provider = new PGWallProvider(config);
         WallCheckResult checkResult = provider.check(sql);

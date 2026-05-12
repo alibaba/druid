@@ -7,9 +7,12 @@ import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitorAdapter;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class ClearSchema_0 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class ClearSchema_0 {
+    @Test
     public void test_insert_0() throws Exception {
         String sql = "INSERT INTO testdb.Websites (name, country)\n" +
                 "SELECT app_name, country FROM testdb.apps;";

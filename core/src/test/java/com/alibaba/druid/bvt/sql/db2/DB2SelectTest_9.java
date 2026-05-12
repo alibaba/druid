@@ -25,6 +25,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class DB2SelectTest_9 extends DB2Test {
     public void test_0() throws Exception {
         String sql = "select tsuserstb0_.USERID as USERID1_1_, tsuserstb0_.CREASTAF as CREASTAF2_1_"
