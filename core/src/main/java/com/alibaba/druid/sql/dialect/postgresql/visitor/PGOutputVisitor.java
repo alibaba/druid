@@ -3076,6 +3076,15 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         return false;
     }
 
+    public boolean visit(SQLAlterTableAlterColumn x) {
+        super.visit(x);
+        if (x.getUsing() != null) {
+            print0(ucase ? " USING " : " using ");
+            x.getUsing().accept(this);
+        }
+        return false;
+    }
+
     @Override
     protected void printTableOptionsPrefix(SQLCreateTableStatement x) {
         println();
