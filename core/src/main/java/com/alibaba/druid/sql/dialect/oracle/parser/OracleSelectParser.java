@@ -937,26 +937,43 @@ public class OracleSelectParser extends SQLSelectParser {
     }
 
     protected void parseInto(OracleSelectQueryBlock x) {
-        if (lexer.token() == Token.INTO) {
+        if (lexer.identifierEquals("BULK")) {
+            Lexer.SavePoint mark = lexer.mark();
             lexer.nextToken();
-
-            if (lexer.token() == Token.FROM) {
-                return;
-            }
-
-            SQLExpr expr = expr();
-            if (lexer.token() != Token.COMMA) {
-                x.setInto(expr);
-                return;
-            }
-            SQLListExpr list = new SQLListExpr();
-            list.addItem(expr);
-            while (lexer.token() == Token.COMMA) {
+            if (lexer.identifierEquals("COLLECT")) {
                 lexer.nextToken();
-                list.addItem(expr());
+                if (lexer.token() == Token.INTO) {
+                    x.setBulkCollect(true);
+                    parseIntoInternal(x);
+                } else {
+                    // If it's not a "INTO" token, then it's not a "BULK COLLECT" clause
+                    lexer.reset(mark);
+                }
             }
-            x.setInto(list);
+        } else if (lexer.token() == Token.INTO) {
+            parseIntoInternal(x);
         }
+    }
+
+    private void parseIntoInternal(OracleSelectQueryBlock x) {
+        lexer.nextToken();
+
+        if (lexer.token() == Token.FROM) {
+            return;
+        }
+
+        SQLExpr expr = expr();
+        if (lexer.token() != Token.COMMA) {
+            x.setInto(expr);
+            return;
+        }
+        SQLListExpr list = new SQLListExpr();
+        list.addItem(expr);
+        while (lexer.token() == Token.COMMA) {
+            lexer.nextToken();
+            list.addItem(expr());
+        }
+        x.setInto(list);
     }
 
     private void parseHints(OracleSelectQueryBlock queryBlock) {
