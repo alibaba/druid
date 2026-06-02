@@ -6316,6 +6316,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     @Override
+    public boolean visit(SQLAlterTableSwap x) {
+        print0(ucase ? "SWAP WITH " : "swap with ");
+        x.getName().accept(this);
+        return false;
+    }
+
     public boolean visit(SQLAlterTableRenameColumn x) {
         print0(ucase ? "RENAME COLUMN " : "rename column ");
         x.getColumn().accept(this);

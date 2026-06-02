@@ -2815,6 +2815,13 @@ public interface SQLASTVisitor {
 
     default void endVisit(SQLResetStatement x) {
     }
+
+    default boolean visit(SQLAlterTableSwap x) {
+        return true;
+    }
+
+    default void endVisit(SQLAlterTableSwap x) {
+    }
     static SQLASTVisitor ofMethodInvoke(Consumer<SQLMethodInvokeExpr> p) {
         return ofMethodInvoke(null, p);
     }

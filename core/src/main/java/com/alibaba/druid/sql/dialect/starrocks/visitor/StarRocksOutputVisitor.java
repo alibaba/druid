@@ -23,11 +23,7 @@ import com.alibaba.druid.sql.dialect.starrocks.StarRocks;
 import com.alibaba.druid.sql.dialect.starrocks.ast.StarRocksAggregateKey;
 import com.alibaba.druid.sql.dialect.starrocks.ast.StarRocksDuplicateKey;
 import com.alibaba.druid.sql.dialect.starrocks.ast.StarRocksIndexDefinition;
-import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateCatalogStatement;
-import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateMaterializedViewStatement;
-import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateResourceStatement;
-import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateTableStatement;
-import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksSubmitTaskStatement;
+import com.alibaba.druid.sql.dialect.starrocks.ast.statement.*;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.util.FnvHash;
 import com.alibaba.druid.util.JdbcUtils;
@@ -432,6 +428,113 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
         println();
         x.getQuery().accept(this);
 
+        return false;
+    }
+
+    public boolean visit(StarRocksCreatePipeStatement x) {
+        print0(ucase ? "CREATE " : "create ");
+        if (x.isOrReplace()) {
+            print0(ucase ? "OR REPLACE " : "or replace ");
+        }
+        print0(ucase ? "PIPE " : "pipe ");
+        if (x.isIfNotExists()) {
+            print0(ucase ? "IF NOT EXISTS " : "if not exists ");
+        }
+        x.getName().accept(this);
+
+        if (!x.getProperties().isEmpty()) {
+            println();
+            print0(ucase ? "PROPERTIES (" : "properties (");
+            incrementIndent();
+            println();
+            int i = 0;
+            for (SQLAssignItem property : x.getProperties()) {
+                printTableOption(property.getTarget(), property.getValue(), i);
+                ++i;
+            }
+            decrementIndent();
+            println();
+            print0(")");
+        }
+
+        println();
+        print0(ucase ? "AS" : "as");
+        println();
+        x.getBody().accept(this);
+        return false;
+    }
+
+    public boolean visit(StarRocksCreateDictionaryStatement x) {
+        print0(ucase ? "CREATE DICTIONARY " : "create dictionary ");
+        x.getName().accept(this);
+        print0(ucase ? " USING " : " using ");
+        x.getSourceTable().accept(this);
+
+        print0(" (");
+        for (int i = 0; i < x.getColumnMappings().size(); i++) {
+            if (i > 0) {
+                print0(", ");
+            }
+            SQLAssignItem item = x.getColumnMappings().get(i);
+            item.getTarget().accept(this);
+            print(' ');
+            if (item.getValue() != null) {
+                item.getValue().accept(this);
+            }
+        }
+        print0(")");
+
+        if (!x.getProperties().isEmpty()) {
+            println();
+            print0(ucase ? "PROPERTIES (" : "properties (");
+            incrementIndent();
+            println();
+            int i = 0;
+            for (SQLAssignItem property : x.getProperties()) {
+                printTableOption(property.getTarget(), property.getValue(), i);
+                ++i;
+            }
+            decrementIndent();
+            println();
+            print0(")");
+        }
+        return false;
+    }
+
+    public boolean visit(StarRocksCreateStorageVolumeStatement x) {
+        print0(ucase ? "CREATE STORAGE VOLUME " : "create storage volume ");
+        if (x.isIfNotExists()) {
+            print0(ucase ? "IF NOT EXISTS " : "if not exists ");
+        }
+        x.getName().accept(this);
+        println();
+        print0(ucase ? "TYPE = " : "type = ");
+        x.getType().accept(this);
+        println();
+        print0(ucase ? "LOCATIONS = (" : "locations = (");
+        printAndAccept(x.getLocations(), ", ");
+        print0(")");
+
+        if (x.getComment() != null) {
+            println();
+            print0(ucase ? "COMMENT " : "comment ");
+            x.getComment().accept(this);
+        }
+
+        if (!x.getProperties().isEmpty()) {
+            println();
+            print0(ucase ? "PROPERTIES (" : "properties (");
+            incrementIndent();
+            println();
+            int i = 0;
+            for (SQLAssignItem property : x.getProperties()) {
+                printTableOption(property.getTarget(), property.getValue(), i);
+                ++i;
+            }
+            decrementIndent();
+            println();
+            print0(")");
+        }
         return false;
     }
 
