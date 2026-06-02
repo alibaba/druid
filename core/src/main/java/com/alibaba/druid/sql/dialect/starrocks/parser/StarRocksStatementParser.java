@@ -73,9 +73,14 @@ public class StarRocksStatementParser extends SQLStatementParser {
     }
 
     @Override
+    protected void parseInsertOverwrite(SQLInsertInto insertStatement) {
+        insertStatement.setOverwrite(true);
+    }
+
+    @Override
     protected void parseInsert0(SQLInsertInto insertStatement, boolean acceptSubQuery) {
         if (lexer.nextIf(Token.OVERWRITE) || lexer.nextIfIdentifier(FnvHash.Constants.OVERWRITE)) {
-            insertStatement.setOverwrite(true);
+            parseInsertOverwrite(insertStatement);
         } else if (lexer.nextIf(Token.INTO)) {
             insertStatement.setOverwrite(false);
         }
@@ -99,10 +104,26 @@ public class StarRocksStatementParser extends SQLStatementParser {
             accept(Token.RPAREN);
         }
 
-        if (lexer.token() == Token.WITH) {
+        if (lexer.token() == Token.LITERAL_ALIAS) {
+            insertStatement.setAlias(tableAlias());
+        }
+
+        parseInsert0Hints(insertStatement, false);
+
+        if (lexer.token() == Token.IDENTIFIER) {
+            insertStatement.setAlias(lexer.stringVal());
             lexer.nextToken();
-            acceptIdentifier("LABEL");
-            insertStatement.setLabel(this.exprParser.name());
+        }
+
+        if (lexer.token() == Token.WITH) {
+            Lexer.SavePoint mark = lexer.markOut();
+            lexer.nextToken();
+            if (lexer.identifierEquals("LABEL")) {
+                lexer.nextToken();
+                insertStatement.setLabel(this.exprParser.name());
+            } else {
+                lexer.reset(mark);
+            }
         }
 
         if (lexer.token() == Token.PARTITION) {

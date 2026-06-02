@@ -8,6 +8,7 @@ import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLCreateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDDLStatement;
+import com.alibaba.druid.sql.dialect.starrocks.visitor.StarRocksASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
@@ -82,11 +83,16 @@ public class StarRocksCreatePipeStatement extends SQLStatementImpl implements SQ
     }
 
     @Override
-    protected void accept0(SQLASTVisitor v) {
-        // visitor dispatch will be wired in StarRocksASTVisitor
-        acceptChild(v, name);
-        acceptChild(v, (List) properties);
-        acceptChild(v, body);
+    protected void accept0(SQLASTVisitor visitor) {
+        if (visitor instanceof StarRocksASTVisitor) {
+            StarRocksASTVisitor v = (StarRocksASTVisitor) visitor;
+            if (v.visit(this)) {
+                acceptChild(visitor, name);
+                acceptChild(visitor, (List) properties);
+                acceptChild(visitor, body);
+            }
+            v.endVisit(this);
+        }
     }
 
     @Override
