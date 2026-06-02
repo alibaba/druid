@@ -3,6 +3,9 @@ package com.alibaba.druid.sql.dialect.starrocks.parser;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLLambdaExpr;
+import com.alibaba.druid.sql.ast.expr.SQLListExpr;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLExprParser;
@@ -12,6 +15,7 @@ import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.FnvHash;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class StarRocksExprParser extends SQLExprParser {
     public static final String[] AGGREGATE_FUNCTIONS;
@@ -116,5 +120,44 @@ public class StarRocksExprParser extends SQLExprParser {
         String identName = lexer.stringVal();
         lexer.nextToken();
         return identName;
+    }
+
+    @Override
+    public SQLExpr bitXorRest(SQLExpr expr) {
+        if (lexer.token() == Token.SUBGT) {
+            SQLLambdaExpr lambda = tryParseLambda(expr);
+            if (lambda != null) {
+                return lambda;
+            }
+        }
+        return super.bitXorRest(expr);
+    }
+
+    private SQLLambdaExpr tryParseLambda(SQLExpr expr) {
+        if (expr instanceof SQLIdentifierExpr) {
+            // single-param lambda: x -> body
+            SQLLambdaExpr lambda = new SQLLambdaExpr();
+            lambda.addArgument(expr);
+            lexer.nextToken(); // consume ->
+            lambda.setExpr(expr());
+            return lambda;
+        } else if (expr instanceof SQLListExpr) {
+            // multi-param lambda: (x, y) -> body
+            SQLListExpr listExpr = (SQLListExpr) expr;
+            List<SQLExpr> items = listExpr.getItems();
+            for (SQLExpr item : items) {
+                if (!(item instanceof SQLIdentifierExpr)) {
+                    return null;
+                }
+            }
+            SQLLambdaExpr lambda = new SQLLambdaExpr();
+            for (SQLExpr item : items) {
+                lambda.addArgument(item);
+            }
+            lexer.nextToken(); // consume ->
+            lambda.setExpr(expr());
+            return lambda;
+        }
+        return null;
     }
 }

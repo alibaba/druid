@@ -23,8 +23,10 @@ import com.alibaba.druid.sql.dialect.starrocks.StarRocks;
 import com.alibaba.druid.sql.dialect.starrocks.ast.StarRocksAggregateKey;
 import com.alibaba.druid.sql.dialect.starrocks.ast.StarRocksDuplicateKey;
 import com.alibaba.druid.sql.dialect.starrocks.ast.StarRocksIndexDefinition;
+import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateCatalogStatement;
 import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateResourceStatement;
 import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateTableStatement;
+import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksSubmitTaskStatement;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.util.FnvHash;
 import com.alibaba.druid.util.JdbcUtils;
@@ -307,6 +309,43 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
         return false;
     }
 
+    public boolean visit(StarRocksCreateCatalogStatement x) {
+        print0(ucase ? "CREATE " : "create ");
+        if (x.isExternal()) {
+            print0(ucase ? "EXTERNAL " : "external ");
+        }
+
+        print0(ucase ? "CATALOG " : "catalog ");
+
+        if (x.isIfNotExists()) {
+            print0(ucase ? "IF NOT EXISTS " : "if not exists ");
+        }
+
+        x.getName().accept(this);
+
+        if (x.getComment() != null) {
+            println();
+            print0(ucase ? "COMMENT " : "comment ");
+            x.getComment().accept(this);
+        }
+
+        if (!x.getProperties().isEmpty()) {
+            println();
+            print0(ucase ? "PROPERTIES (" : "properties (");
+            incrementIndent();
+            println();
+            int i = 0;
+            for (SQLAssignItem property : x.getProperties()) {
+                printTableOption(property.getTarget(), property.getValue(), i);
+                ++i;
+            }
+            decrementIndent();
+            println();
+            print0(")");
+        }
+        return false;
+    }
+
     public boolean visit(StarRocksCreateResourceStatement x) {
         print0(ucase ? "CREATE " : "create ");
         if (x.isExternal()) {
@@ -319,6 +358,52 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
 
         print0(ucase ? "PROPERTIES" : "properties");
         print(x.getProperties());
+        return false;
+    }
+
+    public boolean visit(StarRocksSubmitTaskStatement x) {
+        print0(ucase ? "SUBMIT TASK" : "submit task");
+
+        if (x.getName() != null) {
+            print(' ');
+            x.getName().accept(this);
+        }
+
+        if (x.getScheduleStart() != null || x.getScheduleEvery() != null) {
+            println();
+            print0(ucase ? "SCHEDULE " : "schedule ");
+            if (x.getScheduleStart() != null) {
+                print0(ucase ? "START(" : "start(");
+                x.getScheduleStart().accept(this);
+                print0(") ");
+            }
+            if (x.getScheduleEvery() != null) {
+                print0(ucase ? "EVERY(" : "every(");
+                x.getScheduleEvery().accept(this);
+                print0(")");
+            }
+        }
+
+        if (!x.getProperties().isEmpty()) {
+            println();
+            print0(ucase ? "PROPERTIES (" : "properties (");
+            incrementIndent();
+            println();
+            int i = 0;
+            for (SQLAssignItem property : x.getProperties()) {
+                printTableOption(property.getTarget(), property.getValue(), i);
+                ++i;
+            }
+            decrementIndent();
+            println();
+            print0(")");
+        }
+
+        println();
+        print0(ucase ? "AS" : "as");
+        println();
+        x.getBody().accept(this);
+
         return false;
     }
 

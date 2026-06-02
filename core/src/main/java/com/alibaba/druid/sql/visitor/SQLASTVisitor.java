@@ -31,7 +31,9 @@ import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitor;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 import com.alibaba.druid.sql.dialect.starrocks.ast.StarRocksIndexDefinition;
+import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateCatalogStatement;
 import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateResourceStatement;
+import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksSubmitTaskStatement;
 import com.alibaba.druid.sql.template.SQLSelectQueryTemplate;
 
 import java.util.function.Consumer;
@@ -1193,6 +1195,13 @@ public interface SQLASTVisitor {
     }
 
     default boolean visit(SQLArrayExpr x) {
+        return true;
+    }
+
+    default void endVisit(SQLLambdaExpr x) {
+    }
+
+    default boolean visit(SQLLambdaExpr x) {
         return true;
     }
 
@@ -2657,6 +2666,20 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(StarRocksCreateResourceStatement x) {
+    }
+
+    default boolean visit(StarRocksSubmitTaskStatement x) {
+        return true;
+    }
+
+    default void endVisit(StarRocksSubmitTaskStatement x) {
+    }
+
+    default boolean visit(StarRocksCreateCatalogStatement x) {
+        return true;
+    }
+
+    default void endVisit(StarRocksCreateCatalogStatement x) {
     }
 
     default boolean visit(SQLCostStatement x) {

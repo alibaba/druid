@@ -1,10 +1,16 @@
 package com.alibaba.druid.sql.dialect.starrocks.parser;
 
-import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLSelect;
+import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateCatalogStatement;
+import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateMaterializedViewStatement;
 import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateResourceStatement;
+import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksSubmitTaskStatement;
 import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.util.FnvHash;
+
+import java.util.List;
 
 public class StarRocksStatementParser extends SQLStatementParser {
     @Override
@@ -41,6 +47,253 @@ public class StarRocksStatementParser extends SQLStatementParser {
     @Override
     public SQLCreateTableStatement parseCreateTable() {
         return getSQLCreateTableParser().parseCreateTable();
+    }
+
+    @Override
+    public boolean parseStatementListDialect(List<SQLStatement> statementList) {
+        if (lexer.identifierEquals("SUBMIT")) {
+            SQLStatement stmt = parseSubmitTask();
+            statementList.add(stmt);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public SQLStatement parseCreateMaterializedView() {
+        accept(Token.CREATE);
+        acceptIdentifier("MATERIALIZED");
+        accept(Token.VIEW);
+
+        StarRocksCreateMaterializedViewStatement stmt = new StarRocksCreateMaterializedViewStatement();
+
+        if (lexer.token() == Token.IF) {
+            lexer.nextToken();
+            accept(Token.NOT);
+            accept(Token.EXISTS);
+            stmt.setIfNotExists(true);
+        }
+
+        stmt.setName(this.exprParser.name());
+
+        if (lexer.token() == Token.LPAREN) {
+            lexer.nextToken();
+            for (; ; ) {
+                stmt.getColumns().add(this.exprParser.name());
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                    continue;
+                }
+                break;
+            }
+            accept(Token.RPAREN);
+        }
+
+        if (lexer.token() == Token.COMMENT) {
+            lexer.nextToken();
+            stmt.setComment(this.exprParser.expr());
+        }
+
+        if (lexer.nextIfIdentifier(FnvHash.Constants.DISTRIBUTED)) {
+            accept(Token.BY);
+            if (lexer.nextIfIdentifier(FnvHash.Constants.HASH)) {
+                accept(Token.LPAREN);
+                for (; ; ) {
+                    stmt.getDistributedBy().add(this.exprParser.name());
+                    if (lexer.token() == Token.COMMA) {
+                        lexer.nextToken();
+                        continue;
+                    }
+                    break;
+                }
+                accept(Token.RPAREN);
+            }
+            if (lexer.nextIfIdentifier(FnvHash.Constants.BUCKETS)) {
+                lexer.nextToken();
+            }
+        }
+
+        if (lexer.token() == Token.PARTITION) {
+            SQLPartitionBy partitionBy = getSQLCreateTableParser().parsePartitionBy();
+            stmt.setPartitionBy(partitionBy);
+        }
+
+        if (lexer.token() == Token.ORDER) {
+            SQLOrderBy orderBy = this.exprParser.parseOrderBy();
+            stmt.setOrderBy(orderBy);
+        }
+
+        if (lexer.identifierEquals("REFRESH")) {
+            lexer.nextToken();
+            if (lexer.token() == Token.IMMEDIATE || lexer.identifierEquals("IMMEDIATE")) {
+                lexer.nextToken();
+                stmt.setRefreshImmediate(true);
+            } else if (lexer.token() == Token.DEFERRED || lexer.identifierEquals("DEFERRED")) {
+                lexer.nextToken();
+                stmt.setRefreshDeferred(true);
+            }
+
+            if (lexer.identifierEquals("ASYNC")) {
+                lexer.nextToken();
+                stmt.setRefreshAsync(true);
+            } else if (lexer.identifierEquals("MANUAL")) {
+                lexer.nextToken();
+                stmt.setRefreshManual(true);
+            }
+
+            if (lexer.identifierEquals(FnvHash.Constants.START)) {
+                lexer.nextToken();
+                accept(Token.LPAREN);
+                stmt.setRefreshStart(this.exprParser.expr());
+                accept(Token.RPAREN);
+            }
+
+            if (lexer.identifierEquals("EVERY")) {
+                lexer.nextToken();
+                accept(Token.LPAREN);
+                stmt.setRefreshEvery(this.exprParser.expr());
+                accept(Token.RPAREN);
+            }
+        }
+
+        if (lexer.nextIfIdentifier(FnvHash.Constants.PROPERTIES)) {
+            accept(Token.LPAREN);
+            for (; ; ) {
+                if (lexer.token() == Token.RPAREN) {
+                    break;
+                }
+                stmt.getMvProperties().add(this.exprParser.parseAssignItem(true, stmt));
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                }
+            }
+            accept(Token.RPAREN);
+        }
+
+        accept(Token.AS);
+        SQLSelect select = this.createSQLSelectParser().select();
+        stmt.setQuery(select);
+
+        return stmt;
+    }
+
+    protected SQLStatement parseSubmitTask() {
+        StarRocksSubmitTaskStatement stmt = new StarRocksSubmitTaskStatement();
+
+        acceptIdentifier("SUBMIT");
+        acceptIdentifier("TASK");
+
+        if (lexer.token() == Token.IDENTIFIER
+                && !lexer.identifierEquals(FnvHash.Constants.SCHEDULE)
+                && !lexer.identifierEquals(FnvHash.Constants.PROPERTIES)) {
+            stmt.setName(this.exprParser.name());
+        }
+
+        if (lexer.nextIfIdentifier(FnvHash.Constants.SCHEDULE)) {
+            if (lexer.nextIfIdentifier(FnvHash.Constants.START)) {
+                accept(Token.LPAREN);
+                stmt.setScheduleStart(this.exprParser.expr());
+                accept(Token.RPAREN);
+            }
+            if (lexer.nextIfIdentifier(FnvHash.Constants.EVERY)) {
+                accept(Token.LPAREN);
+                stmt.setScheduleEvery(this.exprParser.expr());
+                accept(Token.RPAREN);
+            }
+        }
+
+        if (lexer.nextIfIdentifier(FnvHash.Constants.PROPERTIES)) {
+            accept(Token.LPAREN);
+            for (; ; ) {
+                if (lexer.token() == Token.RPAREN) {
+                    break;
+                }
+                stmt.addProperty(this.exprParser.parseAssignItem(true, stmt));
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                }
+            }
+            accept(Token.RPAREN);
+        }
+
+        accept(Token.AS);
+        SQLStatement body = this.parseStatement();
+        stmt.setBody(body);
+
+        return stmt;
+    }
+
+    @Override
+    public SQLStatement parseCreate() {
+        Lexer.SavePoint mark = lexer.markOut();
+        accept(Token.CREATE);
+
+        boolean external = false;
+        if (lexer.identifierEquals(FnvHash.Constants.EXTERNAL)) {
+            lexer.nextToken();
+            external = true;
+        }
+
+        if (lexer.identifierEquals(FnvHash.Constants.CATALOG)) {
+            lexer.reset(mark);
+            return parseCreateCatalog();
+        }
+
+        if (external && lexer.identifierEquals(FnvHash.Constants.RESOURCE)) {
+            lexer.reset(mark);
+            return createResource();
+        }
+
+        lexer.reset(mark);
+        return super.parseCreate();
+    }
+
+    @Override
+    public SQLStatement parseCreateExternalCatalog() {
+        return parseCreateCatalog();
+    }
+
+    protected SQLStatement parseCreateCatalog() {
+        StarRocksCreateCatalogStatement stmt = new StarRocksCreateCatalogStatement();
+
+        accept(Token.CREATE);
+
+        if (lexer.identifierEquals(FnvHash.Constants.EXTERNAL)) {
+            acceptIdentifier("EXTERNAL");
+            stmt.setExternal(true);
+        }
+
+        acceptIdentifier("CATALOG");
+
+        if (lexer.token() == Token.IF) {
+            lexer.nextToken();
+            accept(Token.NOT);
+            accept(Token.EXISTS);
+            stmt.setIfNotExists(true);
+        }
+
+        stmt.setName(this.exprParser.name());
+
+        if (lexer.token() == Token.COMMENT) {
+            lexer.nextToken();
+            stmt.setComment(this.exprParser.expr());
+        }
+
+        acceptIdentifier("PROPERTIES");
+        accept(Token.LPAREN);
+
+        for (; ; ) {
+            if (lexer.token() == Token.RPAREN) {
+                break;
+            }
+            stmt.addProperty(this.exprParser.parseAssignItem(true, stmt));
+            if (lexer.token() == Token.COMMA) {
+                lexer.nextToken();
+            }
+        }
+        accept(Token.RPAREN);
+
+        return stmt;
     }
 
     protected SQLStatement createResource() {

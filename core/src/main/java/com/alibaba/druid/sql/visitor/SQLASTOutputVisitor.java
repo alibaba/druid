@@ -12472,6 +12472,25 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         returnDataType.accept(this);
     }
 
+    public boolean visit(SQLLambdaExpr x) {
+        List<SQLExpr> arguments = x.getArguments();
+        if (arguments.size() == 1) {
+            arguments.get(0).accept(this);
+        } else {
+            print('(');
+            for (int i = 0; i < arguments.size(); i++) {
+                if (i != 0) {
+                    print0(", ");
+                }
+                arguments.get(i).accept(this);
+            }
+            print(')');
+        }
+        print0(" -> ");
+        x.getExpr().accept(this);
+        return false;
+    }
+
     @Override
     public String toString() {
         return appender.toString();
