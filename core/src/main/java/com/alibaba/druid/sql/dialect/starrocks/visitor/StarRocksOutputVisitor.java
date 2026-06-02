@@ -24,6 +24,7 @@ import com.alibaba.druid.sql.dialect.starrocks.ast.StarRocksAggregateKey;
 import com.alibaba.druid.sql.dialect.starrocks.ast.StarRocksDuplicateKey;
 import com.alibaba.druid.sql.dialect.starrocks.ast.StarRocksIndexDefinition;
 import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateCatalogStatement;
+import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateMaterializedViewStatement;
 import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateResourceStatement;
 import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateTableStatement;
 import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksSubmitTaskStatement;
@@ -343,6 +344,94 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
             println();
             print0(")");
         }
+        return false;
+    }
+
+    public boolean visit(StarRocksCreateMaterializedViewStatement x) {
+        print0(ucase ? "CREATE MATERIALIZED VIEW " : "create materialized view ");
+
+        if (x.isIfNotExists()) {
+            print0(ucase ? "IF NOT EXISTS " : "if not exists ");
+        }
+
+        x.getName().accept(this);
+
+        if (!x.getColumns().isEmpty()) {
+            print0(" (");
+            printAndAccept(x.getColumns(), ", ");
+            print0(")");
+        }
+
+        if (x.getComment() != null) {
+            println();
+            print0(ucase ? "COMMENT " : "comment ");
+            x.getComment().accept(this);
+        }
+
+        if (!x.getDistributedBy().isEmpty()) {
+            println();
+            print0(ucase ? "DISTRIBUTED BY HASH (" : "distributed by hash (");
+            printAndAccept(x.getDistributedBy(), ", ");
+            print0(")");
+        }
+
+        if (x.getPartitionBy() != null) {
+            println();
+            x.getPartitionBy().accept(this);
+        }
+
+        if (x.getOrderBy() != null) {
+            println();
+            x.getOrderBy().accept(this);
+        }
+
+        boolean hasRefresh = x.isRefreshAsync() || x.isRefreshManual()
+                || x.getRefreshEvery() != null;
+        if (hasRefresh) {
+            println();
+            print0(ucase ? "REFRESH " : "refresh ");
+            if (x.isRefreshImmediate()) {
+                print0(ucase ? "IMMEDIATE " : "immediate ");
+            } else if (x.isRefreshDeferred()) {
+                print0(ucase ? "DEFERRED " : "deferred ");
+            }
+            if (x.isRefreshAsync()) {
+                print0(ucase ? "ASYNC" : "async");
+            } else if (x.isRefreshManual()) {
+                print0(ucase ? "MANUAL" : "manual");
+            }
+            if (x.getRefreshStart() != null) {
+                print0(ucase ? " START(" : " start(");
+                x.getRefreshStart().accept(this);
+                print0(")");
+            }
+            if (x.getRefreshEvery() != null) {
+                print0(ucase ? " EVERY(" : " every(");
+                x.getRefreshEvery().accept(this);
+                print0(")");
+            }
+        }
+
+        if (!x.getMvProperties().isEmpty()) {
+            println();
+            print0(ucase ? "PROPERTIES (" : "properties (");
+            incrementIndent();
+            println();
+            int i = 0;
+            for (SQLAssignItem property : x.getMvProperties()) {
+                printTableOption(property.getTarget(), property.getValue(), i);
+                ++i;
+            }
+            decrementIndent();
+            println();
+            print0(")");
+        }
+
+        println();
+        print0(ucase ? "AS" : "as");
+        println();
+        x.getQuery().accept(this);
+
         return false;
     }
 

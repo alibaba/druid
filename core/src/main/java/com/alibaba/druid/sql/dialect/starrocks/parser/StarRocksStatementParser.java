@@ -279,19 +279,19 @@ public class StarRocksStatementParser extends SQLStatementParser {
             stmt.setComment(this.exprParser.expr());
         }
 
-        acceptIdentifier("PROPERTIES");
-        accept(Token.LPAREN);
-
-        for (; ; ) {
-            if (lexer.token() == Token.RPAREN) {
-                break;
+        if (lexer.nextIfIdentifier(FnvHash.Constants.PROPERTIES)) {
+            accept(Token.LPAREN);
+            for (; ; ) {
+                if (lexer.token() == Token.RPAREN) {
+                    break;
+                }
+                stmt.addProperty(this.exprParser.parseAssignItem(true, stmt));
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                }
             }
-            stmt.addProperty(this.exprParser.parseAssignItem(true, stmt));
-            if (lexer.token() == Token.COMMA) {
-                lexer.nextToken();
-            }
+            accept(Token.RPAREN);
         }
-        accept(Token.RPAREN);
 
         return stmt;
     }

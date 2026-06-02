@@ -10,14 +10,13 @@ import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 public class StarRocksSubmitTaskStatement extends SQLStatementImpl {
     private SQLName name;
     private SQLExpr scheduleStart;
     private SQLExpr scheduleEvery;
-    private List<SQLAssignItem> properties = new LinkedList<>();
+    private List<SQLAssignItem> properties = new ArrayList<>();
     private SQLStatement body;
 
     public StarRocksSubmitTaskStatement() {
