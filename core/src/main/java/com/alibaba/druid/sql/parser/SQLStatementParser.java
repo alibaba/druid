@@ -2311,6 +2311,12 @@ public class SQLStatementParser extends SQLParser {
                         alterTableChange(stmt);
                     } else if (lexer.identifierEquals(Constants.EXCHANGE)) {
                         alterTableExchange(stmt);
+                    } else if (lexer.identifierEquals("SWAP")) {
+                        lexer.nextToken();
+                        accept(Token.WITH);
+                        SQLAlterTableSwap swap = new SQLAlterTableSwap();
+                        swap.setName(this.exprParser.name());
+                        stmt.addItem(swap);
                     } else if (lexer.identifierEquals("RENAME")) {
                         stmt.addItem(parseAlterTableRename());
                     } else if (lexer.identifierEquals("TOUCH")) {

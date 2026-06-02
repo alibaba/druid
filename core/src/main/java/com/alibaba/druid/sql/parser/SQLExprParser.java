@@ -196,6 +196,31 @@ public class SQLExprParser extends SQLParser {
     protected SQLExpr bitXorRestSUBGT() {
         return primary();
     }
+
+    protected SQLLambdaExpr tryParseLambda(SQLExpr expr) {
+        if (expr instanceof SQLIdentifierExpr) {
+            SQLLambdaExpr lambda = new SQLLambdaExpr();
+            lambda.addArgument(expr);
+            lexer.nextToken();
+            lambda.setExpr(expr());
+            return lambda;
+        } else if (expr instanceof SQLListExpr) {
+            SQLListExpr listExpr = (SQLListExpr) expr;
+            for (SQLExpr item : listExpr.getItems()) {
+                if (!(item instanceof SQLIdentifierExpr)) {
+                    return null;
+                }
+            }
+            SQLLambdaExpr lambda = new SQLLambdaExpr();
+            for (SQLExpr item : listExpr.getItems()) {
+                lambda.addArgument(item);
+            }
+            lexer.nextToken();
+            lambda.setExpr(expr());
+            return lambda;
+        }
+        return null;
+    }
     public SQLExpr bitXorRest(SQLExpr expr) {
         Token token = lexer.token;
         switch (token) {
@@ -214,6 +239,13 @@ public class SQLExprParser extends SQLParser {
                 break;
             }
             case SUBGT: {
+                if (dialectFeatureEnabled(DialectFeature.ParserFeature.Lambda)) {
+                    SQLExpr lambda = tryParseLambda(expr);
+                    if (lambda != null) {
+                        expr = lambda;
+                        break;
+                    }
+                }
                 lexer.nextToken();
                 SQLExpr rightExp = bitXorRestSUBGT();
                 expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.SubGt, rightExp, dbType);

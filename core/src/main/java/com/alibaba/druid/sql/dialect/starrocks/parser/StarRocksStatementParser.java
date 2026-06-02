@@ -381,19 +381,6 @@ public class StarRocksStatementParser extends SQLStatementParser {
     }
 
     @Override
-    protected SQLAlterStatement alterTableAfterName(SQLAlterTableStatement stmt) {
-        if (lexer.identifierEquals("SWAP")) {
-            lexer.nextToken();
-            accept(Token.WITH);
-            SQLAlterTableSwap swap = new SQLAlterTableSwap();
-            swap.setName(this.exprParser.name());
-            stmt.addItem(swap);
-            return stmt;
-        }
-        return super.alterTableAfterName(stmt);
-    }
-
-    @Override
     public SQLStatement parseCreate() {
         Lexer.SavePoint mark = lexer.markOut();
         accept(Token.CREATE);

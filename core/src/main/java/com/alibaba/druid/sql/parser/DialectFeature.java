@@ -192,6 +192,7 @@ public class DialectFeature {
         CreateTableBodySupplemental(1L << 42),
         TableAliasConnectWhere(1L << 43),
         TableAliasAsof(1L << 44),
+        Lambda(1L << 45),
         TableAliasLock(1L << 45),
         TableAliasPartition(1L << 46),
         TableAliasTable(1L << 47),

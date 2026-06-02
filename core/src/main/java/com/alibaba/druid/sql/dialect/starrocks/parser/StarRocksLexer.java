@@ -17,7 +17,8 @@ public class StarRocksLexer extends Lexer {
     static final Keywords STARROCKS_KEYWORDS;
     static final DialectFeature SR_FEATURE = new DialectFeature(
             Arrays.asList(
-                    AsofJoin
+                    AsofJoin,
+                    Lambda
             ),
             null
     );
