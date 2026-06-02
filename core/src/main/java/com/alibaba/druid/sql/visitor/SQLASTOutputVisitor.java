@@ -9251,10 +9251,16 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         x.getName().accept(this);
 
+        if (x.isForce()) {
+            print0(ucase ? " FORCE" : " force");
+        }
+
         if (x.isWithNoData()) {
             print0(ucase ? " WITH NO DATA" : " with no data");
         } else if (x.isWithData()) {
             print0(ucase ? " WITH DATA" : " with data");
+        } else if (x.isSyncMode()) {
+            print0(ucase ? " WITH SYNC MODE" : " with sync mode");
         }
 
         return false;

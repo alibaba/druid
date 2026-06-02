@@ -3,6 +3,7 @@ package com.alibaba.druid.sql.dialect.starrocks.parser;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.statement.SQLRefreshMaterializedViewStatement;
 import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateMaterializedViewStatement;
 import org.junit.jupiter.api.Test;
 
@@ -103,5 +104,26 @@ public class StarRocksCreateMaterializedViewTest {
         String output = SQLUtils.toSQLString(stmt, DbType.starrocks);
         assertTrue(output.toUpperCase().contains("DISTRIBUTED BY HASH"));
         assertTrue(output.toUpperCase().contains("ORDER BY"));
+    }
+
+    @Test
+    public void testRefreshSimple() {
+        String sql = "REFRESH MATERIALIZED VIEW mv1";
+        SQLStatement stmt = SQLUtils.parseSingleStatement(sql, DbType.starrocks);
+        assertInstanceOf(SQLRefreshMaterializedViewStatement.class, stmt);
+        String output = SQLUtils.toSQLString(stmt, DbType.starrocks);
+        assertTrue(output.toUpperCase().contains("REFRESH MATERIALIZED VIEW"));
+    }
+
+    @Test
+    public void testRefreshForceWithSyncMode() {
+        String sql = "REFRESH MATERIALIZED VIEW mv1 FORCE WITH SYNC MODE";
+        SQLStatement stmt = SQLUtils.parseSingleStatement(sql, DbType.starrocks);
+        SQLRefreshMaterializedViewStatement refresh = (SQLRefreshMaterializedViewStatement) stmt;
+        assertTrue(refresh.isForce());
+        assertTrue(refresh.isSyncMode());
+        String output = SQLUtils.toSQLString(stmt, DbType.starrocks);
+        assertTrue(output.toUpperCase().contains("FORCE"));
+        assertTrue(output.toUpperCase().contains("WITH SYNC MODE"));
     }
 }

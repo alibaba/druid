@@ -33,6 +33,9 @@ public class SQLRefreshMaterializedViewStatement extends SQLStatementImpl {
 
     private boolean withData;
 
+    private boolean force;
+    private boolean syncMode;
+
     public SQLRefreshMaterializedViewStatement() {
         this.setConcurrently(false);
         this.setWithData(false);
@@ -87,6 +90,22 @@ public class SQLRefreshMaterializedViewStatement extends SQLStatementImpl {
 
     public boolean isWithData() {
         return withData;
+    }
+
+    public boolean isForce() {
+        return force;
+    }
+
+    public void setForce(boolean force) {
+        this.force = force;
+    }
+
+    public boolean isSyncMode() {
+        return syncMode;
+    }
+
+    public void setSyncMode(boolean syncMode) {
+        this.syncMode = syncMode;
     }
 
     @Override

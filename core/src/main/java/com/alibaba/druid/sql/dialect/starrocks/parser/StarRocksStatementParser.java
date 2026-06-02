@@ -1,7 +1,9 @@
 package com.alibaba.druid.sql.dialect.starrocks.parser;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLRefreshMaterializedViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateCatalogStatement;
 import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateMaterializedViewStatement;
@@ -57,6 +59,34 @@ public class StarRocksStatementParser extends SQLStatementParser {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public SQLStatement parseRefresh() {
+        if (lexer.identifierEquals("REFRESH")) {
+            lexer.nextToken();
+        }
+        acceptIdentifier("MATERIALIZED");
+        accept(Token.VIEW);
+
+        SQLRefreshMaterializedViewStatement stmt = new SQLRefreshMaterializedViewStatement(DbType.starrocks);
+        stmt.setName(this.exprParser.name());
+
+        if (lexer.token() == Token.FORCE || lexer.identifierEquals(FnvHash.Constants.FORCE)) {
+            lexer.nextToken();
+            stmt.setForce(true);
+        }
+
+        if (lexer.token() == Token.WITH) {
+            lexer.nextToken();
+            if (lexer.identifierEquals("SYNC")) {
+                lexer.nextToken();
+                acceptIdentifier("MODE");
+                stmt.setSyncMode(true);
+            }
+        }
+
+        return stmt;
     }
 
     @Override
