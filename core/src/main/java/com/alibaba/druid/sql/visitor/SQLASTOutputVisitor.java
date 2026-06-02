@@ -3761,11 +3761,21 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         x.getTableSource().accept(this);
 
+        if (x.getLabel() != null) {
+            print0(ucase ? " WITH LABEL " : " with label ");
+            x.getLabel().accept(this);
+        }
+
         if (x.getPartitions() != null && !x.getPartitions().isEmpty()) {
             print0(ucase ? " PARTITION (" : " partition (");
             printAndAccept(x.getPartitions(), ", ");
             print(')');
         }
+
+        if (x.isByName()) {
+            print0(ucase ? " BY NAME" : " by name");
+        }
+
         String columnsString = x.getColumnsString();
         if (columnsString != null) {
             print0(columnsString);

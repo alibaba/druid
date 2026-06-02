@@ -54,7 +54,111 @@ public class StarRocksStatementParser extends SQLStatementParser {
             statementList.add(stmt);
             return true;
         }
+        if (lexer.identifierEquals("LOAD")) {
+            SQLStatement stmt = parseLoadLabel();
+            statementList.add(stmt);
+            return true;
+        }
+        if (lexer.identifierEquals("BACKUP")) {
+            SQLStatement stmt = parseBackup();
+            statementList.add(stmt);
+            return true;
+        }
+        if (lexer.identifierEquals("RESTORE")) {
+            SQLStatement stmt = parseRestore();
+            statementList.add(stmt);
+            return true;
+        }
         return false;
+    }
+
+    @Override
+    protected void parseInsert0(SQLInsertInto insertStatement, boolean acceptSubQuery) {
+        if (lexer.nextIf(Token.OVERWRITE) || lexer.nextIfIdentifier(FnvHash.Constants.OVERWRITE)) {
+            insertStatement.setOverwrite(true);
+        } else if (lexer.nextIf(Token.INTO)) {
+            insertStatement.setOverwrite(false);
+        }
+
+        SQLName tableName = this.exprParser.name();
+        insertStatement.setTableName(tableName);
+
+        if (lexer.token() == Token.LPAREN
+                && ("FILES".equalsIgnoreCase(tableName.getSimpleName())
+                    || "BLACKHOLE".equalsIgnoreCase(tableName.getSimpleName()))) {
+            lexer.nextToken();
+            if (lexer.token() != Token.RPAREN) {
+                for (; ; ) {
+                    this.exprParser.parseAssignItem(true, insertStatement);
+                    if (lexer.token() != Token.COMMA) {
+                        break;
+                    }
+                    lexer.nextToken();
+                }
+            }
+            accept(Token.RPAREN);
+        }
+
+        if (lexer.token() == Token.WITH) {
+            lexer.nextToken();
+            acceptIdentifier("LABEL");
+            insertStatement.setLabel(this.exprParser.name());
+        }
+
+        if (lexer.token() == Token.PARTITION) {
+            lexer.nextToken();
+            accept(Token.LPAREN);
+            for (; ; ) {
+                SQLAssignItem ptExpr = new SQLAssignItem();
+                ptExpr.setTarget(this.exprParser.name());
+                if (lexer.token() == Token.EQ || lexer.token() == Token.EQEQ) {
+                    lexer.nextTokenValue();
+                    ptExpr.setValue(this.exprParser.expr());
+                }
+                insertStatement.addPartition(ptExpr);
+                if (lexer.token() != Token.COMMA) {
+                    break;
+                }
+                lexer.nextToken();
+            }
+            accept(Token.RPAREN);
+        }
+
+        if (lexer.token() == Token.BY) {
+            lexer.nextToken();
+            acceptIdentifier("NAME");
+            insertStatement.setByName(true);
+        }
+
+        if (lexer.token() == Token.LPAREN) {
+            lexer.nextToken();
+            parseInsertColumns(insertStatement);
+            accept(Token.RPAREN);
+        }
+
+        if (lexer.token() == Token.VALUES) {
+            lexer.nextToken();
+            for (; ; ) {
+                if (lexer.token() == Token.LPAREN) {
+                    lexer.nextToken();
+                    SQLInsertStatement.ValuesClause values = new SQLInsertStatement.ValuesClause();
+                    this.exprParser.exprList(values.getValues(), values);
+                    insertStatement.addValueCause(values);
+                    accept(Token.RPAREN);
+                } else {
+                    break;
+                }
+                if (lexer.token() != Token.COMMA) {
+                    break;
+                }
+                lexer.nextToken();
+            }
+        }
+
+        if (acceptSubQuery && insertStatement.getQuery() == null && insertStatement.getValuesList().isEmpty()) {
+            SQLSelect query = this.createSQLSelectParser().select();
+            insertStatement.setQuery(query);
+        }
     }
 
     @Override
@@ -311,6 +415,11 @@ public class StarRocksStatementParser extends SQLStatementParser {
             return parseCreateStorageVolume();
         }
 
+        if (lexer.identifierEquals(FnvHash.Constants.ROUTINE)) {
+            lexer.reset(mark);
+            return parseCreateRoutineLoad();
+        }
+
         lexer.reset(mark);
         return super.parseCreate();
     }
@@ -488,6 +597,277 @@ public class StarRocksStatementParser extends SQLStatementParser {
         if (lexer.token() == Token.COMMENT) {
             lexer.nextToken();
             stmt.setComment(this.exprParser.expr());
+        }
+
+        if (lexer.nextIfIdentifier(FnvHash.Constants.PROPERTIES)) {
+            accept(Token.LPAREN);
+            for (; ; ) {
+                if (lexer.token() == Token.RPAREN) {
+                    break;
+                }
+                stmt.addProperty(this.exprParser.parseAssignItem(true, stmt));
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                }
+            }
+            accept(Token.RPAREN);
+        }
+
+        return stmt;
+    }
+
+    protected SQLStatement parseLoadLabel() {
+        StarRocksLoadStatement stmt = new StarRocksLoadStatement();
+
+        acceptIdentifier("LOAD");
+        acceptIdentifier("LABEL");
+        stmt.setLabel(this.exprParser.name());
+
+        accept(Token.LPAREN);
+        for (; ; ) {
+            if (lexer.token() == Token.RPAREN) {
+                break;
+            }
+            StarRocksLoadStatement.DataDescription desc = new StarRocksLoadStatement.DataDescription();
+            acceptIdentifier("DATA");
+            acceptIdentifier("INFILE");
+            accept(Token.LPAREN);
+            for (; ; ) {
+                desc.getFilePaths().add(this.exprParser.expr());
+                if (lexer.token() != Token.COMMA) {
+                    break;
+                }
+                lexer.nextToken();
+            }
+            accept(Token.RPAREN);
+
+            accept(Token.INTO);
+            accept(Token.TABLE);
+            desc.setTableName(this.exprParser.name());
+
+            if (lexer.token() == Token.PARTITION) {
+                lexer.nextToken();
+                accept(Token.LPAREN);
+                for (; ; ) {
+                    desc.getPartitions().add(this.exprParser.name());
+                    if (lexer.token() != Token.COMMA) {
+                        break;
+                    }
+                    lexer.nextToken();
+                }
+                accept(Token.RPAREN);
+            }
+
+            if (lexer.identifierEquals("COLUMNS")) {
+                lexer.nextToken();
+                acceptIdentifier("TERMINATED");
+                accept(Token.BY);
+                desc.setColumnTerminatedBy(this.exprParser.expr());
+            }
+
+            if (lexer.identifierEquals("FORMAT")) {
+                lexer.nextToken();
+                accept(Token.AS);
+                desc.setFormat(this.exprParser.expr());
+            }
+
+            if (lexer.token() == Token.LPAREN) {
+                lexer.nextToken();
+                for (; ; ) {
+                    desc.getColumnList().add(this.exprParser.expr());
+                    if (lexer.token() != Token.COMMA) {
+                        break;
+                    }
+                    lexer.nextToken();
+                }
+                accept(Token.RPAREN);
+            }
+
+            if (lexer.token() == Token.SET) {
+                lexer.nextToken();
+                accept(Token.LPAREN);
+                for (; ; ) {
+                    desc.getColumnMappings().add(this.exprParser.parseAssignItem(true, stmt));
+                    if (lexer.token() != Token.COMMA) {
+                        break;
+                    }
+                    lexer.nextToken();
+                }
+                accept(Token.RPAREN);
+            }
+
+            if (lexer.token() == Token.WHERE) {
+                lexer.nextToken();
+                desc.setWhereCondition(this.exprParser.expr());
+            }
+
+            stmt.getDataDescriptions().add(desc);
+            if (lexer.token() == Token.COMMA) {
+                lexer.nextToken();
+            }
+        }
+        accept(Token.RPAREN);
+
+        if (lexer.token() == Token.WITH) {
+            lexer.nextToken();
+            acceptIdentifier("BROKER");
+            if (lexer.token() == Token.LPAREN) {
+                accept(Token.LPAREN);
+                for (; ; ) {
+                    if (lexer.token() == Token.RPAREN) {
+                        break;
+                    }
+                    stmt.addBrokerProperty(this.exprParser.parseAssignItem(true, stmt));
+                    if (lexer.token() == Token.COMMA) {
+                        lexer.nextToken();
+                    }
+                }
+                accept(Token.RPAREN);
+            }
+        }
+
+        if (lexer.nextIfIdentifier(FnvHash.Constants.PROPERTIES)) {
+            accept(Token.LPAREN);
+            for (; ; ) {
+                if (lexer.token() == Token.RPAREN) {
+                    break;
+                }
+                stmt.addProperty(this.exprParser.parseAssignItem(true, stmt));
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                }
+            }
+            accept(Token.RPAREN);
+        }
+
+        return stmt;
+    }
+
+    protected SQLStatement parseCreateRoutineLoad() {
+        StarRocksCreateRoutineLoadStatement stmt = new StarRocksCreateRoutineLoadStatement();
+
+        accept(Token.CREATE);
+        acceptIdentifier("ROUTINE");
+        acceptIdentifier("LOAD");
+        stmt.setName(this.exprParser.name());
+        accept(Token.ON);
+        stmt.setTableName(this.exprParser.name());
+
+        if (lexer.identifierEquals("COLUMNS")) {
+            lexer.nextToken();
+            if (lexer.token() == Token.LPAREN) {
+                lexer.nextToken();
+                for (; ; ) {
+                    stmt.getColumns().add(this.exprParser.expr());
+                    if (lexer.token() != Token.COMMA) {
+                        break;
+                    }
+                    lexer.nextToken();
+                }
+                accept(Token.RPAREN);
+            }
+        }
+
+        if (lexer.token() == Token.WHERE) {
+            lexer.nextToken();
+            stmt.setWhereCondition(this.exprParser.expr());
+        }
+
+        if (lexer.nextIfIdentifier(FnvHash.Constants.PROPERTIES)) {
+            accept(Token.LPAREN);
+            for (; ; ) {
+                if (lexer.token() == Token.RPAREN) {
+                    break;
+                }
+                stmt.addProperty(this.exprParser.parseAssignItem(true, stmt));
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                }
+            }
+            accept(Token.RPAREN);
+        }
+
+        if (lexer.token() == Token.FROM) {
+            lexer.nextToken();
+            stmt.setDataSourceType(lexer.stringVal());
+            lexer.nextToken();
+            accept(Token.LPAREN);
+            for (; ; ) {
+                if (lexer.token() == Token.RPAREN) {
+                    break;
+                }
+                stmt.addDataSourceProperty(this.exprParser.parseAssignItem(true, stmt));
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                }
+            }
+            accept(Token.RPAREN);
+        }
+
+        return stmt;
+    }
+
+    protected SQLStatement parseBackup() {
+        StarRocksBackupStatement stmt = new StarRocksBackupStatement();
+
+        acceptIdentifier("BACKUP");
+        acceptIdentifier("SNAPSHOT");
+        stmt.setSnapshotName(this.exprParser.name());
+
+        accept(Token.TO);
+        stmt.setRepository(this.exprParser.name());
+
+        if (lexer.token() == Token.ON) {
+            lexer.nextToken();
+            accept(Token.LPAREN);
+            for (; ; ) {
+                stmt.getOnTables().add(this.exprParser.expr());
+                if (lexer.token() != Token.COMMA) {
+                    break;
+                }
+                lexer.nextToken();
+            }
+            accept(Token.RPAREN);
+        }
+
+        if (lexer.nextIfIdentifier(FnvHash.Constants.PROPERTIES)) {
+            accept(Token.LPAREN);
+            for (; ; ) {
+                if (lexer.token() == Token.RPAREN) {
+                    break;
+                }
+                stmt.addProperty(this.exprParser.parseAssignItem(true, stmt));
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                }
+            }
+            accept(Token.RPAREN);
+        }
+
+        return stmt;
+    }
+
+    protected SQLStatement parseRestore() {
+        StarRocksRestoreStatement stmt = new StarRocksRestoreStatement();
+
+        acceptIdentifier("RESTORE");
+        acceptIdentifier("SNAPSHOT");
+        stmt.setSnapshotName(this.exprParser.name());
+
+        accept(Token.FROM);
+        stmt.setRepository(this.exprParser.name());
+
+        if (lexer.token() == Token.ON) {
+            lexer.nextToken();
+            accept(Token.LPAREN);
+            for (; ; ) {
+                stmt.getOnTables().add(this.exprParser.expr());
+                if (lexer.token() != Token.COMMA) {
+                    break;
+                }
+                lexer.nextToken();
+            }
+            accept(Token.RPAREN);
         }
 
         if (lexer.nextIfIdentifier(FnvHash.Constants.PROPERTIES)) {

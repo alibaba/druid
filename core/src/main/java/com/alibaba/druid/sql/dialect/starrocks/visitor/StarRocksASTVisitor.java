@@ -52,4 +52,32 @@ public interface StarRocksASTVisitor extends SQLASTVisitor {
 
     default void endVisit(StarRocksCreateStorageVolumeStatement x) {
     }
+
+    default boolean visit(StarRocksLoadStatement x) {
+        return true;
+    }
+
+    default void endVisit(StarRocksLoadStatement x) {
+    }
+
+    default boolean visit(StarRocksCreateRoutineLoadStatement x) {
+        return true;
+    }
+
+    default void endVisit(StarRocksCreateRoutineLoadStatement x) {
+    }
+
+    default boolean visit(StarRocksBackupStatement x) {
+        return true;
+    }
+
+    default void endVisit(StarRocksBackupStatement x) {
+    }
+
+    default boolean visit(StarRocksRestoreStatement x) {
+        return true;
+    }
+
+    default void endVisit(StarRocksRestoreStatement x) {
+    }
 }

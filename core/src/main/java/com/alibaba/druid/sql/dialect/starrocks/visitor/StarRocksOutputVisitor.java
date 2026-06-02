@@ -538,6 +538,181 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
         return false;
     }
 
+    public boolean visit(StarRocksLoadStatement x) {
+        print0(ucase ? "LOAD LABEL " : "load label ");
+        x.getLabel().accept(this);
+        println();
+        print0("(");
+        incrementIndent();
+        for (int i = 0; i < x.getDataDescriptions().size(); i++) {
+            if (i > 0) {
+                print0(",");
+            }
+            println();
+            StarRocksLoadStatement.DataDescription desc = x.getDataDescriptions().get(i);
+            print0(ucase ? "DATA INFILE (" : "data infile (");
+            printAndAccept(desc.getFilePaths(), ", ");
+            print0(")");
+            println();
+            print0(ucase ? "INTO TABLE " : "into table ");
+            desc.getTableName().accept(this);
+            if (desc.getFormat() != null) {
+                println();
+                print0(ucase ? "FORMAT AS " : "format as ");
+                desc.getFormat().accept(this);
+            }
+        }
+        decrementIndent();
+        println();
+        print0(")");
+
+        if (!x.getBrokerProperties().isEmpty()) {
+            println();
+            print0(ucase ? "WITH BROKER (" : "with broker (");
+            incrementIndent();
+            println();
+            int i = 0;
+            for (SQLAssignItem property : x.getBrokerProperties()) {
+                printTableOption(property.getTarget(), property.getValue(), i);
+                ++i;
+            }
+            decrementIndent();
+            println();
+            print0(")");
+        }
+
+        if (!x.getProperties().isEmpty()) {
+            println();
+            print0(ucase ? "PROPERTIES (" : "properties (");
+            incrementIndent();
+            println();
+            int i = 0;
+            for (SQLAssignItem property : x.getProperties()) {
+                printTableOption(property.getTarget(), property.getValue(), i);
+                ++i;
+            }
+            decrementIndent();
+            println();
+            print0(")");
+        }
+        return false;
+    }
+
+    public boolean visit(StarRocksCreateRoutineLoadStatement x) {
+        print0(ucase ? "CREATE ROUTINE LOAD " : "create routine load ");
+        x.getName().accept(this);
+        print0(ucase ? " ON " : " on ");
+        x.getTableName().accept(this);
+
+        if (!x.getColumns().isEmpty()) {
+            println();
+            print0(ucase ? "COLUMNS (" : "columns (");
+            printAndAccept(x.getColumns(), ", ");
+            print0(")");
+        }
+
+        if (x.getWhereCondition() != null) {
+            println();
+            print0(ucase ? "WHERE " : "where ");
+            x.getWhereCondition().accept(this);
+        }
+
+        if (!x.getProperties().isEmpty()) {
+            println();
+            print0(ucase ? "PROPERTIES (" : "properties (");
+            incrementIndent();
+            println();
+            int i = 0;
+            for (SQLAssignItem property : x.getProperties()) {
+                printTableOption(property.getTarget(), property.getValue(), i);
+                ++i;
+            }
+            decrementIndent();
+            println();
+            print0(")");
+        }
+
+        if (x.getDataSourceType() != null) {
+            println();
+            print0(ucase ? "FROM " : "from ");
+            print0(x.getDataSourceType());
+            if (!x.getDataSourceProperties().isEmpty()) {
+                print0(" (");
+                incrementIndent();
+                println();
+                int i = 0;
+                for (SQLAssignItem property : x.getDataSourceProperties()) {
+                    printTableOption(property.getTarget(), property.getValue(), i);
+                    ++i;
+                }
+                decrementIndent();
+                println();
+                print0(")");
+            }
+        }
+        return false;
+    }
+
+    public boolean visit(StarRocksBackupStatement x) {
+        print0(ucase ? "BACKUP SNAPSHOT " : "backup snapshot ");
+        x.getSnapshotName().accept(this);
+        print0(ucase ? " TO " : " to ");
+        x.getRepository().accept(this);
+
+        if (!x.getOnTables().isEmpty()) {
+            println();
+            print0(ucase ? "ON (" : "on (");
+            printAndAccept(x.getOnTables(), ", ");
+            print0(")");
+        }
+
+        if (!x.getProperties().isEmpty()) {
+            println();
+            print0(ucase ? "PROPERTIES (" : "properties (");
+            incrementIndent();
+            println();
+            int i = 0;
+            for (SQLAssignItem property : x.getProperties()) {
+                printTableOption(property.getTarget(), property.getValue(), i);
+                ++i;
+            }
+            decrementIndent();
+            println();
+            print0(")");
+        }
+        return false;
+    }
+
+    public boolean visit(StarRocksRestoreStatement x) {
+        print0(ucase ? "RESTORE SNAPSHOT " : "restore snapshot ");
+        x.getSnapshotName().accept(this);
+        print0(ucase ? " FROM " : " from ");
+        x.getRepository().accept(this);
+
+        if (!x.getOnTables().isEmpty()) {
+            println();
+            print0(ucase ? "ON (" : "on (");
+            printAndAccept(x.getOnTables(), ", ");
+            print0(")");
+        }
+
+        if (!x.getProperties().isEmpty()) {
+            println();
+            print0(ucase ? "PROPERTIES (" : "properties (");
+            incrementIndent();
+            println();
+            int i = 0;
+            for (SQLAssignItem property : x.getProperties()) {
+                printTableOption(property.getTarget(), property.getValue(), i);
+                ++i;
+            }
+            decrementIndent();
+            println();
+            print0(")");
+        }
+        return false;
+    }
+
     public boolean visit(StarRocksCreateResourceStatement x) {
         print0(ucase ? "CREATE " : "create ");
         if (x.isExternal()) {

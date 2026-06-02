@@ -32,6 +32,8 @@ public abstract class SQLInsertInto extends SQLStatementImpl implements SQLRepla
     protected final List<ValuesClause> valuesList = new ArrayList<ValuesClause>();
     protected boolean overwrite;
     protected List<SQLAssignItem> partitions;
+    protected SQLName label;
+    protected boolean byName;
 
     public SQLInsertInto() {
     }
@@ -206,6 +208,25 @@ public abstract class SQLInsertInto extends SQLStatementImpl implements SQLRepla
 
     public void setOverwrite(boolean overwrite) {
         this.overwrite = overwrite;
+    }
+
+    public SQLName getLabel() {
+        return label;
+    }
+
+    public void setLabel(SQLName label) {
+        if (label != null) {
+            label.setParent(this);
+        }
+        this.label = label;
+    }
+
+    public boolean isByName() {
+        return byName;
+    }
+
+    public void setByName(boolean byName) {
+        this.byName = byName;
     }
 
     public void addPartition(SQLAssignItem partition) {
