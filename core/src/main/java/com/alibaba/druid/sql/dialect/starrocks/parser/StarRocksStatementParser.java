@@ -83,6 +83,12 @@ public class StarRocksStatementParser extends SQLStatementParser {
                 lexer.nextToken();
                 acceptIdentifier("MODE");
                 stmt.setSyncMode(true);
+            } else if (lexer.identifierEquals("ASYNC")) {
+                lexer.nextToken();
+                acceptIdentifier("MODE");
+                stmt.setAsyncMode(true);
+            } else {
+                throw new ParserException("syntax error, expect SYNC or ASYNC, actual " + lexer.stringVal() + ", " + lexer.info());
             }
         }
 

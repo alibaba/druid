@@ -126,4 +126,44 @@ public class StarRocksCreateMaterializedViewTest {
         assertTrue(output.toUpperCase().contains("FORCE"));
         assertTrue(output.toUpperCase().contains("WITH SYNC MODE"));
     }
+
+    @Test
+    public void testRefreshForceOnly() {
+        String sql = "REFRESH MATERIALIZED VIEW mv1 FORCE";
+        SQLStatement stmt = SQLUtils.parseSingleStatement(sql, DbType.starrocks);
+        SQLRefreshMaterializedViewStatement refresh = (SQLRefreshMaterializedViewStatement) stmt;
+        assertTrue(refresh.isForce());
+        assertFalse(refresh.isSyncMode());
+        assertFalse(refresh.isAsyncMode());
+    }
+
+    @Test
+    public void testRefreshSyncModeOnly() {
+        String sql = "REFRESH MATERIALIZED VIEW mv1 WITH SYNC MODE";
+        SQLStatement stmt = SQLUtils.parseSingleStatement(sql, DbType.starrocks);
+        SQLRefreshMaterializedViewStatement refresh = (SQLRefreshMaterializedViewStatement) stmt;
+        assertFalse(refresh.isForce());
+        assertTrue(refresh.isSyncMode());
+    }
+
+    @Test
+    public void testRefreshAsyncMode() {
+        String sql = "REFRESH MATERIALIZED VIEW mv1 WITH ASYNC MODE";
+        SQLStatement stmt = SQLUtils.parseSingleStatement(sql, DbType.starrocks);
+        SQLRefreshMaterializedViewStatement refresh = (SQLRefreshMaterializedViewStatement) stmt;
+        assertTrue(refresh.isAsyncMode());
+        assertFalse(refresh.isSyncMode());
+        String output = SQLUtils.toSQLString(stmt, DbType.starrocks);
+        assertTrue(output.toUpperCase().contains("WITH ASYNC MODE"));
+    }
+
+    @Test
+    public void testRefreshSchemaQualified() {
+        String sql = "REFRESH MATERIALIZED VIEW mydb.mv1";
+        SQLStatement stmt = SQLUtils.parseSingleStatement(sql, DbType.starrocks);
+        SQLRefreshMaterializedViewStatement refresh = (SQLRefreshMaterializedViewStatement) stmt;
+        assertNotNull(refresh.getName());
+        String output = SQLUtils.toSQLString(stmt, DbType.starrocks);
+        assertTrue(output.contains("mydb"));
+    }
 }

@@ -35,6 +35,7 @@ public class SQLRefreshMaterializedViewStatement extends SQLStatementImpl {
 
     private boolean force;
     private boolean syncMode;
+    private boolean asyncMode;
 
     public SQLRefreshMaterializedViewStatement() {
         this.setConcurrently(false);
@@ -106,6 +107,14 @@ public class SQLRefreshMaterializedViewStatement extends SQLStatementImpl {
 
     public void setSyncMode(boolean syncMode) {
         this.syncMode = syncMode;
+    }
+
+    public boolean isAsyncMode() {
+        return asyncMode;
+    }
+
+    public void setAsyncMode(boolean asyncMode) {
+        this.asyncMode = asyncMode;
     }
 
     @Override

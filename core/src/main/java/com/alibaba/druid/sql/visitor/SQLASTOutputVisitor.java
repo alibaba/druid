@@ -9259,8 +9259,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print0(ucase ? " WITH NO DATA" : " with no data");
         } else if (x.isWithData()) {
             print0(ucase ? " WITH DATA" : " with data");
-        } else if (x.isSyncMode()) {
+        }
+
+        if (x.isSyncMode()) {
             print0(ucase ? " WITH SYNC MODE" : " with sync mode");
+        } else if (x.isAsyncMode()) {
+            print0(ucase ? " WITH ASYNC MODE" : " with async mode");
         }
 
         return false;
