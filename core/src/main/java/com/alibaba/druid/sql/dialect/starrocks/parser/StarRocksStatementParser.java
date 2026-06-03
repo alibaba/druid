@@ -475,7 +475,14 @@ public class StarRocksStatementParser extends SQLStatementParser {
                 break;
             }
             SQLAssignItem item = new SQLAssignItem();
+            SQLAssignItem item = new SQLAssignItem();
             item.setTarget(this.exprParser.name());
+            if (lexer.token() == Token.RPAREN || lexer.token() == Token.COMMA) {
+                throw new ParserException("syntax error, expected role identifier after column name, " + lexer.info());
+            }
+            SQLExpr role = new SQLIdentifierExpr(lexer.stringVal());
+            item.setValue(role);
+            lexer.nextToken();
             SQLExpr role = new SQLIdentifierExpr(lexer.stringVal());
             item.setValue(role);
             lexer.nextToken();
