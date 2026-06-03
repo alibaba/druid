@@ -170,7 +170,9 @@ public class StarRocksStatementParser extends SQLStatementParser {
         if (lexer.token() == Token.LPAREN) {
             lexer.nextToken();
             for (; ; ) {
-                stmt.getColumns().add(this.exprParser.name());
+                SQLName col = this.exprParser.name();
+                col.setParent(stmt);
+                stmt.getColumns().add(col);
                 if (lexer.token() == Token.COMMA) {
                     lexer.nextToken();
                     continue;
@@ -190,7 +192,9 @@ public class StarRocksStatementParser extends SQLStatementParser {
             if (lexer.nextIfIdentifier(FnvHash.Constants.HASH)) {
                 accept(Token.LPAREN);
                 for (; ; ) {
-                    stmt.getDistributedBy().add(this.exprParser.name());
+                    SQLName distCol = this.exprParser.name();
+                    distCol.setParent(stmt);
+                    stmt.getDistributedBy().add(distCol);
                     if (lexer.token() == Token.COMMA) {
                         lexer.nextToken();
                         continue;
@@ -265,7 +269,9 @@ public class StarRocksStatementParser extends SQLStatementParser {
                 if (lexer.token() == Token.RPAREN) {
                     break;
                 }
-                stmt.getMvProperties().add(this.exprParser.parseAssignItem(true, stmt));
+                SQLAssignItem prop = this.exprParser.parseAssignItem(true, stmt);
+                prop.setParent(stmt);
+                stmt.getMvProperties().add(prop);
                 if (lexer.token() == Token.COMMA) {
                     lexer.nextToken();
                 }
@@ -500,7 +506,7 @@ public class StarRocksStatementParser extends SQLStatementParser {
             SQLExpr role = new SQLIdentifierExpr(lexer.stringVal());
             item.setValue(role);
             lexer.nextToken();
-            stmt.getColumnMappings().add(item);
+            stmt.addColumnMapping(item);
             if (lexer.token() == Token.COMMA) {
                 lexer.nextToken();
             }
@@ -554,7 +560,7 @@ public class StarRocksStatementParser extends SQLStatementParser {
         accept(Token.EQ);
         accept(Token.LPAREN);
         for (; ; ) {
-            stmt.getLocations().add(this.exprParser.expr());
+            stmt.addLocation(this.exprParser.expr());
             if (lexer.token() == Token.COMMA) {
                 lexer.nextToken();
                 continue;
@@ -602,7 +608,7 @@ public class StarRocksStatementParser extends SQLStatementParser {
             acceptIdentifier("INFILE");
             accept(Token.LPAREN);
             for (; ; ) {
-                desc.getFilePaths().add(this.exprParser.expr());
+                desc.addFilePath(this.exprParser.expr());
                 if (lexer.token() != Token.COMMA) {
                     break;
                 }
@@ -618,7 +624,7 @@ public class StarRocksStatementParser extends SQLStatementParser {
                 lexer.nextToken();
                 accept(Token.LPAREN);
                 for (; ; ) {
-                    desc.getPartitions().add(this.exprParser.name());
+                    desc.addPartition(this.exprParser.name());
                     if (lexer.token() != Token.COMMA) {
                         break;
                     }
@@ -643,7 +649,7 @@ public class StarRocksStatementParser extends SQLStatementParser {
             if (lexer.token() == Token.LPAREN) {
                 lexer.nextToken();
                 for (; ; ) {
-                    desc.getColumnList().add(this.exprParser.expr());
+                    desc.addColumn(this.exprParser.expr());
                     if (lexer.token() != Token.COMMA) {
                         break;
                     }
@@ -656,7 +662,7 @@ public class StarRocksStatementParser extends SQLStatementParser {
                 lexer.nextToken();
                 accept(Token.LPAREN);
                 for (; ; ) {
-                    desc.getColumnMappings().add(this.exprParser.parseAssignItem(true, stmt));
+                    desc.addColumnMapping(this.exprParser.parseAssignItem(true, stmt));
                     if (lexer.token() != Token.COMMA) {
                         break;
                     }
@@ -670,7 +676,7 @@ public class StarRocksStatementParser extends SQLStatementParser {
                 desc.setWhereCondition(this.exprParser.expr());
             }
 
-            stmt.getDataDescriptions().add(desc);
+            stmt.addDataDescription(desc);
             if (lexer.token() == Token.COMMA) {
                 lexer.nextToken();
             }
@@ -732,7 +738,7 @@ public class StarRocksStatementParser extends SQLStatementParser {
             if (lexer.token() == Token.LPAREN) {
                 lexer.nextToken();
                 for (; ; ) {
-                    stmt.getColumns().add(this.exprParser.expr());
+                    stmt.addColumn(this.exprParser.expr());
                     if (lexer.token() != Token.COMMA) {
                         break;
                     }
@@ -797,7 +803,7 @@ public class StarRocksStatementParser extends SQLStatementParser {
             lexer.nextToken();
             accept(Token.LPAREN);
             for (; ; ) {
-                stmt.getOnTables().add(this.exprParser.expr());
+                stmt.addOnTable(this.exprParser.expr());
                 if (lexer.token() != Token.COMMA) {
                     break;
                 }
@@ -837,7 +843,7 @@ public class StarRocksStatementParser extends SQLStatementParser {
             lexer.nextToken();
             accept(Token.LPAREN);
             for (; ; ) {
-                stmt.getOnTables().add(this.exprParser.expr());
+                stmt.addOnTable(this.exprParser.expr());
                 if (lexer.token() != Token.COMMA) {
                     break;
                 }
