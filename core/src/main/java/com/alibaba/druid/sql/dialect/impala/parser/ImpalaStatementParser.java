@@ -4,7 +4,6 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLHint;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
-import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertInto;
 import com.alibaba.druid.sql.ast.statement.SQLRefreshTableStatement;
 import com.alibaba.druid.sql.dialect.hive.parser.HiveSelectParser;
@@ -31,11 +30,6 @@ public class ImpalaStatementParser extends HiveStatementParser {
 
     public SQLCreateTableParser getSQLCreateTableParser() {
         return new ImpalaCreateTableParser(this.exprParser);
-    }
-
-    public SQLCreateTableStatement parseCreateTable() {
-        SQLCreateTableParser parser = new ImpalaCreateTableParser(this.exprParser);
-        return parser.parseCreateTable();
     }
 
     @Override

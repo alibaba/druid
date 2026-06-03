@@ -158,6 +158,9 @@ public class SQLParserUtils {
             MySqlStatementParser parser = new MySqlStatementParser(sql, features);
             parser.dbType = dbType;
             parser.exprParser.dbType = dbType;
+            DialectFeature df = parser.getLexer().getDialectFeature().copy();
+            df.configFeature(DialectFeature.ParserFeature.SelectItemDistinctPrefix);
+            parser.getLexer().setDialectFeature(df);
             return parser;
         }, DbType.elastic_search);
         registerBuiltinStatementParserFactory((sql, dbType, features) -> new PGSQLStatementParser(sql, features),
@@ -196,6 +199,9 @@ public class SQLParserUtils {
         registerBuiltinExprParserFactory((sql, dbType, features) -> {
             MySqlExprParser parser = new MySqlExprParser(sql, features);
             parser.dbType = dbType;
+            DialectFeature df = parser.getLexer().getDialectFeature().copy();
+            df.configFeature(DialectFeature.ParserFeature.SelectItemDistinctPrefix);
+            parser.getLexer().setDialectFeature(df);
             return parser;
         }, DbType.elastic_search);
         registerBuiltinExprParserFactory((sql, dbType, features) -> new H2ExprParser(sql, features), DbType.h2, DbType.lealone);

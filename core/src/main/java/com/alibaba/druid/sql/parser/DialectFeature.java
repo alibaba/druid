@@ -21,6 +21,13 @@ public class DialectFeature {
         );
     }
 
+    public DialectFeature copy() {
+        DialectFeature copy = new DialectFeature();
+        copy.lexerFeature = this.lexerFeature;
+        copy.parserFeature = this.parserFeature;
+        return copy;
+    }
+
     public DialectFeature(List<Feature> configFeatures, List<Feature> unConfigFeatures) {
         this();
         if (configFeatures != null) {
@@ -192,7 +199,7 @@ public class DialectFeature {
         CreateTableBodySupplemental(1L << 42),
         TableAliasConnectWhere(1L << 43),
         TableAliasAsof(1L << 44),
-        Lambda(1L << 45),
+        Lambda(1L << 56),
         TableAliasLock(1L << 45),
         TableAliasPartition(1L << 46),
         TableAliasTable(1L << 47),
@@ -203,7 +210,10 @@ public class DialectFeature {
         AsSequence(1L << 52),
         AsDatabase(1L << 53),
         AsDefault(1L << 54),
-        AliasLiteralFloat(1L << 55);
+        AliasLiteralFloat(1L << 55),
+        SelectItemDistinctPrefix(1L << 57),
+        SelectListRparenBreak(1L << 58),
+        TableSourceHint(1L << 59);
 
         private final long mask;
 

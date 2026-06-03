@@ -8,6 +8,9 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class StarRocksStatementParserTest {
+    // Cases 1,3,4: pre-existing PARTITION indent formatting mismatch (2-space vs tab)
+    // Case 2: pre-existing parse error on MAXVALUE | ("value") syntax
+    // Case 5: pre-existing PARTITION formatting mismatch
     private static final int[] SKIP_CASES = {1, 2, 3, 4, 5};
 
     private boolean shouldSkip(int i) {

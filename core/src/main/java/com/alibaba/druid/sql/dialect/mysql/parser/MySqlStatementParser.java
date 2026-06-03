@@ -109,11 +109,6 @@ public class MySqlStatementParser extends SQLStatementParser {
         this.maxIntoClause = maxIntoClause;
     }
 
-    public SQLCreateTableStatement parseCreateTable() {
-        MySqlCreateTableParser parser = new MySqlCreateTableParser(this.exprParser);
-        return parser.parseCreateTable();
-    }
-
     public SQLStatement parseSelect() {
         MySqlSelectParser selectParser = createSQLSelectParser();
 

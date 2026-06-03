@@ -112,4 +112,26 @@ public class StarRocksSubmitTaskStatement extends SQLStatementImpl {
         }
         return children;
     }
+
+    public StarRocksSubmitTaskStatement clone() {
+        StarRocksSubmitTaskStatement x = new StarRocksSubmitTaskStatement();
+        if (this.name != null) {
+            x.setName(this.name.clone());
+        }
+        if (this.scheduleStart != null) {
+            x.setScheduleStart(this.scheduleStart.clone());
+        }
+        if (this.scheduleEvery != null) {
+            x.setScheduleEvery(this.scheduleEvery.clone());
+        }
+        for (SQLAssignItem item : this.properties) {
+            SQLAssignItem cloned = item.clone();
+            cloned.setParent(x);
+            x.properties.add(cloned);
+        }
+        if (this.body != null) {
+            x.setBody(this.body.clone());
+        }
+        return x;
+    }
 }

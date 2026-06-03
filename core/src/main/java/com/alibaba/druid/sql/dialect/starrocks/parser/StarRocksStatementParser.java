@@ -43,11 +43,6 @@ public class StarRocksStatementParser extends SQLStatementParser {
     }
 
     @Override
-    public SQLCreateTableStatement parseCreateTable() {
-        return getSQLCreateTableParser().parseCreateTable();
-    }
-
-    @Override
     public boolean parseStatementListDialect(List<SQLStatement> statementList) {
         if (lexer.identifierEquals("SUBMIT")) {
             SQLStatement stmt = parseSubmitTask();
@@ -78,23 +73,15 @@ public class StarRocksStatementParser extends SQLStatementParser {
     }
 
     @Override
-    protected void parseInsert0(SQLInsertInto insertStatement, boolean acceptSubQuery) {
-        if (lexer.nextIf(Token.OVERWRITE) || lexer.nextIfIdentifier(FnvHash.Constants.OVERWRITE)) {
-            parseInsertOverwrite(insertStatement);
-        } else if (lexer.nextIf(Token.INTO)) {
-            insertStatement.setOverwrite(false);
-        }
-
-        SQLName tableName = this.exprParser.name();
-        insertStatement.setTableName(tableName);
-
+    protected void parseInsert0AfterTableName(SQLInsertInto insertStatement, SQLName tableName) {
         if (lexer.token() == Token.LPAREN
                 && ("FILES".equalsIgnoreCase(tableName.getSimpleName())
                     || "BLACKHOLE".equalsIgnoreCase(tableName.getSimpleName()))) {
             lexer.nextToken();
             if (lexer.token() != Token.RPAREN) {
                 for (; ; ) {
-                    this.exprParser.parseAssignItem(true, insertStatement);
+                    SQLAssignItem item = this.exprParser.parseAssignItem(true, insertStatement);
+                    insertStatement.addTableOption(item);
                     if (lexer.token() != Token.COMMA) {
                         break;
                     }
@@ -103,18 +90,10 @@ public class StarRocksStatementParser extends SQLStatementParser {
             }
             accept(Token.RPAREN);
         }
+    }
 
-        if (lexer.token() == Token.LITERAL_ALIAS) {
-            insertStatement.setAlias(tableAlias());
-        }
-
-        parseInsert0Hints(insertStatement, false);
-
-        if (lexer.token() == Token.IDENTIFIER) {
-            insertStatement.setAlias(lexer.stringVal());
-            lexer.nextToken();
-        }
-
+    @Override
+    protected void parseInsert0AfterAlias(SQLInsertInto insertStatement) {
         if (lexer.token() == Token.WITH) {
             Lexer.SavePoint mark = lexer.markOut();
             lexer.nextToken();
@@ -125,60 +104,14 @@ public class StarRocksStatementParser extends SQLStatementParser {
                 lexer.reset(mark);
             }
         }
+    }
 
-        if (lexer.token() == Token.PARTITION) {
-            lexer.nextToken();
-            accept(Token.LPAREN);
-            for (; ; ) {
-                SQLAssignItem ptExpr = new SQLAssignItem();
-                ptExpr.setTarget(this.exprParser.name());
-                if (lexer.token() == Token.EQ || lexer.token() == Token.EQEQ) {
-                    lexer.nextTokenValue();
-                    ptExpr.setValue(this.exprParser.expr());
-                }
-                insertStatement.addPartition(ptExpr);
-                if (lexer.token() != Token.COMMA) {
-                    break;
-                }
-                lexer.nextToken();
-            }
-            accept(Token.RPAREN);
-        }
-
+    @Override
+    protected void parseInsert0BeforeColumns(SQLInsertInto insertStatement) {
         if (lexer.token() == Token.BY) {
             lexer.nextToken();
             acceptIdentifier("NAME");
             insertStatement.setByName(true);
-        }
-
-        if (lexer.token() == Token.LPAREN) {
-            lexer.nextToken();
-            parseInsertColumns(insertStatement);
-            accept(Token.RPAREN);
-        }
-
-        if (lexer.token() == Token.VALUES) {
-            lexer.nextToken();
-            for (; ; ) {
-                if (lexer.token() == Token.LPAREN) {
-                    lexer.nextToken();
-                    SQLInsertStatement.ValuesClause values = new SQLInsertStatement.ValuesClause();
-                    this.exprParser.exprList(values.getValues(), values);
-                    insertStatement.addValueCause(values);
-                    accept(Token.RPAREN);
-                } else {
-                    break;
-                }
-                if (lexer.token() != Token.COMMA) {
-                    break;
-                }
-                lexer.nextToken();
-            }
-        }
-
-        if (acceptSubQuery && insertStatement.getQuery() == null && insertStatement.getValuesList().isEmpty()) {
-            SQLSelect query = this.createSQLSelectParser().select();
-            insertStatement.setQuery(query);
         }
     }
 
@@ -266,7 +199,7 @@ public class StarRocksStatementParser extends SQLStatementParser {
                 accept(Token.RPAREN);
             }
             if (lexer.nextIfIdentifier(FnvHash.Constants.BUCKETS)) {
-                lexer.nextToken();
+                stmt.setBuckets(this.exprParser.expr());
             }
         }
 

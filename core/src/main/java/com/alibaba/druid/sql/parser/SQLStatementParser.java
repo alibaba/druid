@@ -29,7 +29,6 @@ import com.alibaba.druid.sql.dialect.hive.stmt.HiveMsckRepairStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.FullTextType;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlExprParser;
-import com.alibaba.druid.sql.dialect.oracle.parser.OracleExprParser;
 import com.alibaba.druid.sql.repository.SchemaRepository;
 import com.alibaba.druid.util.FnvHash;
 import com.alibaba.druid.util.FnvHash.Constants;
@@ -3850,6 +3849,15 @@ public class SQLStatementParser extends SQLParser {
     protected void parseInsertOverwrite(SQLInsertInto insertStatement) {
         insertStatement.setOverwrite(true);
     }
+    protected void parseInsert0AfterTableName(SQLInsertInto insertStatement, SQLName tableName) {
+    }
+
+    protected void parseInsert0AfterAlias(SQLInsertInto insertStatement) {
+    }
+
+    protected void parseInsert0BeforeColumns(SQLInsertInto insertStatement) {
+    }
+
     protected void parseInsert0(SQLInsertInto insertStatement, boolean acceptSubQuery) {
         if (lexer.nextIf(OVERWRITE) || lexer.nextIfIdentifier(Constants.OVERWRITE)) {
             parseInsertOverwrite(insertStatement);
@@ -3859,6 +3867,8 @@ public class SQLStatementParser extends SQLParser {
 
         SQLName tableName = this.exprParser.name();
         insertStatement.setTableName(tableName);
+
+        parseInsert0AfterTableName(insertStatement, tableName);
 
         if (lexer.token == Token.LITERAL_ALIAS) {
             insertStatement.setAlias(tableAlias());
@@ -3870,6 +3880,8 @@ public class SQLStatementParser extends SQLParser {
             insertStatement.setAlias(lexer.stringVal());
             lexer.nextToken();
         }
+
+        parseInsert0AfterAlias(insertStatement);
 
         if (lexer.token == Token.PARTITION) {
             lexer.nextToken();
@@ -3891,6 +3903,8 @@ public class SQLStatementParser extends SQLParser {
             }
             accept(Token.RPAREN);
         }
+
+        parseInsert0BeforeColumns(insertStatement);
 
         if (lexer.token == (Token.LPAREN)) {
             lexer.nextToken();
@@ -4359,9 +4373,7 @@ public class SQLStatementParser extends SQLParser {
         parseCreateMaterializedViewRest(stmt);
 
         for (; ; ) {
-            if (exprParser instanceof OracleExprParser) {
-                ((OracleExprParser) exprParser).parseSegmentAttributes(stmt);
-            }
+            exprParser.parseSegmentAttributes(stmt);
 
             if (lexer.identifierEquals("REFRESH")) {
                 lexer.nextToken();

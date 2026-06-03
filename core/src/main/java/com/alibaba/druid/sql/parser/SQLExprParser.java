@@ -193,6 +193,9 @@ public class SQLExprParser extends SQLParser {
         return bitXorRest(expr);
     }
 
+    protected void parseSegmentAttributes(SQLCreateMaterializedViewStatement stmt) {
+    }
+
     protected SQLExpr bitXorRestSUBGT() {
         return primary();
     }
@@ -213,7 +216,7 @@ public class SQLExprParser extends SQLParser {
             }
             SQLLambdaExpr lambda = new SQLLambdaExpr();
             for (SQLExpr item : listExpr.getItems()) {
-                lambda.addArgument(item);
+                lambda.addArgument(item.clone());
             }
             lexer.nextToken();
             lambda.setExpr(expr());
@@ -6111,7 +6114,7 @@ public class SQLExprParser extends SQLParser {
             expr = this.name();
             expr = this.exprRest(expr);
         } else {
-            if (lexer.token == Token.DISTINCT && dbType == DbType.elastic_search) {
+            if (lexer.token == Token.DISTINCT && dialectFeatureEnabled(DialectFeature.ParserFeature.SelectItemDistinctPrefix)) {
                 lexer.nextToken();
             }
 

@@ -6,7 +6,6 @@ import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
-import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
@@ -34,11 +33,6 @@ public class GaussDbStatementParser extends PGSQLStatementParser {
 
     public GaussDbCreateTableParser getSQLCreateTableParser() {
         return new GaussDbCreateTableParser(this.exprParser);
-    }
-
-    @Override
-    public SQLCreateTableStatement parseCreateTable() {
-        return getSQLCreateTableParser().parseCreateTable();
     }
 
     @Override

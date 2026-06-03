@@ -369,6 +369,10 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
             print0(ucase ? "DISTRIBUTED BY HASH (" : "distributed by hash (");
             printAndAccept(x.getDistributedBy(), ", ");
             print0(")");
+            if (x.getBuckets() != null) {
+                print0(ucase ? " BUCKETS " : " buckets ");
+                x.getBuckets().accept(this);
+            }
         }
 
         if (x.getPartitionBy() != null) {
@@ -382,7 +386,8 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
         }
 
         boolean hasRefresh = x.isRefreshAsync() || x.isRefreshManual()
-                || x.getRefreshEvery() != null;
+                || x.isRefreshImmediate() || x.isRefreshDeferred()
+                || x.getRefreshEvery() != null || x.getRefreshStart() != null;
         if (hasRefresh) {
             println();
             print0(ucase ? "REFRESH " : "refresh ");
@@ -560,6 +565,34 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
                 println();
                 print0(ucase ? "FORMAT AS " : "format as ");
                 desc.getFormat().accept(this);
+            }
+            if (desc.getPartitions() != null && !desc.getPartitions().isEmpty()) {
+                println();
+                print0(ucase ? "PARTITION (" : "partition (");
+                printAndAccept(desc.getPartitions(), ", ");
+                print0(")");
+            }
+            if (desc.getColumnTerminatedBy() != null) {
+                println();
+                print0(ucase ? "COLUMNS TERMINATED BY " : "columns terminated by ");
+                desc.getColumnTerminatedBy().accept(this);
+            }
+            if (desc.getColumnList() != null && !desc.getColumnList().isEmpty()) {
+                println();
+                print0("(");
+                printAndAccept(desc.getColumnList(), ", ");
+                print0(")");
+            }
+            if (desc.getColumnMappings() != null && !desc.getColumnMappings().isEmpty()) {
+                println();
+                print0(ucase ? "SET (" : "set (");
+                printAndAccept(desc.getColumnMappings(), ", ");
+                print0(")");
+            }
+            if (desc.getWhereCondition() != null) {
+                println();
+                print0(ucase ? "WHERE " : "where ");
+                desc.getWhereCondition().accept(this);
             }
         }
         decrementIndent();

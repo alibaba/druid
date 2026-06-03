@@ -1906,6 +1906,11 @@ public class OracleExprParser extends SQLExprParser {
         return subPartition;
     }
 
+    @Override
+    protected void parseSegmentAttributes(SQLCreateMaterializedViewStatement stmt) {
+        parseSegmentAttributes((OracleSegmentAttributes) stmt);
+    }
+
     public void parseSegmentAttributes(OracleSegmentAttributes attributes) {
         for (; ; ) {
             if (lexer.token() == Token.TABLESPACE) {

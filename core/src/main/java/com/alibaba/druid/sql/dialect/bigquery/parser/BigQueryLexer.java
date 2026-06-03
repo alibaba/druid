@@ -16,7 +16,8 @@ public class BigQueryLexer extends Lexer {
             Arrays.asList(
                     SQLDateExpr,
                     GroupByAll,
-                    InRestSpecificOperation
+                    InRestSpecificOperation,
+                    SelectListRparenBreak
             ),
             null
     );

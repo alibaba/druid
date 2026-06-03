@@ -3761,6 +3761,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         x.getTableSource().accept(this);
 
+        if (x.getTableOptions() != null && !x.getTableOptions().isEmpty()) {
+            print0("(");
+            printAndAccept(x.getTableOptions(), ", ");
+            print0(")");
+        }
+
         if (x.getLabel() != null) {
             print0(ucase ? " WITH LABEL " : " with label ");
             x.getLabel().accept(this);
@@ -6332,6 +6338,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         return false;
     }
 
+    @Override
     public boolean visit(SQLAlterTableRenameColumn x) {
         print0(ucase ? "RENAME COLUMN " : "rename column ");
         x.getColumn().accept(this);

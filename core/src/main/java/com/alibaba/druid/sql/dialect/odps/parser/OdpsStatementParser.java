@@ -72,11 +72,6 @@ public class OdpsStatementParser extends HiveStatementParser {
         return new SQLSelectStatement(select, DbType.odps);
     }
 
-    public SQLCreateTableStatement parseCreateTable() {
-        SQLCreateTableParser parser = new OdpsCreateTableParser(this.exprParser);
-        return parser.parseCreateTable();
-    }
-
     public SQLCreateTableParser getSQLCreateTableParser() {
         return new OdpsCreateTableParser(this.exprParser);
     }

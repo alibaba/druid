@@ -2,6 +2,7 @@ package com.alibaba.druid.sql.dialect.starrocks.ast.statement;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLCreateMaterializedViewStatement;
@@ -19,6 +20,7 @@ public class StarRocksCreateMaterializedViewStatement extends SQLCreateMateriali
     private boolean refreshDeferred;
     private SQLExpr refreshStart;
     private SQLExpr refreshEvery;
+    private SQLExpr buckets;
     private SQLOrderBy orderBy;
     private final List<SQLAssignItem> mvProperties = new ArrayList<>();
 
@@ -81,6 +83,17 @@ public class StarRocksCreateMaterializedViewStatement extends SQLCreateMateriali
         this.refreshEvery = refreshEvery;
     }
 
+    public SQLExpr getBuckets() {
+        return buckets;
+    }
+
+    public void setBuckets(SQLExpr buckets) {
+        if (buckets != null) {
+            buckets.setParent(this);
+        }
+        this.buckets = buckets;
+    }
+
     public SQLOrderBy getOrderBy() {
         return orderBy;
     }
@@ -102,6 +115,7 @@ public class StarRocksCreateMaterializedViewStatement extends SQLCreateMateriali
             acceptChild(visitor, getName());
             acceptChild(visitor, getColumns());
             acceptChild(visitor, getPartitionBy());
+            acceptChild(visitor, buckets);
             acceptChild(visitor, orderBy);
             acceptChild(visitor, refreshStart);
             acceptChild(visitor, refreshEvery);
@@ -118,5 +132,73 @@ public class StarRocksCreateMaterializedViewStatement extends SQLCreateMateriali
         } else {
             super.accept0(visitor);
         }
+    }
+
+    public StarRocksCreateMaterializedViewStatement clone() {
+        StarRocksCreateMaterializedViewStatement x = new StarRocksCreateMaterializedViewStatement();
+        cloneTo(x);
+
+        x.refreshAsync = this.refreshAsync;
+        x.refreshManual = this.refreshManual;
+        x.refreshImmediate = this.refreshImmediate;
+        x.refreshDeferred = this.refreshDeferred;
+
+        if (this.buckets != null) {
+            x.setBuckets(this.buckets.clone());
+        }
+        if (this.refreshStart != null) {
+            x.setRefreshStart(this.refreshStart.clone());
+        }
+        if (this.refreshEvery != null) {
+            x.setRefreshEvery(this.refreshEvery.clone());
+        }
+        if (this.orderBy != null) {
+            x.setOrderBy(this.orderBy.clone());
+        }
+        for (SQLAssignItem item : this.mvProperties) {
+            SQLAssignItem cloned = item.clone();
+            cloned.setParent(x);
+            x.mvProperties.add(cloned);
+        }
+
+        return x;
+    }
+
+    protected void cloneTo(StarRocksCreateMaterializedViewStatement x) {
+        super.cloneTo(x);
+
+        if (getName() != null) {
+            x.setName(getName().clone());
+        }
+        x.setIfNotExists(isIfNotExists());
+        for (SQLName col : getColumns()) {
+            SQLName cloned = col.clone();
+            cloned.setParent(x);
+            x.getColumns().add(cloned);
+        }
+        if (getQuery() != null) {
+            x.setQuery(getQuery().clone());
+        }
+        if (getPartitionBy() != null) {
+            x.setPartitionBy(getPartitionBy().clone());
+        }
+        if (getComment() != null) {
+            x.setComment(getComment().clone());
+        }
+        if (getDistributedByType() != null) {
+            x.setDistributedByType(getDistributedByType().clone());
+        }
+        for (SQLName item : getDistributedBy()) {
+            SQLName cloned = item.clone();
+            cloned.setParent(x);
+            x.getDistributedBy().add(cloned);
+        }
+        x.setRefreshFast(isRefreshFast());
+        x.setRefreshComplete(isRefreshComplete());
+        x.setRefreshForce(isRefreshForce());
+        x.setRefreshOnCommit(isRefreshOnCommit());
+        x.setRefreshOnDemand(isRefreshOnDemand());
+        x.setBuildImmediate(isBuildImmediate());
+        x.setBuildDeferred(isBuildDeferred());
     }
 }
