@@ -259,9 +259,14 @@ public class StarRocksLoadStatement extends SQLStatementImpl {
         }
 
         @Override
-        @Override
         protected void accept0(SQLASTVisitor v) {
-            if (v.visit(this)) {
+            boolean visitChildren;
+            if (v instanceof StarRocksASTVisitor) {
+                visitChildren = ((StarRocksASTVisitor) v).visit(this);
+            } else {
+                visitChildren = true;
+            }
+            if (visitChildren) {
                 acceptChild(v, (List) filePaths);
                 acceptChild(v, tableName);
                 acceptChild(v, (List) partitions);
@@ -272,17 +277,9 @@ public class StarRocksLoadStatement extends SQLStatementImpl {
                 acceptChild(v, (List) columnMappings);
                 acceptChild(v, whereCondition);
             }
-            v.endVisit(this);
-        }
-            acceptChild(v, (List) filePaths);
-            acceptChild(v, tableName);
-            acceptChild(v, (List) partitions);
-            acceptChild(v, columnTerminatedBy);
-            acceptChild(v, rowTerminatedBy);
-            acceptChild(v, format);
-            acceptChild(v, (List) columnList);
-            acceptChild(v, (List) columnMappings);
-            acceptChild(v, whereCondition);
+            if (v instanceof StarRocksASTVisitor) {
+                ((StarRocksASTVisitor) v).endVisit(this);
+            }
         }
 
         public List<SQLObject> getChildren() {

@@ -75,10 +75,8 @@ public class StarRocksStatementParser extends SQLStatementParser {
     @Override
     protected void parseInsert0AfterTableName(SQLInsertInto insertStatement, SQLName tableName) {
         if (lexer.token() == Token.LPAREN
-        if (lexer.token() == Token.LPAREN
                 && tableName instanceof SQLIdentifierExpr
                 && ("FILES".equalsIgnoreCase(tableName.getSimpleName())
-                    || "BLACKHOLE".equalsIgnoreCase(tableName.getSimpleName()))) {
                     || "BLACKHOLE".equalsIgnoreCase(tableName.getSimpleName()))) {
             lexer.nextToken();
             if (lexer.token() != Token.RPAREN) {
@@ -218,20 +216,26 @@ public class StarRocksStatementParser extends SQLStatementParser {
 
         if (lexer.identifierEquals("REFRESH")) {
             lexer.nextToken();
+            boolean hasRefreshModifier = false;
+
             if (lexer.token() == Token.IMMEDIATE || lexer.identifierEquals("IMMEDIATE")) {
                 lexer.nextToken();
                 stmt.setRefreshImmediate(true);
+                hasRefreshModifier = true;
             } else if (lexer.token() == Token.DEFERRED || lexer.identifierEquals("DEFERRED")) {
                 lexer.nextToken();
                 stmt.setRefreshDeferred(true);
+                hasRefreshModifier = true;
             }
 
             if (lexer.identifierEquals("ASYNC")) {
                 lexer.nextToken();
                 stmt.setRefreshAsync(true);
+                hasRefreshModifier = true;
             } else if (lexer.identifierEquals("MANUAL")) {
                 lexer.nextToken();
                 stmt.setRefreshManual(true);
+                hasRefreshModifier = true;
             }
 
             if (lexer.identifierEquals(FnvHash.Constants.START)) {
@@ -239,6 +243,7 @@ public class StarRocksStatementParser extends SQLStatementParser {
                 accept(Token.LPAREN);
                 stmt.setRefreshStart(this.exprParser.expr());
                 accept(Token.RPAREN);
+                hasRefreshModifier = true;
             }
 
             if (lexer.identifierEquals("EVERY")) {
@@ -246,6 +251,11 @@ public class StarRocksStatementParser extends SQLStatementParser {
                 accept(Token.LPAREN);
                 stmt.setRefreshEvery(this.exprParser.expr());
                 accept(Token.RPAREN);
+                hasRefreshModifier = true;
+            }
+
+            if (!hasRefreshModifier) {
+                throw new ParserException("syntax error, expected ASYNC/MANUAL/IMMEDIATE/DEFERRED after REFRESH. " + lexer.info());
             }
         }
 
@@ -377,6 +387,10 @@ public class StarRocksStatementParser extends SQLStatementParser {
         StarRocksCreateCatalogStatement stmt = new StarRocksCreateCatalogStatement();
 
         accept(Token.CREATE);
+        if (lexer.token() == Token.OR) {
+            lexer.nextToken();
+            accept(Token.REPLACE);
+        }
 
         if (lexer.identifierEquals(FnvHash.Constants.EXTERNAL)) {
             acceptIdentifier("EXTERNAL");
@@ -463,6 +477,10 @@ public class StarRocksStatementParser extends SQLStatementParser {
         StarRocksCreateDictionaryStatement stmt = new StarRocksCreateDictionaryStatement();
 
         accept(Token.CREATE);
+        if (lexer.token() == Token.OR) {
+            lexer.nextToken();
+            accept(Token.REPLACE);
+        }
         acceptIdentifier("DICTIONARY");
 
         stmt.setName(this.exprParser.name());
@@ -475,14 +493,10 @@ public class StarRocksStatementParser extends SQLStatementParser {
                 break;
             }
             SQLAssignItem item = new SQLAssignItem();
-            SQLAssignItem item = new SQLAssignItem();
             item.setTarget(this.exprParser.name());
             if (lexer.token() == Token.RPAREN || lexer.token() == Token.COMMA) {
                 throw new ParserException("syntax error, expected role identifier after column name, " + lexer.info());
             }
-            SQLExpr role = new SQLIdentifierExpr(lexer.stringVal());
-            item.setValue(role);
-            lexer.nextToken();
             SQLExpr role = new SQLIdentifierExpr(lexer.stringVal());
             item.setValue(role);
             lexer.nextToken();
@@ -514,6 +528,10 @@ public class StarRocksStatementParser extends SQLStatementParser {
         StarRocksCreateStorageVolumeStatement stmt = new StarRocksCreateStorageVolumeStatement();
 
         accept(Token.CREATE);
+        if (lexer.token() == Token.OR) {
+            lexer.nextToken();
+            accept(Token.REPLACE);
+        }
         acceptIdentifier("STORAGE");
         acceptIdentifier("VOLUME");
 
@@ -698,6 +716,10 @@ public class StarRocksStatementParser extends SQLStatementParser {
         StarRocksCreateRoutineLoadStatement stmt = new StarRocksCreateRoutineLoadStatement();
 
         accept(Token.CREATE);
+        if (lexer.token() == Token.OR) {
+            lexer.nextToken();
+            accept(Token.REPLACE);
+        }
         acceptIdentifier("ROUTINE");
         acceptIdentifier("LOAD");
         stmt.setName(this.exprParser.name());
@@ -705,6 +727,7 @@ public class StarRocksStatementParser extends SQLStatementParser {
         stmt.setTableName(this.exprParser.name());
 
         if (lexer.identifierEquals("COLUMNS")) {
+            Lexer.SavePoint mark = lexer.markOut();
             lexer.nextToken();
             if (lexer.token() == Token.LPAREN) {
                 lexer.nextToken();
@@ -716,6 +739,8 @@ public class StarRocksStatementParser extends SQLStatementParser {
                     lexer.nextToken();
                 }
                 accept(Token.RPAREN);
+            } else {
+                lexer.reset(mark);
             }
         }
 

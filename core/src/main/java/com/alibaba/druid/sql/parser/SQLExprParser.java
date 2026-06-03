@@ -240,29 +240,7 @@ public class SQLExprParser extends SQLParser {
         }
         return null;
     }
-        if (expr instanceof SQLIdentifierExpr) {
-            SQLLambdaExpr lambda = new SQLLambdaExpr();
-            lambda.addArgument(expr);
-            lexer.nextToken();
-            lambda.setExpr(expr());
-            return lambda;
-        } else if (expr instanceof SQLListExpr) {
-            SQLListExpr listExpr = (SQLListExpr) expr;
-            for (SQLExpr item : listExpr.getItems()) {
-                if (!(item instanceof SQLIdentifierExpr)) {
-                    return null;
-                }
-            }
-            SQLLambdaExpr lambda = new SQLLambdaExpr();
-            for (SQLExpr item : listExpr.getItems()) {
-                lambda.addArgument(item.clone());
-            }
-            lexer.nextToken();
-            lambda.setExpr(expr());
-            return lambda;
-        }
-        return null;
-    }
+
     public SQLExpr bitXorRest(SQLExpr expr) {
         Token token = lexer.token;
         switch (token) {

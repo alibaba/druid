@@ -114,7 +114,10 @@ public class StarRocksCreateMaterializedViewStatement extends SQLCreateMateriali
         if (visitor.visit(this)) {
             acceptChild(visitor, getName());
             acceptChild(visitor, getColumns());
+            acceptChild(visitor, getComment());
             acceptChild(visitor, getPartitionBy());
+            acceptChild(visitor, getDistributedByType());
+            acceptChild(visitor, getDistributedBy());
             acceptChild(visitor, buckets);
             acceptChild(visitor, orderBy);
             acceptChild(visitor, refreshStart);

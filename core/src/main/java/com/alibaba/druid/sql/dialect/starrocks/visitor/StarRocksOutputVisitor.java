@@ -380,9 +380,6 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
             print0(ucase ? "PARTITION BY " : "partition by ");
             x.getPartitionBy().accept(this);
         }
-            println();
-            x.getPartitionBy().accept(this);
-        }
 
         if (x.getOrderBy() != null) {
             println();
@@ -565,11 +562,6 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
             println();
             print0(ucase ? "INTO TABLE " : "into table ");
             desc.getTableName().accept(this);
-            if (desc.getFormat() != null) {
-                println();
-                print0(ucase ? "FORMAT AS " : "format as ");
-                desc.getFormat().accept(this);
-            }
             if (desc.getPartitions() != null && !desc.getPartitions().isEmpty()) {
                 println();
                 print0(ucase ? "PARTITION (" : "partition (");
@@ -580,6 +572,11 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
                 println();
                 print0(ucase ? "COLUMNS TERMINATED BY " : "columns terminated by ");
                 desc.getColumnTerminatedBy().accept(this);
+            }
+            if (desc.getFormat() != null) {
+                println();
+                print0(ucase ? "FORMAT AS " : "format as ");
+                desc.getFormat().accept(this);
             }
             if (desc.getColumnList() != null && !desc.getColumnList().isEmpty()) {
                 println();

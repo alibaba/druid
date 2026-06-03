@@ -60,6 +60,13 @@ public interface StarRocksASTVisitor extends SQLASTVisitor {
     default void endVisit(StarRocksLoadStatement x) {
     }
 
+    default boolean visit(StarRocksLoadStatement.DataDescription x) {
+        return true;
+    }
+
+    default void endVisit(StarRocksLoadStatement.DataDescription x) {
+    }
+
     default boolean visit(StarRocksCreateRoutineLoadStatement x) {
         return true;
     }

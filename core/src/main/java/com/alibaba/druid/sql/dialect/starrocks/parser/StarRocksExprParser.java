@@ -74,12 +74,10 @@ public class StarRocksExprParser extends SQLExprParser {
 
     public SQLColumnDefinition parseColumnRest(SQLColumnDefinition column) {
         String text = lexer.stringVal();
-        for (int i = 0; i < AGGREGATE_FUNCTIONS.length; ++i) {
-            if (text.equalsIgnoreCase(AGGREGATE_FUNCTIONS[i])) {
-            SQLCharExpr aggType = new SQLCharExpr(text);
-                column.setAggType(aggType);
-                lexer.nextToken();
-            }
+        long hash = FnvHash.fnv1a_64_lower(text);
+        if (Arrays.binarySearch(AGGREGATE_FUNCTIONS_CODES, hash) >= 0) {
+            column.setAggType(new SQLCharExpr(text));
+            lexer.nextToken();
         }
 
         if (lexer.token() == Token.AS) {
