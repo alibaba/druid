@@ -259,7 +259,21 @@ public class StarRocksLoadStatement extends SQLStatementImpl {
         }
 
         @Override
+        @Override
         protected void accept0(SQLASTVisitor v) {
+            if (v.visit(this)) {
+                acceptChild(v, (List) filePaths);
+                acceptChild(v, tableName);
+                acceptChild(v, (List) partitions);
+                acceptChild(v, columnTerminatedBy);
+                acceptChild(v, rowTerminatedBy);
+                acceptChild(v, format);
+                acceptChild(v, (List) columnList);
+                acceptChild(v, (List) columnMappings);
+                acceptChild(v, whereCondition);
+            }
+            v.endVisit(this);
+        }
             acceptChild(v, (List) filePaths);
             acceptChild(v, tableName);
             acceptChild(v, (List) partitions);
