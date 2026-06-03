@@ -202,6 +202,45 @@ public class SQLExprParser extends SQLParser {
 
     protected SQLLambdaExpr tryParseLambda(SQLExpr expr) {
         if (expr instanceof SQLIdentifierExpr) {
+            Lexer.SavePoint mark = lexer.markOut();
+            try {
+                SQLLambdaExpr lambda = new SQLLambdaExpr();
+                lambda.addArgument(expr);
+                lexer.nextToken();
+                lambda.setExpr(expr());
+                return lambda;
+            } catch (ParserException e) {
+                lexer.reset(mark);
+                return null;
+            }
+        } else if (expr instanceof SQLListExpr) {
+            SQLListExpr listExpr = (SQLListExpr) expr;
+            if (listExpr.getItems().isEmpty()) {
+                return null;
+            }
+            for (SQLExpr item : listExpr.getItems()) {
+                if (!(item instanceof SQLIdentifierExpr)) {
+                    return null;
+                }
+            }
+            Lexer.SavePoint mark = lexer.markOut();
+            try {
+                SQLLambdaExpr lambda = new SQLLambdaExpr();
+                for (SQLExpr item : listExpr.getItems()) {
+                    item.setParent(lambda);
+                    lambda.getArguments().add(item);
+                }
+                lexer.nextToken();
+                lambda.setExpr(expr());
+                return lambda;
+            } catch (ParserException e) {
+                lexer.reset(mark);
+                return null;
+            }
+        }
+        return null;
+    }
+        if (expr instanceof SQLIdentifierExpr) {
             SQLLambdaExpr lambda = new SQLLambdaExpr();
             lambda.addArgument(expr);
             lexer.nextToken();
