@@ -75,7 +75,10 @@ public class StarRocksStatementParser extends SQLStatementParser {
     @Override
     protected void parseInsert0AfterTableName(SQLInsertInto insertStatement, SQLName tableName) {
         if (lexer.token() == Token.LPAREN
+        if (lexer.token() == Token.LPAREN
+                && tableName instanceof SQLIdentifierExpr
                 && ("FILES".equalsIgnoreCase(tableName.getSimpleName())
+                    || "BLACKHOLE".equalsIgnoreCase(tableName.getSimpleName()))) {
                     || "BLACKHOLE".equalsIgnoreCase(tableName.getSimpleName()))) {
             lexer.nextToken();
             if (lexer.token() != Token.RPAREN) {
