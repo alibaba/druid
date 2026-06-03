@@ -12,7 +12,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StarRocksCreateRoutineLoadStatement extends SQLStatementImpl {
+public class StarRocksCreateRoutineLoadStatement extends SQLStatementImpl implements SQLDDLStatement, SQLCreateStatement {
     private SQLName name;
     private SQLName tableName;
     private List<SQLExpr> columns = new ArrayList<>();
