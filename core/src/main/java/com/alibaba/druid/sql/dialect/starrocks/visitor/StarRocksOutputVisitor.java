@@ -377,6 +377,10 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
 
         if (x.getPartitionBy() != null) {
             println();
+            print0(ucase ? "PARTITION BY " : "partition by ");
+            x.getPartitionBy().accept(this);
+        }
+            println();
             x.getPartitionBy().accept(this);
         }
 
