@@ -63,14 +63,14 @@ public class StarRocksLexer extends Lexer {
     public StarRocksLexer(char[] input, int inputLength, boolean skipComment) {
         super(input, inputLength, skipComment);
         dbType = DbType.starrocks;
-        this.dialectFeature = SR_FEATURE;
+        this.dialectFeature = SR_FEATURE.copy();
     }
 
     public StarRocksLexer(String input, SQLParserFeature... features) {
         super(input, true);
         this.keepComments = true;
         dbType = DbType.starrocks;
-        this.dialectFeature = SR_FEATURE;
+        this.dialectFeature = SR_FEATURE.copy();
 
         for (SQLParserFeature feature : features) {
             config(feature, true);
@@ -82,6 +82,6 @@ public class StarRocksLexer extends Lexer {
         this.skipComment = skipComment;
         this.keepComments = keepComments;
         dbType = DbType.starrocks;
-        this.dialectFeature = SR_FEATURE;
+        this.dialectFeature = SR_FEATURE.copy();
     }
 }

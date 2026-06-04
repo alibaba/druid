@@ -355,7 +355,7 @@ public class StarRocksStatementParser extends SQLStatementParser {
             return parseCreateCatalog();
         }
 
-        if (external && lexer.identifierEquals(FnvHash.Constants.RESOURCE)) {
+        if (lexer.identifierEquals(FnvHash.Constants.RESOURCE)) {
             lexer.reset(mark);
             return createResource();
         }
@@ -503,7 +503,7 @@ public class StarRocksStatementParser extends SQLStatementParser {
             SQLAssignItem item = new SQLAssignItem();
             item.setTarget(this.exprParser.name());
             if (lexer.token() == Token.RPAREN || lexer.token() == Token.COMMA) {
-                throw new ParserException("syntax error, expected role identifier after column name, " + lexer.info());
+                throw new ParserException("syntax error, expected mapping value after column name, " + lexer.info());
             }
             SQLExpr role = new SQLIdentifierExpr(lexer.stringVal());
             item.setValue(role);
