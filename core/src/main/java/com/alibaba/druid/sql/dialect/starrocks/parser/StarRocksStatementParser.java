@@ -872,7 +872,10 @@ public class StarRocksStatementParser extends SQLStatementParser {
     protected SQLStatement createResource() {
         StarRocksCreateResourceStatement stmt = new StarRocksCreateResourceStatement();
         accept(Token.CREATE);
-        // create external source
+        if (lexer.token() == Token.OR) {
+            lexer.nextToken();
+            accept(Token.REPLACE);
+        }
         if (lexer.identifierEquals(FnvHash.Constants.EXTERNAL)) {
             acceptIdentifier("EXTERNAL");
             stmt.setExternal(true);

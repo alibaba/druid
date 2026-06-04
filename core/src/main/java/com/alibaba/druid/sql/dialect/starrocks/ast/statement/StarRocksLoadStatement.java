@@ -137,7 +137,6 @@ public class StarRocksLoadStatement extends SQLStatementImpl {
         private SQLName tableName;
         private List<SQLName> partitions = new ArrayList<>();
         private SQLExpr columnTerminatedBy;
-        private SQLExpr rowTerminatedBy;
         private SQLExpr format;
         private List<SQLExpr> columnList = new ArrayList<>();
         private List<SQLAssignItem> columnMappings = new ArrayList<>();
@@ -193,17 +192,6 @@ public class StarRocksLoadStatement extends SQLStatementImpl {
                 x.setParent(this);
             }
             this.columnTerminatedBy = x;
-        }
-
-        public SQLExpr getRowTerminatedBy() {
-            return rowTerminatedBy;
-        }
-
-        public void setRowTerminatedBy(SQLExpr x) {
-            if (x != null) {
-                x.setParent(this);
-            }
-            this.rowTerminatedBy = x;
         }
 
         public SQLExpr getFormat() {
@@ -271,7 +259,6 @@ public class StarRocksLoadStatement extends SQLStatementImpl {
                 acceptChild(v, tableName);
                 acceptChild(v, (List) partitions);
                 acceptChild(v, columnTerminatedBy);
-                acceptChild(v, rowTerminatedBy);
                 acceptChild(v, format);
                 acceptChild(v, (List) columnList);
                 acceptChild(v, (List) columnMappings);
@@ -291,9 +278,6 @@ public class StarRocksLoadStatement extends SQLStatementImpl {
             children.addAll(partitions);
             if (columnTerminatedBy != null) {
                 children.add(columnTerminatedBy);
-            }
-            if (rowTerminatedBy != null) {
-                children.add(rowTerminatedBy);
             }
             if (format != null) {
                 children.add(format);
@@ -323,9 +307,6 @@ public class StarRocksLoadStatement extends SQLStatementImpl {
             }
             if (this.columnTerminatedBy != null) {
                 x.setColumnTerminatedBy(this.columnTerminatedBy.clone());
-            }
-            if (this.rowTerminatedBy != null) {
-                x.setRowTerminatedBy(this.rowTerminatedBy.clone());
             }
             if (this.format != null) {
                 x.setFormat(this.format.clone());
