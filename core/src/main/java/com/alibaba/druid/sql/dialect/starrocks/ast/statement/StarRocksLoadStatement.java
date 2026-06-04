@@ -7,7 +7,6 @@ import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
-import com.alibaba.druid.sql.dialect.starrocks.visitor.StarRocksASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
@@ -85,16 +84,13 @@ public class StarRocksLoadStatement extends SQLStatementImpl {
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
-        if (visitor instanceof StarRocksASTVisitor) {
-            StarRocksASTVisitor v = (StarRocksASTVisitor) visitor;
-            if (v.visit(this)) {
-                acceptChild(visitor, label);
-                acceptChild(visitor, (List) dataDescriptions);
-                acceptChild(visitor, (List) brokerProperties);
-                acceptChild(visitor, (List) properties);
-            }
-            v.endVisit(this);
+        if (visitor.visit(this)) {
+            acceptChild(visitor, label);
+            acceptChild(visitor, (List) dataDescriptions);
+            acceptChild(visitor, (List) brokerProperties);
+            acceptChild(visitor, (List) properties);
         }
+        visitor.endVisit(this);
     }
 
     @Override
@@ -248,13 +244,7 @@ public class StarRocksLoadStatement extends SQLStatementImpl {
 
         @Override
         protected void accept0(SQLASTVisitor v) {
-            boolean visitChildren;
-            if (v instanceof StarRocksASTVisitor) {
-                visitChildren = ((StarRocksASTVisitor) v).visit(this);
-            } else {
-                visitChildren = true;
-            }
-            if (visitChildren) {
+            if (v.visit(this)) {
                 acceptChild(v, (List) filePaths);
                 acceptChild(v, tableName);
                 acceptChild(v, (List) partitions);
@@ -264,9 +254,7 @@ public class StarRocksLoadStatement extends SQLStatementImpl {
                 acceptChild(v, (List) columnMappings);
                 acceptChild(v, whereCondition);
             }
-            if (v instanceof StarRocksASTVisitor) {
-                ((StarRocksASTVisitor) v).endVisit(this);
-            }
+            v.endVisit(this);
         }
 
         public List<SQLObject> getChildren() {

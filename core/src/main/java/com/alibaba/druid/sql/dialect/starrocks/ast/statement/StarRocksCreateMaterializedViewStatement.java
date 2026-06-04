@@ -111,6 +111,11 @@ public class StarRocksCreateMaterializedViewStatement extends SQLCreateMateriali
 
     @Override
     public void accept0(StarRocksASTVisitor visitor) {
+        accept0((SQLASTVisitor) visitor);
+    }
+
+    @Override
+    protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, getName());
             acceptChild(visitor, getColumns());
@@ -126,15 +131,6 @@ public class StarRocksCreateMaterializedViewStatement extends SQLCreateMateriali
             acceptChild(visitor, getQuery());
         }
         visitor.endVisit(this);
-    }
-
-    @Override
-    protected void accept0(SQLASTVisitor visitor) {
-        if (visitor instanceof StarRocksASTVisitor) {
-            accept0((StarRocksASTVisitor) visitor);
-        } else {
-            super.accept0(visitor);
-        }
     }
 
     public StarRocksCreateMaterializedViewStatement clone() {

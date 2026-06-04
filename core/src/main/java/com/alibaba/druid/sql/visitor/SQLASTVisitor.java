@@ -31,8 +31,16 @@ import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitor;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 import com.alibaba.druid.sql.dialect.starrocks.ast.StarRocksIndexDefinition;
+import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksBackupStatement;
 import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateCatalogStatement;
+import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateDictionaryStatement;
+import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateMaterializedViewStatement;
+import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreatePipeStatement;
 import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateResourceStatement;
+import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateRoutineLoadStatement;
+import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateStorageVolumeStatement;
+import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksLoadStatement;
+import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksRestoreStatement;
 import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksSubmitTaskStatement;
 import com.alibaba.druid.sql.template.SQLSelectQueryTemplate;
 
@@ -2680,6 +2688,69 @@ public interface SQLASTVisitor {
     }
 
     default void endVisit(StarRocksCreateCatalogStatement x) {
+    }
+
+    default boolean visit(StarRocksCreateMaterializedViewStatement x) {
+        return true;
+    }
+
+    default void endVisit(StarRocksCreateMaterializedViewStatement x) {
+    }
+
+    default boolean visit(StarRocksCreatePipeStatement x) {
+        return true;
+    }
+
+    default void endVisit(StarRocksCreatePipeStatement x) {
+    }
+
+    default boolean visit(StarRocksCreateDictionaryStatement x) {
+        return true;
+    }
+
+    default void endVisit(StarRocksCreateDictionaryStatement x) {
+    }
+
+    default boolean visit(StarRocksCreateStorageVolumeStatement x) {
+        return true;
+    }
+
+    default void endVisit(StarRocksCreateStorageVolumeStatement x) {
+    }
+
+    default boolean visit(StarRocksCreateRoutineLoadStatement x) {
+        return true;
+    }
+
+    default void endVisit(StarRocksCreateRoutineLoadStatement x) {
+    }
+
+    default boolean visit(StarRocksLoadStatement x) {
+        return true;
+    }
+
+    default void endVisit(StarRocksLoadStatement x) {
+    }
+
+    default boolean visit(StarRocksLoadStatement.DataDescription x) {
+        return true;
+    }
+
+    default void endVisit(StarRocksLoadStatement.DataDescription x) {
+    }
+
+    default boolean visit(StarRocksBackupStatement x) {
+        return true;
+    }
+
+    default void endVisit(StarRocksBackupStatement x) {
+    }
+
+    default boolean visit(StarRocksRestoreStatement x) {
+        return true;
+    }
+
+    default void endVisit(StarRocksRestoreStatement x) {
     }
 
     default boolean visit(SQLCostStatement x) {

@@ -8,7 +8,6 @@ import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLCreateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDDLStatement;
-import com.alibaba.druid.sql.dialect.starrocks.visitor.StarRocksASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
@@ -112,17 +111,14 @@ public class StarRocksCreateStorageVolumeStatement extends SQLStatementImpl impl
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
-        if (visitor instanceof StarRocksASTVisitor) {
-            StarRocksASTVisitor v = (StarRocksASTVisitor) visitor;
-            if (v.visit(this)) {
-                acceptChild(visitor, name);
-                acceptChild(visitor, type);
-                acceptChild(visitor, (List) locations);
-                acceptChild(visitor, comment);
-                acceptChild(visitor, (List) properties);
-            }
-            v.endVisit(this);
+        if (visitor.visit(this)) {
+            acceptChild(visitor, name);
+            acceptChild(visitor, type);
+            acceptChild(visitor, (List) locations);
+            acceptChild(visitor, comment);
+            acceptChild(visitor, (List) properties);
         }
+        visitor.endVisit(this);
     }
 
     @Override

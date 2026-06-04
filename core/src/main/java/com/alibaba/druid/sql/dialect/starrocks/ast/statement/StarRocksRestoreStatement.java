@@ -6,7 +6,6 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
-import com.alibaba.druid.sql.dialect.starrocks.visitor.StarRocksASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
@@ -80,16 +79,13 @@ public class StarRocksRestoreStatement extends SQLStatementImpl {
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
-        if (visitor instanceof StarRocksASTVisitor) {
-            StarRocksASTVisitor v = (StarRocksASTVisitor) visitor;
-            if (v.visit(this)) {
-                acceptChild(visitor, snapshotName);
-                acceptChild(visitor, repository);
-                acceptChild(visitor, (List) onTables);
-                acceptChild(visitor, (List) properties);
-            }
-            v.endVisit(this);
+        if (visitor.visit(this)) {
+            acceptChild(visitor, snapshotName);
+            acceptChild(visitor, repository);
+            acceptChild(visitor, (List) onTables);
+            acceptChild(visitor, (List) properties);
         }
+        visitor.endVisit(this);
     }
 
     @Override

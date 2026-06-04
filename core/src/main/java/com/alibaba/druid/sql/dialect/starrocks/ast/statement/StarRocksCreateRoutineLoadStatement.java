@@ -8,7 +8,6 @@ import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLCreateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDDLStatement;
-import com.alibaba.druid.sql.dialect.starrocks.visitor.StarRocksASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
@@ -128,18 +127,15 @@ public class StarRocksCreateRoutineLoadStatement extends SQLStatementImpl implem
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
-        if (visitor instanceof StarRocksASTVisitor) {
-            StarRocksASTVisitor v = (StarRocksASTVisitor) visitor;
-            if (v.visit(this)) {
-                acceptChild(visitor, name);
-                acceptChild(visitor, tableName);
-                acceptChild(visitor, (List) columns);
-                acceptChild(visitor, whereCondition);
-                acceptChild(visitor, (List) properties);
-                acceptChild(visitor, (List) dataSourceProperties);
-            }
-            v.endVisit(this);
+        if (visitor.visit(this)) {
+            acceptChild(visitor, name);
+            acceptChild(visitor, tableName);
+            acceptChild(visitor, (List) columns);
+            acceptChild(visitor, whereCondition);
+            acceptChild(visitor, (List) properties);
+            acceptChild(visitor, (List) dataSourceProperties);
         }
+        visitor.endVisit(this);
     }
 
     @Override
