@@ -226,12 +226,13 @@ public class SQLExprParser extends SQLParser {
             Lexer.SavePoint mark = lexer.markOut();
             try {
                 SQLLambdaExpr lambda = new SQLLambdaExpr();
+                lexer.nextToken();
+                SQLExpr body = expr();
                 for (SQLExpr item : listExpr.getItems()) {
                     item.setParent(lambda);
                     lambda.getArguments().add(item);
                 }
-                lexer.nextToken();
-                lambda.setExpr(expr());
+                lambda.setExpr(body);
                 return lambda;
             } catch (ParserException e) {
                 lexer.reset(mark);
