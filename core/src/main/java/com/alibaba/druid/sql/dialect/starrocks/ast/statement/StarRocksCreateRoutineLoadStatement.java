@@ -22,6 +22,7 @@ public class StarRocksCreateRoutineLoadStatement extends SQLStatementImpl implem
     private List<SQLAssignItem> properties = new ArrayList<>();
     private List<SQLAssignItem> dataSourceProperties = new ArrayList<>();
     private String dataSourceType;
+    private boolean orReplace;
 
     public StarRocksCreateRoutineLoadStatement() {
         dbType = DbType.starrocks;
@@ -117,6 +118,14 @@ public class StarRocksCreateRoutineLoadStatement extends SQLStatementImpl implem
         this.dataSourceType = dataSourceType;
     }
 
+    public boolean isOrReplace() {
+        return orReplace;
+    }
+
+    public void setOrReplace(boolean orReplace) {
+        this.orReplace = orReplace;
+    }
+
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor instanceof StarRocksASTVisitor) {
@@ -178,6 +187,7 @@ public class StarRocksCreateRoutineLoadStatement extends SQLStatementImpl implem
             x.dataSourceProperties.add(cloned);
         }
         x.dataSourceType = this.dataSourceType;
+        x.orReplace = this.orReplace;
         return x;
     }
 }

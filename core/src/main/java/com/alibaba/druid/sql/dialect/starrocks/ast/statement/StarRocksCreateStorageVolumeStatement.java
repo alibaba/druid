@@ -16,6 +16,7 @@ import java.util.List;
 
 public class StarRocksCreateStorageVolumeStatement extends SQLStatementImpl implements SQLDDLStatement, SQLCreateStatement {
     private boolean ifNotExists;
+    private boolean orReplace;
     private SQLName name;
     private SQLExpr type;
     private List<SQLExpr> locations = new ArrayList<>();
@@ -36,6 +37,14 @@ public class StarRocksCreateStorageVolumeStatement extends SQLStatementImpl impl
 
     public void setIfNotExists(boolean ifNotExists) {
         this.ifNotExists = ifNotExists;
+    }
+
+    public boolean isOrReplace() {
+        return orReplace;
+    }
+
+    public void setOrReplace(boolean orReplace) {
+        this.orReplace = orReplace;
     }
 
     public SQLName getName() {
@@ -136,6 +145,7 @@ public class StarRocksCreateStorageVolumeStatement extends SQLStatementImpl impl
     public StarRocksCreateStorageVolumeStatement clone() {
         StarRocksCreateStorageVolumeStatement x = new StarRocksCreateStorageVolumeStatement();
         x.ifNotExists = this.ifNotExists;
+        x.orReplace = this.orReplace;
         if (this.name != null) {
             x.setName(this.name.clone());
         }

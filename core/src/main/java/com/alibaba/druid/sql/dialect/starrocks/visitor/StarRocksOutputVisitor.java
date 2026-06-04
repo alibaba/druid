@@ -308,6 +308,9 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
 
     public boolean visit(StarRocksCreateCatalogStatement x) {
         print0(ucase ? "CREATE " : "create ");
+        if (x.isOrReplace()) {
+            print0(ucase ? "OR REPLACE " : "or replace ");
+        }
         if (x.isExternal()) {
             print0(ucase ? "EXTERNAL " : "external ");
         }
@@ -471,7 +474,11 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
     }
 
     public boolean visit(StarRocksCreateDictionaryStatement x) {
-        print0(ucase ? "CREATE DICTIONARY " : "create dictionary ");
+        print0(ucase ? "CREATE " : "create ");
+        if (x.isOrReplace()) {
+            print0(ucase ? "OR REPLACE " : "or replace ");
+        }
+        print0(ucase ? "DICTIONARY " : "dictionary ");
         x.getName().accept(this);
         print0(ucase ? " USING " : " using ");
         x.getSourceTable().accept(this);
@@ -508,7 +515,11 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
     }
 
     public boolean visit(StarRocksCreateStorageVolumeStatement x) {
-        print0(ucase ? "CREATE STORAGE VOLUME " : "create storage volume ");
+        print0(ucase ? "CREATE " : "create ");
+        if (x.isOrReplace()) {
+            print0(ucase ? "OR REPLACE " : "or replace ");
+        }
+        print0(ucase ? "STORAGE VOLUME " : "storage volume ");
         if (x.isIfNotExists()) {
             print0(ucase ? "IF NOT EXISTS " : "if not exists ");
         }
@@ -633,7 +644,11 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
     }
 
     public boolean visit(StarRocksCreateRoutineLoadStatement x) {
-        print0(ucase ? "CREATE ROUTINE LOAD " : "create routine load ");
+        print0(ucase ? "CREATE " : "create ");
+        if (x.isOrReplace()) {
+            print0(ucase ? "OR REPLACE " : "or replace ");
+        }
+        print0(ucase ? "ROUTINE LOAD " : "routine load ");
         x.getName().accept(this);
         print0(ucase ? " ON " : " on ");
         x.getTableName().accept(this);
@@ -749,6 +764,9 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
 
     public boolean visit(StarRocksCreateResourceStatement x) {
         print0(ucase ? "CREATE " : "create ");
+        if (x.isOrReplace()) {
+            print0(ucase ? "OR REPLACE " : "or replace ");
+        }
         if (x.isExternal()) {
             print0(ucase ? "EXTERNAL " : "external ");
         }

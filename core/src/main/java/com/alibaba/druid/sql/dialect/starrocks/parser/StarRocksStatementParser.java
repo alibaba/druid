@@ -396,6 +396,7 @@ public class StarRocksStatementParser extends SQLStatementParser {
         if (lexer.token() == Token.OR) {
             lexer.nextToken();
             accept(Token.REPLACE);
+            stmt.setOrReplace(true);
         }
 
         if (lexer.identifierEquals(FnvHash.Constants.EXTERNAL)) {
@@ -486,6 +487,7 @@ public class StarRocksStatementParser extends SQLStatementParser {
         if (lexer.token() == Token.OR) {
             lexer.nextToken();
             accept(Token.REPLACE);
+            stmt.setOrReplace(true);
         }
         acceptIdentifier("DICTIONARY");
 
@@ -537,6 +539,7 @@ public class StarRocksStatementParser extends SQLStatementParser {
         if (lexer.token() == Token.OR) {
             lexer.nextToken();
             accept(Token.REPLACE);
+            stmt.setOrReplace(true);
         }
         acceptIdentifier("STORAGE");
         acceptIdentifier("VOLUME");
@@ -725,6 +728,7 @@ public class StarRocksStatementParser extends SQLStatementParser {
         if (lexer.token() == Token.OR) {
             lexer.nextToken();
             accept(Token.REPLACE);
+            stmt.setOrReplace(true);
         }
         acceptIdentifier("ROUTINE");
         acceptIdentifier("LOAD");
@@ -875,6 +879,7 @@ public class StarRocksStatementParser extends SQLStatementParser {
         if (lexer.token() == Token.OR) {
             lexer.nextToken();
             accept(Token.REPLACE);
+            stmt.setOrReplace(true);
         }
         if (lexer.identifierEquals(FnvHash.Constants.EXTERNAL)) {
             acceptIdentifier("EXTERNAL");

@@ -15,6 +15,7 @@ import java.util.List;
 
 public class StarRocksCreateCatalogStatement extends SQLStatementImpl implements SQLDDLStatement, SQLCreateStatement {
     private boolean external;
+    private boolean orReplace;
     private boolean ifNotExists;
     private SQLName name;
     private SQLExpr comment;
@@ -34,6 +35,14 @@ public class StarRocksCreateCatalogStatement extends SQLStatementImpl implements
 
     public void setExternal(boolean external) {
         this.external = external;
+    }
+
+    public boolean isOrReplace() {
+        return orReplace;
+    }
+
+    public void setOrReplace(boolean orReplace) {
+        this.orReplace = orReplace;
     }
 
     public boolean isIfNotExists() {
@@ -107,6 +116,7 @@ public class StarRocksCreateCatalogStatement extends SQLStatementImpl implements
     public StarRocksCreateCatalogStatement clone() {
         StarRocksCreateCatalogStatement x = new StarRocksCreateCatalogStatement();
         x.external = this.external;
+        x.orReplace = this.orReplace;
         x.ifNotExists = this.ifNotExists;
         if (this.name != null) {
             x.setName(this.name.clone());

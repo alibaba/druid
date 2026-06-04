@@ -87,4 +87,11 @@ public interface StarRocksASTVisitor extends SQLASTVisitor {
 
     default void endVisit(StarRocksRestoreStatement x) {
     }
+
+    default boolean visit(StarRocksCreateResourceStatement x) {
+        return true;
+    }
+
+    default void endVisit(StarRocksCreateResourceStatement x) {
+    }
 }

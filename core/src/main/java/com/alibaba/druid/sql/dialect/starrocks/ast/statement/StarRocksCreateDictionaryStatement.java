@@ -18,6 +18,7 @@ public class StarRocksCreateDictionaryStatement extends SQLStatementImpl impleme
     private SQLName sourceTable;
     private List<SQLAssignItem> columnMappings = new ArrayList<>();
     private List<SQLAssignItem> properties = new ArrayList<>();
+    private boolean orReplace;
 
     public StarRocksCreateDictionaryStatement() {
         dbType = DbType.starrocks;
@@ -79,6 +80,14 @@ public class StarRocksCreateDictionaryStatement extends SQLStatementImpl impleme
         this.properties.add(assignItem);
     }
 
+    public boolean isOrReplace() {
+        return orReplace;
+    }
+
+    public void setOrReplace(boolean orReplace) {
+        this.orReplace = orReplace;
+    }
+
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor instanceof StarRocksASTVisitor) {
@@ -109,6 +118,7 @@ public class StarRocksCreateDictionaryStatement extends SQLStatementImpl impleme
 
     public StarRocksCreateDictionaryStatement clone() {
         StarRocksCreateDictionaryStatement x = new StarRocksCreateDictionaryStatement();
+        x.orReplace = this.orReplace;
         if (this.name != null) {
             x.setName(this.name.clone());
         }
