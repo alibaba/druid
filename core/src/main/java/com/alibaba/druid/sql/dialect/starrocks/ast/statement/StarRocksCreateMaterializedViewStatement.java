@@ -116,7 +116,14 @@ public class StarRocksCreateMaterializedViewStatement extends SQLCreateMateriali
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
-        if (visitor.visit(this)) {
+    @Override
+    protected void accept0(SQLASTVisitor visitor) {
+        if (visitor instanceof StarRocksASTVisitor) {
+            accept0((StarRocksASTVisitor) visitor);
+        } else {
+            super.accept0(visitor);
+        }
+    }
             acceptChild(visitor, getName());
             acceptChild(visitor, getColumns());
             acceptChild(visitor, getComment());
