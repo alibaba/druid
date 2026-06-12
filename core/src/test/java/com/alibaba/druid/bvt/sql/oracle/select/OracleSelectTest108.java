@@ -23,12 +23,14 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.repository.SchemaRepository;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleSelectTest108 extends OracleTest {
+    @Test
     public void test_0() throws Exception {
         String sql = //
                 "SELECT\n" + "  OBJID,\n" + "  NAME,\n" + "  OWNER,\n" + "  OWNERID,\n" + "  TABLESPACE,\n"

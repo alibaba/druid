@@ -4,10 +4,12 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.parser.ParserException;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlCreateTableTest108_error extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "create table t (\n" +
                 "f0 int,\n" +

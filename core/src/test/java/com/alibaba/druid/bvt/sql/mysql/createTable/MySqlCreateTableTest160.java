@@ -4,10 +4,12 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.statement.SQLTableLike;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlCreateTableTest160 extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         //for ADB
         String sql = "CREATE TABLE IF NOT EXISTS bar (LIKE a INCLUDING PROPERTIES)";
@@ -20,6 +22,7 @@ public class MySqlCreateTableTest160 extends MysqlTest {
                 ")", stmt.toString());
     }
 
+    @Test
     public void test_1() throws Exception {
         //for ADB
         String sql = "CREATE TABLE IF NOT EXISTS bar2 (c TIMESTAMP, LIKE bar, d DATE)";

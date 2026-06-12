@@ -19,10 +19,12 @@ import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleSelectTest65_error extends OracleTest {
+    @Test
     public void test_0() throws Exception {
         String sql = //
                 "select 1 from hhh as select 1";

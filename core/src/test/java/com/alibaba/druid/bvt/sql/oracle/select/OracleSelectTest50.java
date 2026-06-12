@@ -20,12 +20,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.sql.test.TestUtils;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleSelectTest50 extends OracleTest {
+    @Test
     public void test_0() throws Exception {
         String sql = //
                 "SELECT * from ( SELECT ID,MATTER,CODE,NAME,ADDRESS,AREA,PROPOSER,PROPOSER_CONTACTOR,PROPOSER_PHONE,REG_TIME,ASSIGN_TIME,DEPART,HANDLER,HANDLER_PHONE,STATUS,FINISH_DATE,FINISH_TYPE,DEPART_CODE,SYSTEM_CODE,rownum num FROM gxpt_items WHERE rownum<=20  order by REG_TIME desc )  WHERE num>0";

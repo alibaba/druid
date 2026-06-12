@@ -1,11 +1,13 @@
 package com.alibaba.druid.bvt.sql.mysql.createTable;
 
 import com.alibaba.druid.sql.MysqlTest;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlCreateTableTest159
         extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "CREATE TABLE `articles` (\n" +
                 "  `article_id` bigint NOT NULL AUTO_INCREMENT COMMENT '文章id',\n" +

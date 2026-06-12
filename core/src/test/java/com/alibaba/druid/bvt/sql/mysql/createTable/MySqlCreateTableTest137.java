@@ -6,12 +6,14 @@ import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlCreateTableTest137 extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "CREATE TABLE `c1` (\n" +
                 "        order bigint);";
@@ -34,6 +36,7 @@ public class MySqlCreateTableTest137 extends MysqlTest {
         SQLUtils.parseSingleMysqlStatement("select order from w1 where order = 1");
     }
 
+    @Test
     public void test_1() throws Exception {
         SQLUtils.parseSingleMysqlStatement("create table order (fid bigint)");
         SQLUtils.parseSingleMysqlStatement("insert into order (f1) values (1)");

@@ -22,12 +22,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleSelectTest112 extends OracleTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT userid, idcardmult, organid FROM v_all_dyinfo WHERE (iscontact = :1 OR iscontact IS NULL) AND delflag = :2 AND zjhm = :3 AND dyzt NOT (?)";
 

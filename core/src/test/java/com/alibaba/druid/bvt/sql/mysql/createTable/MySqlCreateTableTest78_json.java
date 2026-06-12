@@ -21,10 +21,12 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat.Column;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlCreateTableTest78_json extends MysqlTest {
+    @Test
     public void test_one() throws Exception {
         String sql = "CREATE TABLE t1 (jdoc JSON);";
 

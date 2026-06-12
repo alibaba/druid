@@ -18,10 +18,12 @@ package com.alibaba.druid.bvt.sql.mysql.param;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlParameterizedOutputVisitorTest_1 extends MySQLParameterizedTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT * FROM T WHERE ID IN (?)";
         assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL), sql);
@@ -38,6 +40,7 @@ public class MySqlParameterizedOutputVisitorTest_1 extends MySQLParameterizedTes
                 "WHERE ID IN (?)");
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "SELECT * FROM T WHERE ID = ?";
         assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL), sql);
@@ -54,6 +57,7 @@ public class MySqlParameterizedOutputVisitorTest_1 extends MySQLParameterizedTes
                 "WHERE ID = ?");
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "SELECT * FROM T WHERE ID = ? AND Name = ?";
         assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL), sql);
@@ -71,6 +75,7 @@ public class MySqlParameterizedOutputVisitorTest_1 extends MySQLParameterizedTes
                 "\tAND Name = ?");
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = "SELECT * FROM T WHERE ID IS NULL";
         assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL), sql);
@@ -87,6 +92,7 @@ public class MySqlParameterizedOutputVisitorTest_1 extends MySQLParameterizedTes
                 "WHERE ID IS NULL");
     }
 
+    @Test
     public void test_4() throws Exception {
         String sql = "INSERT INTO T (FID, FNAME) VALUES(?, ?)";
         assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL), sql);
@@ -102,6 +108,7 @@ public class MySqlParameterizedOutputVisitorTest_1 extends MySQLParameterizedTes
                 "VALUES (?, ?)");
     }
 
+    @Test
     public void test_mysql() throws Exception {
         String sql = "INSERT INTO T (FID, FNAME) VALUES(?, ?), (?, ?)";
         assertNotSame(ParameterizedOutputVisitorUtils.parameterize(sql, DbType.mysql), sql);

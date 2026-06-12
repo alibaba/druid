@@ -17,8 +17,10 @@ package com.alibaba.druid.bvt.sql.mysql;
 
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
+import org.junit.jupiter.api.Test;
 
 public class MySqlError_test_2 extends MysqlTest {
+    @Test
     public void test_0() {
         String sql = "Describe sdb_goods free_postage";
 

@@ -21,12 +21,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLMergeStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleMergeTest10 extends OracleTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "merge into bonuses d \n" +
                 "   using (select employee_id.* from employees) s \n" +

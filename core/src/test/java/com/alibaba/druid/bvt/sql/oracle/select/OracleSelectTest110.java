@@ -22,12 +22,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleSelectTest110 extends OracleTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT\n" + "  Home_City,\n" + "  bank_type,\n" + "  differ_flag,\n" + "  adjust_flag,\n"
                 + "  out_user_id,\n" + "  out_msisdn,\n" + "  out_account_id,\n" + "  out_month,\n"
@@ -92,6 +94,7 @@ public class OracleSelectTest110 extends OracleTest {
         assertEquals(0, visitor.getOrderByColumns().size());
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "select max(Request_Seq) into :b0:b1  from TrustBill where "
                 + "(((Acct_Home_City=:b2 and (Acct_Home_County=:b3 or :b3=0)) and Accounting_Period=:b5) and Trust_Method=:b6)";
@@ -127,6 +130,7 @@ public class OracleSelectTest110 extends OracleTest {
         assertEquals(0, visitor.getOrderByColumns().size());
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "SELECT\n" + "  Debtbill_item_id,\n" + "  Home_City,\n" + "  WriteOff_Status,\n" + "  User_ID,\n"
                 + "  Msisdn,\n" + "  Home_County,\n" + "  Brand_ID,\n" + "  User_Type,\n" + "  DebtBill_ID,\n"

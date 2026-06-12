@@ -19,11 +19,13 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_297
         extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "select sn,properties->'$.zoneId',properties->'$.regionId',ip,owner,gmt_create   \n" +
                 "from resource_instance where type=16  and  (properties->'$.idkp'='1647796581073291')";
@@ -38,6 +40,7 @@ public class MySqlSelectTest_297
                 "\tAND (properties -> '$.idkp' = '1647796581073291')", stmt.toString());
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "select `current_date`, 1 + `current_date`";
 
@@ -47,6 +50,7 @@ public class MySqlSelectTest_297
         assertEquals("SELECT `current_date`, 1 + `current_date`", stmt.toString());
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "select `current_timestamp`, 1 + `current_timestamp`";
 
@@ -56,6 +60,7 @@ public class MySqlSelectTest_297
         assertEquals("SELECT `current_timestamp`, 1 + `current_timestamp`", stmt.toString());
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = "select `current_time`, 1 + `current_time`";
 
@@ -65,6 +70,7 @@ public class MySqlSelectTest_297
         assertEquals("SELECT `current_time`, 1 + `current_time`", stmt.toString());
     }
 
+    @Test
     public void test_4() throws Exception {
         String sql = "select `curdate`, 1 + `curdate`";
 
@@ -74,6 +80,7 @@ public class MySqlSelectTest_297
         assertEquals("SELECT `curdate`, 1 + `curdate`", stmt.toString());
     }
 
+    @Test
     public void test_5() throws Exception {
         String sql = "SELECT `current_date`, 1 + `current_date`";
 
@@ -83,6 +90,7 @@ public class MySqlSelectTest_297
         assertEquals("SELECT `current_date`, 1 + `current_date`", stmt.toString());
     }
 
+    @Test
     public void test_6() throws Exception {
         String sql = "SELECT `time`, a, `date`, b, `timestamp` from t";
 
@@ -93,6 +101,7 @@ public class MySqlSelectTest_297
                 "FROM t", stmt.toString());
     }
 
+    @Test
     public void test_7() throws Exception {
         String sql = "SELECT `current_date`, a, `current_time`, b, `current_timestamp` from t";
 
@@ -103,6 +112,7 @@ public class MySqlSelectTest_297
                 "FROM t", stmt.toString());
     }
 
+    @Test
     public void test_8() throws Exception {
         String sql = "SELECT `current_user`, a, `localtime`, b, `localtimestamp` from t";
 

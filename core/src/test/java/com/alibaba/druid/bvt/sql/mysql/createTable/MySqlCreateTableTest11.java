@@ -21,12 +21,14 @@ import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlCreateTableTest11 extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "CREATE TABLE `tmall_campaign` (" +
                 "`id` int(11) NOT NULL AUTO_INCREMENT," +

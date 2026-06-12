@@ -7,12 +7,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_168_int extends MysqlTest {
+    @Test
     public void test_1() throws Exception {
         String sql = "/*+engine=MPP*/ SELECT  ceil(SMALLINT'123')";
 //
@@ -24,6 +26,7 @@ public class MySqlSelectTest_168_int extends MysqlTest {
         assertEquals("/*+engine=MPP*/\n" + "SELECT ceil(SMALLINT '123')", stmt.toString());
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "/*+engine=MPP*/ SELECT floor(SMALLINT'123')";
 //
@@ -35,6 +38,7 @@ public class MySqlSelectTest_168_int extends MysqlTest {
         assertEquals("/*+engine=MPP*/\n" + "SELECT floor(SMALLINT '123')", stmt.toString());
     }
 
+    @Test
     public void test_tiny_1() throws Exception {
         String sql = "/*+engine=MPP*/ SELECT  ceil(TINYINT'123')";
 //
@@ -46,6 +50,7 @@ public class MySqlSelectTest_168_int extends MysqlTest {
         assertEquals("/*+engine=MPP*/\n" + "SELECT ceil(TINYINT '123')", stmt.toString());
     }
 
+    @Test
     public void test_tiny_2() throws Exception {
         String sql = "/*+engine=MPP*/ SELECT floor(TINYINT'123')";
 //
@@ -57,6 +62,7 @@ public class MySqlSelectTest_168_int extends MysqlTest {
         assertEquals("/*+engine=MPP*/\n" + "SELECT floor(TINYINT '123')", stmt.toString());
     }
 
+    @Test
     public void test_big_1() throws Exception {
         String sql = "/*+engine=MPP*/ SELECT  ceil(BIGINT'123')";
 //
@@ -68,6 +74,7 @@ public class MySqlSelectTest_168_int extends MysqlTest {
         assertEquals("/*+engine=MPP*/\n" + "SELECT ceil(BIGINT '123')", stmt.toString());
     }
 
+    @Test
     public void test_big_2() throws Exception {
         String sql = "/*+engine=MPP*/ SELECT floor(BIGINT'123')";
 //
@@ -79,6 +86,7 @@ public class MySqlSelectTest_168_int extends MysqlTest {
         assertEquals("/*+engine=MPP*/\n" + "SELECT floor(BIGINT '123')", stmt.toString());
     }
 
+    @Test
     public void test_real_1() throws Exception {
         String sql = "/*+engine=MPP*/ SELECT floor(REAL '-123.0')";
 //
@@ -90,6 +98,7 @@ public class MySqlSelectTest_168_int extends MysqlTest {
         assertEquals("/*+engine=MPP*/\n" + "SELECT floor(REAL '-123.0')", stmt.toString());
     }
 
+    @Test
     public void test_real_2() throws Exception {
         String sql = "/*+engine=MPP*/ SELECT ceil(REAL '-123.0')";
 //
@@ -101,6 +110,7 @@ public class MySqlSelectTest_168_int extends MysqlTest {
         assertEquals("/*+engine=MPP*/\n" + "SELECT ceil(REAL '-123.0')", stmt.toString());
     }
 
+    @Test
     public void test_double_3() throws Exception {
         String sql = "/*+engine=MPP*/ SELECT floor(CAST(NULL as DOUBLE))";
 //
@@ -112,6 +122,7 @@ public class MySqlSelectTest_168_int extends MysqlTest {
         assertEquals("/*+engine=MPP*/\n" + "SELECT floor(CAST(NULL AS DOUBLE))", stmt.toString());
     }
 
+    @Test
     public void test_double_4() throws Exception {
         String sql = "/*+engine=MPP*/ SELECT floor(CAST(NULL as DECIMAL(25,5)))";
 //

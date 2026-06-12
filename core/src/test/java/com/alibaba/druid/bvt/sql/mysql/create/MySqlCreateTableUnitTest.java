@@ -4,6 +4,7 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlExprParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @Date 2019-05-31 17:39
  */
 public class MySqlCreateTableUnitTest extends MysqlTest {
+    @Test
     public void test_0_table_options() throws Exception {
         String sql = "auto_increment 1\n" +
                 "avg_row_length 1\n" +

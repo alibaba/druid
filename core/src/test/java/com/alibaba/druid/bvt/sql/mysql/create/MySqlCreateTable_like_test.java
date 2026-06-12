@@ -7,12 +7,14 @@ import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLTableLike;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlCreateTable_like_test extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "CREATE TABLE like_test (LIKE t1)";
 
@@ -31,6 +33,7 @@ public class MySqlCreateTable_like_test extends MysqlTest {
                 ")", stmt.toString());
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "CREATE TABLE like_test (`LIKE` t1)";
 
@@ -47,6 +50,7 @@ public class MySqlCreateTable_like_test extends MysqlTest {
                 ")", stmt.toString());
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "CREATE TABLE like_test LIKE t1";
 

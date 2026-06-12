@@ -8,6 +8,7 @@ import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.wall.WallUtils;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
@@ -16,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class OracleListAggTest1 extends OracleTest {
     private final DbType dbType = JdbcConstants.ORACLE;
 
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT count(0) " +
                 "FROM WEP_USER T " +

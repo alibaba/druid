@@ -21,12 +21,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlInsertTest_10 extends MysqlTest {
+    @Test
     public void test_parseCompleteValues_false() throws Exception {
         String sql = "insert into t(a,b) values ('a1','b1'),('a2','b2'),('a3','b3'),('a4','b4');";
 
@@ -53,6 +55,7 @@ public class MySqlInsertTest_10 extends MysqlTest {
         assertEquals(formatSql, SQLUtils.toMySqlString(insertStmt));
     }
 
+    @Test
     public void test_parseCompleteValues_true() throws Exception {
         String sql = "insert into t(a,b) values ('a1','b1'),('a2','b2'),('a3','b3'),('a4','b4');";
 

@@ -10,6 +10,7 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.repository.SchemaRepository;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Types;
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlCreateTableTest115 extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "CREATE TABLE IF NOT EXISTS `schema`.`Employee` (\n" +
                 "   id int(10),\n" +

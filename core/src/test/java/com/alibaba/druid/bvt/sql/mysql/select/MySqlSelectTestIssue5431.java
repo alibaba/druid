@@ -19,6 +19,7 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
@@ -26,6 +27,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTestIssue5431
         extends MysqlTest {
+    @Test
     public void test1() throws Exception {
         String sql = "select a from table1 group by a having sum(b) > 1";
 
@@ -43,6 +45,7 @@ public class MySqlSelectTestIssue5431
         System.out.println("columns : " + visitor.getColumns());
         assertEquals(2, visitor.getColumns().size());
     }
+    @Test
     public void test2() throws Exception {
         String sql = "select a from table1 group by a ";
 

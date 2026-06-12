@@ -21,12 +21,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleCreateViewTest18_with_check_option extends OracleTest {
+    @Test
     public void test_types() throws Exception {
         String sql = "CREATE OR REPLACE VIEW \"ZJ\".\"SMP_SERVICE_GROUP_DEFN\" (\"OWNER\", \"GROUP_NAME\", \"GROUP_TYPE\") AS \n" +
                 "  select OWNER, GROUP_NAME, GROUP_TYPE from SMP_SERVICE_GROUP_DEFN_\n" +

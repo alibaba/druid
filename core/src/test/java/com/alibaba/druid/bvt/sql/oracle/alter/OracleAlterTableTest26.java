@@ -22,12 +22,14 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleAlterTableTest26 extends OracleTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "alter table mytable enable row movement";
 
@@ -49,6 +51,7 @@ public class OracleAlterTableTest26 extends OracleTest {
         assertTrue(visitor.getTables().containsKey(new TableStat.Name("mytable")));
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "alter table \"EIFINI_BCS\".\"SHEET_DA\" shrink space CHECK";
 
@@ -71,6 +74,7 @@ public class OracleAlterTableTest26 extends OracleTest {
         assertTrue(visitor.getTables().containsKey(new TableStat.Name("EIFINI_BCS.SHEET_DA")));
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "alter table \"EIFINI_BCS\".\"SHEET_DA\" shrink space compact";
 
@@ -93,6 +97,7 @@ public class OracleAlterTableTest26 extends OracleTest {
         assertTrue(visitor.getTables().containsKey(new TableStat.Name("EIFINI_BCS.SHEET_DA")));
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = "alter table \"EIFINI_BCS\".\"SHEET_DA\" shrink space CASCADE";
 
@@ -115,6 +120,7 @@ public class OracleAlterTableTest26 extends OracleTest {
         assertTrue(visitor.getTables().containsKey(new TableStat.Name("EIFINI_BCS.SHEET_DA")));
     }
 
+    @Test
     public void test_4() throws Exception {
         String sql = "alter table \"EIFINI_BCS\".\"SHEET_DA\" shrink space COMPACT CASCADE";
 
@@ -137,6 +143,7 @@ public class OracleAlterTableTest26 extends OracleTest {
         assertTrue(visitor.getTables().containsKey(new TableStat.Name("EIFINI_BCS.SHEET_DA")));
     }
 
+    @Test
     public void test_5() throws Exception {
         String sql = "ALTER TABLE tester.t1 RENAME TO tester.\"BIN$9SBcFDaAYgDgUykdEKzT1Q==$0\"";
 
@@ -158,6 +165,7 @@ public class OracleAlterTableTest26 extends OracleTest {
         assertTrue(visitor.getTables().containsKey(new TableStat.Name("tester.t1")));
     }
 
+    @Test
     public void test_6() throws Exception {
         String sql = "ALTER TABLE customers MODIFY city varchar2(75) DEFAULT 'Seattle' NOT NULL;";
 
@@ -179,6 +187,7 @@ public class OracleAlterTableTest26 extends OracleTest {
         assertTrue(visitor.getTables().containsKey(new TableStat.Name("customers")));
     }
 
+    @Test
     public void test_7() throws Exception {
         String sql = "create table \"JUNYU_ORCL\".\"KBS_QUESTION\"(\n" +
                 "  \"ID\"  number(19, 0)  not null,\n" +
@@ -285,6 +294,7 @@ public class OracleAlterTableTest26 extends OracleTest {
         assertTrue(visitor.getTables().containsKey(new TableStat.Name("JUNYU_ORCL.KBS_QUESTION")));
     }
 
+    @Test
     public void test_8() throws Exception {
         String sql = "ALTER TABLE \"JUNYU_ORCL\".\"MYSQL_ALL_TYPES_FOR_8_0\" ADD CONSTRAINT \"uk_c_serial_7049_f_759141250\" UNIQUE (\"C_SERIAL\")";
 
@@ -307,6 +317,7 @@ public class OracleAlterTableTest26 extends OracleTest {
         assertTrue(visitor.getTables().containsKey(new TableStat.Name("JUNYU_ORCL.MYSQL_ALL_TYPES_FOR_8_0")));
     }
 
+    @Test
     public void test_9() throws Exception {
         String sql = "ALTER TABLE \"JUNYU_ORCL\".\"KBS_QUESTION\" RENAME CONSTRAINT \"SYS_C007896\" TO \"BIN$9Ue7xItcBs3gUyUdEKzZKg==$0\"";
 
@@ -329,6 +340,7 @@ public class OracleAlterTableTest26 extends OracleTest {
         assertTrue(visitor.getTables().containsKey(new TableStat.Name("JUNYU_ORCL.KBS_QUESTION")));
     }
 
+    @Test
     public void test_10() throws Exception {
         String sql = "drop table KBS_QUESTION AS \"BIN$9Ue7xItyBs3gUyUdEKzZKg==$0\"\n";
 
@@ -350,6 +362,7 @@ public class OracleAlterTableTest26 extends OracleTest {
         assertTrue(visitor.getTables().containsKey(new TableStat.Name("KBS_QUESTION")));
     }
 
+    @Test
     public void test_11() throws Exception {
         String sql = "analyze table JUNYU_ORCL.EQ_DRAGONCARD_TEMP compute statistics";
 
@@ -371,6 +384,7 @@ public class OracleAlterTableTest26 extends OracleTest {
         assertTrue(visitor.getTables().containsKey(new TableStat.Name("JUNYU_ORCL.EQ_DRAGONCARD_TEMP")));
     }
 
+    @Test
     public void test_12() throws Exception {
         String sql = "alter table \"JUNYU_ORCL\".\"WORKER_STATS\" drop constraint \"SYS_C007550\" cascade;";
 
@@ -393,6 +407,7 @@ public class OracleAlterTableTest26 extends OracleTest {
         assertTrue(visitor.getTables().containsKey(new TableStat.Name("JUNYU_ORCL.WORKER_STATS")));
     }
 
+    @Test
     public void test_13() throws Exception {
         String sql = " /* QSMQ VALIDATION */ ALTER SUMMARY \"CHJMESPRO\".\"MV_PRODUCTION_OVERVIEW_HOUR\" COMPILE;";
 

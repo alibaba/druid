@@ -16,8 +16,10 @@
 package com.alibaba.druid.bvt.sql.mysql.select;
 
 import com.alibaba.druid.sql.MysqlTest;
+import org.junit.jupiter.api.Test;
 
 public class MySqlSelectTest_forADB extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         parseTrue("select distinct timediff(time \"11:25:00\" , time_test) as col5 from test order by 1 limit 9,6",
                 "SELECT DISTINCT timediff(TIME '11:25:00', time_test) AS col5\n" +

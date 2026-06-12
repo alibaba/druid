@@ -7,12 +7,14 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleListAggTest extends OracleTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT prod_id, LISTAGG(cust_first_name||' '||cust_last_name, '; ') \n"
                 + "  WITHIN GROUP (ORDER BY amount_sold DESC) cust_list\n"

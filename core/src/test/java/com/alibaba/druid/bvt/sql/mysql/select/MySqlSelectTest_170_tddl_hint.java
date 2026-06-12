@@ -7,12 +7,14 @@ import com.alibaba.druid.sql.ast.TDDLHint;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_170_tddl_hint extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "/*+TDDL({'type':'direct','dbid':'xxx_group'})*/select * from real_table_0;";
 
@@ -30,6 +32,7 @@ public class MySqlSelectTest_170_tddl_hint extends MysqlTest {
         assertEquals("{'type':'direct','dbid':'xxx_group'}", hint.getJson());
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "/*TDDL:DEFER*/select * from real_table_0;";
 
@@ -47,6 +50,7 @@ public class MySqlSelectTest_170_tddl_hint extends MysqlTest {
         assertEquals("DEFER", hint.getFunctions().get(0).getName());
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "/*TDDL:UNDO_LOG_LIMIT=2000*/select * from real_table_0;";
 

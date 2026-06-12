@@ -5,12 +5,14 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_165_json extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "select concat(l_shipdate,'10') from lineitem join orders on l_orderkey = o_orderkey where l_shipdate between '1997-01-27' and '1997-02-20' and json_extract(l_comment,'$.id') = json '1997-01-2810' limit 3";
 //

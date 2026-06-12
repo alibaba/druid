@@ -17,16 +17,19 @@ package com.alibaba.druid.bvt.sql.mysql.param;
 
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlParameterizedOutputVisitorTest_5 extends MySQLParameterizedTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "ALTER TABLE `action_plans` ADD `kee` varchar(100)";
         assertEquals("ALTER TABLE `action_plans`\n" +
                 "\tADD COLUMN `kee` varchar(100)", ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL));
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "CREATE TABLE `snapshot_data` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `snapshot_id` integer, `resource_id` integer, `snapshot_data` mediumtext, `data_type` varchar(50), `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB CHARACTER SET utf8 COLLATE utf8_bin";
         assertEquals("CREATE TABLE `snapshot_data` (\n" +
@@ -40,12 +43,14 @@ public class MySqlParameterizedOutputVisitorTest_5 extends MySQLParameterizedTes
                 ") ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_bin", ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL));
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "ALTER TABLE `active_rule_changes` ADD `username` varchar(200)";
         assertEquals("ALTER TABLE `active_rule_changes`\n" +
                 "\tADD COLUMN `username` varchar(200)", ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL));
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = "CREATE TABLE `issue_changes` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `kee` varchar(50), `issue_key` varchar(50) NOT NULL, `user_login` varchar(40), `change_type` varchar(20), `change_data` mediumtext, `created_at` datetime, `updated_at` datetime) ENGINE=InnoDB CHARACTER SET utf8 COLLATE utf8_bin";
         assertEquals("CREATE TABLE `issue_changes` (\n" +

@@ -22,12 +22,14 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.wall.WallUtils;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleSelectTest117_bigunion extends MysqlTest {
+    @Test
     public void test_small_10() throws Exception {
         StringBuilder buf = new StringBuilder();
         {
@@ -84,6 +86,7 @@ public class OracleSelectTest117_bigunion extends MysqlTest {
                 ") ux_x", stmt.toString());
     }
 
+    @Test
     public void test_big_100000() throws Exception {
         StringBuilder buf = new StringBuilder();
         {

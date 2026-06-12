@@ -10,6 +10,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectGroupByClause;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 /**
  * Roundtrip tests for {@code GROUP BY ... [,] GROUPING SETS(...)} — the
@@ -45,6 +46,7 @@ public class OdpsGroupingSetsCommaTest extends TestCase {
 
     // ---------- ODPS dialect ----------
 
+    @Test
     public void test_odps_groupBy_comma_groupingSets() {
         String formatted = parseAndFormat(COMMA_SQL, DbType.odps);
         assertEquals(
@@ -55,6 +57,7 @@ public class OdpsGroupingSetsCommaTest extends TestCase {
                 formatted);
     }
 
+    @Test
     public void test_odps_groupBy_noComma_groupingSets() {
         String formatted = parseAndFormat(NO_COMMA_SQL, DbType.odps);
         assertEquals(
@@ -65,6 +68,7 @@ public class OdpsGroupingSetsCommaTest extends TestCase {
                 formatted);
     }
 
+    @Test
     public void test_odps_groupingSets_only() {
         String formatted = parseAndFormat(GROUPING_ONLY_SQL, DbType.odps);
         assertEquals(
@@ -76,12 +80,14 @@ public class OdpsGroupingSetsCommaTest extends TestCase {
 
     // ---------- Cross-dialect smoke roundtrip (visitor lives in base class) ----------
 
+    @Test
     public void test_hive_groupBy_comma_groupingSets() {
         String formatted = parseAndFormat(COMMA_SQL, DbType.hive);
         assertTrue("hive expected comma before GROUPING SETS, got:\n" + formatted,
                 formatted.contains("GROUP BY a,\n\tGROUPING SETS "));
     }
 
+    @Test
     public void test_hive_groupBy_noComma_groupingSets() {
         String formatted = parseAndFormat(NO_COMMA_SQL, DbType.hive);
         assertTrue("hive expected no comma before GROUPING SETS, got:\n" + formatted,
@@ -90,12 +96,14 @@ public class OdpsGroupingSetsCommaTest extends TestCase {
                 formatted.contains("a,\n\tGROUPING SETS "));
     }
 
+    @Test
     public void test_oracle_groupBy_comma_groupingSets() {
         String formatted = parseAndFormat(COMMA_SQL, DbType.oracle);
         assertTrue("oracle expected comma before GROUPING SETS, got:\n" + formatted,
                 formatted.contains("GROUP BY a,\n\tGROUPING SETS "));
     }
 
+    @Test
     public void test_oracle_groupBy_noComma_groupingSets() {
         String formatted = parseAndFormat(NO_COMMA_SQL, DbType.oracle);
         assertTrue("oracle expected no comma before GROUPING SETS, got:\n" + formatted,
@@ -106,12 +114,14 @@ public class OdpsGroupingSetsCommaTest extends TestCase {
 
     // ---------- AST invariants for hasPrefixComma ----------
 
+    @Test
     public void test_ast_flag_default_isTrue() {
         SQLGroupingSetExpr expr = new SQLGroupingSetExpr();
         assertTrue("default hasPrefixComma should be true to preserve historical emit shape",
                 expr.isHasPrefixComma());
     }
 
+    @Test
     public void test_ast_clone_preservesFlag() {
         SQLGroupingSetExpr expr = new SQLGroupingSetExpr();
         expr.addParameter(new SQLIdentifierExpr("a"));
@@ -125,6 +135,7 @@ public class OdpsGroupingSetsCommaTest extends TestCase {
         assertTrue("clone must propagate hasPrefixComma=true", cloned2.isHasPrefixComma());
     }
 
+    @Test
     public void test_ast_equals_distinguishesFlag() {
         SQLGroupingSetExpr withComma = new SQLGroupingSetExpr();
         withComma.addParameter(new SQLIdentifierExpr("a"));
@@ -138,6 +149,7 @@ public class OdpsGroupingSetsCommaTest extends TestCase {
                 withComma.hashCode() == withoutComma.hashCode());
     }
 
+    @Test
     public void test_ast_programmaticDefault_emitsComma() {
         // Build "GROUP BY x, GROUPING SETS((a))" by hand without setting the flag.
         SQLSelectGroupByClause clause = new SQLSelectGroupByClause();

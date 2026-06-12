@@ -19,12 +19,14 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlDumpTest extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "dump data into 'odps://ktv_market_analyzing/bohan_test_001/ds=20171233/seller_bucket=9727' " +
                 "select '6225607' as crowd_snapshot_id, a.seller_id as seller_id, a.buyer_id as buyer_id " +

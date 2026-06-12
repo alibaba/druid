@@ -3,6 +3,7 @@ package com.alibaba.druid.bvt.sql.mysql.createTable;
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -14,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @Date 2019/10/8 19:25
  */
 public class MySqlCreateTableTest157_shadow extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "create shadow table `ar_ranking_001_t` (\n" +
                 "  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',\n" +

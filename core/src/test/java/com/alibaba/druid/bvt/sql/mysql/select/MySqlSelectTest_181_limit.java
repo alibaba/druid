@@ -23,12 +23,14 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_181_limit extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "(select 1) limit 1;";
 
@@ -63,6 +65,7 @@ public class MySqlSelectTest_181_limit extends MysqlTest {
                 output);
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "(select A.int_test,A.string_test from (select int_test,string_test from ss_dev.test_sub_rt where id < 1000) A order by A.int_test,A.string_test) limit 1000";
 

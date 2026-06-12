@@ -21,6 +21,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
@@ -33,6 +34,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * version V1.0
  */
 public class MySqlCreateProcedureTest9 extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "create or replace procedure sp_name(level int,age int)" +
                 " begin" +
@@ -58,6 +60,7 @@ public class MySqlCreateProcedureTest9 extends MysqlTest {
         assertEquals(0, visitor.getConditions().size());
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "create or replace procedure sp_name(level int,age int)" +
                 " begin" +
@@ -83,6 +86,7 @@ public class MySqlCreateProcedureTest9 extends MysqlTest {
         assertEquals(0, visitor.getConditions().size());
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = "create or replace procedure test_cursor (in param int(10),out result varchar(90))  "
                 + " begin"

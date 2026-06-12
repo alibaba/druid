@@ -19,12 +19,14 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.repository.SchemaRepository;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
     private SchemaRepository repository = new SchemaRepository(JdbcConstants.MYSQL);
 
+    @Test
     public void test_0() throws Exception {
         repository.console("use sc00;");
 

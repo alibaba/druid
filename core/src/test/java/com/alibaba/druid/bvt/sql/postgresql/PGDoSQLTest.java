@@ -5,12 +5,14 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGSQLStatementParser;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PGDoSQLTest extends PGTest {
+    @Test
     public void testDoSQL() {
         String sql1 = "DO $do$ BEGIN IF NOT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 't_pg_do_test') THEN\n"
             + "CREATE TABLE T_PG_DO_TEST (id BIGINT NOT NULL, content CHARACTER VARYING (36) DEFAULT ' ');\n"
@@ -41,6 +43,7 @@ public class PGDoSQLTest extends PGTest {
         assertEquals(resultSql, statement.toString());
     }
 
+    @Test
     public void testDoSQL_WithDeclare_NoTagAndLabel() {
         String sql = "DO $$\n" +
                 "DECLARE\n" +
@@ -57,6 +60,7 @@ public class PGDoSQLTest extends PGTest {
         assertEquals(sql, output);
     }
 
+    @Test
     public void testDoSQL_WithDeclare_TagWithoutLabel() {
         String sql = "DO $tag1$\n" +
                 "DECLARE\n" +
@@ -74,6 +78,7 @@ public class PGDoSQLTest extends PGTest {
     }
 
     // TODO: Need to improve parser to support the label in format \"<<label1>>\"
+    @Test
     public void testDoSQL_WithDeclare_LabelWithoutTag_NoEndLabel() {
         String sql = "DO $$\n" +
                 "label1\n" +
@@ -92,6 +97,7 @@ public class PGDoSQLTest extends PGTest {
     }
 
     // TODO: Need to improve parser to support the label in format \"<<label1>>\"
+    @Test
     public void testDoSQL_WithDeclare_LabelWithoutTag_WithEndLabel() {
         String sql = "DO $$\n" +
                 "label1\n" +
@@ -110,6 +116,7 @@ public class PGDoSQLTest extends PGTest {
     }
 
     // TODO: Need to improve parser to support the label in format \"<<label1>>\"
+    @Test
     public void testDoSQL_WithDeclare_TagAndLabel_NoEndLabel() {
         String sql = "DO $tag1$\n" +
                 "label1\n" +
@@ -128,6 +135,7 @@ public class PGDoSQLTest extends PGTest {
     }
 
     // TODO: Need to improve parser to support the label in format \"<<label1>>\"
+    @Test
     public void testDoSQL_WithDeclare_TagAndLabel_WithEndLabel() {
         String sql = "DO $tag1$\n" +
                 "label1\n" +

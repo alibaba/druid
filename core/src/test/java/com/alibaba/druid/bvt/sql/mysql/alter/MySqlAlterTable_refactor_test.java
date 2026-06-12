@@ -4,6 +4,7 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
@@ -17,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @Date 2019-07-02 15:27
  */
 public class MySqlAlterTable_refactor_test extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "alter table test001\n" +
                 "add column x int first," +
@@ -101,6 +103,7 @@ public class MySqlAlterTable_refactor_test extends MysqlTest {
                 SQLUtils.toMySqlString(statementList.get(0)));
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "alter table test001\n" +
                 "add index i0 using hash (a,b) key_block_size 32 using btree comment 'index comment'," +

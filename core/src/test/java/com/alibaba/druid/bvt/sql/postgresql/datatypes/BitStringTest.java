@@ -5,10 +5,12 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryExpr;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGExprParser;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class BitStringTest extends PGTest {
+    @Test
     public void test_timestamp() throws Exception {
         String sql = "B'101'";
         PGExprParser parser = new PGExprParser(sql);

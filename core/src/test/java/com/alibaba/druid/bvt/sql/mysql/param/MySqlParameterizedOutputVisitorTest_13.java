@@ -3,6 +3,7 @@ package com.alibaba.druid.bvt.sql.mysql.param;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -10,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Created by wenshao on 16/8/23.
  */
 public class MySqlParameterizedOutputVisitorTest_13 extends MySQLParameterizedTest {
+    @Test
     public void test_for_parameterize() throws Exception {
         final DbType dbType = JdbcConstants.MYSQL;
 

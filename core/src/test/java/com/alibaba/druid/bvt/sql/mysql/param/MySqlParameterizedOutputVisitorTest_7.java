@@ -19,10 +19,12 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlParameterizedOutputVisitorTest_7 extends com.alibaba.druid.bvt.sql.mysql.param.MySQLParameterizedTest {
+    @Test
     public void test_hints() throws Exception {
         String sql = "select id from t where id = 3 /*!30000union all select 2*/";
 

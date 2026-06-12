@@ -20,12 +20,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlShowTest_36_db extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SHOW DB STATUS";
 
@@ -49,6 +51,7 @@ public class MySqlShowTest_36_db extends MysqlTest {
         assertEquals("show database status", stmt.toLowerCaseString());
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "SHOW FULL DB STATUS";
 
@@ -72,6 +75,7 @@ public class MySqlShowTest_36_db extends MysqlTest {
         assertEquals("show full database status", stmt.toLowerCaseString());
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "SHOW FULL DB STATUS LIKE '%'";
 
@@ -95,6 +99,7 @@ public class MySqlShowTest_36_db extends MysqlTest {
         assertEquals("show full database status like '%'", stmt.toLowerCaseString());
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = "SHOW FULL DB STATUS WHERE 1=1";
 
@@ -118,6 +123,7 @@ public class MySqlShowTest_36_db extends MysqlTest {
         assertEquals("show full database status where 1 = 1", stmt.toLowerCaseString());
     }
 
+    @Test
     public void test_4_orderBy() throws Exception {
         String sql = "SHOW FULL DB STATUS WHERE 1=1 ORDER BY col LIMIT 1,2";
 

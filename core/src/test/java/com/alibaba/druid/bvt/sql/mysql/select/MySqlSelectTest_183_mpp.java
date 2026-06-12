@@ -24,12 +24,14 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_183_mpp extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT \"cid\", 3 + \"f2\" FROM \"wenyu_meta_test\".\"WENYU_META_TEST_02\" LIMIT 4";
 

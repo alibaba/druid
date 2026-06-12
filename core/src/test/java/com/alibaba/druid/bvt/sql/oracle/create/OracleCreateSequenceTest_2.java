@@ -21,12 +21,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleCreateSequenceTest_2 extends OracleTest {
+    @Test
     public void test_0() throws Exception {
         String sql = //
                 "CREATE SEQUENCE \"AO_4AEACD_WEBHOOK_DAO_ID_SEQ\" INCREMENT BY 1 START WITH 1 NOMAXVALUE MINVALUE 1";

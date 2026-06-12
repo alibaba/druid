@@ -20,12 +20,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleInsertTest8 extends OracleTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "insert into AV_INFO_NEW (ID, GMT_CREATE, GMT_MODIFIED, COMPANY_ID, COMPANY_NAME_CN, COMPANY_NAME_EN, COMPANY_COUNTRY, "
                 + " COMPANY_PROVINCE, COMPANY_CITY, COMPANY_ADDR_CN, COMPANY_ADDR_EN, MEMBER_SEX, MEMBER_CN_NAME, MEMBER_FIRST_NAME, MEMBER_LAST_NAME,"

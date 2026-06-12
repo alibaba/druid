@@ -20,12 +20,14 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_187 extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "select coach_id, tournament_name ,tournament_id, season_id, season, count(1) as num,\n" +
                 "sum(case when wdl = 0 then 1 else 0 end) as loss,\n" +

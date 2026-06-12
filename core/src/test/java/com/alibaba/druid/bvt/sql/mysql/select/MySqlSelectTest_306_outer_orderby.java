@@ -19,11 +19,13 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_306_outer_orderby
         extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT * \n" +
                 "FROM (\n" +
@@ -44,6 +46,7 @@ public class MySqlSelectTest_306_outer_orderby
                 "ORDER BY orderstatus, clerk", stmt.toString());
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "SELECT * \n" +
                 "FROM (select c2 from test order by c1" +
@@ -61,6 +64,7 @@ public class MySqlSelectTest_306_outer_orderby
                 "ORDER BY orderstatus, clerk", stmt.toString());
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "SELECT * \n" +
                 "FROM (select c2 from test order by c1 limit 10" +
@@ -79,6 +83,7 @@ public class MySqlSelectTest_306_outer_orderby
                 "ORDER BY orderstatus, clerk", stmt.toString());
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = "SELECT * \n" +
                 "FROM (select c2 from test order by c1 limit 10" +
@@ -97,6 +102,7 @@ public class MySqlSelectTest_306_outer_orderby
                 "ORDER BY orderstatus, clerk", stmt.toString());
     }
 
+    @Test
     public void test_4() throws Exception {
         String sql = "SELECT * from ((select 2 order by 2) order by 1) a";
 
@@ -109,6 +115,7 @@ public class MySqlSelectTest_306_outer_orderby
                 ") a", stmt.toString());
     }
 
+    @Test
     public void test_5() throws Exception {
         String sql = "SELECT * \n" +
                 "FROM (select c2 from test order by c1 limit 10" +
@@ -127,6 +134,7 @@ public class MySqlSelectTest_306_outer_orderby
                 "LIMIT 20", stmt.toString());
     }
 
+    @Test
     public void test_6() throws Exception {
         String sql = "SELECT * \n" +
                 "FROM (select 2" +
@@ -142,6 +150,7 @@ public class MySqlSelectTest_306_outer_orderby
                 "LIMIT 20", stmt.toString());
     }
 
+    @Test
     public void test_7() throws Exception {
         String sql = "select * from ((select * from test) limit 1)  ";
 
@@ -155,6 +164,7 @@ public class MySqlSelectTest_306_outer_orderby
                 ")", stmt.toString());
     }
 
+    @Test
     public void test_8() throws Exception {
         String sql = "select * from ((select * from test) order by a)  ";
 

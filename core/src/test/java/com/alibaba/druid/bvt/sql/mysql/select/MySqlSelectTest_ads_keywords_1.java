@@ -18,6 +18,7 @@ package com.alibaba.druid.bvt.sql.mysql.select;
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.parser.ParserException;
+import org.junit.jupiter.api.Test;
 
 public class MySqlSelectTest_ads_keywords_1 extends MysqlTest {
     String[] keywords = new String[]{
@@ -46,6 +47,7 @@ public class MySqlSelectTest_ads_keywords_1 extends MysqlTest {
             "offset"
     };
 
+    @Test
     public void test_create() throws Exception {
         for (int i = 0; i < keywords.length; i++) {
             String keyword = keywords[i];
@@ -61,6 +63,7 @@ public class MySqlSelectTest_ads_keywords_1 extends MysqlTest {
         }
     }
 
+    @Test
     public void test_select() throws Exception {
         for (int i = 0; i < keywords.length; i++) {
             String keyword = keywords[i];
@@ -76,6 +79,7 @@ public class MySqlSelectTest_ads_keywords_1 extends MysqlTest {
         }
     }
 
+    @Test
     public void test_select_alais() throws Exception {
         for (int i = 0; i < keywords.length; i++) {
             String keyword = keywords[i];
@@ -91,6 +95,7 @@ public class MySqlSelectTest_ads_keywords_1 extends MysqlTest {
         }
     }
 
+    @Test
     public void test_select_alais_2() throws Exception {
         for (int i = 0; i < keywords.length; i++) {
             String keyword = keywords[i];
@@ -106,6 +111,7 @@ public class MySqlSelectTest_ads_keywords_1 extends MysqlTest {
         }
     }
 
+    @Test
     public void test_where() throws Exception {
         for (int i = 0; i < keywords.length; i++) {
             String keyword = keywords[i];
@@ -121,6 +127,7 @@ public class MySqlSelectTest_ads_keywords_1 extends MysqlTest {
         }
     }
 
+    @Test
     public void test_where_2() throws Exception {
         for (int i = 0; i < keywords.length; i++) {
             String keyword = keywords[i];

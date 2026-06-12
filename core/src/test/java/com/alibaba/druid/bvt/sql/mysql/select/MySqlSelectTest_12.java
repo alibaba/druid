@@ -24,12 +24,14 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_12 extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT COUNT(*) a FROM (select nickname,mobile,comment,createdate from ub_userdiscuss order by discuss_id desc) b  ";
 

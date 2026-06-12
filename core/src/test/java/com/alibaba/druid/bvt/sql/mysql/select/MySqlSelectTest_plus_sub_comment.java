@@ -20,12 +20,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.ParserException;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_plus_sub_comment extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "select  1 -+2";
 
@@ -38,6 +40,7 @@ public class MySqlSelectTest_plus_sub_comment extends MysqlTest {
         assertEquals("SELECT 1 - +2", stmt.toString());
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "select  1 ---2 ";
 
@@ -50,6 +53,7 @@ public class MySqlSelectTest_plus_sub_comment extends MysqlTest {
         assertEquals("SELECT 1 - --2", stmt.toString());
     }
 
+    @Test
     public void test_1_1() throws Exception {
         String sql = "select  1 --- 2 ";
 
@@ -63,6 +67,7 @@ public class MySqlSelectTest_plus_sub_comment extends MysqlTest {
         }
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = "select  1 --+1";
 
@@ -75,6 +80,7 @@ public class MySqlSelectTest_plus_sub_comment extends MysqlTest {
         assertEquals("SELECT 1 - -+1", stmt.toString());
     }
 
+    @Test
     public void test_4() throws Exception {
         String sql = "select  1 ---++1 ";
 
@@ -88,6 +94,7 @@ public class MySqlSelectTest_plus_sub_comment extends MysqlTest {
         }
     }
 
+    @Test
     public void test_5() throws Exception {
         String sql = "select  1 ---++--1 ";
 
@@ -97,6 +104,7 @@ public class MySqlSelectTest_plus_sub_comment extends MysqlTest {
         assertEquals("SELECT 1 - --++--1", stmt.toString());
     }
 
+    @Test
     public void test_6() throws Exception {
         String sql = "select  1 ---++-- 1 ";
 
@@ -110,6 +118,7 @@ public class MySqlSelectTest_plus_sub_comment extends MysqlTest {
         }
     }
 
+    @Test
     public void test_7() throws Exception {
         String sql = "select  1 --+- 1";
 
@@ -119,6 +128,7 @@ public class MySqlSelectTest_plus_sub_comment extends MysqlTest {
         assertEquals("SELECT 1 - -+-1", stmt.toString());
     }
 
+    @Test
     public void test_8() throws Exception {
         String sql = "select  1--1";
 
@@ -128,6 +138,7 @@ public class MySqlSelectTest_plus_sub_comment extends MysqlTest {
         assertEquals("SELECT 1 - -1", stmt.toString());
     }
 
+    @Test
     public void test_10() throws Exception {
         String sql = "select max(id)-- min(id) from test_tablesl";
 
@@ -137,6 +148,7 @@ public class MySqlSelectTest_plus_sub_comment extends MysqlTest {
         assertEquals("SELECT max(id)", stmt.toString());
     }
 
+    @Test
     public void test_11() throws Exception {
         String sql = "select max(id)--min(id) from test_tablesl";
 
@@ -146,6 +158,7 @@ public class MySqlSelectTest_plus_sub_comment extends MysqlTest {
         assertEquals("SELECT max(id) - -min(id)\n" + "FROM test_tablesl", stmt.toString());
     }
 
+    @Test
     public void test_12() throws Exception {
         String sql = "select max(id) -- min(id) from test_tablesl";
 
@@ -156,6 +169,7 @@ public class MySqlSelectTest_plus_sub_comment extends MysqlTest {
         assertEquals("SELECT max(id)", stmt.toString());
     }
 
+    @Test
     public void test_13() throws Exception {
         String sql = "select max(id) --- min(id) from test_tablesl";
 
@@ -178,6 +192,7 @@ public class MySqlSelectTest_plus_sub_comment extends MysqlTest {
 //        assertEquals("SELECT MAX(id) - -(-MIN(id))\n" + "FROM test_tablesl", stmt.toString());
 //    }
 
+    @Test
     public void test_15() throws Exception {
         String sql = "select max(id) --+-- min(id) from test_tablesl";
 
@@ -191,6 +206,7 @@ public class MySqlSelectTest_plus_sub_comment extends MysqlTest {
         }
     }
 
+    @Test
     public void test_16() throws Exception {
         String sql = "select max(id)  --+--  min(id) from test_tablesl";
 
@@ -204,6 +220,7 @@ public class MySqlSelectTest_plus_sub_comment extends MysqlTest {
         }
     }
 
+    @Test
     public void test_18() throws Exception {
         String sql = "SELECT * FROM mp_Sites WHERE SiteID = -1 OR -1 = -1 -- ORDER BY SiteID LIMIT 1";
 
@@ -216,6 +233,7 @@ public class MySqlSelectTest_plus_sub_comment extends MysqlTest {
                 "\tOR -1 = -1 -- ORDER BY SiteID LIMIT 1", stmt.toString());
     }
 
+    @Test
     public void test_19() throws Exception {
         String sql = "-- comments\n" +
                 "SELECT *\n" +
@@ -235,6 +253,7 @@ public class MySqlSelectTest_plus_sub_comment extends MysqlTest {
             stmt.toString());
     }
 
+    @Test
     public void test_20() throws Exception {
         String sql = "-- comments";
 
@@ -243,6 +262,7 @@ public class MySqlSelectTest_plus_sub_comment extends MysqlTest {
         assertEquals(0, statementList.size());
     }
 
+    @Test
     public void test_21() throws Exception {
         String sql = "--";
 
@@ -251,6 +271,7 @@ public class MySqlSelectTest_plus_sub_comment extends MysqlTest {
         assertEquals(0, statementList.size());
     }
 
+    @Test
     public void test_22() throws Exception {
         String sql = "--\n";
 

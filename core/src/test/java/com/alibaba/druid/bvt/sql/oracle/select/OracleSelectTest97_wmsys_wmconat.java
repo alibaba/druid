@@ -24,12 +24,14 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleSelectTest97_wmsys_wmconat extends OracleTest {
+    @Test
     public void test_0() throws Exception {
         String sql = //
                 "SELECT NVL(TO_CHAR(WMSYS.WM_CONCAT(NVL(O.CHILD_ITEM_CODE, O.ITEM_CODE))), ?)\n" +
@@ -78,6 +80,7 @@ public class OracleSelectTest97_wmsys_wmconat extends OracleTest {
         assertEquals(0, visitor.getOrderByColumns().size());
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = //
                 "SELECT NVL(TO_CHAR(WMSYS.WM_CONCAT(NVL(O.CHILD_ITEM_CODE, O.ITEM_CODE))), ?)\n" +

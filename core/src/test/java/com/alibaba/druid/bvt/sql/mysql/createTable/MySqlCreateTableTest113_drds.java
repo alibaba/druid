@@ -5,12 +5,14 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlCreateTableTest113_drds extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "create table if not exists test_table(\n" +
                 "  id INT,name VARCHAR(30) DEFAULT NULL,\n" +
@@ -35,6 +37,7 @@ public class MySqlCreateTableTest113_drds extends MysqlTest {
                 "TBPARTITION BY YYYYMM_NOLOOP(create_time) BETWEEN 20160108 AND 20170108;", stmt.toString());
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "create table if not exists test_table(\n" +
                 "  id INT,name VARCHAR(30) DEFAULT NULL,\n" +

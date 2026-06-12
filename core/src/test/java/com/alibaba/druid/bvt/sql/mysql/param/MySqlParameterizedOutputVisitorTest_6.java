@@ -17,10 +17,12 @@ package com.alibaba.druid.bvt.sql.mysql.param;
 
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlParameterizedOutputVisitorTest_6 extends com.alibaba.druid.bvt.sql.mysql.param.MySQLParameterizedTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SET autocommit=1";
         String paramSql = "SET autocommit = ?";
@@ -29,6 +31,7 @@ public class MySqlParameterizedOutputVisitorTest_6 extends com.alibaba.druid.bvt
         paramaterizeAST(sql, paramSql);
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "SET GLOBAL sort_buffer_size=1000000, SESSION sort_buffer_size=1000000;";
         String paramSql = "SET @@global.sort_buffer_size = ?, @@session.sort_buffer_size = ?;";

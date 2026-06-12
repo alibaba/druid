@@ -20,12 +20,14 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_37 extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT * FROM mytable where md5=x'AD9133D47CEB2222A68662BD7600D890'";
 

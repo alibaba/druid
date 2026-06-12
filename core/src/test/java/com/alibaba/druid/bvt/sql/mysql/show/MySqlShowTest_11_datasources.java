@@ -20,10 +20,12 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlShowTest_11_datasources extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SHOW DATASOURCES";
 

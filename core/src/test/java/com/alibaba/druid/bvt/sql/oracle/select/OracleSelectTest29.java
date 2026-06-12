@@ -20,12 +20,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleSelectTest29 extends OracleTest {
+    @Test
     public void test_0() throws Exception {
         String sql = //
                 "(select id,super_category_id_1 from category where super_category_id_1 is not null and super_category_id_1 != '-1')    union    (select id,super_category_id_2 from category where super_category_id_2 is not null and super_category_id_2 != '-1')     union    (select id,super_category_id_3 from category where super_category_id_3 is not null and super_category_id_3 != '-1')    union    (select id,super_category_id_4 from category where super_category_id_4 is not null and super_category_id_4 != '-1')    union    (select id,super_category_id_5 from category where super_category_id_5 is not null and super_category_id_5 != '-1')";

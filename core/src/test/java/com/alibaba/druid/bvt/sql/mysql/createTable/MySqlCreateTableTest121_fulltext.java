@@ -8,6 +8,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStateme
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Types;
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlCreateTableTest121_fulltext extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "CREATE TABLE IF NOT EXISTS ddd ( pk int NOT NULL PRIMARY KEY AUTO_INCREMENT" +
                 ", tint tinyint(10) UNSIGNED ZEROFILL, sint smallint DEFAULT 1000, mint mediumint UNIQUE, bint bigint(20) COMMENT 'bigint'" +

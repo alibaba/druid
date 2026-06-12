@@ -19,10 +19,12 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_280 extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "select date(created_at)创建日期,\n" +
                 "count(distinct task_id)整体维修创建量,\n" +

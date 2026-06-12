@@ -22,12 +22,14 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_108_alias extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "\n" +
                 "select * from `db1`.`travelrecord` a where a.id=1;";

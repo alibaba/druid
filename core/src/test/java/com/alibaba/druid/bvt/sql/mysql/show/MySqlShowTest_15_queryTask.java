@@ -27,12 +27,14 @@ import com.alibaba.druid.sql.ast.statement.SQLShowQueryTaskStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlShowTest_15_queryTask extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SHOW QUERY_TASK";
 
@@ -49,6 +51,7 @@ public class MySqlShowTest_15_queryTask extends MysqlTest {
         assertEquals(0, visitor.getConditions().size());
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "SHOW QUERY_TASK where name > 1 order by name desc limit 1";
         MySqlStatementParser parser = new MySqlStatementParser(sql, SQLParserFeature.TDDLHint);
@@ -77,6 +80,7 @@ public class MySqlShowTest_15_queryTask extends MysqlTest {
         assertEquals("SHOW QUERY_TASK\n" + "WHERE a = BIGINT '1'\n" + "ORDER BY a DESC\n" + "LIMIT 1", stmt.toString());
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "SHOW FULL QUERY_TASK";
 
@@ -93,6 +97,7 @@ public class MySqlShowTest_15_queryTask extends MysqlTest {
         assertEquals(0, visitor.getConditions().size());
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = "SHOW QUERY_TASK for 'userxxx' ";
 

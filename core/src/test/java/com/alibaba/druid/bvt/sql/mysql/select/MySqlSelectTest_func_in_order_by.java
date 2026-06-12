@@ -6,6 +6,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
@@ -17,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Date 2019-07-17 10:00
  */
 public class MySqlSelectTest_func_in_order_by extends MysqlTest {
+    @Test
     public void test_0() {
         String sql = "select * from tb order by convert(ifnull(y,'999'),signed);";
 

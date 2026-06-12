@@ -17,10 +17,12 @@ package com.alibaba.druid.bvt.sql.mysql.create;
 
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySQLCreateMaterializedViewTest_fail extends OracleTest {
+    @Test
     public void test1() throws Exception {
         String sql = "CREATE MATERIALIZED VIEW mymv (\n" +
                 "  PRIMARY KEY(id)\n" +
@@ -33,6 +35,7 @@ public class MySQLCreateMaterializedViewTest_fail extends OracleTest {
         failed(sql);
     }
 
+    @Test
     public void test2() throws Exception {
         String sql = "CREATE MATERIALIZED VIEW mymv (\n" +
                 "  PRIMARY KEY(id)\n" +
@@ -47,6 +50,7 @@ public class MySQLCreateMaterializedViewTest_fail extends OracleTest {
         failed(sql);
     }
 
+    @Test
     public void test3() throws Exception {
         String sql = "CREATE MATERIALIZED VIEW mymv\n" +
                 "";
@@ -54,6 +58,7 @@ public class MySQLCreateMaterializedViewTest_fail extends OracleTest {
         failed(sql);
     }
 
+    @Test
     public void test4() throws Exception {
         String sql = "CREATE MATERIALIZED VIEW mymv (\n" +
                 "  default_col varcahr,\n" +
@@ -67,6 +72,7 @@ public class MySQLCreateMaterializedViewTest_fail extends OracleTest {
         failed(sql);
     }
 
+    @Test
     public void test5() throws Exception {
         String sql = "CREATE MATERIALIZED VIEW mymv\n" +
                 "REFRESH \n" +
@@ -76,6 +82,7 @@ public class MySQLCreateMaterializedViewTest_fail extends OracleTest {
         failed(sql);
     }
 
+    @Test
     public void test6() throws Exception {
         String sql = "CREATE MATERIALIZED VIEW mymv\n" +
                 "ENABLE QUERY\n" +
@@ -84,6 +91,7 @@ public class MySQLCreateMaterializedViewTest_fail extends OracleTest {
         failed(sql);
     }
 
+    @Test
     public void test7() throws Exception {
         String sql = "CREATE MATERIALIZED VIEW mymv (\n" +
                 "  default_col varcahr,\n" +
@@ -95,6 +103,7 @@ public class MySQLCreateMaterializedViewTest_fail extends OracleTest {
         failed(sql);
     }
 
+    @Test
     public void test8() throws Exception {
         String sql = "CREATE MATERIALIZED VIEW mymv\n" +
                 "REFRESH ON DEMAND\n" +

@@ -20,12 +20,14 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleSelectTest122 extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "select A.gnmk_ljmc , A.mklx_dm , A.gnmb_dm , B.jbdm , B.sdate , B.edate \n" +
                 "from ( \n" +

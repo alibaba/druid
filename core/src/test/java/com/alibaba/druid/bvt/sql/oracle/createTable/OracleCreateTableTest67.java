@@ -22,12 +22,14 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleCreateTableTest67 extends OracleTest {
+    @Test
     public void test_types() throws Exception {
         String sql = //
                 " CREATE TABLE new_duplications_index (\"ID\" PRIMARY KEY, project_snapshot_id, snapshot_id, hash, index_in_file, start_line, end_line) NOLOGGING AS SELECT CAST(duplications_index_seq.nextval AS NUMBER(38)) \"ID\", project_snapshot_id, snapshot_id, hash, index_in_file, start_line, end_line FROM duplications_index  ";

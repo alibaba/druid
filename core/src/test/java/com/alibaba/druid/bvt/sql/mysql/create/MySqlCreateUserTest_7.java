@@ -5,6 +5,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @Date 2019-05-22 09:43
  */
 public class MySqlCreateUserTest_7 extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "CREATE USER 'seomdbyu'@'%'\n" +
                 "IDENTIFIED BY PASSWORD '*E31E2E4B771597DE2FDECB4E0EC00BE9E87D39D2'";
@@ -42,6 +44,7 @@ public class MySqlCreateUserTest_7 extends MysqlTest {
         assertEquals(0, visitor.getConditions().size());
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "CREATE USER 'seomdbyu'@'%'\n" +
                 "IDENTIFIED WITH 'mysql_native_password' AS '*E31E2E4B771597DE2FDECB4E0EC00BE9E87D39D2'";
@@ -66,6 +69,7 @@ public class MySqlCreateUserTest_7 extends MysqlTest {
         assertEquals(0, visitor.getConditions().size());
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "CREATE USER 'seomdbyu'@'%'\n" +
                 "IDENTIFIED WITH 'mysql_native_password' BY '*E31E2E4B771597DE2FDECB4E0EC00BE9E87D39D2'";

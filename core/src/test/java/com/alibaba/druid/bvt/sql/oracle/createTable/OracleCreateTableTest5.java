@@ -20,12 +20,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleCreateTableTest5 extends OracleTest {
+    @Test
     public void test_0() throws Exception {
         String sql = //
                 "CREATE GLOBAL TEMPORARY TABLE \"SYS\".\"SYS_TEMP_0FD9D670A_93E068F3\" (\"C0\" VARCHAR2(30),\"C1\" VARCHAR2(27) ) "

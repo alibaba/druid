@@ -19,11 +19,13 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_307_lateralview
         extends MysqlTest {
+    @Test
     public void test_1() throws Exception {
         String sql = "select tf.* from (select 0) t lateral view explode(array('A','B','C')) tf;";
 
@@ -36,6 +38,7 @@ public class MySqlSelectTest_307_lateralview
                 "\tLATERAL VIEW explode(array('A', 'B', 'C')) tf;", stmt.toString());
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "select tf.* from (select 0) t lateral view explode(array('A','B','C')) tf as col;";
 
@@ -48,6 +51,7 @@ public class MySqlSelectTest_307_lateralview
                 "\tLATERAL VIEW explode(array('A', 'B', 'C')) tf AS col;", stmt.toString());
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = "select tf.* from (select 0) t lateral view explode(map('A',10,'B',20,'C',30)) tf;";
 
@@ -60,6 +64,7 @@ public class MySqlSelectTest_307_lateralview
                 "\tLATERAL VIEW explode(map('A', 10, 'B', 20, 'C', 30)) tf;", stmt.toString());
     }
 
+    @Test
     public void test_4() throws Exception {
         String sql = "select tf.* from (select 0) t lateral view explode(map('A',10,'B',20,'C',30)) tf as key,value;";
 
@@ -72,6 +77,7 @@ public class MySqlSelectTest_307_lateralview
                 "\tLATERAL VIEW explode(map('A', 10, 'B', 20, 'C', 30)) tf AS key, value;", stmt.toString());
     }
 
+    @Test
     public void test_5() throws Exception {
         String sql = "select tf.* from (select 0) t lateral view posexplode(array('A','B','C')) tf;";
 
@@ -84,6 +90,7 @@ public class MySqlSelectTest_307_lateralview
                 "\tLATERAL VIEW posexplode(array('A', 'B', 'C')) tf;", stmt.toString());
     }
 
+    @Test
     public void test_6() throws Exception {
         String sql = "select tf.* from (select 0) t lateral view inline(array(struct('A',10,date '2015-01-01'),struct('B',20,date '2016-02-02'))) tf;";
 
@@ -96,6 +103,7 @@ public class MySqlSelectTest_307_lateralview
                 "\tLATERAL VIEW inline(array(struct('A', 10, DATE '2015-01-01'), struct('B', 20, DATE '2016-02-02'))) tf;", stmt.toString());
     }
 
+    @Test
     public void test_7() throws Exception {
         String sql = "select tf.* from (select 0) t lateral view inline(array(struct('A',10,date '2015-01-01'),struct('B',20,date '2016-02-02'))) tf as col1,col2,col3;";
 
@@ -108,6 +116,7 @@ public class MySqlSelectTest_307_lateralview
                 "\tLATERAL VIEW inline(array(struct('A', 10, DATE '2015-01-01'), struct('B', 20, DATE '2016-02-02'))) tf AS col1, col2, col3;", stmt.toString());
     }
 
+    @Test
     public void test_8() throws Exception {
         String sql = "select tf.* from (select 0) t lateral view stack(2,'A',10,date '2015-01-01','B',20,date '2016-01-01') tf;";
 
@@ -120,6 +129,7 @@ public class MySqlSelectTest_307_lateralview
                 "\tLATERAL VIEW stack(2, 'A', 10, DATE '2015-01-01', 'B', 20, DATE '2016-01-01') tf;", stmt.toString());
     }
 
+    @Test
     public void test_9() throws Exception {
         String sql = "select tf.* from (select 0) t lateral view stack(2,'A',10,date '2015-01-01','B',20,date '2016-01-01') tf as col0,col1,col2;";
 

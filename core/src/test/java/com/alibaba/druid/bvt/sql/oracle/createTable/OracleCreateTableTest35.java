@@ -22,12 +22,14 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleCreateTableTest35 extends OracleTest {
+    @Test
     public void test_types() throws Exception {
         String sql = //
                 "create table sto_scandata_bak_2013_05_08_023000 AS (select * from sto_scandata t where t.delflag=1 )";

@@ -23,12 +23,14 @@ import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class SQLite_SelectTest_2 extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "select * from mytable ORDER BY id DESC limit 0,10";
 

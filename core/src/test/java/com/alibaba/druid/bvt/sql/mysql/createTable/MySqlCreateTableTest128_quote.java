@@ -4,12 +4,14 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlCreateTableTest128_quote extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "CREATE TABLE \"linxi_test\".\"linxi_subpart11\" (\n" +
                 "  \"id\"       BIGINT  NOT NULL\n" +

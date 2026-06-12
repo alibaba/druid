@@ -22,12 +22,14 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleCreateViewTest11_error_encoding extends OracleTest {
+    @Test
     public void test_types() throws Exception {
         String sql = //
                 " CREATE OR REPLACE FORCE VIEW \"TCP_CPR\".\"CPR_SYS_BOM_MODULE_V\" (\"PROD_TYPE_ID\", \"PROD_TYPE_NAME\", \"PROD_ID\", \"PROD_NAME\", \"DEVICE_ID\", \"DEVICE_NAME\", \"MODULE_ID\", \"STRUCTURE_CODE\", \"MODULE_NAME\", \"ENG_DESCRIPTION\", \"ZH_UNIT\", \"EN_UNIT\", \"ITEM_CODE\", \"SALES_DEPT_ID\", \"CLUEIDS\", \"SEQ\", \"ORGANIZATION_ID\", \"ORGANIZATION_NAME\", \"ATTRIBUTE1\", \"ATTRIBUTE2\", \"ATTRIBUTE3\", \"ATTRIBUTE4\", \"ATTRIBUTE5\", \"ATTRIBUTE6\", \"TSM_FLAG\", \"TSM_CODE\", \"HARD_PARAM\", \"SOFT_PARAM\", \"MAKE_PARAM\", \"RISK_PARAM\", \"SOFT_COST_PARAM\", \"FIXED_RATE\", \"TEMP_FIELD1\", \"TEMP_FIELD2\") AS \n" +

@@ -19,12 +19,14 @@ import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleCreateTableTest78 extends OracleTest {
+    @Test
     public void test_types() throws Exception {
         String sql = //
                 "CREATE OR REPLACE FORCE VIEW \"TCP_EPM\".\"EPM_VW_CONTRACT\" (\"NID\", \"SCONTRACTNO\", \"SCONTRACTNAME\", \"NOFFICEID\", \"SOFFICENAME\", \"NSALEDEPTID\", \"SSALEDEPTNAME\", \"NPRODDEPTID\", \"SPRODDEPTNAME\", \"NCUSTOMERID\", \"SCUSTOMERNAME\", \"SSERVICEPROVIDERID\", \"SSERVICEPROVIDERNAME\", \"NMAINPRODUCTID\", \"SMAINPRODUCTNAME\", \"SCONTRACTTYPE\", \"SCONTRACTTYPETEXT\", \"SCONTRACTKIND\", \"SCONTRACTKINDTEXT\", \"SISFIRSTCHECKED\", \"SISLASTCHECKED\", \"SISOUTSOURCE\", \"SISRECONSIGN\", \"DGUARANTEE\", \"DCREATEDTIME\", \"NERPCONTRACTID\", \"NSTATE\", \"DFIRSTCHECKTIME\", \"DLASTCHECKTIME\", \"DPLANFIRSTCHECKTIME\", \"DPLANLASTCHECKTIME\") AS \n" +

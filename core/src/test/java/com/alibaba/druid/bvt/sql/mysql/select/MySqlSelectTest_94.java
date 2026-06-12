@@ -21,12 +21,14 @@ import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_94 extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "select * from test where name = 'cail\\1';";
 
@@ -39,6 +41,7 @@ public class MySqlSelectTest_94 extends MysqlTest {
         assertEquals("SELECT *\n" + "FROM test\n" + "WHERE name = 'cail1';", stmt.toString());
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "select * from test where name = 'cail\\\\1';";
 
@@ -51,6 +54,7 @@ public class MySqlSelectTest_94 extends MysqlTest {
         assertEquals("SELECT *\n" + "FROM test\n" + "WHERE name = 'cail\\\\1';", stmt.toString());
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "select * from test where name like 'cai\\%1';";
 
@@ -63,6 +67,7 @@ public class MySqlSelectTest_94 extends MysqlTest {
         assertEquals("SELECT *\n" + "FROM test\n" + "WHERE name LIKE 'cai\\\\%1';", stmt.toString());
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = "select * from test where name = 'cai\\%1';";
 
@@ -75,6 +80,7 @@ public class MySqlSelectTest_94 extends MysqlTest {
         assertEquals("SELECT *\n" + "FROM test\n" + "WHERE name = 'cai\\\\%1';", stmt.toString());
     }
 
+    @Test
     public void test_4() throws Exception {
         String sql = "select * from test WHERE name = 'cailijun' or name like 'cai\\%1';";
 
@@ -87,6 +93,7 @@ public class MySqlSelectTest_94 extends MysqlTest {
         assertEquals("SELECT *\n" + "FROM test\n" + "WHERE name = 'cailijun'\n" + "\tOR name LIKE 'cai\\\\%1';", stmt.toString());
     }
 
+    @Test
     public void test_5() throws Exception {
         String sql = "select * from test WHERE name = 'cailijun' or name like 'cai\\1';";
 
@@ -99,6 +106,7 @@ public class MySqlSelectTest_94 extends MysqlTest {
         assertEquals("SELECT *\n" + "FROM test\n" + "WHERE name = 'cailijun'\n" + "\tOR name LIKE 'cai1';", stmt.toString());
     }
 
+    @Test
     public void test_6() throws Exception {
         String sql = "select * from test WHERE name = 'cai\t';";
 
@@ -111,6 +119,7 @@ public class MySqlSelectTest_94 extends MysqlTest {
         assertEquals("SELECT *\n" + "FROM test\n" + "WHERE name = 'cai\t';", stmt.toString());
     }
 
+    @Test
     public void test_7() throws Exception {
         String sql = "/*+ a=1,b=2*/select count(distinct a) from test WHERE name = 'cai\t';";
 
@@ -123,6 +132,7 @@ public class MySqlSelectTest_94 extends MysqlTest {
         assertEquals("/*+ a=1,b=2*/\n" + "SELECT count(DISTINCT a)\n" + "FROM test\n" + "WHERE name = 'cai\t';", stmt.toString());
     }
 
+    @Test
     public void test_8() throws Exception {
         String sql = "/*+engine=MPP*/ with tmp1 as ( select uid, ugroups_str from dw.test_multivalue1 where uid = 101 ) select tmp1.uid, tmp1.ugroups_str from tmp1";
 
@@ -142,6 +152,7 @@ public class MySqlSelectTest_94 extends MysqlTest {
                 + "FROM tmp1", stmt.toString());
     }
 
+    @Test
     public void test_9() throws Exception {
         String sql = "create table testkey3( `key` varchar(4), `id` int, primary key (`key`) );";
 

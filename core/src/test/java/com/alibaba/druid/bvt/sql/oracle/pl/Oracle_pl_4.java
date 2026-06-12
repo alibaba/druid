@@ -20,12 +20,14 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class Oracle_pl_4 extends OracleTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "begin buf_b := HEXTORAW('636865642f4c'); \n" +
                 "  dbms_lob.write(loc_b, 2048, 28493, buf_b);\n" +

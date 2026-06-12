@@ -8,6 +8,7 @@ import com.alibaba.druid.sql.dialect.sqlite.visitor.SQLiteSchemaStatVisitor;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
@@ -15,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class SQLiteStatementParserTest extends TestCase {
     // PRAGMA tests
+    @Test
     public void test_pragma_get() throws Exception {
         String sql = "PRAGMA table_info";
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, DbType.sqlite);
@@ -28,6 +30,7 @@ public class SQLiteStatementParserTest extends TestCase {
         assertEquals("PRAGMA table_info", SQLUtils.toSQLString(stmt, DbType.sqlite));
     }
 
+    @Test
     public void test_pragma_set_eq() throws Exception {
         String sql = "PRAGMA cache_size = 10000";
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, DbType.sqlite);
@@ -40,6 +43,7 @@ public class SQLiteStatementParserTest extends TestCase {
         assertEquals("PRAGMA cache_size = 10000", SQLUtils.toSQLString(stmt, DbType.sqlite));
     }
 
+    @Test
     public void test_pragma_set_paren() throws Exception {
         String sql = "PRAGMA cache_size(10000)";
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, DbType.sqlite);
@@ -51,6 +55,7 @@ public class SQLiteStatementParserTest extends TestCase {
     }
 
     // ATTACH / DETACH tests
+    @Test
     public void test_attach() throws Exception {
         String sql = "ATTACH DATABASE 'test.db' AS test_schema";
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, DbType.sqlite);
@@ -61,6 +66,7 @@ public class SQLiteStatementParserTest extends TestCase {
         assertEquals("ATTACH DATABASE 'test.db' AS test_schema", output);
     }
 
+    @Test
     public void test_detach() throws Exception {
         String sql = "DETACH DATABASE test_schema";
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, DbType.sqlite);
@@ -72,6 +78,7 @@ public class SQLiteStatementParserTest extends TestCase {
     }
 
     // VACUUM test
+    @Test
     public void test_vacuum() throws Exception {
         String sql = "VACUUM";
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, DbType.sqlite);
@@ -81,6 +88,7 @@ public class SQLiteStatementParserTest extends TestCase {
         assertEquals("VACUUM", SQLUtils.toSQLString(stmtList.get(0), DbType.sqlite));
     }
 
+    @Test
     public void test_vacuum_schema() throws Exception {
         String sql = "VACUUM main";
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, DbType.sqlite);
@@ -91,6 +99,7 @@ public class SQLiteStatementParserTest extends TestCase {
     }
 
     // REINDEX test
+    @Test
     public void test_reindex() throws Exception {
         String sql = "REINDEX";
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, DbType.sqlite);
@@ -100,6 +109,7 @@ public class SQLiteStatementParserTest extends TestCase {
         assertEquals("REINDEX", SQLUtils.toSQLString(stmtList.get(0), DbType.sqlite));
     }
 
+    @Test
     public void test_reindex_name() throws Exception {
         String sql = "REINDEX my_index";
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, DbType.sqlite);
@@ -110,6 +120,7 @@ public class SQLiteStatementParserTest extends TestCase {
     }
 
     // CREATE TABLE tests
+    @Test
     public void test_create_table() throws Exception {
         String sql = "CREATE TABLE t1 (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, value REAL)";
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, DbType.sqlite);
@@ -120,6 +131,7 @@ public class SQLiteStatementParserTest extends TestCase {
         assertTrue(output.contains("AUTOINCREMENT") || output.contains("autoincrement") || output.contains("AUTO_INCREMENT") || output.contains("auto_increment"));
     }
 
+    @Test
     public void test_create_table_if_not_exists() throws Exception {
         String sql = "CREATE TABLE IF NOT EXISTS t1 (id INTEGER PRIMARY KEY, name TEXT)";
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, DbType.sqlite);
@@ -130,12 +142,14 @@ public class SQLiteStatementParserTest extends TestCase {
     }
 
     // INSERT with OR REPLACE/IGNORE
+    @Test
     public void test_insert_or_replace() throws Exception {
         String sql = "INSERT OR REPLACE INTO t1 (id, name) VALUES (1, 'test')";
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, DbType.sqlite);
         assertEquals(1, stmtList.size());
     }
 
+    @Test
     public void test_insert_or_ignore() throws Exception {
         String sql = "INSERT OR IGNORE INTO t1 (id, name) VALUES (1, 'test')";
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, DbType.sqlite);
@@ -143,6 +157,7 @@ public class SQLiteStatementParserTest extends TestCase {
     }
 
     // SELECT with SQLite-specific features
+    @Test
     public void test_select_with_limit_offset() throws Exception {
         String sql = "SELECT * FROM t1 LIMIT 10 OFFSET 5";
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, DbType.sqlite);
@@ -154,12 +169,14 @@ public class SQLiteStatementParserTest extends TestCase {
     }
 
     // CREATE INDEX
+    @Test
     public void test_create_index() throws Exception {
         String sql = "CREATE INDEX idx_name ON t1 (name)";
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, DbType.sqlite);
         assertEquals(1, stmtList.size());
     }
 
+    @Test
     public void test_create_unique_index() throws Exception {
         String sql = "CREATE UNIQUE INDEX IF NOT EXISTS idx_name ON t1 (name)";
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, DbType.sqlite);
@@ -167,6 +184,7 @@ public class SQLiteStatementParserTest extends TestCase {
     }
 
     // DROP TABLE
+    @Test
     public void test_drop_table() throws Exception {
         String sql = "DROP TABLE IF EXISTS t1";
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, DbType.sqlite);
@@ -174,6 +192,7 @@ public class SQLiteStatementParserTest extends TestCase {
     }
 
     // UPDATE
+    @Test
     public void test_update() throws Exception {
         String sql = "UPDATE t1 SET name = 'new' WHERE id = 1";
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, DbType.sqlite);
@@ -185,6 +204,7 @@ public class SQLiteStatementParserTest extends TestCase {
     }
 
     // DELETE
+    @Test
     public void test_delete() throws Exception {
         String sql = "DELETE FROM t1 WHERE id = 1";
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, DbType.sqlite);
@@ -192,6 +212,7 @@ public class SQLiteStatementParserTest extends TestCase {
     }
 
     // Backtick quoted identifiers
+    @Test
     public void test_backtick_identifiers() throws Exception {
         String sql = "SELECT `column name` FROM `table name` WHERE `id` = 1";
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, DbType.sqlite);
@@ -199,6 +220,7 @@ public class SQLiteStatementParserTest extends TestCase {
     }
 
     // Square bracket quoted identifiers
+    @Test
     public void test_bracket_identifiers() throws Exception {
         String sql = "SELECT [column name] FROM [table name] WHERE [id] = 1";
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, DbType.sqlite);
@@ -206,6 +228,7 @@ public class SQLiteStatementParserTest extends TestCase {
     }
 
     // Multiple statements
+    @Test
     public void test_multiple_statements() throws Exception {
         String sql = "CREATE TABLE t1 (id INTEGER); INSERT INTO t1 VALUES (1); SELECT * FROM t1";
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, DbType.sqlite);

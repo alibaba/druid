@@ -6,12 +6,14 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_169_not_in extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT ((10)!=(( (HEX ('abc' )) is FALSE )) ),( (( (( (( 'a')&& (null )) "
             + "not in(layer_1_left_tb.bigint_test, layer_0_right_tb.smallint_test,layer_1_left_tb.datetime_test,"

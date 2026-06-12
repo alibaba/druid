@@ -17,10 +17,12 @@ package com.alibaba.druid.bvt.sql.mysql.param;
 
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlParameterizedOutputVisitorTest_4 extends MySQLParameterizedTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "select user0_.id as id0_, user0_.email as email0_, "
                 + "user0_.login_name as login3_0_, user0_.name as name0_, "//

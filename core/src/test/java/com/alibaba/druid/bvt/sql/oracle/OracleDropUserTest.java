@@ -21,12 +21,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleDropUserTest extends OracleTest {
+    @Test
     public void test_0() throws Exception {
         String sql = //
                 "DROP USER sidney; ";
@@ -46,6 +48,7 @@ public class OracleDropUserTest extends OracleTest {
         assertEquals(0, visitor.getTables().size());
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = //
             "DROP USER sidney CASCADE; ";

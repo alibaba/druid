@@ -4,6 +4,7 @@ import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDropPackageStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
@@ -13,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * <a href="https://docs.oracle.com/en/database/oracle/oracle-database/19/lnpls/DROP-PACKAGE-statement.html">DROP PACKAGE Statement</a>
  */
 public class OracleDropPackageTest extends OracleTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "DROP PACKAGE TEST.PACK_TEST1";
         OracleStatementParser parser = new OracleStatementParser(sql);

@@ -19,12 +19,14 @@ import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleCreateTableTest87 extends OracleTest {
+    @Test
     public void test_0() throws Exception {
         String sql = //
                 "CREATE TABLE \"HX_DJ\".\"DJ_JZYXMDJ_THJJFGQK\" \n" +

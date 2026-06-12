@@ -20,11 +20,13 @@ import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class HiveCreateTableTest_49_dla
         extends OracleTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "create external  table `dla_result`.`sgm_add`\n" +
                 "STORED AS parquet \n" +

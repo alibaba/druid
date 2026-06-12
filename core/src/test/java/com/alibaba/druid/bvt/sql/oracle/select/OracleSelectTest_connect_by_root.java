@@ -19,12 +19,14 @@ import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleSelectTest_connect_by_root extends OracleTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "select id, category_name, parent_id, root_id, (select category_name from mtn_contact_category where id = root_id) root_category_name from (select id, category_name, connect_by_root id root_id, parent_id, level lev from mtn_contact_category  connect by prior id = parent_id)  where lev = 3  ";
 

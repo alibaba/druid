@@ -20,6 +20,7 @@ import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
@@ -28,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class OracleSelectTest_param extends OracleTest {
     private DbType dbType = JdbcConstants.ORACLE;
 
+    @Test
     public void test_0() throws Exception {
         String sql = //
                 "select c1 from t1 t where t.c2=1 and (t.c3=1 or t.c3=5)";
