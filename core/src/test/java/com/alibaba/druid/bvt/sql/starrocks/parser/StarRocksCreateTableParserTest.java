@@ -1,6 +1,7 @@
-package com.alibaba.druid.sql.dialect.starrocks.parser;
+package com.alibaba.druid.bvt.sql.starrocks.parser;
 
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.dialect.starrocks.parser.StarRocksStatementParser;
 import com.alibaba.druid.sql.parser.SQLCreateTableParser;
 import org.junit.jupiter.api.Test;
 

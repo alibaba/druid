@@ -1,4 +1,4 @@
-package com.alibaba.druid.sql.dialect.starrocks.parser;
+package com.alibaba.druid.bvt.sql.starrocks.parser;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;

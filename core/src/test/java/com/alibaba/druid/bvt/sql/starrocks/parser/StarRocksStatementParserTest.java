@@ -1,8 +1,9 @@
-package com.alibaba.druid.sql.dialect.starrocks.parser;
+package com.alibaba.druid.bvt.sql.starrocks.parser;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.dialect.starrocks.parser.StarRocksStatementParser;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
