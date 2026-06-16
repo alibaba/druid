@@ -290,6 +290,18 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         print0(value);
     }
 
+    /**
+     * Terminate a pending end-of-line comment with a newline before more output is appended.
+     * Without this, content emitted through the non-char print paths is glued onto the same line
+     * as a {@code -- } / {@code # } comment and silently swallowed on the next parse.
+     * Callers must invoke this only after confirming {@link #appender} is non-null.
+     */
+    private void flushEndLineComment() {
+        if (endLineComment) {
+            println();
+        }
+    }
+
     protected final void print0(char value) {
         if (this.appender == null) {
             return;
@@ -302,6 +314,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (this.appender == null) {
             return;
         }
+        flushEndLineComment();
 
         appender.append(value);
     }
@@ -310,6 +323,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (this.appender == null) {
             return;
         }
+        flushEndLineComment();
 
         appender.append(value);
     }
@@ -318,6 +332,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (this.appender == null) {
             return;
         }
+        flushEndLineComment();
 
         appender.append(value);
     }
@@ -326,6 +341,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (this.appender == null) {
             return;
         }
+        flushEndLineComment();
 
         appender.append(value);
     }
@@ -365,6 +381,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (appender == null) {
             return;
         }
+        flushEndLineComment();
 
         this.appender.append(text);
     }
@@ -377,6 +394,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (appender == null || name.isEmpty()) {
             return;
         }
+        flushEndLineComment();
 
         SQLDialect dialect = this.dialect;
         char quote = '"';
