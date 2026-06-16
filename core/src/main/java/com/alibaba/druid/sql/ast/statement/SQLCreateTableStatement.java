@@ -1356,7 +1356,7 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
 
         for (SQLAssignItem item : this.tableOptions) {
             SQLAssignItem item2 = item.clone();
-            item2.setParent(item);
+            item2.setParent(x);
             x.tableOptions.add(item2);
         }
 
