@@ -264,6 +264,9 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
         if (moduleName == null) {
             print(')');
         }
+        if (x.isRecompile()) {
+            print0(ucase ? " WITH RECOMPILE" : " with recompile");
+        }
         return false;
     }
 
