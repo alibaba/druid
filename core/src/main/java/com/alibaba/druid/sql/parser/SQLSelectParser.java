@@ -1292,6 +1292,14 @@ public class SQLSelectParser extends SQLParser {
                         this.exprParser.names(values.getColumns(), values);
                         accept(Token.RPAREN);
                     }
+                } else if (tableSource instanceof SQLUnionQueryTableSource) {
+                    // derived table over a UNION: AS alias (col1, col2, ...)  (see issue #6572)
+                    SQLUnionQueryTableSource unionTableSource = (SQLUnionQueryTableSource) tableSource;
+                    if (lexer.token == Token.LPAREN) {
+                        lexer.nextToken();
+                        this.exprParser.names(unionTableSource.getColumns(), unionTableSource);
+                        accept(Token.RPAREN);
+                    }
                 }
             }
 

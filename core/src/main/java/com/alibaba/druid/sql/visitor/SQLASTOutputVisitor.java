@@ -7091,6 +7091,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 print(' ');
             }
             print0(alias);
+            if (columns.size() > 0) {
+                print0(" (");
+                printAndAccept(columns, ", ");
+                print(')');
+            }
         }
         printPivot(x.getPivot());
         printUnpivot(x.getUnpivot());
