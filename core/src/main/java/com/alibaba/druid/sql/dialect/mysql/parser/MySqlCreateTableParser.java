@@ -332,7 +332,8 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                             lexer.reset(mark);
                         }
                     }
-                    if (lexer.identifierEquals(FnvHash.Constants.CLUSTERED)) {
+                    if (lexer.identifierEquals(FnvHash.Constants.CLUSTERED)
+                            && lexer.stringVal().charAt(0) != '`') {
                         lexer.nextToken();
                         if (lexer.token() == Token.KEY) {
                             MySqlKey clsKey = new MySqlKey();
