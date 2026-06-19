@@ -218,8 +218,10 @@ public class PGExprParser extends SQLExprParser {
 
     @Override
     protected void parseDataTypeDouble(StringBuilder typeName) {
-        typeName.append(' ').append(lexer.stringVal());
-        lexer.nextToken();
+        if (lexer.identifierEquals(FnvHash.Constants.PRECISION)) {
+            typeName.append(' ').append(lexer.stringVal());
+            lexer.nextToken();
+        }
     }
 
     @Override
