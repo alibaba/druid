@@ -4995,9 +4995,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print(')');
         }
 
-        if (x.getOffset() != null) {
-            print0(ucase ? " WITH OFFSET AS " : " with offset as ");
-            x.getOffset().accept(this);
+        if (x.isWithOffset()) {
+            print0(ucase ? " WITH OFFSET" : " with offset");
+            if (x.getOffset() != null) {
+                print0(ucase ? " AS " : " as ");
+                x.getOffset().accept(this);
+            }
         }
         printPivot(x.getPivot());
         printUnpivot(x.getUnpivot());

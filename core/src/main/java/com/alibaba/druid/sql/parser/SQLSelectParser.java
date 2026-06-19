@@ -1472,10 +1472,11 @@ public class SQLSelectParser extends SQLParser {
 
                 if (lexer.nextIf(Token.WITH)) {
                     acceptIdentifier("OFFSET");
-                    lexer.nextIf(Token.AS);
-                    unnest.setOffset(
-                            this.exprParser.expr()
-                    );
+                    unnest.setWithOffset(true);
+                    // the offset alias is optional: WITH OFFSET [AS alias] (see issue #6547)
+                    if (lexer.nextIf(Token.AS) || lexer.token == Token.IDENTIFIER) {
+                        unnest.setOffset(this.exprParser.expr());
+                    }
                 }
                 return unnest;
             } else {

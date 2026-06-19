@@ -14,8 +14,18 @@ public class SQLUnnestTableSource extends SQLTableSourceImpl
     protected List<SQLName> columns = new ArrayList<SQLName>();
     private boolean ordinality;
     private SQLExpr offset;
+    // BigQuery: WITH OFFSET present (the offset field holds the optional alias, which may be null)
+    private boolean withOffset;
 
     public SQLUnnestTableSource() {
+    }
+
+    public boolean isWithOffset() {
+        return withOffset || offset != null;
+    }
+
+    public void setWithOffset(boolean withOffset) {
+        this.withOffset = withOffset;
     }
 
     @Override
@@ -86,6 +96,8 @@ public class SQLUnnestTableSource extends SQLTableSourceImpl
         }
 
         x.alias = alias;
+        x.ordinality = ordinality;
+        x.withOffset = withOffset;
 
         if (offset != null) {
             x.setOffset(offset);
