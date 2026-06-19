@@ -25,6 +25,7 @@ public enum SQLUnaryOperator {
     BINARY("BINARY"),
     RAW("RAW"),
     NOT("NOT"),
+    VARIADIC("VARIADIC"), // postgresql variadic function argument
     // Number of points in path or polygon
     Pound("#");
 

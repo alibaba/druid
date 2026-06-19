@@ -248,6 +248,12 @@ public class PGExprParser extends SQLExprParser {
     }
 
     public SQLExpr primary() {
+        if (lexer.token() == Token.IDENTIFIER && lexer.identifierEquals("VARIADIC")) {
+            // postgresql variadic function argument, e.g. func(VARIADIC ARRAY[...]) (issue #6393)
+            lexer.nextToken();
+            SQLExpr arg = primary();
+            return primaryRest(new SQLUnaryExpr(SQLUnaryOperator.VARIADIC, arg));
+        }
         if (lexer.token() == Token.ARRAY) {
             String ident = lexer.stringVal();
             lexer.nextToken();
