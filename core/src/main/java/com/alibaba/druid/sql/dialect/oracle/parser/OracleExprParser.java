@@ -1225,6 +1225,9 @@ public class OracleExprParser extends SQLExprParser {
             OracleCreateIndexStatement createIndex = new OracleStatementParser(lexer).parseCreateIndex();
             using.setIndex(createIndex);
             accept(Token.RPAREN);
+        } else if (lexer.token() == Token.LITERAL_ALIAS) {
+            // USING INDEX <existing_index_name>, possibly schema-qualified (see issue #6458)
+            using.setIndex(this.name());
         }
 
         for (; ; ) {
