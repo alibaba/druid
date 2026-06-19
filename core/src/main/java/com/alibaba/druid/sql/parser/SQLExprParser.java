@@ -848,7 +848,10 @@ public class SQLExprParser extends SQLParser {
                 sqlExpr = primaryIn(sqlExpr);
                 break;
             case LBRACKET:
+                // subscript access on the preceding expression, e.g. col['k'] or arr[1];
+                // keep the base expression as the array expr so it is not lost on output (issue #6631)
                 SQLArrayExpr arrayTmp = new SQLArrayExpr();
+                arrayTmp.setExpr(sqlExpr);
                 lexer.nextToken();
                 this.exprList(arrayTmp.getValues(), arrayTmp);
                 accept(Token.RBRACKET);
