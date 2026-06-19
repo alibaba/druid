@@ -686,6 +686,12 @@ public class OracleExprParser extends SQLExprParser {
                     lexer.nextToken();
                     accept(Token.RPAREN);
                 }
+            } else if (lexer.identifierEquals("HOUR")) {
+                lexer.nextToken();
+                interval.setToType(OracleIntervalType.HOUR);
+            } else if (lexer.identifierEquals("MINUTE")) {
+                lexer.nextToken();
+                interval.setToType(OracleIntervalType.MINUTE);
             } else {
                 interval.setToType(OracleIntervalType.MONTH);
                 lexer.nextToken();
@@ -1058,6 +1064,15 @@ public class OracleExprParser extends SQLExprParser {
                     interval.setToFactionalSecondsPrecision(primary());
                     accept(Token.RPAREN);
                 }
+            } else if (lexer.identifierEquals(FnvHash.Constants.HOUR)) {
+                lexer.nextToken();
+                interval.setToType(OracleIntervalType.HOUR);
+            } else if (lexer.identifierEquals(FnvHash.Constants.MINUTE)) {
+                lexer.nextToken();
+                interval.setToType(OracleIntervalType.MINUTE);
+            } else if (lexer.identifierEquals(FnvHash.Constants.DAY)) {
+                lexer.nextToken();
+                interval.setToType(OracleIntervalType.DAY);
             } else {
                 interval.setToType(OracleIntervalType.MONTH);
                 lexer.nextToken();
