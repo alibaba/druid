@@ -150,6 +150,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
 
         printFrom(x);
         printWhere(x);
+        printHierarchical(x);
         printGroupBy(x);
         printWindow(x);
         printOrderBy(x);

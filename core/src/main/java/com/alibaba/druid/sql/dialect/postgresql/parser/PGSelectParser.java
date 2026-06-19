@@ -129,6 +129,10 @@ public class PGSelectParser extends SQLSelectParser {
 
         parseWhere(queryBlock);
 
+        // openGauss (registered as the postgresql dialect) supports Oracle-style hierarchical
+        // queries: CONNECT BY ... START WITH ... (see issue #6637)
+        parseHierachical(queryBlock);
+
         parseGroupBy(queryBlock);
 
         if (lexer.token() == Token.WINDOW) {
