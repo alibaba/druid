@@ -234,9 +234,15 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             this.indentCount--;
         }
 
-        if (x.isReturning()) {
+        SQLExpr returning = x.getReturning();
+        if (returning != null) {
             println();
-            print0(ucase ? "RETURNING *" : "returning *");
+            print0(ucase ? "RETURNING " : "returning ");
+            if (returning instanceof SQLListExpr) {
+                printAndAccept(((SQLListExpr) returning).getItems(), ", ");
+            } else {
+                returning.accept(this);
+            }
         }
 
         return false;

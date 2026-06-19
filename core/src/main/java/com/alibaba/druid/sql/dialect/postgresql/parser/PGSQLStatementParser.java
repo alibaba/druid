@@ -486,8 +486,20 @@ public class PGSQLStatementParser extends SQLStatementParser {
 
         if (lexer.token() == Token.RETURNING) {
             lexer.nextToken();
-            accept(Token.STAR);
-            deleteStatement.setReturning(true);
+            if (lexer.token() == Token.STAR) {
+                lexer.nextToken();
+                deleteStatement.setReturning(new SQLAllColumnExpr());
+            } else {
+                SQLExpr returning = this.exprParser.expr();
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                    SQLListExpr list = new SQLListExpr();
+                    list.addItem(returning);
+                    this.exprParser.exprList(list.getItems(), list);
+                    returning = list;
+                }
+                deleteStatement.setReturning(returning);
+            }
         }
 
         return deleteStatement;
