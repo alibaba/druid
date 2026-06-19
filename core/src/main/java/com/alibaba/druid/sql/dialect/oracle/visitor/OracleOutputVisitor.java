@@ -423,7 +423,14 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         }
         println();
         print0(ucase ? "INTO " : "into ");
-        into.accept(this);
+        // multiple INTO targets are stored as a SQLListExpr; PL/SQL writes them comma-separated
+        // without surrounding parentheses (see issue #6435).
+        SQLExpr expr = into.getExpr();
+        if (expr instanceof SQLListExpr && into.getAlias() == null) {
+            printAndAccept(((SQLListExpr) expr).getItems(), ", ");
+        } else {
+            into.accept(this);
+        }
     }
 
     private void printModel(OracleSelectQueryBlock x) {
