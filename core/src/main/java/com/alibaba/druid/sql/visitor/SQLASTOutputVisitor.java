@@ -5925,6 +5925,14 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
         print(' ');
         print0(ucase ? "AS " : "as ");
+        Boolean materialized = x.getMaterialized();
+        if (materialized != null) {
+            if (materialized) {
+                print0(ucase ? "MATERIALIZED " : "materialized ");
+            } else {
+                print0(ucase ? "NOT MATERIALIZED " : "not materialized ");
+            }
+        }
         print('(');
         this.indentCount++;
         println();

@@ -648,6 +648,17 @@ public class SQLSelectParser extends SQLParser {
             }
 
             accept(Token.AS);
+
+            // PostgreSQL: name AS [ NOT ] MATERIALIZED ( query )
+            if (lexer.identifierEquals(FnvHash.Constants.MATERIALIZED)) {
+                lexer.nextToken();
+                entry.setMaterialized(Boolean.TRUE);
+            } else if (lexer.token == Token.NOT) {
+                lexer.nextToken();
+                acceptIdentifier("MATERIALIZED");
+                entry.setMaterialized(Boolean.FALSE);
+            }
+
             accept(Token.LPAREN);
 
             switch (lexer.token) {

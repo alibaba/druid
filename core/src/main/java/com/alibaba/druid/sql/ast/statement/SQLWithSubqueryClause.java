@@ -92,6 +92,8 @@ public class SQLWithSubqueryClause extends SQLObjectImpl {
         protected SQLStatement returningStatement;
         protected SQLExpr expr;
         protected boolean prefixAlias;
+        // PostgreSQL CTE materialization hint: TRUE = MATERIALIZED, FALSE = NOT MATERIALIZED, null = unspecified
+        protected Boolean materialized;
 
         public Entry() {
         }
@@ -124,6 +126,15 @@ public class SQLWithSubqueryClause extends SQLObjectImpl {
             x.alias = alias;
             x.expr = expr;
             x.prefixAlias = prefixAlias;
+            x.materialized = materialized;
+        }
+
+        public Boolean getMaterialized() {
+            return materialized;
+        }
+
+        public void setMaterialized(Boolean materialized) {
+            this.materialized = materialized;
         }
 
         public SQLObject resolveColumn(long columnNameHash) {
