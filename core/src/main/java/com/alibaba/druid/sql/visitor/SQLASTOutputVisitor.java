@@ -890,12 +890,23 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                     && rightOp.isLogical()
                     && op.isLogical()
             )) {
+                // precedence requires grouping; emit parentheses explicitly when the child is not
+                // already parenthesized (otherwise visitBinaryOpExpr would print them and we'd double up).
+                // Limited to arithmetic operators, where the priority table matches the parser and the
+                // parentheses are semantically required for programmatically-built ASTs (see issue #6408);
+                // other operators keep their historical output to avoid spurious parentheses.
+                boolean printParen = !binaryRight.isParenthesized()
+                        && rightOp.isArithmetic() && op.isArithmetic();
                 if (rightRational) { //这里需要验证
                     this.indentCount++;
                 }
-                //print('(');
+                if (printParen) {
+                    print('(');
+                }
                 printExpr(binaryRight, parameterized);
-                //print(')');
+                if (printParen) {
+                    print(')');
+                }
 
                 if (rightRational) {
                     this.indentCount--;
@@ -960,12 +971,21 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             }
 
             if (bracket) {
+                // precedence requires grouping; emit parentheses explicitly when the child is not
+                // already parenthesized (otherwise visitBinaryOpExpr would print them and we'd double up).
+                // Limited to arithmetic operators (see issue #6408 and visitorBinaryRight).
+                boolean printParen = !binaryLeft.isParenthesized()
+                        && leftOp.isArithmetic() && op.isArithmetic();
                 if (leftRational) {
                     this.indentCount++;
                 }
-                //print('(');
+                if (printParen) {
+                    print('(');
+                }
                 printExpr(left, parameterized);
-               // print(')');
+                if (printParen) {
+                    print(')');
+                }
 
                 if (leftRational) {
                     this.indentCount--;
