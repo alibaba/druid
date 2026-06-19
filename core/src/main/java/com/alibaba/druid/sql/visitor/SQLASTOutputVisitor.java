@@ -878,6 +878,16 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     private void visitorBinaryRight(SQLBinaryOpExpr x) {
         SQLExpr right = x.getRight();
         SQLBinaryOperator op = x.getOperator();
+        if (op == SQLBinaryOperator.MemberOf) {
+            // MySQL: value MEMBER OF (json_array) — the parentheses are part of the syntax
+            print('(');
+            printExpr(right, parameterized);
+            print(')');
+            if (x.getHint() != null) {
+                x.getHint().accept(this);
+            }
+            return;
+        }
         if (right instanceof SQLBinaryOpExpr) {
             SQLBinaryOpExpr binaryRight = (SQLBinaryOpExpr) right;
             SQLBinaryOperator rightOp = binaryRight.getOperator();

@@ -3743,6 +3743,21 @@ public class SQLExprParser extends SQLParser {
         final SQLExpr initExpr = expr;
         SQLExpr rightExp = null;
 
+        if (lexer.token == Token.IDENTIFIER && lexer.identifierEquals(FnvHash.Constants.MEMBER)) {
+            // MySQL JSON predicate: value MEMBER OF (json_array)
+            Lexer.SavePoint mark = lexer.mark();
+            lexer.nextToken();
+            if (lexer.token == Token.OF || lexer.identifierEquals("OF")) {
+                lexer.nextToken();
+                accept(Token.LPAREN);
+                SQLExpr array = expr();
+                accept(Token.RPAREN);
+                return new SQLBinaryOpExpr(expr, SQLBinaryOperator.MemberOf, array, dbType);
+            } else {
+                lexer.reset(mark);
+            }
+        }
+
         Token token = lexer.token;
 
         switch (token) {

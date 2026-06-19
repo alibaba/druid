@@ -92,6 +92,7 @@ public enum SQLBinaryOperator {
     NotRegExp("NOT REGEXP", 110),
     Equality("=", 110),
     EqEq("==", 110),
+    MemberOf("MEMBER OF", 110), // mysql json: value MEMBER OF (json_array)
 
     BitwiseNot("!", 130),
     Concat("||", 140),
