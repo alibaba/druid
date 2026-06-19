@@ -448,6 +448,20 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     }
 
     @Override
+    public boolean visit(SQLCharacterDataType x) {
+        super.visit(x);
+        // PostgreSQL stores the COLLATE clause on the character data type (e.g. text COLLATE "x"
+        // produced by a cast like (a)::text COLLATE "x", or a column definition); the generic
+        // data type output drops it, so render it here (see issue #6573).
+        String collate = x.getCollate();
+        if (collate != null) {
+            print0(ucase ? " COLLATE " : " collate ");
+            print0(collate);
+        }
+        return false;
+    }
+
+    @Override
     public boolean visit(PGExtractExpr x) {
         print0(ucase ? "EXTRACT(" : "extract(");
         print0(x.getField().name());
