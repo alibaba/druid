@@ -4429,8 +4429,14 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             return false;
         }
 
-        print0("0x");
-        print0(x.getHex());
+        String hex = x.getHex();
+        if (hex == null || hex.isEmpty()) {
+            // 0x must have at least one digit; an empty hex literal is written X'' (issue #5244)
+            print0("X''");
+        } else {
+            print0("0x");
+            print0(hex);
+        }
 
         String charset = (String) x.getAttribute("USING");
         if (charset != null) {
