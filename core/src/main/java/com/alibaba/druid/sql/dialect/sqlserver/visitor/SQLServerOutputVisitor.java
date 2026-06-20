@@ -264,6 +264,9 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
         if (moduleName == null) {
             print(')');
         }
+        if (x.isRecompile()) {
+            print0(ucase ? " WITH RECOMPILE" : " with recompile");
+        }
         return false;
     }
 
@@ -381,21 +384,24 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
             print0(ucase ? "FOR BROWSE" : "for browse");
         }
 
-        if (x.getForXmlOptionsSize() > 0) {
+        if (x.getForXmlOptionsSize() > 0 || x.getXmlPath() != null) {
             println();
             print0(ucase ? "FOR XML " : "for xml ");
-            for (int i = 0; i < x.getForXmlOptions().size(); ++i) {
-                if (i != 0) {
-                    print0(", ");
-                    print0(x.getForXmlOptions().get(i));
-                }
+            // single FOR XML clause: the mode/path comes first, then comma-separated options
+            // (including the first one). Previously the first option was dropped and the path was
+            // emitted as a second, duplicate "FOR XML" clause (see issue #6564).
+            boolean first = true;
+            if (x.getXmlPath() != null) {
+                x.getXmlPath().accept(this);
+                first = false;
             }
-        }
-
-        if (x.getXmlPath() != null) {
-            println();
-            print0(ucase ? "FOR XML " : "for xml ");
-            x.getXmlPath().accept(this);
+            for (int i = 0; i < x.getForXmlOptions().size(); ++i) {
+                if (!first) {
+                    print0(", ");
+                }
+                print0(x.getForXmlOptions().get(i));
+                first = false;
+            }
         }
 
         if (x.getOffset() != null) {

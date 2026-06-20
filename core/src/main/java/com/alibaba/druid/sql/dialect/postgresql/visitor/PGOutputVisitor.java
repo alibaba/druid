@@ -150,6 +150,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
 
         printFrom(x);
         printWhere(x);
+        printHierarchical(x);
         printGroupBy(x);
         printWindow(x);
         printOrderBy(x);
@@ -234,9 +235,15 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             this.indentCount--;
         }
 
-        if (x.isReturning()) {
+        SQLExpr returning = x.getReturning();
+        if (returning != null) {
             println();
-            print0(ucase ? "RETURNING *" : "returning *");
+            print0(ucase ? "RETURNING " : "returning ");
+            if (returning instanceof SQLListExpr) {
+                printAndAccept(((SQLListExpr) returning).getItems(), ", ");
+            } else {
+                returning.accept(this);
+            }
         }
 
         return false;
@@ -438,6 +445,20 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         }
         print0("::");
         dataType.accept(this);
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLCharacterDataType x) {
+        super.visit(x);
+        // PostgreSQL stores the COLLATE clause on the character data type (e.g. text COLLATE "x"
+        // produced by a cast like (a)::text COLLATE "x", or a column definition); the generic
+        // data type output drops it, so render it here (see issue #6573).
+        String collate = x.getCollate();
+        if (collate != null) {
+            print0(ucase ? " COLLATE " : " collate ");
+            print0(collate);
+        }
         return false;
     }
 

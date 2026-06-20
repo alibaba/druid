@@ -83,6 +83,21 @@ public class SQLParser {
         }
     }
 
+    /**
+     * PostgreSQL CTE materialization hint between AS and the opening paren: [ NOT ] MATERIALIZED.
+     * Shared by SQLSelectParser#parseWith and SQLStatementParser#parseWithQuery (issue #6560).
+     */
+    protected void parseCTEMaterializationHint(com.alibaba.druid.sql.ast.statement.SQLWithSubqueryClause.Entry entry) {
+        if (lexer.identifierEquals(FnvHash.Constants.MATERIALIZED)) {
+            lexer.nextToken();
+            entry.setMaterialized(Boolean.TRUE);
+        } else if (lexer.token == Token.NOT) {
+            lexer.nextToken();
+            acceptIdentifier("MATERIALIZED");
+            entry.setMaterialized(Boolean.FALSE);
+        }
+    }
+
     protected String tableAlias() {
         return tableAlias(false);
     }

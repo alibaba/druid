@@ -218,8 +218,10 @@ public class PGExprParser extends SQLExprParser {
 
     @Override
     protected void parseDataTypeDouble(StringBuilder typeName) {
-        typeName.append(' ').append(lexer.stringVal());
-        lexer.nextToken();
+        if (lexer.identifierEquals(FnvHash.Constants.PRECISION)) {
+            typeName.append(' ').append(lexer.stringVal());
+            lexer.nextToken();
+        }
     }
 
     @Override
@@ -246,6 +248,27 @@ public class PGExprParser extends SQLExprParser {
     }
 
     public SQLExpr primary() {
+        if (lexer.token() == Token.IDENTIFIER && lexer.identifierEquals("VARIADIC")) {
+            // postgresql variadic function argument, e.g. func(VARIADIC ARRAY[...]) (issue #6393).
+            // Only treat VARIADIC as a prefix when a value expression actually follows; otherwise it
+            // is an ordinary identifier (e.g. a column named "variadic") and must be left intact.
+            Lexer.SavePoint mark = lexer.mark();
+            lexer.nextToken();
+            switch (lexer.token()) {
+                case ARRAY:
+                case LBRACKET:
+                case LPAREN:
+                case IDENTIFIER:
+                case LITERAL_INT:
+                case LITERAL_CHARS:
+                case LITERAL_FLOAT:
+                case QUES:
+                case VARIANT:
+                    return primaryRest(new SQLUnaryExpr(SQLUnaryOperator.VARIADIC, primary()));
+                default:
+                    lexer.reset(mark);
+            }
+        }
         if (lexer.token() == Token.ARRAY) {
             String ident = lexer.stringVal();
             lexer.nextToken();

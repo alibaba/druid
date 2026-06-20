@@ -369,8 +369,8 @@ CREATE TABLE "public"."city" (
 ) WITH (OIDS=FALSE);
 --------------------
 CREATE TABLE "public"."city" (
-	"id" varchar(6) NOT NULL,
-	"name" varchar(32) NOT NULL
+	"id" varchar(6) COLLATE "default" NOT NULL,
+	"name" varchar(32) COLLATE "default" NOT NULL
 )
 WITH (
 	OIDS = false

@@ -5948,6 +5948,10 @@ public class SQLStatementParser extends SQLParser {
             }
 
             accept(Token.AS);
+
+            // PostgreSQL: name AS [ NOT ] MATERIALIZED ( query )
+            parseCTEMaterializationHint(entry);
+
             accept(Token.LPAREN);
 
             switch (lexer.token) {
