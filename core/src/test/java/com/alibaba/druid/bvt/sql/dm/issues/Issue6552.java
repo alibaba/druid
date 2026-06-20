@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * DM (Dameng) LISTAGG over a derived table with DISTINCT.
@@ -22,5 +23,8 @@ public class Issue6552 {
                 + "GROUP BY project_id";
         List<SQLStatement> stmts = SQLUtils.parseStatements(sql, DbType.dm);
         assertEquals(1, stmts.size());
+        String out = SQLUtils.toSQLString(stmts.get(0), DbType.dm);
+        assertTrue(out.contains("LISTAGG"), "LISTAGG must be preserved:\n" + out);
+        assertTrue(out.contains("DISTINCT"), "DISTINCT in derived table must be preserved:\n" + out);
     }
 }

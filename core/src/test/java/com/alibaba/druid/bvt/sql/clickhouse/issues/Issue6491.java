@@ -23,6 +23,8 @@ public class Issue6491 {
                 + "LEFT JOIN default.my_table5_trace_id AS b ON a.trace_id = b.trace_id";
         List<SQLStatement> stmts = SQLUtils.parseStatements(sql, DbType.clickhouse);
         assertEquals(1, stmts.size());
-        assertTrue(SQLUtils.toSQLString(stmts.get(0), DbType.clickhouse).contains("ARRAY JOIN"));
+        String out = SQLUtils.toSQLString(stmts.get(0), DbType.clickhouse);
+        assertTrue(out.contains("ARRAY JOIN"), out);
+        assertTrue(out.contains("FROM (default.my_table5"), "parenthesized table source must be kept:\n" + out);
     }
 }

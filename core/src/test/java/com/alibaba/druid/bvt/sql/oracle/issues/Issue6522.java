@@ -9,6 +9,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Oracle table alias must not get an AS keyword (Oracle does not allow AS for table aliases).
@@ -23,5 +24,6 @@ public class Issue6522 {
         assertEquals(1, stmts.size());
         String out = SQLUtils.toSQLString(stmts.get(0), DbType.oracle);
         assertFalse(out.contains("AB01 AS a"), "Oracle table alias must not use AS:\n" + out);
+        assertTrue(out.contains("AB01 a"), "table alias should be preserved without AS:\n" + out);
     }
 }
