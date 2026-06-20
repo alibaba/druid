@@ -251,6 +251,9 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
     }
 
     public boolean visit(SQLColumnDefinition x) {
+        if (x.isIfNotExists()) {
+            print0(ucase ? "IF NOT EXISTS " : "if not exists ");
+        }
         String columnName = replaceQuota(x.getName().getSimpleName());
         printName0(columnName);
 

@@ -7572,7 +7572,18 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         SQLAlterTableAddColumn item = new SQLAlterTableAddColumn();
         for (; ; ) {
+            // MySQL/MariaDB: ADD COLUMN IF NOT EXISTS col ... (scoped to ADD COLUMN; issue #6067)
+            boolean ifNotExists = false;
+            if (lexer.token() == Token.IF) {
+                lexer.nextToken();
+                accept(Token.NOT);
+                accept(Token.EXISTS);
+                ifNotExists = true;
+            }
             SQLColumnDefinition columnDef = this.exprParser.parseColumn();
+            if (ifNotExists) {
+                columnDef.setIfNotExists(true);
+            }
             item.addColumn(columnDef);
             if (lexer.identifierEquals("AFTER")) {
                 lexer.nextToken();
