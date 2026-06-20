@@ -3016,7 +3016,9 @@ public class SQLStatementParser extends SQLParser {
 
     protected void alterTableAddRest(SQLAlterTableStatement stmt) {
         acceptIdentifier("ADD");
-        if (lexer.token == Token.IDENTIFIER) {
+        // ADD [COLUMN] <name> <type> ... where the name may be a quoted identifier such as
+        // "version" (a LITERAL_ALIAS), not just a bare IDENTIFIER (issue #6064)
+        if (lexer.token == Token.IDENTIFIER || lexer.token == Token.LITERAL_ALIAS) {
             SQLAlterTableAddColumn item = parseAlterTableAddColumn();
             stmt.addItem(item);
             return;

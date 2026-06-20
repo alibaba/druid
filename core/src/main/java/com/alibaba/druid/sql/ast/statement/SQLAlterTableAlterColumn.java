@@ -33,14 +33,28 @@ public class SQLAlterTableAlterColumn extends SQLObjectImpl implements SQLAlterT
     private SQLName after;
     private SQLDataType dataType;
     private boolean toFirst;
+    // PostgreSQL: ALTER COLUMN col TYPE <type> USING <expr>
+    private SQLExpr using;
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, column);
             acceptChild(visitor, setDefault);
+            acceptChild(visitor, using);
         }
         visitor.endVisit(this);
+    }
+
+    public SQLExpr getUsing() {
+        return using;
+    }
+
+    public void setUsing(SQLExpr using) {
+        if (using != null) {
+            using.setParent(this);
+        }
+        this.using = using;
     }
 
     public SQLColumnDefinition getColumn() {
