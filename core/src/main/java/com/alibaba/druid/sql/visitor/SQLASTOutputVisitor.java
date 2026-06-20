@@ -6019,6 +6019,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             dataType.accept(this);
         }
 
+        if (x.getUsing() != null) { // postgresql: ALTER COLUMN col TYPE <type> USING <expr>
+            print0(ucase ? " USING " : " using ");
+            x.getUsing().accept(this);
+        }
+
         final SQLName after = x.getAfter();
         if (after != null) {
             print0(ucase ? " AFTER " : " after ");

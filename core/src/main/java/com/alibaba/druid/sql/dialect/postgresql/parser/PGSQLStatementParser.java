@@ -995,6 +995,15 @@ public class PGSQLStatementParser extends SQLStatementParser {
                 }
             }
         }
+
+        // PostgreSQL: ALTER COLUMN col [SET DATA] TYPE <type> USING <expr>.
+        // parseColumn may already have consumed "TYPE <type>" into the column definition, so this
+        // check is outside the block above (issue #6064).
+        if (lexer.token() == Token.USING || lexer.identifierEquals("USING")) {
+            lexer.nextToken();
+            alterColumn.setUsing(this.exprParser.expr());
+        }
+
         return alterColumn;
     }
 
