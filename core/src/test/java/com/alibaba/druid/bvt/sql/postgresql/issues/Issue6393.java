@@ -33,4 +33,11 @@ public class Issue6393 {
     public void test_variadic_simple() {
         assertTrue(rt("SELECT concat_ws(',', VARIADIC arr) FROM t").contains("VARIADIC arr"));
     }
+
+    @Test
+    public void test_variadic_as_column_name() {
+        // a column literally named "variadic" must not be swallowed by the VARIADIC prefix
+        assertEquals("SELECT variadic FROM t", rt("select variadic from t"));
+        assertEquals("SELECT * FROM t WHERE variadic = 1", rt("select * from t where variadic = 1"));
+    }
 }

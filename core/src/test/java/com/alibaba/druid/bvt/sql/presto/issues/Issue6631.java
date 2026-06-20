@@ -38,4 +38,10 @@ public class Issue6631 {
     public void test_array_constructor_still_works() {
         assertEquals("SELECT ARRAY[1, 2, 3]", rt("select ARRAY[1,2,3]"));
     }
+
+    @Test
+    public void test_nested_subscript() {
+        // nested map/array access must keep both levels and their bases
+        assertEquals("SELECT col['a']['b'] FROM t", rt("select col['a']['b'] from t"));
+    }
 }

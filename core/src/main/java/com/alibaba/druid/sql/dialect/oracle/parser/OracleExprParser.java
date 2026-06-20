@@ -686,10 +686,10 @@ public class OracleExprParser extends SQLExprParser {
                     lexer.nextToken();
                     accept(Token.RPAREN);
                 }
-            } else if (lexer.identifierEquals("HOUR")) {
+            } else if (lexer.identifierEquals(FnvHash.Constants.HOUR)) {
                 lexer.nextToken();
                 interval.setToType(OracleIntervalType.HOUR);
-            } else if (lexer.identifierEquals("MINUTE")) {
+            } else if (lexer.identifierEquals(FnvHash.Constants.MINUTE)) {
                 lexer.nextToken();
                 interval.setToType(OracleIntervalType.MINUTE);
             } else {
@@ -1225,8 +1225,8 @@ public class OracleExprParser extends SQLExprParser {
             OracleCreateIndexStatement createIndex = new OracleStatementParser(lexer).parseCreateIndex();
             using.setIndex(createIndex);
             accept(Token.RPAREN);
-        } else if (lexer.token() == Token.LITERAL_ALIAS) {
-            // USING INDEX <existing_index_name>, possibly schema-qualified (see issue #6458)
+        } else if (lexer.token() == Token.LITERAL_ALIAS || lexer.token() == Token.IDENTIFIER) {
+            // USING INDEX <existing_index_name>, quoted or unquoted, possibly schema-qualified (issue #6458)
             using.setIndex(this.name());
         }
 

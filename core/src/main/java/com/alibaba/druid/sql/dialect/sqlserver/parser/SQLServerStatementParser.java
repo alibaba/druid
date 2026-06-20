@@ -77,11 +77,16 @@ public class SQLServerStatementParser extends SQLStatementParser {
                     this.parseExecParameter(execStmt.getParameters(), execStmt);
                 }
             }
-            // EXEC ... WITH RECOMPILE
+            // EXEC ... WITH RECOMPILE (leave other WITH options, e.g. WITH RESULT SETS, untouched)
             if (lexer.token() == Token.WITH) {
+                Lexer.SavePoint mark = lexer.mark();
                 lexer.nextToken();
-                acceptIdentifier("RECOMPILE");
-                execStmt.setRecompile(true);
+                if (lexer.identifierEquals("RECOMPILE")) {
+                    lexer.nextToken();
+                    execStmt.setRecompile(true);
+                } else {
+                    lexer.reset(mark);
+                }
             }
             statementList.add(execStmt);
             return true;

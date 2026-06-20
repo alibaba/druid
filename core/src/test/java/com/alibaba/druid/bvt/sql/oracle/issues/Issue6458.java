@@ -29,4 +29,14 @@ public class Issue6458 {
         assertTrue(out.contains("USING INDEX \"SC\".\"PK_XXX\""), out);
         assertTrue(out.contains("ENABLE"), out);
     }
+
+    @Test
+    public void test_using_index_unquoted_name() {
+        String sql = "ALTER TABLE t ADD CONSTRAINT pk PRIMARY KEY (id) USING INDEX my_index ENABLE";
+        List<SQLStatement> stmts = SQLUtils.parseStatements(sql, DbType.oracle);
+        assertEquals(1, stmts.size());
+        String out = SQLUtils.toSQLString(stmts.get(0), DbType.oracle);
+        assertTrue(out.contains("USING INDEX my_index"), out);
+        assertTrue(out.contains("ENABLE"), out);
+    }
 }

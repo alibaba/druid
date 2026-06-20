@@ -39,4 +39,11 @@ public class Issue6534 {
         assertTrue(rt("select * from t where a = 1 and 5 member of (data)")
                 .contains("5 MEMBER OF (data)"));
     }
+
+    @Test
+    public void test_member_as_column_name() {
+        // "member" not followed by OF must remain an ordinary identifier (mark/reset fallback)
+        assertEquals("SELECT member FROM t", rt("select member from t"));
+        assertEquals("SELECT * FROM t WHERE member = 1", rt("select * from t where member = 1"));
+    }
 }
