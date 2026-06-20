@@ -1735,6 +1735,14 @@ public class MySqlExprParser extends SQLExprParser {
         SQLColumnDefinition column = new SQLColumnDefinition();
         column.setDbType(dbType);
 
+        // MySQL/MariaDB: ALTER TABLE ... ADD COLUMN IF NOT EXISTS col ... (issue #6067)
+        if (lexer.token() == Token.IF) {
+            lexer.nextToken();
+            accept(Token.NOT);
+            accept(Token.EXISTS);
+            column.setIfNotExists(true);
+        }
+
         SQLName name = name();
         column.setName(name);
         column.setDataType(
