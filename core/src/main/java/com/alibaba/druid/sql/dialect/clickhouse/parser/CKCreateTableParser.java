@@ -99,6 +99,15 @@ public class CKCreateTableParser extends SQLCreateTableParser {
                 ckStmt.setTtl(this.exprParser.expr());
                 ttlSeen = true;
             } else {
+                // a repeated engine clause (e.g. two ORDER BY) would otherwise leak to the caller
+                // and produce a misleading "expect EOF" error; report it clearly instead
+                if (lexer.token() == Token.PARTITION
+                        || lexer.token() == Token.ORDER
+                        || lexer.token() == Token.PRIMARY
+                        || lexer.token() == Token.TTL
+                        || lexer.identifierEquals("SAMPLE")) {
+                    throw new ParserException("duplicate ClickHouse engine clause. " + lexer.info());
+                }
                 break;
             }
         }

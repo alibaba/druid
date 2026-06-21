@@ -1136,11 +1136,15 @@ public class MySqlStatementParser extends SQLStatementParser {
 
             if (lexer.token() != EOF && lexer.token() != SEMI) {
                 SQLExpr xid = exprParser.expr();
-                // xid may have up to three comma-separated parts: gtrid[, bqual[, formatID]] (#4979)
+                // xid has at most three comma-separated parts: gtrid[, bqual[, formatID]] (#4979)
                 if (lexer.token() == Token.COMMA) {
                     SQLListExpr list = new SQLListExpr();
                     list.addItem(xid);
                     while (lexer.token() == Token.COMMA) {
+                        if (list.getItems().size() >= 3) {
+                            throw new ParserException(
+                                    "XA xid has at most 3 parts (gtrid, bqual, formatID). " + lexer.info());
+                        }
                         lexer.nextToken();
                         list.addItem(exprParser.expr());
                     }

@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * MySQL XA transaction id with up to three comma-separated parts: gtrid[, bqual[, formatID]].
@@ -29,5 +30,18 @@ public class Issue4979 {
     @Test
     public void test_xa_start_single_xid_unchanged() {
         assertEquals("XA START 0x31", rt("XA START 0x31"));
+    }
+
+    @Test
+    public void test_xa_other_commands_share_xid_parsing() {
+        // xid parsing is shared across all XA command types
+        assertEquals("XA END 0x31, 0x2d, 0x26", rt("XA END 0x31,0x2d,0x26"));
+        assertEquals("XA COMMIT 0x31, 0x2d, 0x26", rt("XA COMMIT 0x31,0x2d,0x26"));
+    }
+
+    @Test
+    public void test_xa_xid_more_than_three_parts_is_error() {
+        // MySQL allows at most gtrid, bqual, formatID
+        assertThrows(Exception.class, () -> rt("XA START 0x31,0x2d,0x26,0x99"));
     }
 }
