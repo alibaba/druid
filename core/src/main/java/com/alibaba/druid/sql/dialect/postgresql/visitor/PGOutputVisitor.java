@@ -77,13 +77,17 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             print0(ucase ? "UPDATE" : "update");
         } else if (ForClause.Option.SHARE.equals(x.getOption())) {
             print0(ucase ? "SHARE" : "share");
+        } else if (ForClause.Option.KEY_SHARE.equals(x.getOption())) {
+            print0(ucase ? "KEY SHARE" : "key share");
+        } else if (ForClause.Option.NO_KEY_UPDATE.equals(x.getOption())) {
+            print0(ucase ? "NO KEY UPDATE" : "no key update");
         }
 
         if (x.getOf().size() > 0) {
-            print(' ');
+            print0(ucase ? " OF " : " of ");
             for (int i = 0; i < x.getOf().size(); ++i) {
                 if (i != 0) {
-                    println(", ");
+                    print0(", ");
                 }
                 x.getOf().get(i).accept(this);
             }
