@@ -150,6 +150,15 @@ public class OscarSelectQueryBlock extends SQLSelectQueryBlock implements OscarO
             visitor.endVisit(this);
         }
 
+        public FetchClause clone() {
+            FetchClause x = new FetchClause();
+            x.option = option;
+            if (count != null) {
+                x.count = count.clone();
+                x.count.setParent(x);
+            }
+            return x;
+        }
     }
 
     public void setTop(SQLTop top) {
@@ -216,6 +225,19 @@ public class OscarSelectQueryBlock extends SQLSelectQueryBlock implements OscarO
             }
             visitor.endVisit(this);
         }
+
+        public ForClause clone() {
+            ForClause x = new ForClause();
+            x.option = option;
+            x.noWait = noWait;
+            x.skipLocked = skipLocked;
+            for (SQLExpr item : of) {
+                SQLExpr item2 = item.clone();
+                item2.setParent(x);
+                x.of.add(item2);
+            }
+            return x;
+        }
     }
 
     @Override
@@ -238,10 +260,14 @@ public class OscarSelectQueryBlock extends SQLSelectQueryBlock implements OscarO
             x.setTop(top.clone());
         }
 
-        // FetchClause has no clone(); shallow copy by reference
-        x.fetch = fetch;
-        // ForClause has no clone(); shallow copy by reference
-        x.forClause = forClause;
+        if (fetch != null) {
+            x.fetch = fetch.clone();
+            x.fetch.setParent(x);
+        }
+        if (forClause != null) {
+            x.forClause = forClause.clone();
+            x.forClause.setParent(x);
+        }
 
         x.intoOptionTemp = intoOptionTemp;
         x.intoOptionLocal = intoOptionLocal;

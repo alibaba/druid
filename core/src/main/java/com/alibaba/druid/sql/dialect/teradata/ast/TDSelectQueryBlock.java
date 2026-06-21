@@ -68,6 +68,8 @@ public class TDSelectQueryBlock extends SQLSelectQueryBlock {
         }
         x.withDeletedRows = withDeletedRows;
         x.asJson = asJson;
-        x.normalize = normalize;
+        if (normalize != null) {
+            x.setNormalize(normalize.clone());
+        }
     }
 }

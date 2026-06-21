@@ -1,8 +1,12 @@
 package com.alibaba.druid.bvt.sql;
 
 import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.clickhouse.ast.CKSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
 import com.alibaba.druid.sql.dialect.dm.ast.stmt.DmSelectQueryBlock;
@@ -14,6 +18,7 @@ import com.alibaba.druid.sql.dialect.teradata.ast.TDSelectQueryBlock;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -56,5 +61,25 @@ public class QueryBlockCloneTypeTest {
         PGSelectQueryBlock pg = new PGSelectQueryBlock();
         pg.getDistinctOn().add(new SQLIdentifierExpr("a"));
         assertEquals(1, pg.clone().getDistinctOn().size(), "PG distinctOn lost on clone");
+    }
+
+    @Test
+    public void cloneDeepCopiesFetchClause() {
+        SQLStatement original = SQLUtils.parseStatements(
+                "SELECT * FROM t ORDER BY id FETCH FIRST 10 ROWS ONLY", DbType.postgresql).get(0);
+        SQLStatement cloned = original.clone();
+
+        PGSelectQueryBlock origQb = (PGSelectQueryBlock) ((SQLSelectStatement) original).getSelect().getQueryBlock();
+        PGSelectQueryBlock cloneQb = (PGSelectQueryBlock) ((SQLSelectStatement) cloned).getSelect().getQueryBlock();
+
+        // the FetchClause must be a distinct instance and the clone's child must point at the clone
+        assertNotSame(origQb.getFetch(), cloneQb.getFetch(), "clone shares the FetchClause with the original");
+        assertEquals(cloneQb, cloneQb.getFetch().getParent(), "cloned FetchClause parent points outside the clone");
+
+        // mutating the clone must not pollute the original
+        cloneQb.getFetch().setCount(new SQLIntegerExpr(999));
+        assertTrue(original.toString().contains("FETCH FIRST 10 ROWS ONLY"),
+                "original FETCH was polluted by mutating the clone: " + original);
+        assertTrue(cloned.toString().contains("999"), "clone mutation did not take effect");
     }
 }

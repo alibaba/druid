@@ -92,6 +92,15 @@ public class DmSelectQueryBlock extends SQLSelectQueryBlock {
             }
             visitor.endVisit(this);
         }
+
+        public FetchClause clone() {
+            FetchClause x = new FetchClause();
+            x.option = option;
+            if (count != null) {
+                x.setCount(count.clone());
+            }
+            return x;
+        }
     }
 
     public static class ForClause extends DmObjectImpl {
@@ -152,6 +161,22 @@ public class DmSelectQueryBlock extends SQLSelectQueryBlock {
             }
             visitor.endVisit(this);
         }
+
+        public ForClause clone() {
+            ForClause x = new ForClause();
+            x.option = option;
+            x.noWait = noWait;
+            x.skipLocked = skipLocked;
+            for (SQLExpr item : of) {
+                SQLExpr item2 = item.clone();
+                item2.setParent(x);
+                x.of.add(item2);
+            }
+            if (waitTimeout != null) {
+                x.setWaitTimeout(waitTimeout.clone());
+            }
+            return x;
+        }
     }
 
     @Override
@@ -195,9 +220,13 @@ public class DmSelectQueryBlock extends SQLSelectQueryBlock {
         if (top != null) {
             x.setTop(top.clone());
         }
-        // FetchClause has no clone() method (extends DmObjectImpl which lacks clone) -> shallow copy
-        x.fetch = fetch;
-        // ForClause has no clone() method (extends DmObjectImpl which lacks clone) -> shallow copy
-        x.forClause = forClause;
+        if (fetch != null) {
+            x.fetch = fetch.clone();
+            x.fetch.setParent(x);
+        }
+        if (forClause != null) {
+            x.forClause = forClause.clone();
+            x.forClause.setParent(x);
+        }
     }
 }
