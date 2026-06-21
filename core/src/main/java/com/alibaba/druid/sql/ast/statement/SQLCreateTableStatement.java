@@ -1283,6 +1283,7 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
     }
 
     public void cloneTo(SQLCreateTableStatement x) {
+        super.cloneTo(x);
         x.features = features;
 
         if (tableSource != null) {

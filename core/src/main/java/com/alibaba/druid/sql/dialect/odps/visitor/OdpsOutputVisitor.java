@@ -1116,7 +1116,7 @@ public class OdpsOutputVisitor extends HiveOutputVisitor implements OdpsASTVisit
             println();
             for (int i = 0, size = arguments.size(); i < size; i += 2) {
                 if (i != 0) {
-                    print0(',');
+                    print(',');
                     println();
                 }
 

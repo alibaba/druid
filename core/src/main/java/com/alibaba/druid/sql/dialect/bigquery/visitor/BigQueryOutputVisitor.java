@@ -378,6 +378,7 @@ public class BigQueryOutputVisitor extends SQLASTOutputVisitor
                 && text.charAt(0) != '`'
                 && text.indexOf('-') != -1
         ) {
+            flushEndLineComment();
             appender.append('`');
             appender.append(text);
             appender.append('`');

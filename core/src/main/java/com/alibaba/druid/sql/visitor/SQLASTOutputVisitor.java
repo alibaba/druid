@@ -296,7 +296,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
      * as a {@code -- } / {@code # } comment and silently swallowed on the next parse.
      * Callers must invoke this only after confirming {@link #appender} is non-null.
      */
-    private void flushEndLineComment() {
+    protected void flushEndLineComment() {
         if (endLineComment) {
             println();
         }

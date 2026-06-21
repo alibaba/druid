@@ -53,4 +53,18 @@ public class EndLineCommentRoundTripTest {
         assertEquals(6, struct.getItems().size(),
                 "a struct field was swallowed by the line comment on the multi-line comma path:\n" + formatted);
     }
+
+    @Test
+    public void lineComment_inOdpsMultilineArgs_doesNotBreakReparse() {
+        // ODPS named_struct prints args via its own printMethodParameters; the multi-line separator
+        // comma must terminate a pending line comment, otherwise the formatted SQL is unparseable.
+        String sql = "select named_struct('k1', a -- cmt\n, 'k2', b, 'k3', c, 'k4', d, 'k5', e, 'k6', f) from t";
+
+        String formatted = SQLUtils.parseStatements(sql, DbType.odps, SQLParserFeature.KeepComments)
+                .get(0).toString();
+
+        // If the comma had glued onto the "-- cmt" line, this re-parse throws ParserException.
+        List<SQLStatement> reparsed = SQLUtils.parseStatements(formatted, DbType.odps);
+        assertEquals(1, reparsed.size(), "formatted ODPS SQL failed to re-parse:\n" + formatted);
+    }
 }
