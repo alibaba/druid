@@ -84,10 +84,10 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         }
 
         if (x.getOf().size() > 0) {
-            print(' ');
+            print0(ucase ? " OF " : " of ");
             for (int i = 0; i < x.getOf().size(); ++i) {
                 if (i != 0) {
-                    println(", ");
+                    print0(", ");
                 }
                 x.getOf().get(i).accept(this);
             }

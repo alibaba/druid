@@ -225,6 +225,7 @@ public class PGSelectParser extends SQLSelectParser {
             }
 
             if (lexer.token() == Token.OF) {
+                lexer.nextToken();
                 for (; ; ) {
                     SQLExpr expr = this.createExprParser().expr();
                     forClause.getOf().add(expr);

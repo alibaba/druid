@@ -33,8 +33,13 @@ public class SQLHexExpr extends SQLExprImpl implements SQLLiteralExpr, SQLValuab
     }
 
     public void output(StringBuilder buf) {
-        buf.append("0x");
-        buf.append(this.hex);
+        if (this.hex == null || this.hex.isEmpty()) {
+            // 0x must have at least one digit; an empty hex literal is written X'' (issue #5244)
+            buf.append("X''");
+        } else {
+            buf.append("0x");
+            buf.append(this.hex);
+        }
 
         String charset = (String) getAttribute("USING");
         if (charset != null) {

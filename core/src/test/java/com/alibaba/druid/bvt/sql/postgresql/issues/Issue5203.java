@@ -38,4 +38,22 @@ public class Issue5203 {
         assertEquals("SELECT id FROM t FOR UPDATE", rt("SELECT id FROM t FOR UPDATE"));
         assertEquals("SELECT id FROM t FOR SHARE", rt("SELECT id FROM t FOR SHARE"));
     }
+
+    @Test
+    public void test_for_key_share_with_of() {
+        assertEquals("SELECT * FROM t FOR KEY SHARE OF t",
+                rt("SELECT * FROM t FOR KEY SHARE OF t"));
+    }
+
+    @Test
+    public void test_for_no_key_update_with_nowait() {
+        assertEquals("SELECT * FROM t FOR NO KEY UPDATE NOWAIT",
+                rt("SELECT * FROM t FOR NO KEY UPDATE NOWAIT"));
+    }
+
+    @Test
+    public void test_for_key_share_skip_locked() {
+        assertEquals("SELECT * FROM t FOR KEY SHARE SKIP LOCKED",
+                rt("SELECT * FROM t FOR KEY SHARE SKIP LOCKED"));
+    }
 }
