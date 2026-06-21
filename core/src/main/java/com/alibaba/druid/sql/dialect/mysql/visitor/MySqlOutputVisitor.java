@@ -5586,7 +5586,12 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         SQLExpr id = x.getId();
         if (id != null) {
             print(' ');
-            printExpr(id);
+            if (id instanceof SQLListExpr) {
+                // multi-part xid: gtrid, bqual, formatID — comma-separated, no surrounding parens
+                printAndAccept(((SQLListExpr) id).getItems(), ", ");
+            } else {
+                printExpr(id);
+            }
         }
         return false;
     }

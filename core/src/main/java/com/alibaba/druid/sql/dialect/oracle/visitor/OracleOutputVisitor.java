@@ -1993,6 +1993,11 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         if (x.isPurgeSnapshotLog()) {
             print0(ucase ? " PURGE SNAPSHOT LOG" : " purge snapshot log");
         }
+        if (x.isDropStorage()) {
+            print0(ucase ? " DROP STORAGE" : " drop storage");
+        } else if (x.isReuseStorage()) {
+            print0(ucase ? " REUSE STORAGE" : " reuse storage");
+        }
         return false;
     }
 
