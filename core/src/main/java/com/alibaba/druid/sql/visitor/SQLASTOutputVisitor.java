@@ -9299,13 +9299,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     @Override
     public boolean visit(SQLRefreshMaterializedViewStatement x) {
-        print0(ucase ? "REFRESH MATERIALIZED" : "refresh materialized");
+        print0(ucase ? "REFRESH MATERIALIZED VIEW " : "refresh materialized view ");
 
+        // PostgreSQL: REFRESH MATERIALIZED VIEW [ CONCURRENTLY ] name
         if (x.isConcurrently()) {
-            print0(ucase ? " CONCURRENTLY" : " concurrently");
+            print0(ucase ? "CONCURRENTLY " : "concurrently ");
         }
-
-        print0(ucase ? " VIEW " : " view ");
 
         x.getName().accept(this);
 

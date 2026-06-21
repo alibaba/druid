@@ -1,12 +1,11 @@
 package com.alibaba.druid.sql.dialect.clickhouse.parser;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLPartitionBy;
 import com.alibaba.druid.sql.ast.SQLPartitionByList;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLPrimaryKey;
+import com.alibaba.druid.sql.ast.statement.SQLPrimaryKeyImpl;
 import com.alibaba.druid.sql.dialect.clickhouse.ast.CKCreateTableStatement;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLCreateTableParser;
@@ -48,6 +47,19 @@ public class CKCreateTableParser extends SQLCreateTableParser {
         return sqlPartitionBy;
     }
 
+    // ClickHouse PRIMARY KEY accepts a bare column list (PRIMARY KEY a, b) as well as PRIMARY KEY (a, b)
+    private SQLPrimaryKey parseCKPrimaryKey() {
+        accept(Token.PRIMARY);
+        accept(Token.KEY);
+        SQLPrimaryKeyImpl pk = new SQLPrimaryKeyImpl();
+        boolean paren = lexer.nextIf(Token.LPAREN);
+        this.exprParser.orderBy(pk.getColumns(), pk);
+        if (paren) {
+            accept(Token.RPAREN);
+        }
+        return pk;
+    }
+
     protected void parseCreateTableRest(SQLCreateTableStatement stmt) {
         CKCreateTableStatement ckStmt = (CKCreateTableStatement) stmt;
         if (lexer.identifierEquals(FnvHash.Constants.ENGINE)) {
@@ -60,31 +72,44 @@ public class CKCreateTableParser extends SQLCreateTableParser {
             );
         }
 
-        if (lexer.token() == Token.PARTITION) {
-            ckStmt.setPartitionBy(parsePartitionBy());
-        }
-
-        if (lexer.token() == Token.ORDER) {
-            SQLOrderBy orderBy = this.exprParser.parseOrderBy();
-            ckStmt.setOrderBy(orderBy);
-        }
-
-        if (lexer.token() == Token.PRIMARY) {
-            SQLPrimaryKey sqlPrimaryKey = this.exprParser.parsePrimaryKey();
-            ckStmt.setPrimaryKey(sqlPrimaryKey);
-        }
-
-        if (lexer.identifierEquals("SAMPLE")) {
-            lexer.nextToken();
-            accept(Token.BY);
-            SQLExpr expr = this.exprParser.expr();
-            ckStmt.setSampleBy(expr);
-        }
-
-        if (lexer.token() == Token.TTL) {
-            lexer.nextToken();
-            SQLExpr expr = this.exprParser.expr();
-            ckStmt.setTtl(expr);
+        // ClickHouse allows PARTITION BY / ORDER BY / PRIMARY KEY / SAMPLE BY / TTL in any order
+        // (e.g. PRIMARY KEY before ORDER BY); loop until no more engine clauses match (issue #4950)
+        boolean partitionSeen = false;
+        boolean orderSeen = false;
+        boolean primarySeen = false;
+        boolean sampleSeen = false;
+        boolean ttlSeen = false;
+        for (; ; ) {
+            if (lexer.token() == Token.PARTITION && !partitionSeen) {
+                ckStmt.setPartitionBy(parsePartitionBy());
+                partitionSeen = true;
+            } else if (lexer.token() == Token.ORDER && !orderSeen) {
+                ckStmt.setOrderBy(this.exprParser.parseOrderBy());
+                orderSeen = true;
+            } else if (lexer.token() == Token.PRIMARY && !primarySeen) {
+                ckStmt.setPrimaryKey(parseCKPrimaryKey());
+                primarySeen = true;
+            } else if (lexer.identifierEquals("SAMPLE") && !sampleSeen) {
+                lexer.nextToken();
+                accept(Token.BY);
+                ckStmt.setSampleBy(this.exprParser.expr());
+                sampleSeen = true;
+            } else if (lexer.token() == Token.TTL && !ttlSeen) {
+                lexer.nextToken();
+                ckStmt.setTtl(this.exprParser.expr());
+                ttlSeen = true;
+            } else {
+                // a repeated engine clause (e.g. two ORDER BY) would otherwise leak to the caller
+                // and produce a misleading "expect EOF" error; report it clearly instead
+                if (lexer.token() == Token.PARTITION
+                        || lexer.token() == Token.ORDER
+                        || lexer.token() == Token.PRIMARY
+                        || lexer.token() == Token.TTL
+                        || lexer.identifierEquals("SAMPLE")) {
+                    throw new ParserException("duplicate ClickHouse engine clause. " + lexer.info());
+                }
+                break;
+            }
         }
 
         if (lexer.token() == Token.SETTINGS) {
