@@ -73,4 +73,21 @@ public class RedshiftSelectQueryBlock extends SQLSelectQueryBlock {
         }
         visitor.endVisit(this);
     }
+
+    @Override
+    public RedshiftSelectQueryBlock clone() {
+        RedshiftSelectQueryBlock x = new RedshiftSelectQueryBlock();
+        cloneTo(x);
+        return x;
+    }
+
+    public void cloneTo(RedshiftSelectQueryBlock x) {
+        super.cloneTo(x);
+        if (top != null) {
+            x.setTop(top.clone());
+        }
+        x.insertTable = insertTable;
+        x.insertTemp = insertTemp;
+        x.insertTemporary = insertTemporary;
+    }
 }

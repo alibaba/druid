@@ -53,4 +53,21 @@ public class TDSelectQueryBlock extends SQLSelectQueryBlock {
         }
         this.normalize = normalize;
     }
+
+    @Override
+    public TDSelectQueryBlock clone() {
+        TDSelectQueryBlock x = new TDSelectQueryBlock(getDbType());
+        cloneTo(x);
+        return x;
+    }
+
+    public void cloneTo(TDSelectQueryBlock x) {
+        super.cloneTo(x);
+        if (top != null) {
+            x.setTop(top.clone());
+        }
+        x.withDeletedRows = withDeletedRows;
+        x.asJson = asJson;
+        x.normalize = normalize;
+    }
 }

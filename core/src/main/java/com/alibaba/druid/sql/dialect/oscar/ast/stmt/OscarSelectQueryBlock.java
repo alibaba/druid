@@ -217,4 +217,33 @@ public class OscarSelectQueryBlock extends SQLSelectQueryBlock implements OscarO
             visitor.endVisit(this);
         }
     }
+
+    @Override
+    public OscarSelectQueryBlock clone() {
+        OscarSelectQueryBlock x = new OscarSelectQueryBlock();
+        cloneTo(x);
+        return x;
+    }
+
+    public void cloneTo(OscarSelectQueryBlock x) {
+        super.cloneTo(x);
+
+        for (SQLExpr item : distinctOn) {
+            SQLExpr item2 = item.clone();
+            item2.setParent(x);
+            x.distinctOn.add(item2);
+        }
+
+        if (top != null) {
+            x.setTop(top.clone());
+        }
+
+        // FetchClause has no clone(); shallow copy by reference
+        x.fetch = fetch;
+        // ForClause has no clone(); shallow copy by reference
+        x.forClause = forClause;
+
+        x.intoOptionTemp = intoOptionTemp;
+        x.intoOptionLocal = intoOptionLocal;
+    }
 }

@@ -185,4 +185,28 @@ public class PGSelectQueryBlock extends SQLSelectQueryBlock implements PGSQLObje
         }
     }
 
+    @Override
+    public PGSelectQueryBlock clone() {
+        PGSelectQueryBlock x = new PGSelectQueryBlock();
+        cloneTo(x);
+        return x;
+    }
+
+    public void cloneTo(PGSelectQueryBlock x) {
+        super.cloneTo(x);
+
+        for (SQLExpr item : distinctOn) {
+            SQLExpr item2 = item.clone();
+            item2.setParent(x);
+            x.distinctOn.add(item2);
+        }
+
+        // FetchClause and ForClause have no clone() (PGSQLObjectImpl inherits
+        // SQLObjectImpl.clone() which throws); copy references (shallow copy).
+        x.fetch = fetch;
+        x.forClause = forClause;
+
+        x.intoOption = intoOption;
+    }
+
 }

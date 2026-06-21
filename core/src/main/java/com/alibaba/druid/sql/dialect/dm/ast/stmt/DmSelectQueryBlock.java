@@ -182,4 +182,22 @@ public class DmSelectQueryBlock extends SQLSelectQueryBlock {
         acceptChild(visitor, fetch);
         acceptChild(visitor, forClause);
     }
+
+    @Override
+    public DmSelectQueryBlock clone() {
+        DmSelectQueryBlock x = new DmSelectQueryBlock();
+        cloneTo(x);
+        return x;
+    }
+
+    public void cloneTo(DmSelectQueryBlock x) {
+        super.cloneTo(x);
+        if (top != null) {
+            x.setTop(top.clone());
+        }
+        // FetchClause has no clone() method (extends DmObjectImpl which lacks clone) -> shallow copy
+        x.fetch = fetch;
+        // ForClause has no clone() method (extends DmObjectImpl which lacks clone) -> shallow copy
+        x.forClause = forClause;
+    }
 }
