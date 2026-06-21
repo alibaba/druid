@@ -488,7 +488,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         for (int i = 0; i < nodes.size(); i++) {
             if (i != 0) {
                 if (needPrintLine) {
-                    print0(',');
+                    print(',');
                     println();
                 } else {
                     print0(", ");

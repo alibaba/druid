@@ -7,14 +7,13 @@ import com.alibaba.druid.sql.dialect.sqlite.ast.*;
 import com.alibaba.druid.sql.dialect.sqlite.visitor.SQLiteSchemaStatVisitor;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import junit.framework.TestCase;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class SQLiteStatementParserTest extends TestCase {
+public class SQLiteStatementParserTest {
     // PRAGMA tests
     @Test
     public void test_pragma_get() throws Exception {
