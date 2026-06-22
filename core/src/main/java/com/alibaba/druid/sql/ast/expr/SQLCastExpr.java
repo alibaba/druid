@@ -136,6 +136,9 @@ public class SQLCastExpr extends SQLExprImpl implements SQLObjectWithDataType, S
         if (dataType != null) {
             x.setDataType(dataType.clone());
         }
+        if (format != null) {
+            x.setFormat(format.clone());
+        }
         return x;
     }
 

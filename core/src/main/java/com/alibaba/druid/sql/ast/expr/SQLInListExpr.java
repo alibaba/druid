@@ -65,6 +65,9 @@ public final class SQLInListExpr extends SQLExprImpl implements SQLReplaceable, 
             e2.setParent(x);
             x.targetList.add(e2);
         }
+        if (hint != null) {
+            x.setHint(hint.clone());
+        }
         return x;
     }
 

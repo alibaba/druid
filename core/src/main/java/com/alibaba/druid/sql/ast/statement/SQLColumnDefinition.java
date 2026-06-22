@@ -656,6 +656,57 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
             }
         }
 
+        x.ifNotExists = ifNotExists;
+        x.disableNovalidate = disableNovalidate;
+        x.visible = visible;
+        x.disableIndex = disableIndex;
+        x.sequenceType = sequenceType;
+        x.generateByDefault = generateByDefault;
+
+        if (generatedAlwaysAs != null) {
+            x.setGeneratedAlwaysAs(generatedAlwaysAs.clone());
+        }
+
+        if (delimiterTokenizer != null) {
+            x.setDelimiterTokenizer(delimiterTokenizer.clone());
+        }
+
+        if (unitCount != null) {
+            x.setUnitCount(unitCount.clone());
+        }
+
+        if (unitIndex != null) {
+            x.setUnitIndex(unitIndex.clone());
+        }
+
+        if (step != null) {
+            x.setStep(step.clone());
+        }
+
+        if (encode != null) {
+            x.setEncode(encode.clone());
+        }
+
+        if (compression != null) {
+            x.setCompression(compression.clone());
+        }
+
+        if (aggType != null) {
+            x.setAggType(aggType.clone());
+        }
+
+        if (bitmap != null) {
+            x.setBitmap(bitmap.clone());
+        }
+
+        if (indexComment != null) {
+            x.setIndexComment(indexComment.clone());
+        }
+
+        if (blockSize != null) {
+            x.setBlockSize(blockSize.clone());
+        }
+
         return x;
     }
 

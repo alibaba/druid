@@ -96,10 +96,12 @@ public class SQLArrayDataType extends SQLObjectImpl implements SQLDataType {
 
     public SQLArrayDataType clone() {
         SQLArrayDataType x = new SQLArrayDataType();
+        cloneTo(x);
         if (componentType != null) {
             x.setComponentType(componentType.clone());
         }
         x.dbType = dbType;
+        x.usedForCast = usedForCast;
 
         for (SQLExpr arg : arguments) {
             SQLExpr item = arg.clone();
