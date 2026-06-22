@@ -68,6 +68,8 @@ public class SQLColumnCheck extends SQLConstraintImpl implements SQLColumnConstr
             x.setExpr(expr.clone());
         }
 
+        x.setEnforced(enforced);
+
         return x;
     }
 

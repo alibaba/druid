@@ -287,6 +287,8 @@ public class SQLCaseExpr extends SQLExprImpl implements SQLReplaceable, Serializ
             x.setElseExpr(elseExpr.clone());
         }
 
+        cloneTo(x);
+
         return x;
     }
 

@@ -72,6 +72,11 @@ public class SQLUpdateStatement extends SQLStatementImpl implements SQLReplaceab
             x.tableSource.setParent(x);
         }
 
+        if (from != null) {
+            x.setFrom(from.clone());
+            x.from.setParent(x);
+        }
+
         for (SQLUpdateSetItem item : items) {
             SQLUpdateSetItem clone = item.clone();
             clone.setParent(x);

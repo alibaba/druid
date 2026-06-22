@@ -36,26 +36,29 @@ public class StarRocksCreateTableStatement extends SQLCreateTableStatement imple
         return brokerProperties;
     }
 
-    @Override
-    public StarRocksCreateTableStatement clone() {
-        StarRocksCreateTableStatement x = new StarRocksCreateTableStatement();
-        cloneTo(x);
-        return x;
-    }
-
     public void cloneTo(StarRocksCreateTableStatement x) {
         super.cloneTo(x);
+        if (unique != null) {
+            x.setUnique(unique.clone());
+        }
         x.distributedByType = distributedByType;
-        for (SQLSelectOrderByItem item : distributedBy) {
-            SQLSelectOrderByItem item2 = item.clone();
-            item2.setParent(x);
-            x.distributedBy.add(item2);
+        for (SQLSelectOrderByItem e : distributedBy) {
+            SQLSelectOrderByItem e2 = e.clone();
+            e2.setParent(x);
+            x.distributedBy.add(e2);
         }
         for (SQLAssignItem item : brokerProperties) {
             SQLAssignItem item2 = item.clone();
             item2.setParent(x);
             x.brokerProperties.add(item2);
         }
+    }
+
+    @Override
+    public StarRocksCreateTableStatement clone() {
+        StarRocksCreateTableStatement x = new StarRocksCreateTableStatement();
+        cloneTo(x);
+        return x;
     }
 
     @Override

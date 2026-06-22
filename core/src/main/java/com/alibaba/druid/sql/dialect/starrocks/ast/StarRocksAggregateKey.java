@@ -9,4 +9,11 @@ public class StarRocksAggregateKey extends SQLUnique implements SQLTableConstrai
     public void accept0(StarRocksASTVisitor v) {
         super.accept0(v);
     }
+
+    @Override
+    public StarRocksAggregateKey clone() {
+        StarRocksAggregateKey x = new StarRocksAggregateKey();
+        cloneTo(x);
+        return x;
+    }
 }

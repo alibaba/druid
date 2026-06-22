@@ -151,6 +151,8 @@ public final class SQLLimit extends SQLObjectImpl implements SQLReplaceable {
             x.attributes = (HashMap) ((HashMap) attributes).clone();
         }
 
+        x.offsetClause = offsetClause;
+
         return x;
     }
 

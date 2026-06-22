@@ -89,6 +89,15 @@ public class SQLCreateFunctionStatement extends SQLStatementImpl implements SQLC
         x.deterministic = deterministic;
         x.pipelined = pipelined;
         x.language = language;
+        x.temporary = temporary;
+        x.ifNotExists = ifNotExists;
+        x.parallelEnable = parallelEnable;
+        x.aggregate = aggregate;
+        x.resultCache = resultCache;
+        x.wrappedSource = wrappedSource;
+        if (using != null) {
+            x.setUsing(using.clone());
+        }
 
         return x;
     }
