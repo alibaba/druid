@@ -30,6 +30,22 @@ public class TDCreateTableStatement extends SQLCreateTableStatement implements T
     public TDCreateTableStatement(DbType dbType) {
         super(dbType);
     }
+
+    @Override
+    public TDCreateTableStatement clone() {
+        TDCreateTableStatement x = new TDCreateTableStatement(dbType);
+        cloneTo(x);
+        return x;
+    }
+
+    public void cloneTo(TDCreateTableStatement x) {
+        super.cloneTo(x);
+        x.onCommitRows = onCommitRows;
+        if (primaryKey != null) {
+            x.setPrimaryKey((SQLPrimaryKey) primaryKey.clone());
+        }
+    }
+
     @Override
     public void accept0(TDASTVisitor visitor) {
         if (visitor.visit(this)) {

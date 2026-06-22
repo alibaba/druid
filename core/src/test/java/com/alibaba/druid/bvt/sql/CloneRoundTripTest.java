@@ -36,7 +36,7 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
  */
 public class CloneRoundTripTest {
     private static final Set<String> KNOWN_INCOMPLETE = new HashSet<>(Arrays.asList(
-            "AthenaCreateTableStatement [clone-toString-threw]",
+            "AthenaCreateTableStatement (athena)",
             "BigQueryCreateTableStatement (bigquery)",
             "CKCreateTableStatement (clickhouse)",
             "CKDropTableStatement (clickhouse)",
@@ -44,7 +44,6 @@ public class CloneRoundTripTest {
             "GaussDbCreateTableStatement [clone-toString-threw]",
             "GaussDbInsertStatement (gaussdb)",
             "HiveCreateTableStatement (databricks)",
-            "HiveCreateTableStatement (hive)",
             "ImpalaCreateTableStatement (impala)",
             "ImpalaInsertStatement (impala)",
             "MySqlCreateTableStatement (mysql)",

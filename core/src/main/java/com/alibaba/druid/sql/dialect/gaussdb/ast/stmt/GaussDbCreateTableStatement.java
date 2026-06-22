@@ -120,4 +120,39 @@ public class GaussDbCreateTableStatement extends SQLCreateTableStatement impleme
     public enum ForeignTableMode {
         WRITE_ONLY, READ_ONLY, READ_WRITE
     }
+
+    @Override
+    public GaussDbCreateTableStatement clone() {
+        GaussDbCreateTableStatement x = new GaussDbCreateTableStatement();
+        cloneTo(x);
+        return x;
+    }
+
+    public void cloneTo(GaussDbCreateTableStatement x) {
+        super.cloneTo(x);
+        // GaussDbDistributeBy does not override clone() (inherited SQLObjectImpl.clone() throws),
+        // so reference-copy distributeBy. See compileConcerns.
+        if (distributeBy != null) {
+            x.distributeBy = distributeBy;
+        }
+        if (toGroup != null) {
+            x.setToGroup(toGroup.clone());
+        }
+        if (toNode != null) {
+            x.setToNode(toNode.clone());
+        }
+        if (server != null) {
+            x.setServer(server.clone());
+        }
+        if (onCommitExpr != null) {
+            x.setOnCommitExpr(onCommitExpr.clone());
+        }
+        if (compressType != null) {
+            x.setCompressType(compressType.clone());
+        }
+        if (rowMovementType != null) {
+            x.setRowMovementType(rowMovementType.clone());
+        }
+        x.foreignTableMode = foreignTableMode;
+    }
 }

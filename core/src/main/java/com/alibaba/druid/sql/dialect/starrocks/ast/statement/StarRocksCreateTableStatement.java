@@ -37,6 +37,28 @@ public class StarRocksCreateTableStatement extends SQLCreateTableStatement imple
     }
 
     @Override
+    public StarRocksCreateTableStatement clone() {
+        StarRocksCreateTableStatement x = new StarRocksCreateTableStatement();
+        cloneTo(x);
+        return x;
+    }
+
+    public void cloneTo(StarRocksCreateTableStatement x) {
+        super.cloneTo(x);
+        x.distributedByType = distributedByType;
+        for (SQLSelectOrderByItem item : distributedBy) {
+            SQLSelectOrderByItem item2 = item.clone();
+            item2.setParent(x);
+            x.distributedBy.add(item2);
+        }
+        for (SQLAssignItem item : brokerProperties) {
+            SQLAssignItem item2 = item.clone();
+            item2.setParent(x);
+            x.brokerProperties.add(item2);
+        }
+    }
+
+    @Override
     protected void accept0(SQLASTVisitor v) {
         if (v instanceof StarRocksASTVisitor) {
             accept0((StarRocksASTVisitor) v);

@@ -1391,6 +1391,19 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         x.shards = shards;
         x.afterSemi = afterSemi;
 
+        if (engine != null) {
+            x.setEngine(engine.clone());
+        }
+        if (orderBy != null) {
+            x.setOrderBy(orderBy.clone());
+        }
+        if (unique != null) {
+            x.setUnique(unique.clone());
+        }
+        x.isAutoBucket = isAutoBucket;
+        x.replace = replace;
+        x.ignore = ignore;
+        x.single = single;
     }
 
     public boolean isReplace() {
