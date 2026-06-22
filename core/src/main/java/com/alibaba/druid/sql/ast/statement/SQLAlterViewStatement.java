@@ -250,6 +250,8 @@ public class SQLAlterViewStatement extends SQLStatementImpl implements SQLCreate
     public SQLAlterViewStatement clone() {
         SQLAlterViewStatement x = new SQLAlterViewStatement();
 
+        x.dbType = dbType;
+        x.afterSemi = afterSemi;
         x.force = force;
         if (subQuery != null) {
             x.setSubQuery(subQuery.clone());

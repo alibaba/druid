@@ -37,35 +37,23 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 public class CloneRoundTripTest {
     private static final Set<String> KNOWN_INCOMPLETE = new HashSet<>(Arrays.asList(
             "AthenaCreateTableStatement (athena)",
-            "BigQueryCreateTableStatement (bigquery)",
             "CKDropTableStatement (clickhouse)",
             "GaussDbCreateTableStatement (gaussdb)",
-            "GaussDbInsertStatement (gaussdb)",
             "HiveCreateTableStatement (databricks)",
             "ImpalaCreateTableStatement (impala)",
             "ImpalaInsertStatement (impala)",
-            "PGInsertStatement (postgresql)",
             "PGSelectStatement (athena)",
             "PGSelectStatement (postgresql)",
             "PrestoCreateTableStatement (trino)",
-            "RedshiftCreateTableStatement (redshift)",
-            "SQLAlterViewStatement (mysql)",
-            "SQLBlockStatement (bigquery)",
             "SQLCreateTableStatement (hologres)",
-            "SQLCreateViewStatement (databricks)",
-            "SQLCreateViewStatement (sqlserver)",
-            "SQLDeleteStatement (bigquery)",
             "SQLIfStatement (bigquery)",
             "SQLSelectStatement (bigquery)",
             "SQLSelectStatement (clickhouse)",
             "SQLSelectStatement (impala)",
             "SQLSelectStatement (starrocks)",
-            "SQLSelectStatement (teradata)",
             "SQLServerUpdateStatement (sqlserver)",
             "SQLServerUpdateStatement (synapse)",
-            "SQLSetStatement (hive)",
-            "StarRocksCreateTableStatement (starrocks)",
-            "TDCreateTableStatement (teradata)"
+            "StarRocksCreateTableStatement (starrocks)"
     ));
 
     @Test

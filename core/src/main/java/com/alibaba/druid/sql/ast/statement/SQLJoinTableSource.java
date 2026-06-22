@@ -314,6 +314,7 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
 
         x.natural = natural;
         x.asof = asof;
+        x.global = global;
 
         if (udj != null) {
             x.udj = udj.clone();

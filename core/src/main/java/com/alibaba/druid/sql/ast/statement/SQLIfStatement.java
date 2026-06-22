@@ -184,6 +184,7 @@ public class SQLIfStatement extends SQLStatementImpl implements SQLReplaceable {
                 stmt2.setParent(x);
                 x.statements.add(stmt2);
             }
+            x.setConcatenated(isConcatenated);
 
             return x;
         }

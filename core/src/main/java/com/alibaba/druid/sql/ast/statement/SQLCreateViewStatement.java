@@ -435,6 +435,27 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLCreat
             returnsDataType = x.returnsDataType.clone();
         }
 
+        x.setTemporary(temporary);
+        x.dbType = dbType;
+        x.afterSemi = afterSemi;
+        if (to != null) {
+            x.setTo(to.clone());
+        }
+        if (returns != null) {
+            x.setReturns(returns.clone());
+        }
+        if (returnsDataType != null) {
+            x.setReturnsDataType(returnsDataType.clone());
+        }
+        if (script != null) {
+            x.setScript(script.clone());
+        }
+        for (SQLAssignItem option : options) {
+            SQLAssignItem option2 = option.clone();
+            option2.setParent(x);
+            x.options.add(option2);
+        }
+
         return x;
     }
 
