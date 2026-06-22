@@ -91,6 +91,25 @@ public final class SQLAllColumnExpr extends SQLExprImpl implements SQLName {
         x.setOwner(owner);
 
         x.resolvedTableSource = resolvedTableSource;
+
+        if (except != null) {
+            List<SQLExpr> exceptClone = new ArrayList<SQLExpr>(except.size());
+            for (SQLExpr item : except) {
+                SQLExpr item2 = item.clone();
+                item2.setParent(x);
+                exceptClone.add(item2);
+            }
+            x.except = exceptClone;
+        }
+
+        for (SQLAliasedExpr item : replace) {
+            SQLAliasedExpr item2 = item.clone();
+            item2.setParent(x);
+            x.replace.add(item2);
+        }
+
+        x.parenthesized = parenthesized;
+
         return x;
     }
 

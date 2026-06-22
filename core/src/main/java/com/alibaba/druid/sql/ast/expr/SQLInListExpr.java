@@ -56,6 +56,7 @@ public final class SQLInListExpr extends SQLExprImpl implements SQLReplaceable, 
 
     public SQLInListExpr clone() {
         SQLInListExpr x = new SQLInListExpr();
+        cloneTo(x);
         x.not = not;
         if (expr != null) {
             x.setExpr(expr.clone());
