@@ -148,6 +148,7 @@ public class DruidDataSource extends DruidAbstractDataSource
     private boolean asyncInit;
     protected boolean killWhenSocketReadTimeout;
     protected boolean checkExecuteTime;
+    protected boolean closeConnOnFatalError = true;
 
     private static List<Filter> autoFilters;
     private boolean loadSpifilterSkip;
@@ -184,6 +185,14 @@ public class DruidDataSource extends DruidAbstractDataSource
 
     public void setAsyncInit(boolean asyncInit) {
         this.asyncInit = asyncInit;
+    }
+
+    public boolean isCloseConnOnFatalError() {
+        return closeConnOnFatalError;
+    }
+
+    public void setCloseConnOnFatalError(boolean closeConnOnFatalError) {
+        this.closeConnOnFatalError = closeConnOnFatalError;
     }
 
     @Deprecated
@@ -1838,7 +1847,7 @@ public class DruidDataSource extends DruidAbstractDataSource
         ReentrantLock fatalErrorCountLock = hasHolderDataSource ? holder.getDataSource().lock : conn.lock;
         fatalErrorCountLock.lock();
         try {
-            if ((!conn.closed) && !conn.disable) {
+            if ((!conn.closed) && !conn.disable && isCloseConnOnFatalError()) {
                 conn.disable(error);
                 requireDiscard = true;
             }
