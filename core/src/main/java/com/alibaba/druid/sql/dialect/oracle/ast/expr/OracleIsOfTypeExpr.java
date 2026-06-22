@@ -89,9 +89,15 @@ public class OracleIsOfTypeExpr extends SQLExprImpl implements OracleExpr, SQLRe
     public SQLExpr clone() {
         OracleIsOfTypeExpr x = new OracleIsOfTypeExpr();
         if (expr != null) {
-            x.setExpr(expr);
+            x.setExpr(expr.clone());
         }
-        return null;
+        for (SQLExpr type : types) {
+            SQLExpr t = type.clone();
+            t.setParent(x);
+            x.types.add(t);
+        }
+        x.setParenthesized(parenthesized);
+        return x;
     }
 
     @Override

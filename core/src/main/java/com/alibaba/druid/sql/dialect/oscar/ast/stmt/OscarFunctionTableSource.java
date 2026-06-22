@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.ast.SQLParameter;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.dialect.oscar.ast.OscarObject;
 import com.alibaba.druid.sql.dialect.oscar.visitor.OscarASTVisitor;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGFunctionTableSource;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
@@ -56,8 +55,8 @@ public class OscarFunctionTableSource extends SQLExprTableSource implements Osca
     }
 
     @Override
-    public PGFunctionTableSource clone() {
-        PGFunctionTableSource x = new PGFunctionTableSource();
+    public OscarFunctionTableSource clone() {
+        OscarFunctionTableSource x = new OscarFunctionTableSource();
 
         x.setAlias(this.alias);
 

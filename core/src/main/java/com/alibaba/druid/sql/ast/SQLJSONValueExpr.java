@@ -22,6 +22,19 @@ public class SQLJSONValueExpr extends SQLExprImpl {
 
     @Override
     public SQLExpr clone() {
-        return null;
+        SQLJSONValueExpr x = new SQLJSONValueExpr();
+        if (json != null) {
+            SQLExpr c = json.clone();
+            c.setParent(x);
+            x.json = c;
+        }
+        if (path != null) {
+            SQLExpr c = path.clone();
+            c.setParent(x);
+            x.path = c;
+        }
+        x.parenthesized = parenthesized;
+        x.parenthesizedCount = parenthesizedCount;
+        return x;
     }
 }

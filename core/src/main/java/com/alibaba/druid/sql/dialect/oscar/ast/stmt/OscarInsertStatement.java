@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.dialect.oscar.visitor.OscarASTVisitor;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGInsertStatement;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
@@ -120,8 +119,8 @@ public class OscarInsertStatement extends SQLInsertStatement implements OscarSta
         visitor.endVisit(this);
     }
 
-    public PGInsertStatement clone() {
-        PGInsertStatement x = new PGInsertStatement();
+    public OscarInsertStatement clone() {
+        OscarInsertStatement x = new OscarInsertStatement();
         cloneTo(x);
         return x;
     }
