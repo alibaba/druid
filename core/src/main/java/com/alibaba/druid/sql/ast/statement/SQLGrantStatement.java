@@ -124,6 +124,9 @@ public class SQLGrantStatement extends SQLPrivilegeStatement {
     }
 
     public void setIdentifiedBy(SQLExpr identifiedBy) {
+        if (identifiedBy != null) {
+            identifiedBy.setParent(this);
+        }
         this.identifiedBy = identifiedBy;
     }
 

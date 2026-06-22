@@ -16,6 +16,9 @@ public class SQLRaiseStatement extends SQLStatementImpl {
     }
 
     public void setMessage(SQLExpr message) {
+        if (message != null) {
+            message.setParent(this);
+        }
         this.message = message;
     }
 

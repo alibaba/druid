@@ -63,6 +63,9 @@ public class SQLAlterTableDropConstraint extends SQLObjectImpl implements SQLAlt
     }
 
     public void setConstraintName(SQLName constraintName) {
+        if (constraintName != null) {
+            constraintName.setParent(this);
+        }
         this.constraintName = constraintName;
     }
 

@@ -30,6 +30,9 @@ public class SQLColumnDefault extends SQLConstraintImpl implements SQLColumnCons
     }
 
     public void setDefaultExpr(SQLExpr defaultExpr) {
+        if (defaultExpr != null) {
+            defaultExpr.setParent(this);
+        }
         this.defaultExpr = defaultExpr;
     }
 

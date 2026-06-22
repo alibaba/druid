@@ -42,6 +42,9 @@ public class SQLDropIndexStatement extends SQLStatementImpl implements SQLDropSt
     }
 
     public void setIndexName(SQLName indexName) {
+        if (indexName != null) {
+            indexName.setParent(this);
+        }
         this.indexName = indexName;
     }
 
@@ -54,6 +57,9 @@ public class SQLDropIndexStatement extends SQLStatementImpl implements SQLDropSt
     }
 
     public void setTableName(SQLExprTableSource tableName) {
+        if (tableName != null) {
+            tableName.setParent(this);
+        }
         this.tableName = tableName;
     }
 

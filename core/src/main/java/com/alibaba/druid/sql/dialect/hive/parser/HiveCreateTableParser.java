@@ -112,6 +112,9 @@ public class HiveCreateTableParser extends SQLCreateTableParser {
                 lexer.nextToken();
                 accept(Token.EQ);
                 SQLExpr value = this.exprParser.primary();
+                if (value != null) {
+                    value.setParent(stmt);
+                }
                 stmt.getSerdeProperties().put(key, value);
                 if (lexer.token() == Token.COMMA) {
                     lexer.nextToken();

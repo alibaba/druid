@@ -592,6 +592,9 @@ public class SQLStatementParser extends SQLParser {
 
         if (lexer.identifierEquals(FnvHash.Constants.COMMIT)) {
             SQLStatement stmt = parseCommit();
+            if (stmt != null) {
+                stmt.setParent(parent);
+            }
             statementList.add(stmt);
             if (parent instanceof SQLBlockStatement
                     && dialectFeatureEnabled(ParseStatementListCommitReturn)) {
@@ -1619,6 +1622,9 @@ public class SQLStatementParser extends SQLParser {
             lexer.nextToken();
             for (; ; ) {
                 SQLExpr user = parseUser();
+                if (user != null) {
+                    user.setParent(stmt);
+                }
                 stmt.getUsers().add(user);
                 if (lexer.token() == Token.COMMA) {
                     lexer.nextToken();
@@ -2051,7 +2057,7 @@ public class SQLStatementParser extends SQLParser {
                     lexer.nextToken();
                 }
                 SQLExpr user = parseUser();
-                stmt.getUsers().add(user);
+                stmt.addUser(user);
                 if (lexer.token() == Token.COMMA) {
                     lexer.nextToken();
                     continue;
@@ -6362,6 +6368,9 @@ public class SQLStatementParser extends SQLParser {
                 }
             } else {
                 values = new SQLInsertStatement.ValuesClause(new ArrayList<SQLExpr>(0));
+                if (parent != null) {
+                    values.setParent(parent);
+                }
             }
 
             valueClauseList.add(values);
@@ -6900,6 +6909,9 @@ public class SQLStatementParser extends SQLParser {
                 }
             } else {
                 values = new SQLInsertStatement.ValuesClause(new ArrayList<SQLExpr>(0));
+                if (parent != null) {
+                    values.setParent(parent);
+                }
             }
 
             valueClauseList.add(values);
@@ -7873,6 +7885,9 @@ public class SQLStatementParser extends SQLParser {
             accept(Token.THEN);
 
             this.parseStatementList(item.getStatements(), -1, item);
+            for (SQLStatement itemStmt : item.getStatements()) {
+                itemStmt.setParent(item);
+            }
 
             stmt.addItem(item);
 

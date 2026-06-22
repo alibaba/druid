@@ -29,6 +29,9 @@ public class SQLSequenceExpr extends SQLExprImpl implements SQLReplaceable {
     }
 
     public SQLSequenceExpr(SQLName sequence, Function function) {
+        if (sequence != null) {
+            sequence.setParent(this);
+        }
         this.sequence = sequence;
         this.function = function;
     }
@@ -82,6 +85,9 @@ public class SQLSequenceExpr extends SQLExprImpl implements SQLReplaceable {
     }
 
     public void setSequence(SQLName sequence) {
+        if (sequence != null) {
+            sequence.setParent(this);
+        }
         this.sequence = sequence;
     }
 

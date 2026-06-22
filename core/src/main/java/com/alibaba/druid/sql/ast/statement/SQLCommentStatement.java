@@ -38,6 +38,9 @@ public class SQLCommentStatement extends SQLStatementImpl {
     }
 
     public void setComment(SQLExpr comment) {
+        if (comment != null) {
+            comment.setParent(this);
+        }
         this.comment = comment;
     }
 

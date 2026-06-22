@@ -26,60 +26,24 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 /**
- * Ratchet guard for AST parent-pointer integrity (review item C8). Parses the per-dialect parser
- * corpus and, using the accept0 traversal as the source of truth for structural parent/child links,
- * collects every (parentType -&gt; childType) pair where a structural child has the wrong parent
- * (null, or pointing outside its traversal path). The set of such pairs must stay within the
- * documented {@link #KNOWN_DEBT} allowlist: any NEW pair (a setter/parser that forgot setParent)
- * fails the build, while the remaining long-tail debt is grandfathered and shrinks over time.
+ * Guard for AST parent-pointer integrity (review item C8). Parses the per-dialect parser corpus and,
+ * using the accept0 traversal as the source of truth for structural parent/child links, verifies that
+ * every structural child a node visits has its parent set correctly.
+ *
+ * <p><b>Null parents are forbidden outright</b> — a child with getParent()==null means an attach
+ * point (setter/parser) forgot to call setParent, the exact C8 defect, now fully paid down.
+ *
+ * <p>A child whose parent is a non-null node off the current traversal path is only allowed for the
+ * few {@link #BORROWED_REFERENCES} where a node's accept0 deliberately re-visits a node structurally
+ * owned by another (e.g. a foreign key visiting the referenced table's name): there the parent is
+ * correct, just not the immediate visitor. Any other off-path parent is a new defect and fails.
  */
 public class ParentIntegrityTest {
     /**
-     * Residual parent-pointer debt as of the C8 paydown. Each entry is a (parentType -&gt; childType)
-     * pair whose child still has a wrong parent after parsing the corpus. Shrink this list; never grow it.
+     * (parent -&gt; child) pairs where accept0 re-visits a node owned by a different node, so the
+     * child's parent is legitimately not the visitor. These are not parent bugs.
      */
-    private static final Set<String> KNOWN_DEBT = new HashSet<>(Arrays.asList(
-            // --- null parent (attach point never called setParent) ---
-            "SQLGrantStatement -> SQLIdentifierExpr",
-            "Entry -> SQLCharExpr",
-            "Entry -> SQLAggregateExpr",
-            "Entry -> SQLArrayExpr",
-            "Entry -> SQLMethodInvokeExpr",
-            "Entry -> SQLQueryExpr",
-            "HiveCreateTableStatement -> SQLCharExpr",
-            "ImpalaCreateTableStatement -> SQLCharExpr",
-            "Item -> SQLIdentifierExpr",
-            "Item -> SQLRollbackTransactionStatement",
-            "MySqlInsertStatement -> ValuesClause",
-            "SQLAlterTableDropConstraint -> SQLIdentifierExpr",
-            "SQLAlterTableAlterColumn -> SQLNumberExpr",
-            "SQLAlterTableEnableConstraint -> SQLIdentifierExpr",
-            "SQLAtTimeZoneExpr -> SQLCharExpr",
-            "SQLAtTimeZoneExpr -> SQLIdentifierExpr",
-            "SQLBlockStatement -> SQLServerInsertStatement",
-            "SQLBlockStatement -> SQLCommitTransactionStatement",
-            "SQLCallStatement -> SQLIdentifierExpr",
-            "SQLCallStatement -> SQLPropertyExpr",
-            "SQLColumnDefault -> SQLIntegerExpr",
-            "SQLCommentStatement -> SQLCharExpr",
-            "SQLCreateProcedureStatement -> SQLPropertyExpr",
-            "SQLCreateSequenceStatement -> SQLIntegerExpr",
-            "SQLCreateSequenceStatement -> SQLIdentifierExpr",
-            "SQLCurrentOfCursorExpr -> SQLIdentifierExpr",
-            "SQLDropIndexStatement -> SQLExprTableSource",
-            "SQLDropIndexStatement -> SQLIdentifierExpr",
-            "SQLDropIndexStatement -> SQLPropertyExpr",
-            "SQLGeneratedTableSource -> SQLIdentifierExpr",
-            "SQLOptimizeStatement -> SQLIdentifierExpr",
-            "SQLPartitionBatch -> SQLIdentifierExpr",
-            "SQLPartitionBatch -> SQLIntegerExpr",
-            "SQLRaiseStatement -> SQLCharExpr",
-            "SQLRaiseStatement -> SQLMethodInvokeExpr",
-            "SQLRevokeStatement -> SQLIdentifierExpr",
-            "SQLSelectQueryBlock -> SQLSelectItem",
-            "SQLSequenceExpr -> SQLIdentifierExpr",
-            "SQLShowCreateViewStatement -> SQLIdentifierExpr",
-            // --- non-null but pointing outside the traversal path ---
+    private static final Set<String> BORROWED_REFERENCES = new HashSet<>(Arrays.asList(
             "SQLForeignKeyImpl -> SQLIdentifierExpr [parent=SQLExprTableSource]",
             "SQLAggregateExpr -> SQLCharExpr [parent=SQLMethodInvokeExpr]",
             "SQLAggregateExpr -> SQLIdentifierExpr [parent=SQLMethodInvokeExpr]"
@@ -87,7 +51,8 @@ public class ParentIntegrityTest {
 
     static final class Checker extends SQLASTVisitorAdapter {
         final Deque<SQLObject> stack = new ArrayDeque<>();
-        final Set<String> pairs = new TreeSet<>();
+        final Set<String> nullParent = new TreeSet<>();
+        final Set<String> offPathParent = new TreeSet<>();
 
         @Override
         public void preVisit(SQLObject x) {
@@ -95,9 +60,9 @@ public class ParentIntegrityTest {
             if (expected != null && x.getParent() != expected) {
                 String pc = expected.getClass().getSimpleName() + " -> " + x.getClass().getSimpleName();
                 if (x.getParent() == null) {
-                    pairs.add(pc);
+                    nullParent.add(pc);
                 } else if (!stack.contains(x.getParent())) {
-                    pairs.add(pc + " [parent=" + x.getParent().getClass().getSimpleName() + "]");
+                    offPathParent.add(pc + " [parent=" + x.getParent().getClass().getSimpleName() + "]");
                 }
             }
             stack.push(x);
@@ -116,7 +81,8 @@ public class ParentIntegrityTest {
         Path base = Paths.get("src/test/resources/bvt/parser");
         assumeTrue(Files.isDirectory(base), base.toAbsolutePath() + " not found");
 
-        Set<String> found = new TreeSet<>();
+        Set<String> nullParent = new TreeSet<>();
+        Set<String> offPathParent = new TreeSet<>();
         List<Path> dirs;
         try (Stream<Path> s = Files.list(base)) {
             dirs = s.filter(Files::isDirectory).sorted().collect(Collectors.toList());
@@ -150,16 +116,21 @@ public class ParentIntegrityTest {
                     } catch (Throwable t) {
                         continue;
                     }
-                    found.addAll(c.pairs);
+                    nullParent.addAll(c.nullParent);
+                    offPathParent.addAll(c.offPathParent);
                 }
             }
         }
 
-        Set<String> regressions = new TreeSet<>(found);
-        regressions.removeAll(KNOWN_DEBT);
-        assertTrue(regressions.isEmpty(),
-                "New parent-pointer integrity violation(s) — a setter/parser attached a child without "
-                        + "calling setParent. Fix the attach point (do not add to KNOWN_DEBT):\n  "
-                        + String.join("\n  ", regressions));
+        assertTrue(nullParent.isEmpty(),
+                "Child node(s) parsed with a NULL parent — an attach point forgot setParent (C8):\n  "
+                        + String.join("\n  ", nullParent));
+
+        Set<String> unexpected = new TreeSet<>(offPathParent);
+        unexpected.removeAll(BORROWED_REFERENCES);
+        assertTrue(unexpected.isEmpty(),
+                "Child node(s) parented to a node off their traversal path (not a known borrowed "
+                        + "reference) — likely setParent to the wrong node:\n  "
+                        + String.join("\n  ", unexpected));
     }
 }

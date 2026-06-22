@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.parser;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
@@ -469,7 +470,9 @@ public class SQLSelectParser extends SQLParser {
 
         if (lexer.token() == Token.TABLE && dialectFeatureEnabled(QueryTable)) {
             lexer.nextToken();
-            queryBlock.getSelectList().add(new SQLSelectItem(new SQLAllColumnExpr()));
+            SQLSelectItem allColumnSelectItem = new SQLSelectItem(new SQLAllColumnExpr());
+            allColumnSelectItem.setParent(queryBlock);
+            queryBlock.getSelectList().add(allColumnSelectItem);
             queryBlock.setFrom(parseTableSource());
             return queryRest(queryBlock, acceptUnion);
         }
@@ -1186,7 +1189,7 @@ public class SQLSelectParser extends SQLParser {
                     break;
                 }
             }
-            if (lexer.token == Token.RPAREN && dialectFeatureEnabled(SelectListRparenBreak)) {
+            if (lexer.token == Token.RPAREN && dbType == DbType.bigquery) {
                 break;
             }
         }
@@ -1592,7 +1595,7 @@ public class SQLSelectParser extends SQLParser {
             tableSource.addAfterComment(lexer.readAndResetComments());
         }
 
-        if (lexer.token == Token.HINT && dialectFeatureEnabled(TableSourceHint)) {
+        if (lexer.token == Token.HINT && dbType == DbType.odps) {
             List<SQLCommentHint> hints = this.exprParser.parseHints();
             for (SQLCommentHint hint : hints) {
                 tableSource.addAfterComment(hint.getText());

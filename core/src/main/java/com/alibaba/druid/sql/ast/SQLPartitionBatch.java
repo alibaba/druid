@@ -12,6 +12,9 @@ public class SQLPartitionBatch extends SQLPartition {
     }
 
     public void setStart(SQLExpr start) {
+        if (start != null) {
+            start.setParent(this);
+        }
         this.start = start;
     }
 
@@ -20,6 +23,9 @@ public class SQLPartitionBatch extends SQLPartition {
     }
 
     public void setEnd(SQLExpr end) {
+        if (end != null) {
+            end.setParent(this);
+        }
         this.end = end;
     }
 
@@ -28,6 +34,9 @@ public class SQLPartitionBatch extends SQLPartition {
     }
 
     public void setEvery(SQLExpr every) {
+        if (every != null) {
+            every.setParent(this);
+        }
         this.every = every;
     }
 

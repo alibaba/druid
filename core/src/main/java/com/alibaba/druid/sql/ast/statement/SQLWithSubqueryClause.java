@@ -164,6 +164,9 @@ public class SQLWithSubqueryClause extends SQLObjectImpl {
         }
 
         public void setExpr(SQLExpr expr) {
+            if (expr != null) {
+                expr.setParent(this);
+            }
             this.expr = expr;
         }
 
