@@ -30,6 +30,10 @@ public class SQLIfStatement extends SQLStatementImpl implements SQLReplaceable {
     public SQLIfStatement clone() {
         SQLIfStatement x = new SQLIfStatement();
 
+        if (condition != null) {
+            x.setCondition(condition.clone());
+        }
+
         for (SQLStatement stmt : statements) {
             SQLStatement stmt2 = stmt.clone();
             stmt2.setParent(x);
