@@ -707,6 +707,12 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
             x.setBlockSize(blockSize.clone());
         }
 
+        // preserve the SQLAlterTableAlterColumn parent context so the dialect output
+        // visitor still renders the "TYPE" keyword (e.g. PostgreSQL ALTER COLUMN ... TYPE)
+        if (parent instanceof SQLAlterTableAlterColumn) {
+            x.setParent(parent);
+        }
+
         return x;
     }
 

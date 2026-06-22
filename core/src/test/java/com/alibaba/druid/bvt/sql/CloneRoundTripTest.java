@@ -27,34 +27,14 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
  * — i.e. cloning preserves everything that reaches the output. A mismatch means clone()/cloneTo()
  * dropped or mangled a field.
  *
- * <p>The currently-incomplete (statementType, dialect) combinations are grandfathered in
- * {@link #KNOWN_INCOMPLETE} — mostly dialect CREATE TABLE clones that type-slice to the base type and
- * SQLSelect clones that drop a table-source clause. Shrink this list as clones are completed; a NEW
- * combination that starts mismatching (a clone regression on a currently-clean type) fails the build.
+ * <p>{@link #KNOWN_INCOMPLETE} grandfathers (statementType, dialect) combinations whose clone still
+ * drops a field. The full per-dialect corpus now round-trips cleanly, so this list is EMPTY — keep it
+ * that way: when a clone drops a field, fix the clone()/cloneTo() rather than re-adding an entry here.
  * clone()s that throw UnsupportedOperationException (the separate "clone not implemented" debt) are
  * skipped here.
  */
 public class CloneRoundTripTest {
-    private static final Set<String> KNOWN_INCOMPLETE = new HashSet<>(Arrays.asList(
-            "AthenaCreateTableStatement (athena)",
-            "CKDropTableStatement (clickhouse)",
-            "GaussDbCreateTableStatement (gaussdb)",
-            "HiveCreateTableStatement (databricks)",
-            "ImpalaCreateTableStatement (impala)",
-            "ImpalaInsertStatement (impala)",
-            "PGSelectStatement (athena)",
-            "PGSelectStatement (postgresql)",
-            "PrestoCreateTableStatement (trino)",
-            "SQLCreateTableStatement (hologres)",
-            "SQLIfStatement (bigquery)",
-            "SQLSelectStatement (bigquery)",
-            "SQLSelectStatement (clickhouse)",
-            "SQLSelectStatement (impala)",
-            "SQLSelectStatement (starrocks)",
-            "SQLServerUpdateStatement (sqlserver)",
-            "SQLServerUpdateStatement (synapse)",
-            "StarRocksCreateTableStatement (starrocks)"
-    ));
+    private static final Set<String> KNOWN_INCOMPLETE = new HashSet<>(Arrays.<String>asList());
 
     @Test
     public void cloneRoundTripsToSameSql() throws IOException {

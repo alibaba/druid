@@ -117,6 +117,7 @@ public abstract class SQLPartitionBy extends SQLObjectImpl {
             x.setPartitionsCount(partitionsCount.clone());
         }
         x.linear = linear;
+        x.setLogical(logical);
         for (SQLPartition p : partitions) {
             SQLPartition p2 = p.clone();
             p2.setParent(x);

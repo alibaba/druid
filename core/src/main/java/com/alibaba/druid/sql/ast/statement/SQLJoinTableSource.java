@@ -319,6 +319,14 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
         if (udj != null) {
             x.udj = udj.clone();
         }
+
+        if (hints != null) {
+            for (SQLHint hint : hints) {
+                SQLHint hint2 = hint.clone();
+                hint2.setParent(x);
+                x.getHints().add(hint2);
+            }
+        }
     }
 
     public SQLJoinTableSource clone() {

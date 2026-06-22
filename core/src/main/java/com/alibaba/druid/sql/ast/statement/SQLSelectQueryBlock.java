@@ -1059,6 +1059,10 @@ public class SQLSelectQueryBlock extends SQLSelectQueryBase implements SQLReplac
             x.setFrom(from.clone());
         }
 
+        if (commentsAfterFrom != null) {
+            x.setCommentsAfterFrom(new ArrayList<String>(commentsAfterFrom));
+        }
+
         if (into != null) {
             x.setInto(into.clone());
         }
@@ -1141,6 +1145,14 @@ public class SQLSelectQueryBlock extends SQLSelectQueryBase implements SQLReplac
 
         if (limit != null) {
             x.setLimit(limit.clone());
+        }
+
+        if (windows != null) {
+            for (SQLWindow w : windows) {
+                SQLWindow w2 = w.clone();
+                w2.setParent(x);
+                x.addWindow(w2);
+            }
         }
     }
 

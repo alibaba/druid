@@ -31,6 +31,13 @@ public class ImpalaInsertStatement extends HiveInsertStatement {
     }
 
     @Override
+    public ImpalaInsertStatement clone() {
+        ImpalaInsertStatement x = new ImpalaInsertStatement();
+        cloneTo(x);
+        return x;
+    }
+
+    @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, with);

@@ -33,6 +33,13 @@ public class SQLWindow extends SQLObjectImpl {
         this.over = x;
     }
 
+    public SQLWindow clone() {
+        SQLName name2 = name == null ? null : name.clone();
+        SQLOver over2 = over == null ? null : over.clone();
+        SQLWindow x = new SQLWindow(name2, over2);
+        return x;
+    }
+
     @Override
     protected void accept0(SQLASTVisitor v) {
         if (v.visit(this)) {

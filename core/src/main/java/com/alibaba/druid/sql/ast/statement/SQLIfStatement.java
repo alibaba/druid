@@ -29,6 +29,7 @@ public class SQLIfStatement extends SQLStatementImpl implements SQLReplaceable {
 
     public SQLIfStatement clone() {
         SQLIfStatement x = new SQLIfStatement();
+        cloneTo(x);
 
         if (condition != null) {
             x.setCondition(condition.clone());

@@ -98,6 +98,11 @@ public class StarRocksIndexDefinition extends SQLObjectImpl implements SQLTableE
         }
         x.indexType = indexType;
         x.comment = comment;
+        for (SQLAssignItem option : indexOption) {
+            SQLAssignItem optionCloned = option.clone();
+            optionCloned.setParent(x);
+            x.indexOption.add(optionCloned);
+        }
         return x;
     }
 }

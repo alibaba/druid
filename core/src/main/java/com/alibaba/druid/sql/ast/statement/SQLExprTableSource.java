@@ -295,6 +295,7 @@ public class SQLExprTableSource extends SQLTableSourceImpl implements SQLReplace
     }
 
     public void cloneTo(SQLExprTableSource x) {
+        super.cloneTo(x);
         x.alias = alias;
         x.lateral = lateral;
 

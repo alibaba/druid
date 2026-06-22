@@ -126,6 +126,7 @@ public class SQLNumberExpr extends SQLNumericLiteralExpr implements SQLValuableE
         SQLNumberExpr x = new SQLNumberExpr();
         x.chars = chars;
         x.value = value;
+        cloneTo(x);
         return x;
     }
 

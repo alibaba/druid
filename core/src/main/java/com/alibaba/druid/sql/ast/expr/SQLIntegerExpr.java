@@ -108,7 +108,9 @@ public class SQLIntegerExpr extends SQLNumericLiteralExpr implements Comparable<
     }
 
     public SQLIntegerExpr clone() {
-        return new SQLIntegerExpr(this.number);
+        SQLIntegerExpr x = new SQLIntegerExpr(this.number);
+        cloneTo(x);
+        return x;
     }
 
     public SQLDataType computeDataType() {
