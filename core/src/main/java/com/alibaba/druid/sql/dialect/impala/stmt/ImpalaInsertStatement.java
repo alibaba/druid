@@ -52,11 +52,25 @@ public class ImpalaInsertStatement extends HiveInsertStatement {
         this.insertHints = insertHints;
     }
 
+    public void addInsertHint(SQLHint hint) {
+        if (hint != null) {
+            hint.setParent(this);
+        }
+        this.insertHints.add(hint);
+    }
+
     public List<SQLHint> getSelectHints() {
         return selectHints;
     }
 
     public void setSelectHints(List<SQLHint> selectHint) {
         this.selectHints = selectHint;
+    }
+
+    public void addSelectHint(SQLHint hint) {
+        if (hint != null) {
+            hint.setParent(this);
+        }
+        this.selectHints.add(hint);
     }
 }

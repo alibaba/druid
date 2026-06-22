@@ -1777,7 +1777,7 @@ public class OracleStatementParser extends SQLStatementParser {
         } else if (lexer.token() == Token.LPAREN) {
             lexer.nextToken();
             SQLAlterTableDropColumnItem item = new SQLAlterTableDropColumnItem();
-            this.exprParser.names(item.getColumns());
+            this.exprParser.names(item.getColumns(), item);
             stmt.addItem(item);
             accept(Token.RPAREN);
         } else if (lexer.token() == Token.COLUMN) {
@@ -1788,7 +1788,7 @@ public class OracleStatementParser extends SQLStatementParser {
                 accept(Token.EXISTS);
                 item.setIfExists(true);
             }
-            this.exprParser.names(item.getColumns());
+            this.exprParser.names(item.getColumns(), item);
             stmt.addItem(item);
         } else if (lexer.token() == Token.PARTITION) {
             lexer.nextToken();

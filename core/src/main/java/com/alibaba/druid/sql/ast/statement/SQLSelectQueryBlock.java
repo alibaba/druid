@@ -613,7 +613,7 @@ public class SQLSelectQueryBlock extends SQLSelectQueryBase implements SQLReplac
 
     public void setFirst(SQLExpr first) {
         if (limit == null) {
-            limit = new SQLLimit();
+            setLimit(new SQLLimit());
         }
         this.limit.setRowCount(first);
     }
@@ -628,7 +628,7 @@ public class SQLSelectQueryBlock extends SQLSelectQueryBase implements SQLReplac
 
     public void setOffset(SQLExpr offset) {
         if (limit == null) {
-            limit = new SQLLimit();
+            setLimit(new SQLLimit());
         }
         this.limit.setOffset(offset);
     }

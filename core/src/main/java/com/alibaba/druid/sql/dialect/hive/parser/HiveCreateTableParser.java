@@ -56,7 +56,7 @@ public class HiveCreateTableParser extends SQLCreateTableParser {
                 if (token == Token.IDENTIFIER //
                         || token == Token.LITERAL_ALIAS) {
                     SQLColumnDefinition column = this.exprParser.parseColumn();
-                    stmt.getTableElementList().add(column);
+                    stmt.addColumn(column);
                 } else if (token == Token.PRIMARY //
                         || token == Token.UNIQUE //
                         || token == Token.CHECK //
@@ -69,7 +69,7 @@ public class HiveCreateTableParser extends SQLCreateTableParser {
                     throw new ParserException("TODO " + lexer.info());
                 } else {
                     SQLColumnDefinition column = this.exprParser.parseColumn();
-                    stmt.getTableElementList().add(column);
+                    stmt.addColumn(column);
                 }
 
                 if (lexer.token() == Token.COMMA) {

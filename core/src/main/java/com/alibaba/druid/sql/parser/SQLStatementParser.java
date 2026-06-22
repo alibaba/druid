@@ -1972,7 +1972,7 @@ public class SQLStatementParser extends SQLParser {
                     accept(Token.RPAREN);
                 }
 
-                expr.setParent(parent);
+                privilegeItem.setParent(parent);
                 privileges.add(privilegeItem);
             }
 
@@ -3130,7 +3130,7 @@ public class SQLStatementParser extends SQLParser {
             lexer.nextToken();
             paren = true;
         }
-        this.exprParser.names(item.getColumns());
+        this.exprParser.names(item.getColumns(), item);
         if (paren) {
             accept(RPAREN);
         }
@@ -3186,7 +3186,7 @@ public class SQLStatementParser extends SQLParser {
             parseAlterDropRest(stmt, item);
         } else if (lexer.token == Token.LITERAL_ALIAS) {
             SQLAlterTableDropColumnItem item = new SQLAlterTableDropColumnItem();
-            this.exprParser.names(item.getColumns());
+            this.exprParser.names(item.getColumns(), item);
 
             if (lexer.token == Token.CASCADE) {
                 item.setCascade(true);

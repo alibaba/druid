@@ -194,6 +194,9 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
     }
 
     public void setName(SQLName name) {
+        if (name != null) {
+            name.setParent(this);
+        }
         this.name = name;
     }
 

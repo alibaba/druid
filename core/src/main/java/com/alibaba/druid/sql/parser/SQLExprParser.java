@@ -4906,7 +4906,7 @@ public class SQLExprParser extends SQLParser {
             }
             case NULL:
                 lexer.nextToken();
-                column.getConstraints().add(new SQLNullConstraint());
+                column.addConstraint(new SQLNullConstraint());
                 return parseColumnRest(column);
             case PRIMARY:
                 lexer.nextToken();

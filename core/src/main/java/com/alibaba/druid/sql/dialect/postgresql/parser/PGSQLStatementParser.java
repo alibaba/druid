@@ -1437,7 +1437,7 @@ public class PGSQLStatementParser extends SQLStatementParser {
 
     @Override
     public void parseAlterDropRest(SQLAlterTableStatement stmt, SQLAlterTableDropColumnItem item) {
-        item.getColumns().add(this.exprParser.name());
+        item.addColumn(this.exprParser.name());
 
         if (lexer.token() == Token.CASCADE) {
             item.setCascade(true);

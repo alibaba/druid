@@ -39,6 +39,9 @@ public class StarRocksIndexDefinition extends SQLObjectImpl implements SQLTableE
     }
 
     public void setIndexName(SQLName indexName) {
+        if (indexName != null) {
+            indexName.setParent(this);
+        }
         this.indexName = indexName;
     }
 
@@ -47,7 +50,21 @@ public class StarRocksIndexDefinition extends SQLObjectImpl implements SQLTableE
     }
 
     public void setColumns(List<SQLName> columns) {
+        if (columns != null) {
+            for (SQLName column : columns) {
+                if (column != null) {
+                    column.setParent(this);
+                }
+            }
+        }
         this.columns = columns;
+    }
+
+    public void addColumn(SQLName column) {
+        if (column != null) {
+            column.setParent(this);
+        }
+        this.columns.add(column);
     }
 
     public SQLExpr getComment() {

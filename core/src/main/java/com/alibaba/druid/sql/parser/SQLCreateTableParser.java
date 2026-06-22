@@ -162,12 +162,14 @@ public class SQLCreateTableParser extends SQLDDLParser {
             parseIndex(createTable);
         } else {
             SQLColumnDefinition column = this.exprParser.parseColumn();
+            column.setParent(createTable);
             createTable.getTableElementList().add(column);
         }
     }
 
     protected void parseIndex(SQLCreateTableStatement createTable) {
         SQLColumnDefinition column = this.exprParser.parseColumn();
+        column.setParent(createTable);
         createTable.getTableElementList().add(column);
     }
 

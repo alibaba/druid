@@ -205,7 +205,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
                         if (lexer.token() == Token.IDENTIFIER //
                                 || lexer.token() == Token.LITERAL_ALIAS) {
                             SQLColumnDefinition column = this.exprParser.parseColumn();
-                            item.getTableElementList().add(column);
+                            item.addTableElement(column);
                         } else if (lexer.token() == Token.PRIMARY //
                                 || lexer.token() == Token.UNIQUE //
                                 || lexer.token() == Token.CHECK //
@@ -217,7 +217,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
                             throw new ParserException("TODO " + lexer.info());
                         } else {
                             SQLColumnDefinition column = this.exprParser.parseColumn();
-                            item.getTableElementList().add(column);
+                            item.addTableElement(column);
                         }
 
                         if (lexer.token() == Token.COMMA) {

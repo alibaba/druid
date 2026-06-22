@@ -67,7 +67,7 @@ public abstract class SQLPartitionBy extends SQLObjectImpl {
     }
 
     public void setPartitionsCount(int partitionsCount) {
-        this.partitionsCount = new SQLIntegerExpr(partitionsCount);
+        setPartitionsCount(new SQLIntegerExpr(partitionsCount));
     }
 
     public boolean isLinear() {
@@ -151,6 +151,9 @@ public abstract class SQLPartitionBy extends SQLObjectImpl {
     }
 
     public void setLifeCycle(SQLIntegerExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
         this.lifeCycle = x;
     }
 

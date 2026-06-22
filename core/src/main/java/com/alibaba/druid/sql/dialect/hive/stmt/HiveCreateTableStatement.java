@@ -152,6 +152,13 @@ public class HiveCreateTableStatement extends SQLCreateTableStatement {
         return serdeProperties;
     }
 
+    public void addSerdeProperty(String key, SQLObject value) {
+        if (value != null) {
+            value.setParent(this);
+        }
+        this.serdeProperties.put(key, value);
+    }
+
     public boolean isLikeQuery() {
         return likeQuery;
     }
