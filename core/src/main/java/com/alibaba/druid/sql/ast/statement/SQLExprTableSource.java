@@ -328,6 +328,13 @@ public class SQLExprTableSource extends SQLTableSourceImpl implements SQLReplace
                 x.columns.add(clonedColumn);
             }
         }
+
+        if (pivot != null) {
+            x.setPivot(pivot.clone());
+        }
+        if (unpivot != null) {
+            x.setUnpivot(unpivot.clone());
+        }
     }
 
     public List<SQLName> getColumns() {
