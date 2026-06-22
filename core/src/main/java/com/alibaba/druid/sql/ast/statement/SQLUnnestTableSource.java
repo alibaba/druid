@@ -87,6 +87,8 @@ public class SQLUnnestTableSource extends SQLTableSourceImpl
 
         x.alias = alias;
 
+        x.ordinality = ordinality;
+
         if (offset != null) {
             x.setOffset(offset);
         }

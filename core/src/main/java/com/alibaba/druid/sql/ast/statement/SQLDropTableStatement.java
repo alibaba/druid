@@ -207,6 +207,7 @@ public class SQLDropTableStatement extends SQLStatementImpl implements SQLDropSt
         if (where != null) {
             x.where = where.clone();
         }
+        x.afterSemi = afterSemi;
     }
 
     public SQLDropTableStatement clone() {

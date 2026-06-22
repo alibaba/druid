@@ -98,6 +98,7 @@ public class SQLCreateFunctionStatement extends SQLStatementImpl implements SQLC
         if (using != null) {
             x.setUsing(using.clone());
         }
+        x.afterSemi = afterSemi;
 
         return x;
     }

@@ -315,6 +315,10 @@ public class SQLExprTableSource extends SQLTableSourceImpl implements SQLReplace
             }
         }
 
+        if (sampling != null) {
+            x.setSampling(sampling.clone());
+        }
+
         if (schemaObject != null) {
             x.setSchemaObject(schemaObject);
         }

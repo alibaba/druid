@@ -35,6 +35,17 @@ public class PGUpdateStatement extends SQLUpdateStatement implements PGSQLStatem
         this.only = only;
     }
 
+    public void cloneTo(PGUpdateStatement x) {
+        super.cloneTo(x);
+        x.only = only;
+    }
+
+    public PGUpdateStatement clone() {
+        PGUpdateStatement x = new PGUpdateStatement();
+        cloneTo(x);
+        return x;
+    }
+
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor instanceof PGASTVisitor) {
             accept0((PGASTVisitor) visitor);

@@ -1031,6 +1031,7 @@ public class SQLSelectQueryBlock extends SQLSelectQueryBase implements SQLReplac
     }
 
     public void cloneTo(SQLSelectQueryBlock x) {
+        super.cloneTo(x);
         x.parenthesized = parenthesized;
         x.distionOption = distionOption;
 

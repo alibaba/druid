@@ -162,6 +162,9 @@ public class SQLCreateIndexStatement extends SQLStatementImpl implements SQLCrea
         SQLCreateIndexStatement x = new SQLCreateIndexStatement();
         indexDefinition.cloneTo(x.indexDefinition);
         x.setIfNotExists(ifNotExists);
+        x.dbType = dbType;
+        x.afterSemi = afterSemi;
+        x.headHints = headHints;
         return x;
     }
 

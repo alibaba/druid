@@ -85,6 +85,14 @@ public class SQLUnionQueryTableSource extends SQLTableSourceImpl {
             }
         }
 
+        if (pivot != null) {
+            x.setPivot(pivot.clone());
+        }
+
+        if (unpivot != null) {
+            x.setUnpivot(unpivot.clone());
+        }
+
         return x;
     }
 

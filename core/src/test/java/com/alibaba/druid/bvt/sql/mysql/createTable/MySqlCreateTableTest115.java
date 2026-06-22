@@ -68,7 +68,7 @@ public class MySqlCreateTableTest115 extends MysqlTest {
                 "\t`idAddresses` VARCHAR(45) NULL,\n" +
                 "\tPRIMARY KEY (`Employee_id`),\n" +
                 "\tINDEX `employee_id` USING BTREE(id(5)),\n" +
-                "\tFOREIGN KEY `fkEmployee_Addresses` (`idAddresses`) REFERENCES `schema`.`Addresses` (`idAddresses`) ON DELETE NO ACTION ON UPDATE NO ACTION\n" +
+                "\tCONSTRAINT `fkEmployee_Addresses` FOREIGN KEY `fkEmployee_Addresses` (`idAddresses`) REFERENCES `schema`.`Addresses` (`idAddresses`) ON DELETE NO ACTION ON UPDATE NO ACTION\n" +
                 ") ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_bin", stmt.clone().toString());
 
         SchemaRepository repository = new SchemaRepository(DbType.mysql);
@@ -80,7 +80,7 @@ public class MySqlCreateTableTest115 extends MysqlTest {
                 "\t`idAddresses` VARCHAR(45) NULL,\n" +
                 "\tPRIMARY KEY (`Employee_id`),\n" +
                 "\tINDEX `employee_id` USING BTREE(id(5)),\n" +
-                "\tFOREIGN KEY `fkEmployee_Addresses` (`idAddresses`) REFERENCES `schema`.`Addresses` (`idAddresses`) ON DELETE NO ACTION ON UPDATE NO ACTION\n" +
+                "\tCONSTRAINT `fkEmployee_Addresses` FOREIGN KEY `fkEmployee_Addresses` (`idAddresses`) REFERENCES `schema`.`Addresses` (`idAddresses`) ON DELETE NO ACTION ON UPDATE NO ACTION\n" +
                 ") ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_bin", repository
                 .findTable("Employee")
                 .getStatement()
