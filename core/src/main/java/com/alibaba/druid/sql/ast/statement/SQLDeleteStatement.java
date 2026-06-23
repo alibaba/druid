@@ -74,6 +74,7 @@ public class SQLDeleteStatement extends SQLStatementImpl implements SQLReplaceab
         }
         x.only = only;
         x.dbType = dbType;
+        x.afterSemi = afterSemi;
     }
 
     public SQLDeleteStatement clone() {

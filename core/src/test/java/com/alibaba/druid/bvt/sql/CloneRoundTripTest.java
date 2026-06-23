@@ -27,18 +27,14 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
  * — i.e. cloning preserves everything that reaches the output. A mismatch means clone()/cloneTo()
  * dropped or mangled a field.
  *
- * <p>{@link #KNOWN_INCOMPLETE} grandfathers (statementType, dialect) combinations whose clone still
- * drops a field. The per-dialect subdirectory corpus round-trips cleanly (empty for those). The scan
- * also now covers the ~92 top-level *.txt files (oracle/db2/h2/odps/...); two deep Oracle edge cases
- * in that newly-covered set remain grandfathered below. When a clone drops a field, fix the
- * clone()/cloneTo() rather than re-adding an entry here. clone()s that throw UnsupportedOperationException
- * (the separate "clone not implemented" debt) are skipped here.
+ * <p>The scan covers BOTH the per-dialect subdirectories AND the ~92 top-level *.txt files
+ * (oracle/db2/h2/odps/...). The whole corpus now round-trips cleanly, so {@link #KNOWN_INCOMPLETE}
+ * is EMPTY — keep it that way: when a clone drops a field, fix the clone()/cloneTo() rather than
+ * re-adding an entry here. clone()s that throw UnsupportedOperationException (the separate
+ * "clone not implemented" debt) are skipped here.
  */
 public class CloneRoundTripTest {
-    private static final Set<String> KNOWN_INCOMPLETE = new HashSet<>(Arrays.asList(
-            // oracle-56: a statement inside a multi-statement PL/SQL block loses one inner ';' (afterSemi) on clone
-            "SQLBlockStatement (oracle)"
-    ));
+    private static final Set<String> KNOWN_INCOMPLETE = new HashSet<>(Arrays.<String>asList());
 
     @Test
     public void cloneRoundTripsToSameSql() throws IOException {
