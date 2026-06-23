@@ -901,7 +901,10 @@ public class SQLExprParser extends SQLParser {
                 sqlExpr = primaryIn(sqlExpr);
                 break;
             case LBRACKET:
+                // subscript access on the preceding expression, e.g. col['k'] or arr[1];
+                // keep the base expression as the array expr so it is not lost on output (issue #6631)
                 SQLArrayExpr arrayTmp = new SQLArrayExpr();
+                arrayTmp.setExpr(sqlExpr);
                 lexer.nextToken();
                 this.exprList(arrayTmp.getValues(), arrayTmp);
                 accept(Token.RBRACKET);
@@ -3792,6 +3795,22 @@ public class SQLExprParser extends SQLParser {
     public SQLExpr relationalRest(SQLExpr expr) {
         final SQLExpr initExpr = expr;
         SQLExpr rightExp = null;
+
+        if (dbType == DbType.mysql
+                && lexer.token == Token.IDENTIFIER && lexer.identifierEquals(FnvHash.Constants.MEMBER)) {
+            // MySQL JSON predicate: value MEMBER OF (json_array)
+            Lexer.SavePoint mark = lexer.mark();
+            lexer.nextToken();
+            if (lexer.token == Token.OF || lexer.identifierEquals("OF")) {
+                lexer.nextToken();
+                accept(Token.LPAREN);
+                SQLExpr array = expr();
+                accept(Token.RPAREN);
+                return new SQLBinaryOpExpr(expr, SQLBinaryOperator.MemberOf, array, dbType);
+            } else {
+                lexer.reset(mark);
+            }
+        }
 
         Token token = lexer.token;
 

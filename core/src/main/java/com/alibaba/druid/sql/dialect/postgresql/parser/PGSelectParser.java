@@ -129,6 +129,10 @@ public class PGSelectParser extends SQLSelectParser {
 
         parseWhere(queryBlock);
 
+        // openGauss (registered as the postgresql dialect) supports Oracle-style hierarchical
+        // queries: CONNECT BY ... START WITH ... (see issue #6637)
+        parseHierachical(queryBlock);
+
         parseGroupBy(queryBlock);
 
         if (lexer.token() == Token.WINDOW) {
@@ -205,11 +209,23 @@ public class PGSelectParser extends SQLSelectParser {
             } else if (lexer.token() == Token.SHARE) {
                 forClause.setOption(PGSelectQueryBlock.ForClause.Option.SHARE);
                 lexer.nextToken();
+            } else if (lexer.token() == Token.KEY) {
+                // FOR KEY SHARE
+                lexer.nextToken();
+                accept(Token.SHARE);
+                forClause.setOption(PGSelectQueryBlock.ForClause.Option.KEY_SHARE);
+            } else if (lexer.identifierEquals("NO")) {
+                // FOR NO KEY UPDATE
+                lexer.nextToken();
+                accept(Token.KEY);
+                accept(Token.UPDATE);
+                forClause.setOption(PGSelectQueryBlock.ForClause.Option.NO_KEY_UPDATE);
             } else {
-                throw new ParserException("expect 'FIRST' or 'NEXT'. " + lexer.info());
+                throw new ParserException("expect UPDATE, SHARE, KEY SHARE or NO KEY UPDATE. " + lexer.info());
             }
 
             if (lexer.token() == Token.OF) {
+                lexer.nextToken();
                 for (; ; ) {
                     SQLExpr expr = this.createExprParser().expr();
                     forClause.getOf().add(expr);

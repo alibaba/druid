@@ -73,8 +73,19 @@ public class SQLServerStatementParser extends SQLStatementParser {
                     execStmt.setModuleName(sqlNameName);
                 }
 
-                if (lexer.token() != Token.SEMI && lexer.token() != Token.EOF) {
+                if (lexer.token() != Token.SEMI && lexer.token() != Token.EOF && lexer.token() != Token.WITH) {
                     this.parseExecParameter(execStmt.getParameters(), execStmt);
+                }
+            }
+            // EXEC ... WITH RECOMPILE (leave other WITH options, e.g. WITH RESULT SETS, untouched)
+            if (lexer.token() == Token.WITH) {
+                Lexer.SavePoint mark = lexer.mark();
+                lexer.nextToken();
+                if (lexer.identifierEquals("RECOMPILE")) {
+                    lexer.nextToken();
+                    execStmt.setRecompile(true);
+                } else {
+                    lexer.reset(mark);
                 }
             }
             statementList.add(execStmt);

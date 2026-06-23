@@ -21,6 +21,7 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.ast.expr.SQLArrayExpr;
 import com.alibaba.druid.sql.ast.expr.SQLDecimalExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.presto.Presto;
 import com.alibaba.druid.sql.dialect.presto.ast.PrestoColumnWith;
@@ -155,7 +156,17 @@ public class PrestoOutputVisitor extends SQLASTOutputVisitor implements PrestoAS
 
     @Override
     public boolean visit(SQLArrayExpr x) {
-        print0(ucase ? "ARRAY[" : "array[");
+        SQLExpr expr = x.getExpr();
+        // ARRAY[...] constructor vs subscript access base[...] (e.g. col['k']); see issue #6631
+        boolean arrayKeyword = expr == null
+                || (expr instanceof SQLIdentifierExpr
+                    && "ARRAY".equalsIgnoreCase(((SQLIdentifierExpr) expr).getName()));
+        if (arrayKeyword) {
+            print0(ucase ? "ARRAY[" : "array[");
+        } else {
+            expr.accept(this);
+            print('[');
+        }
         printAndAccept(x.getValues(), ", ");
         print(']');
         return false;

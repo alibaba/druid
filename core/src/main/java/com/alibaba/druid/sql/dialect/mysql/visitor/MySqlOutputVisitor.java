@@ -260,6 +260,10 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         boolean parameterized = this.parameterized;
         this.parameterized = false;
 
+        if (x.isIfNotExists()) {
+            print0(ucase ? "IF NOT EXISTS " : "if not exists ");
+        }
+
         String columnName = replaceQuota(x.getName().getSimpleName());
         printName0(columnName);
 
@@ -5582,7 +5586,12 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         SQLExpr id = x.getId();
         if (id != null) {
             print(' ');
-            printExpr(id);
+            if (id instanceof SQLListExpr) {
+                // multi-part xid: gtrid, bqual, formatID — comma-separated, no surrounding parens
+                printAndAccept(((SQLListExpr) id).getItems(), ", ");
+            } else {
+                printExpr(id);
+            }
         }
         return false;
     }

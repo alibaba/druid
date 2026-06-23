@@ -1055,6 +1055,12 @@ public class SQLStatementParser extends SQLParser {
         }
         accept(Token.VIEW);
 
+        // PostgreSQL: REFRESH MATERIALIZED VIEW [ CONCURRENTLY ] name (CONCURRENTLY after VIEW)
+        if (lexer.identifierEquals("CONCURRENTLY")) {
+            lexer.nextToken();
+            stmt.setConcurrently(true);
+        }
+
         stmt.setName(this.exprParser.name());
 
         if (lexer.token() == WITH) {
@@ -3027,7 +3033,9 @@ public class SQLStatementParser extends SQLParser {
 
     protected void alterTableAddRest(SQLAlterTableStatement stmt) {
         acceptIdentifier("ADD");
-        if (lexer.token == Token.IDENTIFIER) {
+        // ADD [COLUMN] <name> <type> ... where the name may be a quoted identifier such as
+        // "version" (a LITERAL_ALIAS), not just a bare IDENTIFIER (issue #6064)
+        if (lexer.token == Token.IDENTIFIER || lexer.token == Token.LITERAL_ALIAS) {
             SQLAlterTableAddColumn item = parseAlterTableAddColumn();
             stmt.addItem(item);
             return;
@@ -3773,14 +3781,14 @@ public class SQLStatementParser extends SQLParser {
 
             if (lexer.token == Token.DROP) {
                 lexer.nextToken();
-                acceptIdentifier("STORAGE");
+                accept(Token.STORAGE);
                 stmt.setDropStorage(true);
                 continue;
             }
 
             if (lexer.identifierEquals("REUSE")) {
                 lexer.nextToken();
-                acceptIdentifier("STORAGE");
+                accept(Token.STORAGE);
                 stmt.setReuseStorage(true);
                 continue;
             }
@@ -5972,6 +5980,10 @@ public class SQLStatementParser extends SQLParser {
             }
 
             accept(Token.AS);
+
+            // PostgreSQL: name AS [ NOT ] MATERIALIZED ( query )
+            parseCTEMaterializationHint(entry);
+
             accept(Token.LPAREN);
 
             switch (lexer.token) {

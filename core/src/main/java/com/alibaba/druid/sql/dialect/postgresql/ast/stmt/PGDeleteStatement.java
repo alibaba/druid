@@ -16,22 +16,39 @@
 package com.alibaba.druid.sql.dialect.postgresql.ast.stmt;
 
 import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class PGDeleteStatement extends SQLDeleteStatement implements PGSQLStatement {
-    private boolean returning;
+    private SQLExpr returning;
 
     public PGDeleteStatement() {
         super(DbType.postgresql);
     }
 
     public boolean isReturning() {
-        return returning;
+        return returning != null;
     }
 
     public void setReturning(boolean returning) {
+        if (returning && this.returning == null) {
+            setReturning(new SQLAllColumnExpr());
+        } else if (!returning) {
+            this.returning = null;
+        }
+    }
+
+    public SQLExpr getReturning() {
+        return returning;
+    }
+
+    public void setReturning(SQLExpr returning) {
+        if (returning != null) {
+            returning.setParent(this);
+        }
         this.returning = returning;
     }
 
@@ -61,6 +78,7 @@ public class PGDeleteStatement extends SQLDeleteStatement implements PGSQLStatem
             acceptChild(visitor, tableSource);
             acceptChild(visitor, using);
             acceptChild(visitor, where);
+            acceptChild(visitor, returning);
         }
 
         visitor.endVisit(this);
@@ -70,7 +88,9 @@ public class PGDeleteStatement extends SQLDeleteStatement implements PGSQLStatem
         PGDeleteStatement x = new PGDeleteStatement();
         cloneTo(x);
 
-        x.returning = returning;
+        if (returning != null) {
+            x.setReturning(returning.clone());
+        }
         x.afterSemi = afterSemi;
 
         return x;

@@ -77,13 +77,17 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             print0(ucase ? "UPDATE" : "update");
         } else if (ForClause.Option.SHARE.equals(x.getOption())) {
             print0(ucase ? "SHARE" : "share");
+        } else if (ForClause.Option.KEY_SHARE.equals(x.getOption())) {
+            print0(ucase ? "KEY SHARE" : "key share");
+        } else if (ForClause.Option.NO_KEY_UPDATE.equals(x.getOption())) {
+            print0(ucase ? "NO KEY UPDATE" : "no key update");
         }
 
         if (x.getOf().size() > 0) {
-            print(' ');
+            print0(ucase ? " OF " : " of ");
             for (int i = 0; i < x.getOf().size(); ++i) {
                 if (i != 0) {
-                    println(", ");
+                    print0(", ");
                 }
                 x.getOf().get(i).accept(this);
             }
@@ -150,6 +154,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
 
         printFrom(x);
         printWhere(x);
+        printHierarchical(x);
         printGroupBy(x);
         printWindow(x);
         printOrderBy(x);
@@ -234,9 +239,15 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             this.indentCount--;
         }
 
-        if (x.isReturning()) {
+        SQLExpr returning = x.getReturning();
+        if (returning != null) {
             println();
-            print0(ucase ? "RETURNING *" : "returning *");
+            print0(ucase ? "RETURNING " : "returning ");
+            if (returning instanceof SQLListExpr) {
+                printAndAccept(((SQLListExpr) returning).getItems(), ", ");
+            } else {
+                returning.accept(this);
+            }
         }
 
         return false;
@@ -438,6 +449,20 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         }
         print0("::");
         dataType.accept(this);
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLCharacterDataType x) {
+        super.visit(x);
+        // PostgreSQL stores the COLLATE clause on the character data type (e.g. text COLLATE "x"
+        // produced by a cast like (a)::text COLLATE "x", or a column definition); the generic
+        // data type output drops it, so render it here (see issue #6573).
+        String collate = x.getCollate();
+        if (collate != null) {
+            print0(ucase ? " COLLATE " : " collate ");
+            print0(collate);
+        }
         return false;
     }
 

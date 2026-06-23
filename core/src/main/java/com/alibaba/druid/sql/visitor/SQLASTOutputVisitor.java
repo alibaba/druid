@@ -896,6 +896,16 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     private void visitorBinaryRight(SQLBinaryOpExpr x) {
         SQLExpr right = x.getRight();
         SQLBinaryOperator op = x.getOperator();
+        if (op == SQLBinaryOperator.MemberOf) {
+            // MySQL: value MEMBER OF (json_array) — the parentheses are part of the syntax
+            print('(');
+            printExpr(right, parameterized);
+            print(')');
+            if (x.getHint() != null) {
+                x.getHint().accept(this);
+            }
+            return;
+        }
         if (right instanceof SQLBinaryOpExpr) {
             SQLBinaryOpExpr binaryRight = (SQLBinaryOpExpr) right;
             SQLBinaryOperator rightOp = binaryRight.getOperator();
@@ -908,12 +918,23 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                     && rightOp.isLogical()
                     && op.isLogical()
             )) {
+                // precedence requires grouping; emit parentheses explicitly when the child is not
+                // already parenthesized (otherwise visitBinaryOpExpr would print them and we'd double up).
+                // Limited to arithmetic operators, where the priority table matches the parser and the
+                // parentheses are semantically required for programmatically-built ASTs (see issue #6408);
+                // other operators keep their historical output to avoid spurious parentheses.
+                boolean printParen = !binaryRight.isParenthesized()
+                        && rightOp.isArithmetic() && op.isArithmetic();
                 if (rightRational) { //这里需要验证
                     this.indentCount++;
                 }
-                //print('(');
+                if (printParen) {
+                    print('(');
+                }
                 printExpr(binaryRight, parameterized);
-                //print(')');
+                if (printParen) {
+                    print(')');
+                }
 
                 if (rightRational) {
                     this.indentCount--;
@@ -978,12 +999,21 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             }
 
             if (bracket) {
+                // precedence requires grouping; emit parentheses explicitly when the child is not
+                // already parenthesized (otherwise visitBinaryOpExpr would print them and we'd double up).
+                // Limited to arithmetic operators (see issue #6408 and visitorBinaryRight).
+                boolean printParen = !binaryLeft.isParenthesized()
+                        && leftOp.isArithmetic() && op.isArithmetic();
                 if (leftRational) {
                     this.indentCount++;
                 }
-                //print('(');
+                if (printParen) {
+                    print('(');
+                }
                 printExpr(left, parameterized);
-               // print(')');
+                if (printParen) {
+                    print(')');
+                }
 
                 if (leftRational) {
                     this.indentCount--;
@@ -4386,6 +4416,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             case Prior:
             case ConnectByRoot:
             case NOT:
+            case VARIADIC:
                 print(' ');
                 if (operator != SQLUnaryOperator.Prior && expr instanceof SQLBinaryOpExpr && !((SQLBinaryOpExpr) expr).isParenthesized()) {
                     print('(');
@@ -4432,8 +4463,14 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             return false;
         }
 
-        print0("0x");
-        print0(x.getHex());
+        String hex = x.getHex();
+        if (hex == null || hex.isEmpty()) {
+            // 0x must have at least one digit; an empty hex literal is written X'' (issue #5244)
+            print0("X''");
+        } else {
+            print0("0x");
+            print0(hex);
+        }
 
         String charset = (String) x.getAttribute("USING");
         if (charset != null) {
@@ -4998,9 +5035,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print(')');
         }
 
-        if (x.getOffset() != null) {
-            print0(ucase ? " WITH OFFSET AS " : " with offset as ");
-            x.getOffset().accept(this);
+        if (x.isWithOffset()) {
+            print0(ucase ? " WITH OFFSET" : " with offset");
+            if (x.getOffset() != null) {
+                print0(ucase ? " AS " : " as ");
+                x.getOffset().accept(this);
+            }
         }
         printPivot(x.getPivot());
         printUnpivot(x.getUnpivot());
@@ -5939,6 +5979,14 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
         print(' ');
         print0(ucase ? "AS " : "as ");
+        Boolean materialized = x.getMaterialized();
+        if (materialized != null) {
+            if (materialized) {
+                print0(ucase ? "MATERIALIZED " : "materialized ");
+            } else {
+                print0(ucase ? "NOT MATERIALIZED " : "not materialized ");
+            }
+        }
         print('(');
         this.indentCount++;
         println();
@@ -6009,6 +6057,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (dataType != null) {
             print0(ucase ? " SET DATA TYPE " : " set data type ");
             dataType.accept(this);
+        }
+
+        if (x.getUsing() != null) { // postgresql: ALTER COLUMN col TYPE <type> USING <expr>
+            print0(ucase ? " USING " : " using ");
+            x.getUsing().accept(this);
         }
 
         final SQLName after = x.getAfter();
@@ -7104,6 +7157,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 print(' ');
             }
             print0(alias);
+            if (columns.size() > 0) {
+                print0(" (");
+                printAndAccept(columns, ", ");
+                print(')');
+            }
         }
         printPivot(x.getPivot());
         printUnpivot(x.getUnpivot());
@@ -9282,13 +9340,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     @Override
     public boolean visit(SQLRefreshMaterializedViewStatement x) {
-        print0(ucase ? "REFRESH MATERIALIZED" : "refresh materialized");
+        print0(ucase ? "REFRESH MATERIALIZED VIEW " : "refresh materialized view ");
 
+        // PostgreSQL: REFRESH MATERIALIZED VIEW [ CONCURRENTLY ] name
         if (x.isConcurrently()) {
-            print0(ucase ? " CONCURRENTLY" : " concurrently");
+            print0(ucase ? "CONCURRENTLY " : "concurrently ");
         }
-
-        print0(ucase ? " VIEW " : " view ");
 
         x.getName().accept(this);
 
