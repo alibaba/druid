@@ -19,7 +19,7 @@ public class DruidDataSourceTest_initSql_factory {
     protected void setUp() throws Exception {
         Properties properties = new Properties();
         properties.put(DruidDataSourceFactory.PROP_URL, "jdbc:mock:xxx");
-        properties.put(DruidDataSourceFactory.PROP_INITCONNECTIONSQLS, ";;select 123");
+        properties.put(DruidDataSourceFactory.PROP_CONNECTIONINITSQLS, ";;select 123");
         dataSource = (DruidDataSource) DruidDataSourceFactory.createDataSource(properties);
     }
 
