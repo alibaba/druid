@@ -19,7 +19,8 @@ import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MySqlWallTest100 {
     @Test
@@ -30,5 +31,14 @@ public class MySqlWallTest100 {
         String sql = "select * from t where id = ? or substr(bin(97>>6), -1, 1) = 1";
 
         assertFalse(provider.checkValid(sql));
+    }
+
+    @Test
+    public void test_member_of() {
+        WallProvider provider = new MySqlWallProvider();
+
+        String sql = "select 'ab' member of('[23, \"abc\", 17, \"ab\", 10]')";
+
+        assertTrue(provider.checkValid(sql));
     }
 }
