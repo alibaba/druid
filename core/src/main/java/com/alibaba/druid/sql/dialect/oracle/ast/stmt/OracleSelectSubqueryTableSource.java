@@ -63,7 +63,7 @@ public class OracleSelectSubqueryTableSource extends SQLSubqueryTableSource impl
         cloneTo(x);
 
         if (pivot != null) {
-            setParent(pivot.clone());
+            x.setPivot(pivot.clone());
         }
 
         if (unpivot != null) {

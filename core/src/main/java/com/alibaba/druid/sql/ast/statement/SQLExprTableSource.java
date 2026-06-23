@@ -340,6 +340,11 @@ public class SQLExprTableSource extends SQLTableSourceImpl implements SQLReplace
         if (unpivot != null) {
             x.setUnpivot(unpivot.clone());
         }
+
+        x.needAsTokenForAlias = needAsTokenForAlias;
+        if (flashback != null) {
+            x.setFlashback(flashback.clone());
+        }
     }
 
     public List<SQLName> getColumns() {

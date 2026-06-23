@@ -46,6 +46,7 @@ public abstract class SQLConstraintImpl extends SQLObjectImpl implements SQLCons
         x.dbType = dbType;
         if (comment != null) {
             x.comment = comment.clone();
+            x.comment.setParent(x);
         }
     }
 

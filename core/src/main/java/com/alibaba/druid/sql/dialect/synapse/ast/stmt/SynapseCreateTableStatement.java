@@ -41,6 +41,9 @@ public class SynapseCreateTableStatement extends SQLCreateTableStatement {
     }
 
     public void setDistribution(SQLExpr distribution) {
+        if (distribution != null) {
+            distribution.setParent(this);
+        }
         this.distribution = distribution;
     }
 

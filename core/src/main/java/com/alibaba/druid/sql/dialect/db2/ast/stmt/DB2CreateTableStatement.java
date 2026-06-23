@@ -64,7 +64,7 @@ public class DB2CreateTableStatement extends SQLCreateTableStatement implements 
     }
 
     public void setValidproc(SQLName x) {
-        if (validproc != null) {
+        if (x != null) {
             x.setParent(this);
         }
         this.validproc = x;
@@ -75,7 +75,7 @@ public class DB2CreateTableStatement extends SQLCreateTableStatement implements 
     }
 
     public void setIndexIn(SQLName x) {
-        if (validproc != null) {
+        if (x != null) {
             x.setParent(this);
         }
         this.indexIn = x;

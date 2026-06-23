@@ -206,6 +206,7 @@ public class SQLDropTableStatement extends SQLStatementImpl implements SQLDropSt
         x.isDropPartition = isDropPartition;
         if (where != null) {
             x.where = where.clone();
+            x.where.setParent(x);
         }
         x.afterSemi = afterSemi;
     }

@@ -297,15 +297,14 @@ public class OracleCreateIndexStatement extends SQLCreateIndexStatement implemen
     }
 
     public void cloneTo(OracleCreateIndexStatement x) {
-        getIndexDefinition().cloneTo(x.getIndexDefinition());
-        x.setIfNotExists(isIfNotExists());
-
+        super.cloneTo(x);
         x.online = online;
         x.indexOnlyTopLevel = indexOnlyTopLevel;
         x.cluster = cluster;
         x.noParallel = noParallel;
         if (parallel != null) {
-            x.setParallel(parallel.clone());
+            x.parallel = parallel.clone();
+            x.parallel.setParent(x);
         }
         x.pctfree = pctfree;
         x.pctused = pctused;
@@ -321,35 +320,34 @@ public class OracleCreateIndexStatement extends SQLCreateIndexStatement implemen
         x.sort = sort;
         x.reverse = reverse;
         if (tablespace != null) {
-            x.setTablespace(tablespace.clone());
+            x.tablespace = tablespace.clone();
+            x.tablespace.setParent(x);
         }
         if (storage != null) {
-            SQLObject storage2 = storage.clone();
-            storage2.setParent(x);
-            x.storage = storage2;
+            x.storage = storage.clone();
+            x.storage.setParent(x);
         }
         x.enable = enable;
         x.computeStatistics = computeStatistics;
         x.local = local;
-        for (SQLName e : localStoreIn) {
-            SQLName e2 = e.clone();
-            e2.setParent(x);
-            x.localStoreIn.add(e2);
+        for (SQLName item : localStoreIn) {
+            SQLName item2 = item.clone();
+            item2.setParent(x);
+            x.localStoreIn.add(item2);
         }
-        for (OraclePartitionSingle e : localPartitions) {
-            OraclePartitionSingle e2 = e.clone();
-            e2.setParent(x);
-            x.localPartitions.add(e2);
+        for (OraclePartitionSingle item : localPartitions) {
+            OraclePartitionSingle item2 = item.clone();
+            item2.setParent(x);
+            x.localPartitions.add(item2);
         }
         x.global = global;
-        for (SQLPartitionBy e : globalPartitions) {
-            SQLPartitionBy e2 = e.clone();
-            e2.setParent(x);
-            x.globalPartitions.add(e2);
+        for (SQLPartitionBy item : globalPartitions) {
+            SQLPartitionBy item2 = item.clone();
+            item2.setParent(x);
+            x.globalPartitions.add(item2);
         }
     }
 
-    @Override
     public OracleCreateIndexStatement clone() {
         OracleCreateIndexStatement x = new OracleCreateIndexStatement();
         cloneTo(x);

@@ -189,6 +189,7 @@ public class SQLSelect extends SQLObjectImpl implements SQLDbTypedObject {
 
         if (withSubQuery != null) {
             x.withSubQuery = withSubQuery.clone();
+            x.withSubQuery.setParent(x);
         }
 
         if (query != null) {

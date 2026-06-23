@@ -158,13 +158,17 @@ public class SQLCreateIndexStatement extends SQLStatementImpl implements SQLCrea
         return null;
     }
 
-    public SQLCreateIndexStatement clone() {
-        SQLCreateIndexStatement x = new SQLCreateIndexStatement();
+    public void cloneTo(SQLCreateIndexStatement x) {
         indexDefinition.cloneTo(x.indexDefinition);
         x.setIfNotExists(ifNotExists);
         x.dbType = dbType;
         x.afterSemi = afterSemi;
         x.headHints = headHints;
+    }
+
+    public SQLCreateIndexStatement clone() {
+        SQLCreateIndexStatement x = new SQLCreateIndexStatement();
+        cloneTo(x);
         return x;
     }
 

@@ -35,6 +35,7 @@ public class PGCharExpr extends SQLCharExpr implements PGExpr {
         PGCharExpr x = new PGCharExpr();
         x.setText(this.getText());
         x.setCollate(this.getCollate());
+        cloneTo(x);
         x.cSytle = this.cSytle;
         return x;
     }

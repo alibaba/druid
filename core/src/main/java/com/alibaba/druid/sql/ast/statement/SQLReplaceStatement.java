@@ -105,6 +105,9 @@ public class SQLReplaceStatement extends SQLStatementImpl {
         x.setDbType(this.dbType);
 
         if (headHints != null) {
+            if (x.headHints == null) {
+                x.headHints = new ArrayList<SQLCommentHint>(headHints.size());
+            }
             for (SQLCommentHint h : headHints) {
                 SQLCommentHint clone = h.clone();
                 clone.setParent(x);

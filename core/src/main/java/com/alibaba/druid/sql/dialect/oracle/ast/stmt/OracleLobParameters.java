@@ -37,6 +37,9 @@ public class OracleLobParameters extends OracleSQLObjectImpl {
     }
 
     public void setTableSpace(SQLName tableSpace) {
+        if (tableSpace != null) {
+            tableSpace.setParent(this);
+        }
         this.tableSpace = tableSpace;
     }
 
@@ -53,6 +56,9 @@ public class OracleLobParameters extends OracleSQLObjectImpl {
     }
 
     public void setChunk(SQLExpr chunk) {
+        if (chunk != null) {
+            chunk.setParent(this);
+        }
         this.chunk = chunk;
     }
 

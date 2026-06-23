@@ -99,6 +99,15 @@ public class SQLUpdateStatement extends SQLStatementImpl implements SQLReplaceab
         if (limit != null) {
             x.setLimit(limit.clone());
         }
+
+        if (partitions != null) {
+            x.partitions = new ArrayList<SQLAssignItem>(partitions.size());
+            for (SQLAssignItem partition : partitions) {
+                SQLAssignItem p2 = partition.clone();
+                p2.setParent(x);
+                x.partitions.add(p2);
+            }
+        }
     }
 
     public SQLUpdateStatement clone() {

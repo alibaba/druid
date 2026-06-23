@@ -61,7 +61,11 @@ public class SQLCreateFunctionStatement extends SQLStatementImpl implements SQLC
 
     public SQLCreateFunctionStatement clone() {
         SQLCreateFunctionStatement x = new SQLCreateFunctionStatement();
+        cloneTo(x);
+        return x;
+    }
 
+    public void cloneTo(SQLCreateFunctionStatement x) {
         if (definer != null) {
             x.setDefiner(definer.clone());
         }
@@ -99,8 +103,6 @@ public class SQLCreateFunctionStatement extends SQLStatementImpl implements SQLC
             x.setUsing(using.clone());
         }
         x.afterSemi = afterSemi;
-
-        return x;
     }
 
     @Override
