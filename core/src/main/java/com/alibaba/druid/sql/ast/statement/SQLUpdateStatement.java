@@ -95,6 +95,10 @@ public class SQLUpdateStatement extends SQLStatementImpl implements SQLReplaceab
             x.orderBy = orderBy.clone();
             x.orderBy.setParent(x);
         }
+
+        if (limit != null) {
+            x.setLimit(limit.clone());
+        }
     }
 
     public SQLUpdateStatement clone() {

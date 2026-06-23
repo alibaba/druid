@@ -90,7 +90,7 @@ public class SQLUnnestTableSource extends SQLTableSourceImpl
         x.ordinality = ordinality;
 
         if (offset != null) {
-            x.setOffset(offset);
+            x.setOffset(offset.clone());
         }
 
         return x;

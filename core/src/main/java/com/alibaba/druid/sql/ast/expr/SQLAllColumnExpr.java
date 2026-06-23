@@ -88,7 +88,9 @@ public final class SQLAllColumnExpr extends SQLExprImpl implements SQLName {
 
     public SQLAllColumnExpr clone() {
         SQLAllColumnExpr x = new SQLAllColumnExpr();
-        x.setOwner(owner);
+        if (owner != null) {
+            x.setOwner(owner.clone());
+        }
 
         x.resolvedTableSource = resolvedTableSource;
 

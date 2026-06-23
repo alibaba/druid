@@ -637,7 +637,7 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
         if (mappedBy != null) {
             for (SQLAssignItem item : mappedBy) {
                 SQLAssignItem item2 = item.clone();
-                item2.setParent(this);
+                item2.setParent(x);
                 if (x.mappedBy == null) {
                     x.mappedBy = new ArrayList<SQLAssignItem>();
                 }
@@ -648,7 +648,7 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
         if (colProperties != null) {
             for (SQLAssignItem item : colProperties) {
                 SQLAssignItem item2 = item.clone();
-                item2.setParent(this);
+                item2.setParent(x);
                 if (x.colProperties == null) {
                     x.colProperties = new ArrayList<SQLAssignItem>();
                 }
