@@ -29,4 +29,13 @@ public class PGCharExpr extends SQLCharExpr implements PGExpr {
     public void setCSytle(boolean cSytle) {
         this.cSytle = cSytle;
     }
+
+    @Override
+    public PGCharExpr clone() {
+        PGCharExpr x = new PGCharExpr();
+        x.setText(this.getText());
+        x.setCollate(this.getCollate());
+        x.cSytle = this.cSytle;
+        return x;
+    }
 }

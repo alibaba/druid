@@ -59,10 +59,13 @@ public class CloneTypeConsistencyTest {
             Method clone;
             Constructor<?> ctor;
             try {
-                clone = cls.getDeclaredMethod("clone");
+                // getMethod (not getDeclaredMethod) so a subclass that INHERITS a base clone() which
+                // constructs the base type — i.e. type-slices — is also exercised, not just classes
+                // that declare their own clone().
+                clone = cls.getMethod("clone");
                 ctor = cls.getDeclaredConstructor();
             } catch (NoSuchMethodException e) {
-                continue; // does not override clone() or has no no-arg constructor → out of scope
+                continue; // has no no-arg constructor → out of scope (cannot instantiate to test)
             }
             SQLObject obj;
             Object cloned;

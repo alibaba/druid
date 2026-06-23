@@ -295,4 +295,64 @@ public class OracleCreateIndexStatement extends SQLCreateIndexStatement implemen
     public void setGlobal(boolean global) {
         this.global = global;
     }
+
+    public void cloneTo(OracleCreateIndexStatement x) {
+        getIndexDefinition().cloneTo(x.getIndexDefinition());
+        x.setIfNotExists(isIfNotExists());
+
+        x.online = online;
+        x.indexOnlyTopLevel = indexOnlyTopLevel;
+        x.cluster = cluster;
+        x.noParallel = noParallel;
+        if (parallel != null) {
+            x.setParallel(parallel.clone());
+        }
+        x.pctfree = pctfree;
+        x.pctused = pctused;
+        x.initrans = initrans;
+        x.maxtrans = maxtrans;
+        x.pctincrease = pctincrease;
+        x.freeLists = freeLists;
+        x.compress = compress;
+        x.compressLevel = compressLevel;
+        x.compressForOltp = compressForOltp;
+        x.pctthreshold = pctthreshold;
+        x.logging = logging;
+        x.sort = sort;
+        x.reverse = reverse;
+        if (tablespace != null) {
+            x.setTablespace(tablespace.clone());
+        }
+        if (storage != null) {
+            SQLObject storage2 = storage.clone();
+            storage2.setParent(x);
+            x.storage = storage2;
+        }
+        x.enable = enable;
+        x.computeStatistics = computeStatistics;
+        x.local = local;
+        for (SQLName e : localStoreIn) {
+            SQLName e2 = e.clone();
+            e2.setParent(x);
+            x.localStoreIn.add(e2);
+        }
+        for (OraclePartitionSingle e : localPartitions) {
+            OraclePartitionSingle e2 = e.clone();
+            e2.setParent(x);
+            x.localPartitions.add(e2);
+        }
+        x.global = global;
+        for (SQLPartitionBy e : globalPartitions) {
+            SQLPartitionBy e2 = e.clone();
+            e2.setParent(x);
+            x.globalPartitions.add(e2);
+        }
+    }
+
+    @Override
+    public OracleCreateIndexStatement clone() {
+        OracleCreateIndexStatement x = new OracleCreateIndexStatement();
+        cloneTo(x);
+        return x;
+    }
 }

@@ -125,6 +125,7 @@ public class SQLReplaceStatement extends SQLStatementImpl {
 
         if (this.tableSource != null) {
             x.tableSource = this.tableSource.clone();
+            x.tableSource.setParent(x);
         }
 
         for (SQLInsertStatement.ValuesClause clause : valuesList) {
@@ -137,6 +138,7 @@ public class SQLReplaceStatement extends SQLStatementImpl {
 
         if (query != null) {
             x.query = this.query.clone();
+            x.query.setParent(x);
         }
 
         if (partitions != null) {

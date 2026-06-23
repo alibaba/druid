@@ -53,4 +53,16 @@ public class OscarUpdateStatement extends SQLUpdateStatement implements OscarSta
         visitor.endVisit(this);
     }
 
+    public void cloneTo(OscarUpdateStatement x) {
+        super.cloneTo(x);
+        x.only = only;
+    }
+
+    @Override
+    public OscarUpdateStatement clone() {
+        OscarUpdateStatement x = new OscarUpdateStatement();
+        cloneTo(x);
+        return x;
+    }
+
 }

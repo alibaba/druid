@@ -120,4 +120,28 @@ public class DB2CreateTableStatement extends SQLCreateTableStatement implements 
         }
         visitor.endVisit(this);
     }
+
+    public void cloneTo(DB2CreateTableStatement x) {
+        super.cloneTo(x);
+        x.dataCaptureNone = dataCaptureNone;
+        x.dataCaptureChanges = dataCaptureChanges;
+        if (database != null) {
+            x.setDatabase(database.clone());
+        }
+        if (validproc != null) {
+            x.setValidproc(validproc.clone());
+        }
+        if (indexIn != null) {
+            x.setIndexIn(indexIn.clone());
+        }
+        x.withData = withData;
+        x.withNoData = withNoData;
+    }
+
+    @Override
+    public DB2CreateTableStatement clone() {
+        DB2CreateTableStatement x = new DB2CreateTableStatement();
+        cloneTo(x);
+        return x;
+    }
 }
