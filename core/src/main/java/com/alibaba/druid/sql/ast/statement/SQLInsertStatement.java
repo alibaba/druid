@@ -102,7 +102,7 @@ public class SQLInsertStatement extends SQLInsertInto implements SQLStatement {
         public ValuesClause clone() {
             ValuesClause x = new ValuesClause(new ArrayList<SQLExpr>(this.values.size()));
             for (Object v : values) {
-                x.addValue(v);
+                x.addValue(v instanceof SQLExpr ? ((SQLExpr) v).clone() : v);
             }
             return x;
         }

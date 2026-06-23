@@ -143,7 +143,7 @@ public final class SQLLimit extends SQLObjectImpl implements SQLReplaceable {
 
         if (by != null) {
             for (SQLExpr item : by) {
-                x.addBy(item);
+                x.addBy(item == null ? null : item.clone());
             }
         }
 

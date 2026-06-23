@@ -37,9 +37,7 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 public class CloneRoundTripTest {
     private static final Set<String> KNOWN_INCOMPLETE = new HashSet<>(Arrays.asList(
             // oracle-56: a statement inside a multi-statement PL/SQL block loses one inner ';' (afterSemi) on clone
-            "SQLBlockStatement (oracle)",
-            // oracle-61: a trailing line-comment after the SELECT is dropped on clone
-            "SQLSelectStatement (oracle)"
+            "SQLBlockStatement (oracle)"
     ));
 
     @Test
@@ -94,7 +92,10 @@ public class CloneRoundTripTest {
 
     private static void scanFile(Path txt, DbType dbType, Set<String> found) throws IOException {
         for (String test : new String(Files.readAllBytes(txt), StandardCharsets.UTF_8).split("(?m)^-{50,}$")) {
-            String sql = test.split("(?m)^-{20}$")[0].trim();
+            // The per-dialect subdir corpus separates input/expected with a 20-dash line; the top-level
+            // *.txt files use a 27-dash line. Match 20-or-more so the expected-output half is never parsed
+            // as input (which would produce false mismatches).
+            String sql = test.split("(?m)^-{20,}$")[0].trim();
             if (sql.isEmpty()) {
                 continue;
             }

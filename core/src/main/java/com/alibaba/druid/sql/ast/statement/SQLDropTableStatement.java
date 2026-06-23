@@ -196,7 +196,11 @@ public class SQLDropTableStatement extends SQLStatementImpl implements SQLDropSt
         if (hints != null) {
             x.hints = new ArrayList<>(hints);
         }
-        tableSources.forEach(e -> x.addTableSource(e.clone()));
+        tableSources.forEach(e -> {
+            SQLExprTableSource e2 = e.clone();
+            e2.setParent(x);
+            x.addTableSource(e2);
+        });
         x.purge = purge;
         x.cascade = cascade;
         x.restrict = restrict;

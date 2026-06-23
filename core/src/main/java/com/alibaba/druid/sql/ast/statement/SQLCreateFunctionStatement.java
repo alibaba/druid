@@ -66,6 +66,7 @@ public class SQLCreateFunctionStatement extends SQLStatementImpl implements SQLC
     }
 
     public void cloneTo(SQLCreateFunctionStatement x) {
+        x.dbType = dbType;
         if (definer != null) {
             x.setDefiner(definer.clone());
         }

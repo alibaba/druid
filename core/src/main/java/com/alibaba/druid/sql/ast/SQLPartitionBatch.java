@@ -52,9 +52,15 @@ public class SQLPartitionBatch extends SQLPartition {
     @Override
     public SQLPartitionBatch clone() {
         SQLPartitionBatch sqlPartitionBatch = new SQLPartitionBatch();
-        sqlPartitionBatch.setStart(start);
-        sqlPartitionBatch.setEnd(end);
-        sqlPartitionBatch.setEvery(every);
+        if (start != null) {
+            sqlPartitionBatch.setStart(start.clone());
+        }
+        if (end != null) {
+            sqlPartitionBatch.setEnd(end.clone());
+        }
+        if (every != null) {
+            sqlPartitionBatch.setEvery(every.clone());
+        }
         sqlPartitionBatch.setParent(parent);
         return sqlPartitionBatch;
     }

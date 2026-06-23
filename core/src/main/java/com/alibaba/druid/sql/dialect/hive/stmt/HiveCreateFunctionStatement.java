@@ -18,35 +18,7 @@ public class HiveCreateFunctionStatement extends SQLCreateFunctionStatement impl
     }
 
     public void cloneTo(HiveCreateFunctionStatement x) {
-        // replicate base SQLCreateFunctionStatement.clone() field copying
-        // (use public accessors for base private/package-private fields)
-        if (getDefiner() != null) {
-            x.setDefiner(getDefiner().clone());
-        }
-        x.setCreate(isCreate());
-        x.setOrReplace(isOrReplace());
-        if (getName() != null) {
-            x.setName(getName().clone());
-        }
-        if (getBlock() != null) {
-            x.setBlock(getBlock().clone());
-        }
-        for (com.alibaba.druid.sql.ast.SQLParameter p : getParameters()) {
-            com.alibaba.druid.sql.ast.SQLParameter p2 = p.clone();
-            p2.setParent(x);
-            x.getParameters().add(p2);
-        }
-        x.setJavaCallSpec(getJavaCallSpec());
-        if (getAuthid() != null) {
-            x.setAuthid(getAuthid().clone());
-        }
-        if (getReturnDataType() != null) {
-            x.setReturnDataType(getReturnDataType().clone());
-        }
-        x.setComment(getComment());
-        x.setDeterministic(isDeterministic());
-        x.setPipelined(isPipelined());
-        x.setLanguage(getLanguage());
+        super.cloneTo(x);
 
         // own fields of HiveCreateFunctionStatement
         x.declare = declare;

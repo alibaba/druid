@@ -113,6 +113,7 @@ public class HiveCreateTableStatement extends SQLCreateTableStatement {
 
         if (intoBuckets != null) {
             x.intoBuckets = intoBuckets.clone();
+            x.intoBuckets.setParent(x);
         }
 
         if (using != null) {

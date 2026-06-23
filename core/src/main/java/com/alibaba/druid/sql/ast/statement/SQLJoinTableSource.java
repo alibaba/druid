@@ -746,7 +746,10 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
 
         public UDJ clone() {
             UDJ x = new UDJ();
-            x.function = function.clone();
+            if (function != null) {
+                x.function = function.clone();
+                x.function.setParent(x);
+            }
             for (SQLExpr arg : arguments) {
                 SQLExpr t = arg.clone();
                 t.setParent(x);
