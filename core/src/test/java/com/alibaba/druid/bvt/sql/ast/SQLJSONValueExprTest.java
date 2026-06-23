@@ -13,8 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.sql.ast;
+package com.alibaba.druid.bvt.sql.ast;
 
+import com.alibaba.druid.sql.ast.SQLJSONValueExpr;
+import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -41,5 +44,47 @@ public class SQLJSONValueExprTest {
         int h1 = expr.hashCode();
         int h2 = expr.hashCode();
         assertEquals(h1, h2, "hashCode must be consistent across calls");
+    }
+
+    @Test
+    public void test_equals_with_populated_fields() {
+        SQLJSONValueExpr a = new SQLJSONValueExpr();
+        a.setJson(new SQLIdentifierExpr("col1"));
+        a.setPath(new SQLCharExpr("$.key"));
+
+        SQLJSONValueExpr b = new SQLJSONValueExpr();
+        b.setJson(new SQLIdentifierExpr("col1"));
+        b.setPath(new SQLCharExpr("$.key"));
+
+        assertEquals(a, b);
+        assertEquals(a.hashCode(), b.hashCode());
+    }
+
+    @Test
+    public void test_not_equals_different_path() {
+        // Same json, different path: must not be equal (guards against equals ignoring path)
+        SQLJSONValueExpr a = new SQLJSONValueExpr();
+        a.setJson(new SQLIdentifierExpr("col1"));
+        a.setPath(new SQLCharExpr("$.key1"));
+
+        SQLJSONValueExpr b = new SQLJSONValueExpr();
+        b.setJson(new SQLIdentifierExpr("col1"));
+        b.setPath(new SQLCharExpr("$.key2"));
+
+        assertNotEquals(a, b);
+    }
+
+    @Test
+    public void test_not_equals_different_json() {
+        // Same path, different json: must not be equal (guards against equals ignoring json)
+        SQLJSONValueExpr a = new SQLJSONValueExpr();
+        a.setJson(new SQLIdentifierExpr("col1"));
+        a.setPath(new SQLCharExpr("$.key"));
+
+        SQLJSONValueExpr b = new SQLJSONValueExpr();
+        b.setJson(new SQLIdentifierExpr("col2"));
+        b.setPath(new SQLCharExpr("$.key"));
+
+        assertNotEquals(a, b);
     }
 }

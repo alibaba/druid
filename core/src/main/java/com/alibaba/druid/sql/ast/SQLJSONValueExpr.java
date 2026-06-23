@@ -8,6 +8,28 @@ public class SQLJSONValueExpr extends SQLExprImpl {
     private SQLExpr json;
     private SQLExpr path;
 
+    public SQLExpr getJson() {
+        return json;
+    }
+
+    public void setJson(SQLExpr json) {
+        if (json != null) {
+            json.setParent(this);
+        }
+        this.json = json;
+    }
+
+    public SQLExpr getPath() {
+        return path;
+    }
+
+    public void setPath(SQLExpr path) {
+        if (path != null) {
+            path.setParent(this);
+        }
+        this.path = path;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
