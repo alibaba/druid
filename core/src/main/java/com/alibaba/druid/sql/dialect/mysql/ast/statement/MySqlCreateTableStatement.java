@@ -57,6 +57,7 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
     // for ads
     protected SQLName distributeByType;
     protected List<SQLName> distributeBy = new ArrayList<SQLName>();
+    protected List<SQLName> distributeByHashGroup = new ArrayList<SQLName>();
     protected boolean isBroadCast;
     // for ads
     protected Map<String, SQLName> with = new HashMap<String, SQLName>(3);
@@ -565,6 +566,10 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
 
     public List<SQLName> getDistributeBy() {
         return distributeBy;
+    }
+
+    public List<SQLName> getDistributeByHashGroup() {
+        return distributeByHashGroup;
     }
 
     public SQLExpr getTbpartitions() {
