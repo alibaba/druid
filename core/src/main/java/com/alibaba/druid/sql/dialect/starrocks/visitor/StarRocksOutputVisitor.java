@@ -397,16 +397,16 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
                 || x.getRefreshEvery() != null || x.getRefreshStart() != null;
         if (hasRefresh) {
             println();
-            print0(ucase ? "REFRESH " : "refresh ");
+            print0(ucase ? "REFRESH" : "refresh");
             if (x.isRefreshImmediate()) {
-                print0(ucase ? "IMMEDIATE " : "immediate ");
+                print0(ucase ? " IMMEDIATE" : " immediate");
             } else if (x.isRefreshDeferred()) {
-                print0(ucase ? "DEFERRED " : "deferred ");
+                print0(ucase ? " DEFERRED" : " deferred");
             }
             if (x.isRefreshAsync()) {
-                print0(ucase ? "ASYNC" : "async");
+                print0(ucase ? " ASYNC" : " async");
             } else if (x.isRefreshManual()) {
-                print0(ucase ? "MANUAL" : "manual");
+                print0(ucase ? " MANUAL" : " manual");
             }
             if (x.getRefreshStart() != null) {
                 print0(ucase ? " START(" : " start(");
@@ -469,10 +469,12 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
             print0(")");
         }
 
-        println();
-        print0(ucase ? "AS" : "as");
-        println();
-        x.getBody().accept(this);
+        if (x.getBody() != null) {
+            println();
+            print0(ucase ? "AS" : "as");
+            println();
+            x.getBody().accept(this);
+        }
         return false;
     }
 
@@ -687,7 +689,7 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
         if (x.getDataSourceType() != null) {
             println();
             print0(ucase ? "FROM " : "from ");
-            print0(x.getDataSourceType());
+            new SQLIdentifierExpr(x.getDataSourceType()).accept(this);
             if (!x.getDataSourceProperties().isEmpty()) {
                 print0(" (");
                 incrementIndent();
@@ -797,7 +799,10 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
             if (x.getScheduleStart() != null) {
                 print0(ucase ? "START(" : "start(");
                 x.getScheduleStart().accept(this);
-                print0(") ");
+                print0(")");
+                if (x.getScheduleEvery() != null) {
+                    print(' ');
+                }
             }
             if (x.getScheduleEvery() != null) {
                 print0(ucase ? "EVERY(" : "every(");
@@ -821,10 +826,12 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
             print0(")");
         }
 
-        println();
-        print0(ucase ? "AS" : "as");
-        println();
-        x.getBody().accept(this);
+        if (x.getBody() != null) {
+            println();
+            print0(ucase ? "AS" : "as");
+            println();
+            x.getBody().accept(this);
+        }
 
         return false;
     }

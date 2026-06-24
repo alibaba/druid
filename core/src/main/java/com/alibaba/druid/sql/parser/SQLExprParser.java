@@ -204,10 +204,19 @@ public class SQLExprParser extends SQLParser {
         if (expr instanceof SQLIdentifierExpr) {
             Lexer.SavePoint mark = lexer.markOut();
             try {
+                lexer.nextToken();
+                // `col -> 'json_path'` is JSON-arrow (SubGt) access, not a lambda: a lambda body is an
+                // expression/identifier, never a bare string literal. Fall through to the SubGt branch.
+                if (lexer.token == Token.LITERAL_CHARS) {
+                    lexer.reset(mark);
+                    return null;
+                }
+                // Parse the body BEFORE attaching the argument, so a failure on this path never leaves
+                // expr re-parented to a discarded lambda (mirrors the SQLListExpr branch below).
+                SQLExpr body = expr();
                 SQLLambdaExpr lambda = new SQLLambdaExpr();
                 lambda.addArgument(expr);
-                lexer.nextToken();
-                lambda.setExpr(expr());
+                lambda.setExpr(body);
                 return lambda;
             } catch (ParserException e) {
                 lexer.reset(mark);

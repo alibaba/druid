@@ -2,6 +2,7 @@ package com.alibaba.druid.sql.dialect.starrocks.parser;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.starrocks.ast.statement.*;
@@ -187,30 +188,38 @@ public class StarRocksStatementParser extends SQLStatementParser {
             stmt.setComment(this.exprParser.expr());
         }
 
-        if (lexer.nextIfIdentifier(FnvHash.Constants.DISTRIBUTED)) {
-            accept(Token.BY);
-            if (lexer.nextIfIdentifier(FnvHash.Constants.HASH)) {
-                accept(Token.LPAREN);
-                for (; ; ) {
-                    SQLName distCol = this.exprParser.name();
-                    distCol.setParent(stmt);
-                    stmt.getDistributedBy().add(distCol);
-                    if (lexer.token() == Token.COMMA) {
-                        lexer.nextToken();
-                        continue;
+        // PARTITION BY and DISTRIBUTED BY may appear in either order. Canonical StarRocks DDL
+        // places PARTITION BY first, but DISTRIBUTED BY first is also accepted.
+        boolean hasPartition = false;
+        boolean hasDistributed = false;
+        for (; ; ) {
+            if (!hasPartition && lexer.token() == Token.PARTITION) {
+                stmt.setPartitionBy(parseMvPartitionBy());
+                hasPartition = true;
+            } else if (!hasDistributed && lexer.identifierEquals(FnvHash.Constants.DISTRIBUTED)) {
+                lexer.nextToken();
+                accept(Token.BY);
+                if (lexer.nextIfIdentifier(FnvHash.Constants.HASH)) {
+                    accept(Token.LPAREN);
+                    for (; ; ) {
+                        SQLName distCol = this.exprParser.name();
+                        distCol.setParent(stmt);
+                        stmt.getDistributedBy().add(distCol);
+                        if (lexer.token() == Token.COMMA) {
+                            lexer.nextToken();
+                            continue;
+                        }
+                        break;
                     }
-                    break;
+                    accept(Token.RPAREN);
                 }
-                accept(Token.RPAREN);
+                if (lexer.nextIfIdentifier(FnvHash.Constants.BUCKETS)) {
+                    stmt.setBuckets(this.exprParser.expr());
+                }
+                hasDistributed = true;
+            } else {
+                break;
             }
-            if (lexer.nextIfIdentifier(FnvHash.Constants.BUCKETS)) {
-                stmt.setBuckets(this.exprParser.expr());
-            }
-        }
-
-        if (lexer.token() == Token.PARTITION) {
-            SQLPartitionBy partitionBy = getSQLCreateTableParser().parsePartitionBy();
-            stmt.setPartitionBy(partitionBy);
         }
 
         if (lexer.token() == Token.ORDER) {
@@ -286,6 +295,60 @@ public class StarRocksStatementParser extends SQLStatementParser {
         return stmt;
     }
 
+    /**
+     * Parses the {@code PARTITION BY} clause of a StarRocks materialized view.
+     * <p>
+     * StarRocks async MVs are partitioned by an <em>expression</em> or a bare column with NO
+     * trailing partition-definition list, e.g. {@code PARTITION BY date_trunc('day', dt)},
+     * {@code PARTITION BY (dt)}, or {@code PARTITION BY dt}. The shared
+     * {@link StarRocksCreateTableParser#parsePartitionBy()} unconditionally requires a trailing
+     * {@code (...)} definition list, so it cannot parse these MV forms. Here we delegate to it only
+     * for the explicit {@code RANGE(...)}/{@code LIST(...)} forms (which do carry a definition list)
+     * and otherwise parse the bare expression/column keys directly.
+     */
+    protected SQLPartitionBy parseMvPartitionBy() {
+        Lexer.SavePoint mark = lexer.markOut();
+        accept(Token.PARTITION);
+        accept(Token.BY);
+
+        if (lexer.identifierEquals(FnvHash.Constants.RANGE) || lexer.identifierEquals(FnvHash.Constants.LIST)) {
+            // Explicit RANGE(...)/LIST(...) with a partition-definition list — reuse the table parser.
+            lexer.reset(mark);
+            return getSQLCreateTableParser().parsePartitionBy();
+        }
+
+        // Bare expression / column key form, with no trailing partition-definition list.
+        SQLPartitionByRange partitionBy = new SQLPartitionByRange();
+        boolean parens = lexer.nextIf(Token.LPAREN);
+        for (; ; ) {
+            partitionBy.addColumn(this.exprParser.expr());
+            if (lexer.nextIf(Token.COMMA)) {
+                continue;
+            }
+            break;
+        }
+        if (parens) {
+            accept(Token.RPAREN);
+        }
+        // A trailing (...) partition-definition list is optional for MVs; consume it if present.
+        if (lexer.token() == Token.LPAREN) {
+            lexer.nextToken();
+            for (; ; ) {
+                if (lexer.token() == Token.RPAREN) {
+                    break;
+                }
+                partitionBy.addPartition(this.getExprParser().parsePartition());
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                    continue;
+                }
+                break;
+            }
+            accept(Token.RPAREN);
+        }
+        return partitionBy;
+    }
+
     protected SQLStatement parseSubmitTask() {
         StarRocksSubmitTaskStatement stmt = new StarRocksSubmitTaskStatement();
 
@@ -299,15 +362,21 @@ public class StarRocksStatementParser extends SQLStatementParser {
         }
 
         if (lexer.nextIfIdentifier(FnvHash.Constants.SCHEDULE)) {
+            boolean hasSchedule = false;
             if (lexer.nextIfIdentifier(FnvHash.Constants.START)) {
                 accept(Token.LPAREN);
                 stmt.setScheduleStart(this.exprParser.expr());
                 accept(Token.RPAREN);
+                hasSchedule = true;
             }
             if (lexer.nextIfIdentifier(FnvHash.Constants.EVERY)) {
                 accept(Token.LPAREN);
                 stmt.setScheduleEvery(this.exprParser.expr());
                 accept(Token.RPAREN);
+                hasSchedule = true;
+            }
+            if (!hasSchedule) {
+                throw new ParserException("syntax error, expected START or EVERY after SCHEDULE, " + lexer.info());
             }
         }
 
@@ -326,6 +395,9 @@ public class StarRocksStatementParser extends SQLStatementParser {
         }
 
         accept(Token.AS);
+        if (lexer.token() == Token.EOF) {
+            throw new ParserException("syntax error, expected statement after AS, " + lexer.info());
+        }
         SQLStatement body = this.parseStatement();
         stmt.setBody(body);
 
@@ -337,17 +409,15 @@ public class StarRocksStatementParser extends SQLStatementParser {
         Lexer.SavePoint mark = lexer.markOut();
         accept(Token.CREATE);
 
-        boolean orReplace = false;
+        // Skip past OR REPLACE / EXTERNAL so the dispatch checks below land on the object keyword.
+        // Each sub-parser does lexer.reset(mark) and re-parses these tokens itself.
         if (lexer.token() == Token.OR) {
             lexer.nextToken();
             accept(Token.REPLACE);
-            orReplace = true;
         }
 
-        boolean external = false;
         if (lexer.identifierEquals(FnvHash.Constants.EXTERNAL)) {
             lexer.nextToken();
-            external = true;
         }
 
         if (lexer.identifierEquals(FnvHash.Constants.CATALOG)) {
@@ -362,7 +432,7 @@ public class StarRocksStatementParser extends SQLStatementParser {
 
         if (lexer.identifierEquals("PIPE")) {
             lexer.reset(mark);
-            return parseCreatePipe(orReplace);
+            return parseCreatePipe();
         }
 
         if (lexer.identifierEquals("DICTIONARY")) {
@@ -437,9 +507,8 @@ public class StarRocksStatementParser extends SQLStatementParser {
         return stmt;
     }
 
-    protected SQLStatement parseCreatePipe(boolean orReplace) {
+    protected SQLStatement parseCreatePipe() {
         StarRocksCreatePipeStatement stmt = new StarRocksCreatePipeStatement();
-        stmt.setOrReplace(orReplace);
 
         accept(Token.CREATE);
         if (lexer.token() == Token.OR) {
@@ -474,6 +543,9 @@ public class StarRocksStatementParser extends SQLStatementParser {
         }
 
         accept(Token.AS);
+        if (lexer.token() == Token.EOF) {
+            throw new ParserException("syntax error, expected statement after AS, " + lexer.info());
+        }
         SQLStatement body = this.parseStatement();
         stmt.setBody(body);
 
@@ -505,9 +577,8 @@ public class StarRocksStatementParser extends SQLStatementParser {
             if (lexer.token() == Token.RPAREN || lexer.token() == Token.COMMA) {
                 throw new ParserException("syntax error, expected mapping value after column name, " + lexer.info());
             }
-            SQLExpr role = new SQLIdentifierExpr(lexer.stringVal());
-            item.setValue(role);
-            lexer.nextToken();
+            SQLExpr value = this.exprParser.primary();
+            item.setValue(value);
             stmt.addColumnMapping(item);
             if (lexer.token() == Token.COMMA) {
                 lexer.nextToken();
@@ -640,13 +711,13 @@ public class StarRocksStatementParser extends SQLStatementParser {
                 lexer.nextToken();
                 acceptIdentifier("TERMINATED");
                 accept(Token.BY);
-                desc.setColumnTerminatedBy(this.exprParser.expr());
+                desc.setColumnTerminatedBy(parseLoadValue());
             }
 
             if (lexer.identifierEquals("FORMAT")) {
                 lexer.nextToken();
                 accept(Token.AS);
-                desc.setFormat(this.exprParser.expr());
+                desc.setFormat(parseLoadValue());
             }
 
             if (lexer.token() == Token.LPAREN) {
@@ -689,6 +760,13 @@ public class StarRocksStatementParser extends SQLStatementParser {
         if (lexer.token() == Token.WITH) {
             lexer.nextToken();
             acceptIdentifier("BROKER");
+            // Optional broker name as a string literal: WITH BROKER "my_broker" (...).
+            // StarRocksLoadStatement has no brokerName field, so the name is consumed but not
+            // stored (it would otherwise be dropped silently and abort the parse on the next
+            // token). TODO: add a brokerName field to StarRocksLoadStatement to preserve it.
+            if (lexer.token() == Token.LITERAL_CHARS || lexer.token() == Token.LITERAL_ALIAS) {
+                lexer.nextToken();
+            }
             if (lexer.token() == Token.LPAREN) {
                 accept(Token.LPAREN);
                 for (; ; ) {
@@ -719,6 +797,34 @@ public class StarRocksStatementParser extends SQLStatementParser {
         }
 
         return stmt;
+    }
+
+    /**
+     * Reads a single delimiter/format value for Broker Load (COLUMNS TERMINATED BY / FORMAT AS).
+     * Must NOT use {@code expr()}: in StarRocks the column mapping list {@code (c1, c2, ...)} may
+     * immediately follow the value, and {@code expr()} would greedily absorb it as a method-invoke
+     * (turning the value into the callee), losing the column list. Reading a single literal token
+     * keeps the trailing {@code (...)} available for the column-list parser below.
+     */
+    protected SQLExpr parseLoadValue() {
+        if (lexer.token() == Token.LITERAL_CHARS) {
+            // single-quoted: stringVal() is already unquoted, e.g. ',' -> ,
+            SQLCharExpr value = new SQLCharExpr(lexer.stringVal());
+            lexer.nextToken();
+            return value;
+        }
+        if (lexer.token() == Token.LITERAL_ALIAS) {
+            // double-quoted: StarRocks keeps the surrounding quotes in stringVal(), e.g. "," -> ","
+            String text = lexer.stringVal();
+            if (text.length() >= 2 && text.charAt(0) == '"' && text.charAt(text.length() - 1) == '"') {
+                text = text.substring(1, text.length() - 1);
+            }
+            SQLCharExpr value = new SQLCharExpr(text);
+            lexer.nextToken();
+            return value;
+        }
+        // hex / other primary literal — primary() does not consume a following (...) as arguments
+        return this.exprParser.primary();
     }
 
     protected SQLStatement parseCreateRoutineLoad() {

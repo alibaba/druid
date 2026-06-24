@@ -3,6 +3,7 @@ package com.alibaba.druid.sql.dialect.starrocks.ast.statement;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLCreateMaterializedViewStatement;
@@ -111,6 +112,11 @@ public class StarRocksCreateMaterializedViewStatement extends SQLCreateMateriali
 
     @Override
     public void accept0(StarRocksASTVisitor visitor) {
+        accept0((SQLASTVisitor) visitor);
+    }
+
+    @Override
+    protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, getName());
             acceptChild(visitor, getColumns());
@@ -128,12 +134,36 @@ public class StarRocksCreateMaterializedViewStatement extends SQLCreateMateriali
     }
 
     @Override
-    protected void accept0(SQLASTVisitor visitor) {
-        if (visitor instanceof StarRocksASTVisitor) {
-            accept0((StarRocksASTVisitor) visitor);
-        } else {
-            super.accept0(visitor);
+    public List<SQLObject> getChildren() {
+        List<SQLObject> children = new ArrayList<>();
+        if (getName() != null) {
+            children.add(getName());
         }
+        children.addAll(getColumns());
+        if (getComment() != null) {
+            children.add(getComment());
+        }
+        if (getPartitionBy() != null) {
+            children.add(getPartitionBy());
+        }
+        children.addAll(getDistributedBy());
+        if (buckets != null) {
+            children.add(buckets);
+        }
+        if (orderBy != null) {
+            children.add(orderBy);
+        }
+        if (refreshStart != null) {
+            children.add(refreshStart);
+        }
+        if (refreshEvery != null) {
+            children.add(refreshEvery);
+        }
+        children.addAll(mvProperties);
+        if (getQuery() != null) {
+            children.add(getQuery());
+        }
+        return children;
     }
 
     public StarRocksCreateMaterializedViewStatement clone() {

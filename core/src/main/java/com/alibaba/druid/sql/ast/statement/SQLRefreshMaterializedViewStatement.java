@@ -51,6 +51,22 @@ public class SQLRefreshMaterializedViewStatement extends SQLStatementImpl {
     }
 
     @Override
+    public SQLRefreshMaterializedViewStatement clone() {
+        SQLRefreshMaterializedViewStatement x = new SQLRefreshMaterializedViewStatement(getDbType());
+        if (name != null) {
+            x.setName(name.clone());
+        }
+        x.concurrently = concurrently;
+        x.withNoData = withNoData;
+        x.withData = withData;
+        x.force = force;
+        x.syncMode = syncMode;
+        x.asyncMode = asyncMode;
+        x.afterSemi = afterSemi;
+        return x;
+    }
+
+    @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, name);
