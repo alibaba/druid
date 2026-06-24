@@ -52,7 +52,7 @@ public class StarRocksRemainingFeaturesTest {
         StarRocksCreateRoutineLoadStatement routine = (StarRocksCreateRoutineLoadStatement) stmt;
         assertNotNull(routine.getName());
         assertNotNull(routine.getTableName());
-        assertEquals("KAFKA", routine.getDataSourceType());
+        assertEquals("KAFKA", routine.getDataSourceType().toString());
         assertFalse(routine.getDataSourceProperties().isEmpty());
     }
 

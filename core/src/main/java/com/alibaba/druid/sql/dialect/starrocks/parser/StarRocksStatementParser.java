@@ -884,8 +884,7 @@ public class StarRocksStatementParser extends SQLStatementParser {
 
         if (lexer.token() == Token.FROM) {
             lexer.nextToken();
-            stmt.setDataSourceType(lexer.stringVal());
-            lexer.nextToken();
+            stmt.setDataSourceType(this.exprParser.name());
             accept(Token.LPAREN);
             for (; ; ) {
                 if (lexer.token() == Token.RPAREN) {

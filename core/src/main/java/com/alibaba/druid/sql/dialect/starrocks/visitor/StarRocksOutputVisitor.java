@@ -689,7 +689,7 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
         if (x.getDataSourceType() != null) {
             println();
             print0(ucase ? "FROM " : "from ");
-            new SQLIdentifierExpr(x.getDataSourceType()).accept(this);
+            x.getDataSourceType().accept(this);
             if (!x.getDataSourceProperties().isEmpty()) {
                 print0(" (");
                 incrementIndent();

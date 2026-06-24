@@ -20,7 +20,7 @@ public class StarRocksCreateRoutineLoadStatement extends SQLStatementImpl implem
     private SQLExpr whereCondition;
     private List<SQLAssignItem> properties = new ArrayList<>();
     private List<SQLAssignItem> dataSourceProperties = new ArrayList<>();
-    private String dataSourceType;
+    private SQLName dataSourceType;
     private boolean orReplace;
 
     public StarRocksCreateRoutineLoadStatement() {
@@ -109,12 +109,15 @@ public class StarRocksCreateRoutineLoadStatement extends SQLStatementImpl implem
         this.dataSourceProperties.add(x);
     }
 
-    public String getDataSourceType() {
+    public SQLName getDataSourceType() {
         return dataSourceType;
     }
 
-    public void setDataSourceType(String dataSourceType) {
-        this.dataSourceType = dataSourceType;
+    public void setDataSourceType(SQLName x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.dataSourceType = x;
     }
 
     public boolean isOrReplace() {
@@ -133,6 +136,7 @@ public class StarRocksCreateRoutineLoadStatement extends SQLStatementImpl implem
             acceptChild(visitor, (List) columns);
             acceptChild(visitor, whereCondition);
             acceptChild(visitor, (List) properties);
+            acceptChild(visitor, dataSourceType);
             acceptChild(visitor, (List) dataSourceProperties);
         }
         visitor.endVisit(this);
@@ -152,6 +156,9 @@ public class StarRocksCreateRoutineLoadStatement extends SQLStatementImpl implem
             children.add(whereCondition);
         }
         children.addAll(properties);
+        if (dataSourceType != null) {
+            children.add(dataSourceType);
+        }
         children.addAll(dataSourceProperties);
         return children;
     }
@@ -182,7 +189,9 @@ public class StarRocksCreateRoutineLoadStatement extends SQLStatementImpl implem
             cloned.setParent(x);
             x.dataSourceProperties.add(cloned);
         }
-        x.dataSourceType = this.dataSourceType;
+        if (this.dataSourceType != null) {
+            x.setDataSourceType(this.dataSourceType.clone());
+        }
         x.orReplace = this.orReplace;
         return x;
     }
