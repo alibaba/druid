@@ -200,9 +200,18 @@ public class SQLExprParser extends SQLParser {
         return primary();
     }
 
+    // Bound the depth of nested lambda parsing (`a -> b -> c -> ...`): each `->` re-enters tryParseLambda
+    // via expr(), so a crafted chain of thousands of arrows would otherwise overflow the JVM stack (DoS).
+    private static final int MAX_LAMBDA_DEPTH = 128;
+    private int lambdaDepth;
+
     protected SQLLambdaExpr tryParseLambda(SQLExpr expr) {
+        if (lambdaDepth >= MAX_LAMBDA_DEPTH) {
+            return null;
+        }
         if (expr instanceof SQLIdentifierExpr) {
             Lexer.SavePoint mark = lexer.markOut();
+            lambdaDepth++;
             try {
                 lexer.nextToken();
                 // `col -> 'json_path'` is JSON-arrow (SubGt) access, not a lambda: a lambda body is an
@@ -218,9 +227,13 @@ public class SQLExprParser extends SQLParser {
                 lambda.addArgument(expr);
                 lambda.setExpr(body);
                 return lambda;
-            } catch (ParserException e) {
+            } catch (Exception e) {
+                // catch Exception (not just ParserException) so a RuntimeException/NPE on the body path
+                // still rolls the lexer back instead of leaving `->` consumed with no lambda produced.
                 lexer.reset(mark);
                 return null;
+            } finally {
+                lambdaDepth--;
             }
         } else if (expr instanceof SQLListExpr) {
             SQLListExpr listExpr = (SQLListExpr) expr;
@@ -233,6 +246,7 @@ public class SQLExprParser extends SQLParser {
                 }
             }
             Lexer.SavePoint mark = lexer.markOut();
+            lambdaDepth++;
             try {
                 SQLLambdaExpr lambda = new SQLLambdaExpr();
                 lexer.nextToken();
@@ -243,9 +257,11 @@ public class SQLExprParser extends SQLParser {
                 }
                 lambda.setExpr(body);
                 return lambda;
-            } catch (ParserException e) {
+            } catch (Exception e) {
                 lexer.reset(mark);
                 return null;
+            } finally {
+                lambdaDepth--;
             }
         }
         return null;

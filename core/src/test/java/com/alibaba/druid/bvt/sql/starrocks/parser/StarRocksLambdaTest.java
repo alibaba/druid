@@ -51,4 +51,23 @@ public class StarRocksLambdaTest {
         String output = stmt.toString();
         assertEquals("SELECT array_map(x -> x * 2, array_filter(y -> y > 0, arr))\nFROM t", output);
     }
+
+    @Test
+    public void testNestedLambda() {
+        // a lambda whose body is itself a lambda — exercises the bitXorRest -> tryParseLambda re-entry path
+        String sql = "SELECT array_map(x -> array_map(y -> x + y, arr2), arr1) FROM t";
+        SQLStatement stmt = SQLUtils.parseSingleStatement(sql, DbType.starrocks);
+        assertNotNull(stmt);
+        assertEquals("SELECT array_map(x -> array_map(y -> x + y, arr2), arr1)\nFROM t", stmt.toString());
+        assertEquals(stmt.toString(), stmt.clone().toString());
+    }
+
+    @Test
+    public void testLambdaArrowNotJsonArrow() {
+        // `col -> 'json_path'` (string-literal RHS) must stay a SubGt JSON-arrow, not become a lambda
+        String sql = "SELECT j -> 'a' FROM t";
+        SQLStatement stmt = SQLUtils.parseSingleStatement(sql, DbType.starrocks);
+        assertNotNull(stmt);
+        assertEquals("SELECT j -> 'a'\nFROM t", stmt.toString());
+    }
 }

@@ -79,6 +79,7 @@ public class StarRocksStatementParser extends SQLStatementParser {
                 && tableName instanceof SQLIdentifierExpr
                 && ("FILES".equalsIgnoreCase(tableName.getSimpleName())
                     || "BLACKHOLE".equalsIgnoreCase(tableName.getSimpleName()))) {
+            insertStatement.setDbType(DbType.starrocks);
             lexer.nextToken();
             if (lexer.token() != Token.RPAREN) {
                 for (; ; ) {
@@ -101,6 +102,7 @@ public class StarRocksStatementParser extends SQLStatementParser {
             lexer.nextToken();
             if (lexer.identifierEquals("LABEL")) {
                 lexer.nextToken();
+                insertStatement.setDbType(DbType.starrocks);
                 insertStatement.setLabel(this.exprParser.name());
             } else {
                 lexer.reset(mark);
@@ -113,6 +115,7 @@ public class StarRocksStatementParser extends SQLStatementParser {
         if (lexer.token() == Token.BY) {
             lexer.nextToken();
             acceptIdentifier("NAME");
+            insertStatement.setDbType(DbType.starrocks);
             insertStatement.setByName(true);
         }
     }

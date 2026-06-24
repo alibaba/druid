@@ -3809,13 +3809,20 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         x.getTableSource().accept(this);
 
-        if (x.getTableOptions() != null && !x.getTableOptions().isEmpty()) {
+        // tableOptions / WITH LABEL / BY NAME are StarRocks(-family) INSERT syntax stored on the shared
+        // SQLInsertInto base; only emit them for a StarRocks/Doris statement so they don't leak into
+        // other dialects. Gate on the statement's own dbType (the visitor's dbType is null for the
+        // generic toString() path that a StarRocks INSERT INTO FILES round-trip relies on).
+        DbType stmtDbType = x.getDbType();
+        boolean starRocksInsert = stmtDbType == DbType.starrocks || stmtDbType == DbType.doris;
+
+        if (starRocksInsert && x.getTableOptions() != null && !x.getTableOptions().isEmpty()) {
             print0("(");
             printAndAccept(x.getTableOptions(), ", ");
             print0(")");
         }
 
-        if (x.getLabel() != null) {
+        if (starRocksInsert && x.getLabel() != null) {
             print0(ucase ? " WITH LABEL " : " with label ");
             x.getLabel().accept(this);
         }
@@ -3826,7 +3833,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print(')');
         }
 
-        if (x.isByName()) {
+        if (starRocksInsert && x.isByName()) {
             print0(ucase ? " BY NAME" : " by name");
         }
 
