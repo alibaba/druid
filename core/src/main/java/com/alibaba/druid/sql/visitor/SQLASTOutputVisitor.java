@@ -2883,7 +2883,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
 
         List<String> aliasList = x.getAliasList();
-        if (aliasList == null) {
+        if (aliasList == null || aliasList.isEmpty()) {
             return false;
         }
 
