@@ -68,6 +68,15 @@ public class DruidDataSourceTest_notEmptyWait2 {
 
         startLatch.await(100, TimeUnit.MILLISECONDS);
 
+        // 等待所有10个线程都进入等待状态（notEmptyWaitThreadCount == 10）
+        for (int i = 0; i < 100; i++) {
+            if (dataSource.getNotEmptyWaitThreadCount() == THREAD_COUNT) {
+                break;
+            }
+            Thread.sleep(10);
+        }
+        System.out.println("notEmptyWaitThreadCount = " + dataSource.getNotEmptyWaitThreadCount());
+
         final CountDownLatch errorThreadEndLatch = new CountDownLatch(THREAD_COUNT);
         final AtomicLong maxWaitErrorCount = new AtomicLong();
         Thread errorThread = new Thread() {
@@ -77,6 +86,7 @@ public class DruidDataSourceTest_notEmptyWait2 {
                     Thread.sleep(1);
                     conn.close();
                 } catch (Exception e) {
+                    System.out.println("errorThread caught exception: " + e.getMessage());
                     maxWaitErrorCount.incrementAndGet();
                 } finally {
                     errorThreadEndLatch.countDown();
@@ -87,7 +97,9 @@ public class DruidDataSourceTest_notEmptyWait2 {
 
         errorThreadEndLatch.await(100, TimeUnit.MILLISECONDS);
 
-        assertEquals(0, maxWaitErrorCount.get()); //因为最大超时没有设置，所以线程一直循环进不到maxWaitErrorCount加1的逻辑了
+        // 修改后使用 >=，当 notEmptyWaitThreadCount >= maxWaitThreadCount 时抛出异常
+        // maxWaitThreadCount=10，前10个线程进入等待后计数为10，第11个线程应该抛出异常
+        assertEquals(1, maxWaitErrorCount.get());
         assertTrue(dataSource.getNotEmptySignalCount() > 0);
 
         conn.close();
