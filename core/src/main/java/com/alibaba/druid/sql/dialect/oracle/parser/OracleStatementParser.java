@@ -2126,6 +2126,25 @@ public class OracleStatementParser extends SQLStatementParser {
                     } else {
                         throw new ParserException("TODO : " + lexer.info());
                     }
+                } else if (lexer.identifierEquals(FnvHash.Constants.RECORD)) {
+                    lexer.nextToken();
+
+                    SQLRecordDataType recordDataType = new SQLRecordDataType();
+
+                    accept(Token.LPAREN);
+                    for (; ; ) {
+                        SQLColumnDefinition column = this.exprParser.parseColumn();
+                        recordDataType.addColumn(column);
+                        if (lexer.token() == Token.COMMA) {
+                            lexer.nextToken();
+                            continue;
+                        }
+                        break;
+                    }
+                    accept(Token.RPAREN);
+
+                    dataType = recordDataType;
+                    dataType.setDbType(dbType);
                 } else {
                     throw new ParserException("TODO : " + lexer.info());
                 }
