@@ -429,6 +429,7 @@ public class ParameterizedOutputVisitorUtils {
             case greenplum:
             case edb:
             case gaussdb:
+            case kingbase:
                 return new PGOutputVisitor(out, true);
             case hologres:
                 return new HologresOutputVisitor(out, true);

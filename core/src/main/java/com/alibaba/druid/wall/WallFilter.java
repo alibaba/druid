@@ -179,6 +179,13 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
 
                 provider = new PGWallProvider(config);
                 break;
+            case kingbase:
+                if (config == null) {
+                    config = new WallConfig(KingbaseWallProvider.DEFAULT_CONFIG_DIR);
+                }
+
+                provider = new KingbaseWallProvider(config, dataSource);
+                break;
             case db2:
                 if (config == null) {
                     config = new WallConfig(DB2WallProvider.DEFAULT_CONFIG_DIR);

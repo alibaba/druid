@@ -18,18 +18,32 @@ package com.alibaba.druid.pool;
 import java.sql.Wrapper;
 
 public class WrapperAdapter implements Wrapper {
+    /**
+     * 构造函数.
+     */
     public WrapperAdapter() {
     }
 
+    /**
+     * 检查是否是指定接口的包装器.
+     * @param iface 接口类
+     * @return 是否是指定接口的实例
+     */
     @Override
-    public boolean isWrapperFor(Class<?> iface) {
+    public boolean isWrapperFor(final Class<?> iface) {
         return iface != null && iface.isInstance(this);
 
     }
 
+    /**
+     * 解包为指定接口类型.
+     * @param iface 接口类
+     * @param <T> 类型参数
+     * @return 解包后的对象
+     */
     @SuppressWarnings("unchecked")
     @Override
-    public <T> T unwrap(Class<T> iface) {
+    public <T> T unwrap(final Class<T> iface) {
         if (iface == null) {
             return null;
         }

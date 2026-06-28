@@ -20,15 +20,26 @@ import java.sql.SQLException;
 public class DataSourceDisableException extends SQLException {
     private static final long serialVersionUID = 1L;
 
+    /**
+     * 构造函数.
+     */
     public DataSourceDisableException() {
         super();
     }
 
-    public DataSourceDisableException(String reason) {
+    /**
+     * 构造函数.
+     * @param reason 原因
+     */
+    public DataSourceDisableException(final String reason) {
         super(reason);
     }
 
-    public DataSourceDisableException(Throwable cause) {
+    /**
+     * 构造函数.
+     * @param cause 异常原因
+     */
+    public DataSourceDisableException(final Throwable cause) {
         super(cause);
     }
 
