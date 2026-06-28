@@ -37,6 +37,14 @@ public class JdbcUtils_driver {
     }
 
     @Test
+    public void test_yashandb() throws Exception {
+        String url = "jdbc:yasdb://127.0.0.1:1688/REGRESS?productName=Oracle";
+        assertEquals("com.yashandb.jdbc.Driver", JdbcUtils.getDriverClassName(url));
+        assertEquals(DbType.oracle, JdbcUtils.getDbTypeRaw(url, null));
+        assertEquals(DbType.oracle, DbType.of(JdbcUtils.getDbType(url, null)));
+    }
+
+    @Test
     public void test_log4jdbc_mysql() {
         String jdbcUrl = "jdbc:log4jdbc:mysql://localhost:8066/test";
         DbType dbType = JdbcUtils.getDbTypeRaw(jdbcUrl, null);
