@@ -22,12 +22,14 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.wall.WallUtils;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlUpdateTest_13_force_partition extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "UPDATE force all partitions car_tt  set gps_url=null  WHERE  id = ?";
 

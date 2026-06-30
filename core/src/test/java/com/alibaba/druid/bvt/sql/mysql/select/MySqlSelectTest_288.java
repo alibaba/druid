@@ -19,10 +19,12 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_288 extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "INSERT INTO hive.oa1878750739446285_stat_meiyan_parquet.meiyan_odz_daily_user\n" +
                 "(SELECT 'android', server_id, imei, app_version\n" +

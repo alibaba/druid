@@ -248,6 +248,8 @@ public class SQLPropertyExpr extends SQLExprImpl implements SQLName, SQLReplacea
         x.hashCode64 = hashCode64;
         x.resolvedColumn = resolvedColumn;
         x.resolvedOwnerObject = resolvedOwnerObject;
+        x.setSplitString(splitString);
+        cloneTo(x);
 
         return x;
     }

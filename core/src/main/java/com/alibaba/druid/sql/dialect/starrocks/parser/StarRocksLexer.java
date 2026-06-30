@@ -1,16 +1,27 @@
 package com.alibaba.druid.sql.dialect.starrocks.parser;
 
 import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.parser.DialectFeature;
 import com.alibaba.druid.sql.parser.Keywords;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.Token;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.alibaba.druid.sql.parser.DialectFeature.ParserFeature.*;
+
 public class StarRocksLexer extends Lexer {
     static final Keywords STARROCKS_KEYWORDS;
+    static final DialectFeature SR_FEATURE = new DialectFeature(
+            Arrays.asList(
+                    AsofJoin,
+                    Lambda
+            ),
+            null
+    );
     static {
         Map<String, Token> map = new HashMap<>();
 
@@ -52,12 +63,14 @@ public class StarRocksLexer extends Lexer {
     public StarRocksLexer(char[] input, int inputLength, boolean skipComment) {
         super(input, inputLength, skipComment);
         dbType = DbType.starrocks;
+        this.dialectFeature = SR_FEATURE.copy();
     }
 
     public StarRocksLexer(String input, SQLParserFeature... features) {
         super(input, true);
         this.keepComments = true;
         dbType = DbType.starrocks;
+        this.dialectFeature = SR_FEATURE.copy();
 
         for (SQLParserFeature feature : features) {
             config(feature, true);
@@ -69,5 +82,6 @@ public class StarRocksLexer extends Lexer {
         this.skipComment = skipComment;
         this.keepComments = keepComments;
         dbType = DbType.starrocks;
+        this.dialectFeature = SR_FEATURE.copy();
     }
 }

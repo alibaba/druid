@@ -120,6 +120,12 @@ public class SQLForeignKeyImpl extends SQLConstraintImpl implements SQLForeignKe
     public void cloneTo(SQLForeignKeyImpl x) {
         super.cloneTo(x);
 
+        x.onDeleteCascade = onDeleteCascade;
+        x.onDeleteSetNull = onDeleteSetNull;
+        x.disableNovalidate = disableNovalidate;
+        x.hasConstraint = hasConstraint;
+        x.notEnforced = notEnforced;
+
         if (referencedTable != null) {
             x.setReferencedTable(referencedTable.clone());
         }

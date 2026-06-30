@@ -21,10 +21,12 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySQLCreateMaterializedViewTest3 extends MysqlTest {
+    @Test
     public void test_types() throws Exception {
         String sql = //
                 "CREATE MATERIALIZED VIEW mymv\n" +

@@ -5,12 +5,14 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDumpStatement;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class AdsDumpTest_0 extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "/*+dump-merge=true*/DUMP DATA SELECT amp.buyer_add_cart_info.buyer_id,amp.buyer_add_cart_info.pre_score,amp.buyer_add_cart_info.cart_price FROM amp.buyer_add_cart_info  "
             + "JOIN amp.crm_user_base_info "

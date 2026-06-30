@@ -20,12 +20,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlCreateTableTest extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "CREATE TABLE t (c CHAR(20) CHARACTER SET utf8 COLLATE utf8_bin);";
 
@@ -53,6 +55,7 @@ public class MySqlCreateTableTest extends MysqlTest {
 //        assertTrue(visitor.getColumns().contains(new Column("mytable", "last_name")));
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "CREATE TABLE `ins_ebay_auth` ("
                 + " `auth_id` int(10) NOT NULL AUTO_INCREMENT COMMENT '主键id',"
@@ -85,6 +88,7 @@ public class MySqlCreateTableTest extends MysqlTest {
         assertEquals(0, visitor.getConditions().size());
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "create table t2 as select * from t1";
 
@@ -104,6 +108,7 @@ public class MySqlCreateTableTest extends MysqlTest {
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
     }
 
+    @Test
     public void test_create_table_without_as_1() throws Exception {
         //https://dev.mysql.com/doc/refman/8.0/en/create-table-select.html
         String sql = "CREATE TABLE bar (m INT) SELECT n FROM foo";
@@ -123,6 +128,7 @@ public class MySqlCreateTableTest extends MysqlTest {
         System.out.println("coditions : " + visitor.getConditions());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
     }
+    @Test
     public void test_create_table_without_as_2() throws Exception {
         //https://dev.mysql.com/doc/refman/8.0/en/create-table-select.html
         String sql = "create table t2 select * from t1 where id > 10";

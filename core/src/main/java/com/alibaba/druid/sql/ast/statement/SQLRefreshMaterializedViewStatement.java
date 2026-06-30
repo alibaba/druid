@@ -33,6 +33,10 @@ public class SQLRefreshMaterializedViewStatement extends SQLStatementImpl {
 
     private boolean withData;
 
+    private boolean force;
+    private boolean syncMode;
+    private boolean asyncMode;
+
     public SQLRefreshMaterializedViewStatement() {
         this.setConcurrently(false);
         this.setWithData(false);
@@ -44,6 +48,22 @@ public class SQLRefreshMaterializedViewStatement extends SQLStatementImpl {
         this.setConcurrently(false);
         this.setWithData(false);
         this.setWithNoData(false);
+    }
+
+    @Override
+    public SQLRefreshMaterializedViewStatement clone() {
+        SQLRefreshMaterializedViewStatement x = new SQLRefreshMaterializedViewStatement(getDbType());
+        if (name != null) {
+            x.setName(name.clone());
+        }
+        x.concurrently = concurrently;
+        x.withNoData = withNoData;
+        x.withData = withData;
+        x.force = force;
+        x.syncMode = syncMode;
+        x.asyncMode = asyncMode;
+        x.afterSemi = afterSemi;
+        return x;
     }
 
     @Override
@@ -87,6 +107,30 @@ public class SQLRefreshMaterializedViewStatement extends SQLStatementImpl {
 
     public boolean isWithData() {
         return withData;
+    }
+
+    public boolean isForce() {
+        return force;
+    }
+
+    public void setForce(boolean force) {
+        this.force = force;
+    }
+
+    public boolean isSyncMode() {
+        return syncMode;
+    }
+
+    public void setSyncMode(boolean syncMode) {
+        this.syncMode = syncMode;
+    }
+
+    public boolean isAsyncMode() {
+        return asyncMode;
+    }
+
+    public void setAsyncMode(boolean asyncMode) {
+        this.asyncMode = asyncMode;
     }
 
     @Override

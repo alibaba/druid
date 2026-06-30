@@ -139,6 +139,7 @@ public final class SQLIdentifierExpr extends SQLExprImpl implements SQLName, Com
             x.hint = hint.clone();
         }
         x.collate = collate;
+        cloneTo(x);
         return x;
     }
 

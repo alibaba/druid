@@ -23,12 +23,14 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlCreateViewTest3 extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "create algorithm = merge view my_view2(col1, col2) as select * from t2 with check option;\n";
 

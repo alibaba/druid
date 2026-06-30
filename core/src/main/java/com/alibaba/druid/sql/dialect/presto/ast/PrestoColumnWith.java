@@ -26,6 +26,20 @@ public class PrestoColumnWith extends PrestoColumnConstraint implements PrestoOb
     }
 
     @Override
+    public PrestoColumnWith clone() {
+        PrestoColumnWith x = new PrestoColumnWith();
+        cloneTo(x);
+        return x;
+    }
+
+    public void cloneTo(PrestoColumnWith x) {
+        super.cloneTo(x);
+        for (SQLAssignItem property : properties) {
+            x.addProperty(property.clone());
+        }
+    }
+
+    @Override
     public void accept0(PrestoASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, properties);

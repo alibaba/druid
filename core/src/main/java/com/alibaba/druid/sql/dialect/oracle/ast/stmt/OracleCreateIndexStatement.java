@@ -295,4 +295,62 @@ public class OracleCreateIndexStatement extends SQLCreateIndexStatement implemen
     public void setGlobal(boolean global) {
         this.global = global;
     }
+
+    public void cloneTo(OracleCreateIndexStatement x) {
+        super.cloneTo(x);
+        x.online = online;
+        x.indexOnlyTopLevel = indexOnlyTopLevel;
+        x.cluster = cluster;
+        x.noParallel = noParallel;
+        if (parallel != null) {
+            x.parallel = parallel.clone();
+            x.parallel.setParent(x);
+        }
+        x.pctfree = pctfree;
+        x.pctused = pctused;
+        x.initrans = initrans;
+        x.maxtrans = maxtrans;
+        x.pctincrease = pctincrease;
+        x.freeLists = freeLists;
+        x.compress = compress;
+        x.compressLevel = compressLevel;
+        x.compressForOltp = compressForOltp;
+        x.pctthreshold = pctthreshold;
+        x.logging = logging;
+        x.sort = sort;
+        x.reverse = reverse;
+        if (tablespace != null) {
+            x.tablespace = tablespace.clone();
+            x.tablespace.setParent(x);
+        }
+        if (storage != null) {
+            x.storage = storage.clone();
+            x.storage.setParent(x);
+        }
+        x.enable = enable;
+        x.computeStatistics = computeStatistics;
+        x.local = local;
+        for (SQLName item : localStoreIn) {
+            SQLName item2 = item.clone();
+            item2.setParent(x);
+            x.localStoreIn.add(item2);
+        }
+        for (OraclePartitionSingle item : localPartitions) {
+            OraclePartitionSingle item2 = item.clone();
+            item2.setParent(x);
+            x.localPartitions.add(item2);
+        }
+        x.global = global;
+        for (SQLPartitionBy item : globalPartitions) {
+            SQLPartitionBy item2 = item.clone();
+            item2.setParent(x);
+            x.globalPartitions.add(item2);
+        }
+    }
+
+    public OracleCreateIndexStatement clone() {
+        OracleCreateIndexStatement x = new OracleCreateIndexStatement();
+        cloneTo(x);
+        return x;
+    }
 }

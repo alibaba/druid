@@ -19,12 +19,14 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlShowTest_22_rule_version extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SHOW RULE VERSION where 1=1 order by 1 limit 1";
 

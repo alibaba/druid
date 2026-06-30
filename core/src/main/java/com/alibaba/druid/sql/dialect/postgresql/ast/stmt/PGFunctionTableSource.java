@@ -61,6 +61,10 @@ public class PGFunctionTableSource extends SQLExprTableSource implements PGSQLOb
 
         x.setAlias(this.alias);
 
+        if (this.expr != null) {
+            x.setExpr(this.expr.clone());
+        }
+
         for (SQLParameter e : this.parameters) {
             SQLParameter e2 = e.clone();
             e2.setParent(x);

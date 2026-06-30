@@ -21,12 +21,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleCreateDbLinkTest extends OracleTest {
+    @Test
     public void test_0() throws Exception {
         String sql = //
                 "CREATE PUBLIC DATABASE LINK remote USING 'remote'; ";
@@ -45,6 +47,7 @@ public class OracleCreateDbLinkTest extends OracleTest {
         assertEquals(0, visitor.getTables().size());
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = //
                 "CREATE DATABASE LINK local CONNECT TO hr IDENTIFIED BY hr USING 'local';";
@@ -63,6 +66,7 @@ public class OracleCreateDbLinkTest extends OracleTest {
         assertEquals(0, visitor.getTables().size());
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = //
                 "CREATE DATABASE LINK remote.us.oracle.com CONNECT TO CURRENT_USER USING 'remote';";

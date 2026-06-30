@@ -11,6 +11,13 @@ public class PrestoDateTimeExpr extends OracleDatetimeExpr implements PrestoObje
     }
 
     @Override
+    public PrestoDateTimeExpr clone() {
+        SQLExpr exprClone = getExpr() == null ? null : getExpr().clone();
+        SQLExpr timeZoneClone = getTimeZone() == null ? null : getTimeZone().clone();
+        return new PrestoDateTimeExpr(exprClone, timeZoneClone);
+    }
+
+    @Override
     public void accept0(PrestoASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, getExpr());

@@ -194,6 +194,9 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
     }
 
     public void setName(SQLName name) {
+        if (name != null) {
+            name.setParent(this);
+        }
         this.name = name;
     }
 
@@ -603,7 +606,6 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
 
         x.stored = stored;
         x.virtual = virtual;
-        x.ifNotExists = ifNotExists;
 
         if (identity != null) {
             x.setIdentity(identity.clone());
@@ -635,7 +637,7 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
         if (mappedBy != null) {
             for (SQLAssignItem item : mappedBy) {
                 SQLAssignItem item2 = item.clone();
-                item2.setParent(this);
+                item2.setParent(x);
                 if (x.mappedBy == null) {
                     x.mappedBy = new ArrayList<SQLAssignItem>();
                 }
@@ -646,12 +648,69 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
         if (colProperties != null) {
             for (SQLAssignItem item : colProperties) {
                 SQLAssignItem item2 = item.clone();
-                item2.setParent(this);
+                item2.setParent(x);
                 if (x.colProperties == null) {
                     x.colProperties = new ArrayList<SQLAssignItem>();
                 }
                 x.colProperties.add(item2);
             }
+        }
+
+        x.ifNotExists = ifNotExists;
+        x.disableNovalidate = disableNovalidate;
+        x.visible = visible;
+        x.disableIndex = disableIndex;
+        x.sequenceType = sequenceType;
+        x.generateByDefault = generateByDefault;
+
+        if (generatedAlwaysAs != null) {
+            x.setGeneratedAlwaysAs(generatedAlwaysAs.clone());
+        }
+
+        if (delimiterTokenizer != null) {
+            x.setDelimiterTokenizer(delimiterTokenizer.clone());
+        }
+
+        if (unitCount != null) {
+            x.setUnitCount(unitCount.clone());
+        }
+
+        if (unitIndex != null) {
+            x.setUnitIndex(unitIndex.clone());
+        }
+
+        if (step != null) {
+            x.setStep(step.clone());
+        }
+
+        if (encode != null) {
+            x.setEncode(encode.clone());
+        }
+
+        if (compression != null) {
+            x.setCompression(compression.clone());
+        }
+
+        if (aggType != null) {
+            x.setAggType(aggType.clone());
+        }
+
+        if (bitmap != null) {
+            x.setBitmap(bitmap.clone());
+        }
+
+        if (indexComment != null) {
+            x.setIndexComment(indexComment.clone());
+        }
+
+        if (blockSize != null) {
+            x.setBlockSize(blockSize.clone());
+        }
+
+        // preserve the SQLAlterTableAlterColumn parent context so the dialect output
+        // visitor still renders the "TYPE" keyword (e.g. PostgreSQL ALTER COLUMN ... TYPE)
+        if (parent instanceof SQLAlterTableAlterColumn) {
+            x.setParent(parent);
         }
 
         return x;

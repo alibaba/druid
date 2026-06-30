@@ -22,12 +22,14 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlDeleteTest_6 extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "delete a.* from teacher_1 a join teacher_2 b on a.teacher_id = b.teacher_id where a.day < b.day";
 

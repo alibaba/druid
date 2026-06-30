@@ -46,4 +46,12 @@ public class TDNormalize extends SQLObjectImpl implements TDObject {
             visitor.endVisit(this);
         }
     }
+
+    public TDNormalize clone() {
+        TDNormalize x = new TDNormalize();
+        x.meets = meets;
+        x.overlaps = overlaps;
+        x.meetsFirst = meetsFirst;
+        return x;
+    }
 }

@@ -22,12 +22,14 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.wall.WallUtils;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_145_bigand extends MysqlTest {
+    @Test
     public void test_small_10() throws Exception {
         StringBuilder buf = new StringBuilder();
         {
@@ -63,6 +65,7 @@ public class MySqlSelectTest_145_bigand extends MysqlTest {
                 "\tAND GOODS_SID <> ?", stmt.toString());
     }
 
+    @Test
     public void test_big_100000() throws Exception {
         StringBuilder buf = new StringBuilder();
         {

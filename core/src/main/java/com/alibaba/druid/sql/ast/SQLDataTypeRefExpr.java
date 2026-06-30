@@ -6,6 +6,9 @@ public class SQLDataTypeRefExpr extends SQLExprImpl {
     private SQLDataType dataType;
 
     public SQLDataTypeRefExpr(SQLDataType dataType) {
+        if (dataType != null) {
+            dataType.setParent(this);
+        }
         this.dataType = dataType;
     }
 

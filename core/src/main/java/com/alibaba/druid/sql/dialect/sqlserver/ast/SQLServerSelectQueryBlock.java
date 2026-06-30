@@ -80,4 +80,23 @@ public class SQLServerSelectQueryBlock extends SQLSelectQueryBlock {
             throw new UnsupportedOperationException("not support offset");
         }
     }
+
+    @Override
+    public SQLServerSelectQueryBlock clone() {
+        SQLServerSelectQueryBlock x = new SQLServerSelectQueryBlock();
+        cloneTo(x);
+        return x;
+    }
+
+    public void cloneTo(SQLServerSelectQueryBlock x) {
+        super.cloneTo(x);
+        if (top != null) {
+            x.setTop(top.clone());
+        }
+        for (SQLAssignItem option : options) {
+            SQLAssignItem item = option.clone();
+            item.setParent(x);
+            x.options.add(item);
+        }
+    }
 }

@@ -5,12 +5,14 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_169_not_between extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "select * from t where (a && b) not between 1 and 2;";
 //
@@ -25,6 +27,7 @@ public class MySqlSelectTest_169_not_between extends MysqlTest {
                 "AND b) NOT BETWEEN 1 AND 2;", stmt.toString());
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "select (a && b) not between 1 and 2;";
 //

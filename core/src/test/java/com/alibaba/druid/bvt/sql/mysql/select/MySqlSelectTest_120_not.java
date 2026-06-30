@@ -4,12 +4,14 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_120_not extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "sELECT pk FROM corona_broadcast WHERE !(decimal_test BETWEEN double_test AND 62); ";
 

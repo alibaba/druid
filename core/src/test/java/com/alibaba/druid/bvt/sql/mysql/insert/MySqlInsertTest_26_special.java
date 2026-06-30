@@ -23,6 +23,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +31,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlInsertTest_26_special extends MysqlTest {
+    @Test
     public void test_insert_timestamp() throws Exception {
         String sql = "INSERT INTO SUNTEST(ID,NAME) VALUES(1,'\\_ASDFASDF')";
 
@@ -56,6 +58,7 @@ public class MySqlInsertTest_26_special extends MysqlTest {
                 "VALUES (1, '\\_ASDFASDF')", SQLUtils.toMySqlString(insertStmt));
     }
 
+    @Test
     public void test_insert_special_1() throws Exception {
         String sql = "INSERT INTO SUNTEST(ID,NAME) VALUES(1, \"Y\\\"'\")";
 

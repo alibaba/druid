@@ -193,9 +193,80 @@ public class SQLExprParser extends SQLParser {
         return bitXorRest(expr);
     }
 
+    protected void parseSegmentAttributes(SQLCreateMaterializedViewStatement stmt) {
+    }
+
     protected SQLExpr bitXorRestSUBGT() {
         return primary();
     }
+
+    // Bound the depth of nested lambda parsing (`a -> b -> c -> ...`): each `->` re-enters tryParseLambda
+    // via expr(), so a crafted chain of thousands of arrows would otherwise overflow the JVM stack (DoS).
+    private static final int MAX_LAMBDA_DEPTH = 128;
+    private int lambdaDepth;
+
+    protected SQLLambdaExpr tryParseLambda(SQLExpr expr) {
+        if (lambdaDepth >= MAX_LAMBDA_DEPTH) {
+            return null;
+        }
+        if (expr instanceof SQLIdentifierExpr) {
+            Lexer.SavePoint mark = lexer.markOut();
+            lambdaDepth++;
+            try {
+                lexer.nextToken();
+                // `col -> 'json_path'` is JSON-arrow (SubGt) access, not a lambda: a lambda body is an
+                // expression/identifier, never a bare string literal. Fall through to the SubGt branch.
+                if (lexer.token == Token.LITERAL_CHARS) {
+                    lexer.reset(mark);
+                    return null;
+                }
+                // Parse the body BEFORE attaching the argument, so a failure on this path never leaves
+                // expr re-parented to a discarded lambda (mirrors the SQLListExpr branch below).
+                SQLExpr body = expr();
+                SQLLambdaExpr lambda = new SQLLambdaExpr();
+                lambda.addArgument(expr);
+                lambda.setExpr(body);
+                return lambda;
+            } catch (Exception e) {
+                // catch Exception (not just ParserException) so a RuntimeException/NPE on the body path
+                // still rolls the lexer back instead of leaving `->` consumed with no lambda produced.
+                lexer.reset(mark);
+                return null;
+            } finally {
+                lambdaDepth--;
+            }
+        } else if (expr instanceof SQLListExpr) {
+            SQLListExpr listExpr = (SQLListExpr) expr;
+            if (listExpr.getItems().isEmpty()) {
+                return null;
+            }
+            for (SQLExpr item : listExpr.getItems()) {
+                if (!(item instanceof SQLIdentifierExpr)) {
+                    return null;
+                }
+            }
+            Lexer.SavePoint mark = lexer.markOut();
+            lambdaDepth++;
+            try {
+                SQLLambdaExpr lambda = new SQLLambdaExpr();
+                lexer.nextToken();
+                SQLExpr body = expr();
+                for (SQLExpr item : listExpr.getItems()) {
+                    item.setParent(lambda);
+                    lambda.getArguments().add(item);
+                }
+                lambda.setExpr(body);
+                return lambda;
+            } catch (Exception e) {
+                lexer.reset(mark);
+                return null;
+            } finally {
+                lambdaDepth--;
+            }
+        }
+        return null;
+    }
+
     public SQLExpr bitXorRest(SQLExpr expr) {
         Token token = lexer.token;
         switch (token) {
@@ -214,6 +285,13 @@ public class SQLExprParser extends SQLParser {
                 break;
             }
             case SUBGT: {
+                if (dialectFeatureEnabled(DialectFeature.ParserFeature.Lambda)) {
+                    SQLExpr lambda = tryParseLambda(expr);
+                    if (lambda != null) {
+                        expr = lambda;
+                        break;
+                    }
+                }
                 lexer.nextToken();
                 SQLExpr rightExp = bitXorRestSUBGT();
                 expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.SubGt, rightExp, dbType);
@@ -4872,7 +4950,7 @@ public class SQLExprParser extends SQLParser {
             }
             case NULL:
                 lexer.nextToken();
-                column.getConstraints().add(new SQLNullConstraint());
+                column.addConstraint(new SQLNullConstraint());
                 return parseColumnRest(column);
             case PRIMARY:
                 lexer.nextToken();
@@ -6098,7 +6176,7 @@ public class SQLExprParser extends SQLParser {
             expr = this.name();
             expr = this.exprRest(expr);
         } else {
-            if (lexer.token == Token.DISTINCT && dbType == DbType.elastic_search) {
+            if (lexer.token == Token.DISTINCT && dialectFeatureEnabled(DialectFeature.ParserFeature.SelectItemDistinctPrefix)) {
                 lexer.nextToken();
             }
 

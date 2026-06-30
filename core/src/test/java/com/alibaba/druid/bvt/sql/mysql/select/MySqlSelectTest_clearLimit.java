@@ -19,10 +19,12 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLLimit;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_clearLimit extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "select a from t limit 1,2";
 
@@ -33,6 +35,7 @@ public class MySqlSelectTest_clearLimit extends MysqlTest {
         assertEquals("LIMIT 1, 2", result[1].toString());
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = "SELECT id from test1"
                 + " where id BETWEEN 1 and 100"
@@ -48,6 +51,7 @@ public class MySqlSelectTest_clearLimit extends MysqlTest {
         assertNull(result[1]);
     }
 
+    @Test
     public void test_4() throws Exception {
         String sql = "SELECT id from test1 where id BETWEEN 1 and 100 intersect  select sid from grade1 where sid in(SELECT sid from grade1 where sid  is null or sid between 10 and 100 )";
 
@@ -68,6 +72,7 @@ public class MySqlSelectTest_clearLimit extends MysqlTest {
         assertNull(result[1]);
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "select a from t limit 1,2";
         SQLLimit limit = SQLUtils.getLimit(sql, DbType.mysql);
@@ -75,6 +80,7 @@ public class MySqlSelectTest_clearLimit extends MysqlTest {
         assertEquals("LIMIT 1, 2", limit.toString());
     }
 
+    @Test
     public void test_2() {
         String sql =
                 " /*+ dump-oss-accesskey-id=xx,dump-oss-accesskey-secret=xx*/ \n"
@@ -85,6 +91,7 @@ public class MySqlSelectTest_clearLimit extends MysqlTest {
         assertEquals("LIMIT 1", objects[1].toString());
     }
 
+    @Test
     public void test_clear_5() {
         String sql =
                 " insert into t1 select * from t2 limit 10,10";
@@ -93,6 +100,7 @@ public class MySqlSelectTest_clearLimit extends MysqlTest {
         assertEquals("LIMIT 10, 10", objects[1].toString());
     }
 
+    @Test
     public void test_getLimit() {
         SQLLimit limit = SQLUtils.getLimit("insert into t1 select * from t2 limit 10,10", DbType.mysql);
         assertEquals("LIMIT 10, 10", limit.toString());
@@ -110,6 +118,7 @@ public class MySqlSelectTest_clearLimit extends MysqlTest {
         assertNull(limit);
     }
 
+    @Test
     public void test_getLimit2() {
         SQLLimit limit = SQLUtils.getLimit("(SELECT 13 ) INTERSECT (SELECT 13 limit 10)", DbType.mysql);
 

@@ -5,12 +5,14 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlCreateTableTest98_keyword extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = " CREATE TABLE IF NOT EXISTS meta.view (\n" +
                 "                cluster_name varchar(16) ,\n" +
@@ -35,6 +37,7 @@ public class MySqlCreateTableTest98_keyword extends MysqlTest {
                 ")", stmt.toString());
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = " CREATE TABLE IF NOT EXISTS meta.partitions (\n" +
                 "                cluster_name varchar(16) ,\n" +
@@ -59,6 +62,7 @@ public class MySqlCreateTableTest98_keyword extends MysqlTest {
                 ")", stmt.toString());
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = " CREATE TABLE IF NOT EXISTS meta.partitions (\n" +
                 "                cluster_name varchar(16) ,\n" +
@@ -83,6 +87,7 @@ public class MySqlCreateTableTest98_keyword extends MysqlTest {
                 ")", stmt.toString());
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = "create table IF NOT EXISTS meta.build_table_statistic_info("
                 + " cluster_name varchar(16), "
@@ -117,6 +122,7 @@ public class MySqlCreateTableTest98_keyword extends MysqlTest {
                 ")", stmt.toString());
     }
 
+    @Test
     public void test_4() throws Exception {
         String sql = "CREATE TABLE test (\n" +
                 "Host char(60) COLLATE utf8_bin NOT NULL DEFAULT '',\n" +

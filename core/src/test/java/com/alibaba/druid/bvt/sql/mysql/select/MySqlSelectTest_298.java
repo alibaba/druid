@@ -24,11 +24,13 @@ import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_298
         extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT 1 FROM ((SELECT 2) ORDER BY 1) AS res";
 
@@ -42,6 +44,7 @@ public class MySqlSelectTest_298
                 ") res", stmt.toString());
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "SELECT 100 + /* + shouldn't fail */ 1 AS result;";
 
@@ -51,6 +54,7 @@ public class MySqlSelectTest_298
         assertEquals("SELECT 100 + 1 AS result;", stmt.toString());
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "select _latin1 0x4B regexp _latin1 '[[:upper:]]' COLLATE latin1_bin;";
 
@@ -60,6 +64,7 @@ public class MySqlSelectTest_298
         assertEquals("SELECT _latin1 '4B' REGEXP _latin1 '[[:upper:]]' COLLATE latin1_bin;", stmt.toString());
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = "select cast('-10a' as signed integer);";
 
@@ -69,6 +74,7 @@ public class MySqlSelectTest_298
         assertEquals("SELECT CAST('-10a' AS signed integer);", stmt.toString());
     }
 
+    @Test
     public void test_4() throws Exception {
         String sql = "select 2 as expected, /*!99990 1 + */ 2 as result; ";
 
@@ -78,6 +84,7 @@ public class MySqlSelectTest_298
         assertEquals("SELECT 2 AS expected, 2 AS result;", stmt.toString());
     }
 
+    @Test
     public void test_5() throws Exception {
         String sql = "select 2 as expected, /*!99990 1 + */ 2 as result; ";
 
@@ -87,6 +94,7 @@ public class MySqlSelectTest_298
         assertEquals("SELECT 2 AS expected, 2 AS result;", stmt.toString());
     }
 
+    @Test
     public void test_6() throws Exception {
         String sql = "SELECT 1 FROM /*+ regular commentary, not a hint! */ opt_hints_t1_14;  ";
 
@@ -97,6 +105,7 @@ public class MySqlSelectTest_298
                 "FROM opt_hints_t1_14;", stmt.toString());
     }
 
+    @Test
     public void test_7() throws Exception {
         String sql = "SELECT /*+ NO_ICP() */ 1 FROM /*+ regular commentary, not a hint! */ opt_hints_t1_14;";
 
@@ -107,6 +116,7 @@ public class MySqlSelectTest_298
                 "FROM opt_hints_t1_14;", stmt.toString());
     }
 
+    @Test
     public void test_8() throws Exception {
         String sql = "select group_concat('x') UNION ALL select 1;  ";
 
@@ -118,6 +128,7 @@ public class MySqlSelectTest_298
                 "SELECT 1;", stmt.toString());
     }
 
+    @Test
     public void test_9() throws Exception {
         String sql = "select hex(convert(_ujis 0x8FABF841 using ucs2));  ";
 
@@ -127,6 +138,7 @@ public class MySqlSelectTest_298
         assertEquals("SELECT hex(convert(_ujis '8FABF841' USING ucs2));", stmt.toString());
     }
 
+    @Test
     public void test_10() throws Exception {
         String sql = "select locate(_ujis 0xa2a1,_ujis 0xa1a2a1a3); ";
 
@@ -136,6 +148,7 @@ public class MySqlSelectTest_298
         assertEquals("SELECT locate(_ujis 'a2a1', _ujis 'a1a2a1a3');", stmt.toString());
     }
 
+    @Test
     public void test_11() throws Exception {
         String sql = "SELECT HEX(RIGHT(_utf16le 0x00D800DC7FD8FFDF, 1));";
 
@@ -145,6 +158,7 @@ public class MySqlSelectTest_298
         assertEquals("SELECT HEX(RIGHT(_utf16le '00D800DC7FD8FFDF', 1));", stmt.toString());
     }
 
+    @Test
     public void test_x1() throws Exception {
         String sql = "`default`.`row_number`() OVER (PARTITION BY `field` ORDER BY `field` ASC)";
 
@@ -159,6 +173,7 @@ public class MySqlSelectTest_298
         }
     }
 
+    @Test
     public void test_x2() throws Exception {
         String sql = "SELECT 123 UNION SELECT 123 UNION ALL SELECT 123";
 
@@ -172,6 +187,7 @@ public class MySqlSelectTest_298
                 "SELECT 123", stmt.toString());
     }
 
+    @Test
     public void test_x3() throws Exception {
         String sql = "SELECT 101 UNION SELECT 102 UNION DISTINCT SELECT 103";
 
@@ -185,6 +201,7 @@ public class MySqlSelectTest_298
                 "SELECT 103", stmt.toString());
     }
 
+    @Test
     public void test_x4() throws Exception {
         String sql = "SELECT 123 UNION DISTINCT SELECT 123 UNION ALL SELECT 123";
 
@@ -198,6 +215,7 @@ public class MySqlSelectTest_298
                 "SELECT 123", stmt.toString());
     }
 
+    @Test
     public void test_x5() throws Exception {
         String sql = "SELECT 123 UNION DISTINCT SELECT 123 UNION SELECT 123";
 
@@ -211,6 +229,7 @@ public class MySqlSelectTest_298
                 "SELECT 123", stmt.toString());
     }
 
+    @Test
     public void test_x6() throws Exception {
         String sql = "SELECT 123 UNION ALL SELECT 123 UNION SELECT 123";
 
@@ -224,6 +243,7 @@ public class MySqlSelectTest_298
                 "SELECT 123", stmt.toString());
     }
 
+    @Test
     public void test_x7() throws Exception {
         String sql = "SELECT id from test4dmp.test where id BETWEEN 1 and 10 union all  select id from test4dmp.student where id BETWEEN 5 and 12 union all select cid from test4dmp.course where cid BETWEEN 18 and 19   order by id";
 
@@ -244,6 +264,7 @@ public class MySqlSelectTest_298
                 "ORDER BY id", stmt.toString());
     }
 
+    @Test
     public void test_x8() throws Exception {
         String sql = "SELECT id from test4dmp.test where id BETWEEN 1 and 10 union all  select id from test4dmp.student where id BETWEEN 5 and 12 union all select cid from test4dmp.course where cid BETWEEN 18 and 19   order by id";
 

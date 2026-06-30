@@ -20,12 +20,14 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class HiveCreateTableTest_32_properties extends OracleTest {
+    @Test
     public void test_0() throws Exception {
         String sql = //
                 "create table aaaa (\n" +
@@ -71,6 +73,7 @@ public class HiveCreateTableTest_32_properties extends OracleTest {
         assertTrue(visitor.containsTable("aaaa"));
     }
 
+    @Test
     public void test_mysql() throws Exception {
         String sql = //
                 "create table aaaa (\n" +

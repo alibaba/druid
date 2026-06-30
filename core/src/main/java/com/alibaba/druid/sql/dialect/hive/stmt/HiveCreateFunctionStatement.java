@@ -17,6 +17,31 @@ public class HiveCreateFunctionStatement extends SQLCreateFunctionStatement impl
     public HiveCreateFunctionStatement() {
     }
 
+    public void cloneTo(HiveCreateFunctionStatement x) {
+        super.cloneTo(x);
+
+        // own fields of HiveCreateFunctionStatement
+        x.declare = declare;
+        if (className != null) {
+            x.setClassName(className.clone());
+        }
+        if (location != null) {
+            x.setLocation(location.clone());
+        }
+        if (symbol != null) {
+            x.setSymbol(symbol.clone());
+        }
+        x.resourceType = resourceType;
+        x.code = code;
+    }
+
+    @Override
+    public HiveCreateFunctionStatement clone() {
+        HiveCreateFunctionStatement x = new HiveCreateFunctionStatement();
+        cloneTo(x);
+        return x;
+    }
+
     public void accept0(SQLASTVisitor visitor) {
         if (visitor instanceof HiveASTVisitor) {
             accept0((HiveASTVisitor) visitor);

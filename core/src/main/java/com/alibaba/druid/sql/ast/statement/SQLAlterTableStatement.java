@@ -160,6 +160,9 @@ public class SQLAlterTableStatement extends SQLStatementImpl implements SQLDDLSt
     }
 
     public void setTableSource(SQLExprTableSource tableSource) {
+        if (tableSource != null) {
+            tableSource.setParent(this);
+        }
         this.tableSource = tableSource;
     }
 

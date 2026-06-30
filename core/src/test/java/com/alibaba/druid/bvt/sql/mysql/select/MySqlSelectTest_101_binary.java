@@ -21,12 +21,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_101_binary extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "\n" +
                 "SELECT 1 AS one FROM `projects` WHERE  `projects`.`name` = BINARY 'test11111111111' AND `projects`.`namespace_id` = 61  LIMIT 1;";

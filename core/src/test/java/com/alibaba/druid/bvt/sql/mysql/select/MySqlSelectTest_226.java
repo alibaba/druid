@@ -21,12 +21,14 @@ import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_226 extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT sum(`price`) AS aggregate, `aa` \n" +
                 "FROM `na_orders`\n" +

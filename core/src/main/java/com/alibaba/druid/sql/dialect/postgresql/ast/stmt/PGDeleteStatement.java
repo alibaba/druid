@@ -91,6 +91,7 @@ public class PGDeleteStatement extends SQLDeleteStatement implements PGSQLStatem
         if (returning != null) {
             x.setReturning(returning.clone());
         }
+        x.afterSemi = afterSemi;
 
         return x;
     }

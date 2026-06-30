@@ -75,6 +75,9 @@ public class SQLAlterSequenceStatement extends SQLStatementImpl implements SQLAl
     }
 
     public void setName(SQLName name) {
+        if (name != null) {
+            name.setParent(this);
+        }
         this.name = name;
     }
 
@@ -83,6 +86,9 @@ public class SQLAlterSequenceStatement extends SQLStatementImpl implements SQLAl
     }
 
     public void setStartWith(SQLExpr startWith) {
+        if (startWith != null) {
+            startWith.setParent(this);
+        }
         this.startWith = startWith;
     }
 
@@ -91,6 +97,9 @@ public class SQLAlterSequenceStatement extends SQLStatementImpl implements SQLAl
     }
 
     public void setIncrementBy(SQLExpr incrementBy) {
+        if (incrementBy != null) {
+            incrementBy.setParent(this);
+        }
         this.incrementBy = incrementBy;
     }
 
@@ -99,6 +108,9 @@ public class SQLAlterSequenceStatement extends SQLStatementImpl implements SQLAl
     }
 
     public void setMaxValue(SQLExpr maxValue) {
+        if (maxValue != null) {
+            maxValue.setParent(this);
+        }
         this.maxValue = maxValue;
     }
 
@@ -139,6 +151,9 @@ public class SQLAlterSequenceStatement extends SQLStatementImpl implements SQLAl
     }
 
     public void setMinValue(SQLExpr minValue) {
+        if (minValue != null) {
+            minValue.setParent(this);
+        }
         this.minValue = minValue;
     }
 

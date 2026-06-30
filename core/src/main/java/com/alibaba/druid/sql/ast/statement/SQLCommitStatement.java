@@ -45,6 +45,7 @@ public class SQLCommitStatement extends SQLStatementImpl {
         x.work = work;
         x.chain = chain;
         x.release = release;
+        x.afterSemi = afterSemi;
 
         if (transactionName != null) {
             x.setTransactionName(transactionName.clone());

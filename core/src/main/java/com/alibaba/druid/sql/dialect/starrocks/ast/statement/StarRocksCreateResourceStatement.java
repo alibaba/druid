@@ -3,6 +3,7 @@ package com.alibaba.druid.sql.dialect.starrocks.ast.statement;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
@@ -10,6 +11,7 @@ import com.alibaba.druid.sql.ast.statement.SQLCreateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDDLStatement;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -17,6 +19,7 @@ public class StarRocksCreateResourceStatement extends SQLStatementImpl implement
     private SQLName name;
     private List<SQLAssignItem> properties = new LinkedList<>();
     private boolean external;
+    private boolean orReplace;
 
     public StarRocksCreateResourceStatement() {
         dbType = DbType.starrocks;
@@ -68,10 +71,45 @@ public class StarRocksCreateResourceStatement extends SQLStatementImpl implement
         this.external = external;
     }
 
+    public boolean isOrReplace() {
+        return orReplace;
+    }
+
+    public void setOrReplace(boolean orReplace) {
+        this.orReplace = orReplace;
+    }
+
     @Override
     protected void accept0(SQLASTVisitor visitor) {
-        visitor.preVisit(this);
-        visitor.visit(this);
+        if (visitor.visit(this)) {
+            acceptChild(visitor, name);
+            acceptChild(visitor, (List) properties);
+        }
         visitor.endVisit(this);
+    }
+
+    @Override
+    public List<SQLObject> getChildren() {
+        List<SQLObject> children = new ArrayList<>();
+        if (name != null) {
+            children.add(name);
+        }
+        children.addAll(properties);
+        return children;
+    }
+
+    public StarRocksCreateResourceStatement clone() {
+        StarRocksCreateResourceStatement x = new StarRocksCreateResourceStatement();
+        x.external = this.external;
+        x.orReplace = this.orReplace;
+        if (this.name != null) {
+            x.setName(this.name.clone());
+        }
+        for (SQLAssignItem item : this.properties) {
+            SQLAssignItem cloned = item.clone();
+            cloned.setParent(x);
+            x.properties.add(cloned);
+        }
+        return x;
     }
 }

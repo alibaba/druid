@@ -4,12 +4,14 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_116_with_cube extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT string_test, time_test, sum(int_test2) as sum_int FROM test_realtime1 GROUP BY ROLLUP (string_test, time_test) ORDER BY sum_int, string_test, time_test";
 

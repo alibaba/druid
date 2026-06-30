@@ -19,10 +19,12 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySQLCreateMaterializedViewTest7 extends MysqlTest {
+    @Test
     public void test1() throws Exception {
         String sql = "create materialized view `a` (\n" +
                 "    `__adb_auto_id__` bigint AUTO_INCREMENT,\n" +
@@ -50,6 +52,7 @@ public class MySQLCreateMaterializedViewTest7 extends MysqlTest {
                 "FROM base;");
     }
 
+    @Test
     public void test2() throws Exception {
         String sql = "create materialized view `b` (\n" +
                 "    `id` int comment 'id',\n" +
@@ -71,6 +74,7 @@ public class MySQLCreateMaterializedViewTest7 extends MysqlTest {
                 "FROM base;");
     }
 
+    @Test
     public void test3() throws Exception {
         String sql = "create materialized view c (\n" +
                 "    key index_id(id) comment 'id',\n" +
@@ -100,6 +104,7 @@ public class MySQLCreateMaterializedViewTest7 extends MysqlTest {
                 "FROM base;");
     }
 
+    @Test
     public void test4() throws Exception {
         String sql = "create materialized view d (\n" +
                 "    id bigint(20) not null comment 'id',\n" +
@@ -125,6 +130,7 @@ public class MySQLCreateMaterializedViewTest7 extends MysqlTest {
                 "FROM base;");
     }
 
+    @Test
     public void test5() throws Exception {
         String sql = "Create Materialized View `mview_0` (\n" +
                 " `a` int,\n" +

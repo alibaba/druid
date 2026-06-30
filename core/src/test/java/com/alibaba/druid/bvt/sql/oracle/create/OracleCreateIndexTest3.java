@@ -20,12 +20,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleCreateIndexTest3 extends OracleTest {
+    @Test
     public void test_0() throws Exception {
         String sql = //
                 "create index PRODUCT_ADDITION_NCID_IND on PRODUCT_ADDITION(NEW_CLUSTER_ID,GMT_LAST_FEEDBACK) tablespace APPINDX4M online parallel 4";

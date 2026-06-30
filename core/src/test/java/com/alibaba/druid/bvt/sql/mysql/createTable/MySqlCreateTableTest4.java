@@ -21,12 +21,14 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlCreateTableTest4 extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "create table t_temp_11593685fc3244cf81468209484078a0 (" +
                 "id int not null auto_increment, " +

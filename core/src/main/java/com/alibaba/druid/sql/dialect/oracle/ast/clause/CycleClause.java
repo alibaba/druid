@@ -86,15 +86,15 @@ public class CycleClause extends OracleSQLObjectImpl {
         }
 
         if (mark != null) {
-            setMark(mark.clone());
+            x.setMark(mark.clone());
         }
 
         if (value != null) {
-            setValue(value.clone());
+            x.setValue(value.clone());
         }
 
         if (defaultValue != null) {
-            setDefaultValue(defaultValue.clone());
+            x.setDefaultValue(defaultValue.clone());
         }
 
         return x;

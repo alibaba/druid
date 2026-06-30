@@ -20,12 +20,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleAlterTableTest11 extends OracleTest {
+    @Test
     public void test_0() throws Exception {
         String sql = //
                 "alter table PRODUCT_IDS_ZZJ_TBD0209 move tablespace MCSHADOWTS";

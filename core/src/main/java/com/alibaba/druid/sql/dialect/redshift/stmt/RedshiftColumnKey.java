@@ -30,4 +30,17 @@ public class RedshiftColumnKey extends RedshiftColumnConstraint {
             ((RedshiftASTVisitor) v).endVisit(this);
         }
     }
+
+    @Override
+    public RedshiftColumnKey clone() {
+        RedshiftColumnKey x = new RedshiftColumnKey();
+        cloneTo(x);
+        return x;
+    }
+
+    public void cloneTo(RedshiftColumnKey x) {
+        super.cloneTo(x);
+        x.isDistKey = isDistKey;
+        x.isSortKey = isSortKey;
+    }
 }

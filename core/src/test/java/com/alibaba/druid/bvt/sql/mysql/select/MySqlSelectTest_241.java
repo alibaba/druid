@@ -19,10 +19,12 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_241 extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "select job_names.job_name from cover_rage_job_org as org RIGHT JOIN (\n" +
                 " select job_names.job_name as job_name\n" +

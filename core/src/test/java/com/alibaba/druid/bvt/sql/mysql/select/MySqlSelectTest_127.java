@@ -5,12 +5,14 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_127 extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "/*+engine=mpp*/SELECT min(pay_byr_rate_90d) FROM (/*+engine=mpp*/SELECT pay_byr_rate_90d FROM caspian.ads_itm_hpcj_all_df WHERE item_pools_tags = '1116' AND pay_byr_rate_90d >= 0 ORDER BY pay_byr_rate_90d DESC LIMIT 49) LIMIT 500";
 

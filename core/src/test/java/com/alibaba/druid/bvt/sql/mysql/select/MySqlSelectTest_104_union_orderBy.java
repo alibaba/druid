@@ -20,12 +20,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_104_union_orderBy extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "\n" +
                 "select a from a1 union select a from a2 union select a from a3 union select a from a4 union select a from a5 order by a desc";

@@ -18,12 +18,14 @@ package com.alibaba.druid.bvt.sql.mysql.create;
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlCreateExternalCatalogTest1 extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "CREATE EXTERNAL CATALOG IF NOT EXISTS kafka_1 PROPERTIES ("
                 + "'connector.name'='kafka' " + "'kafka.table-names'='table1,table2' "
@@ -43,6 +45,7 @@ public class MySqlCreateExternalCatalogTest1 extends MysqlTest {
                 + "COMMENT 'this is a kafka connector test.'", stmt.toString());
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "CREATE EXTERNAL CATALOG user_db.mysql_1 PROPERTIES ("
                 + "'connector.name'='mysql' "

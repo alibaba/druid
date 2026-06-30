@@ -18,12 +18,14 @@ package com.alibaba.druid.bvt.sql.mysql.select;
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_97_alias extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT * FROM student \n" +
                 "where  id = \"123\"";
@@ -39,6 +41,7 @@ public class MySqlSelectTest_97_alias extends MysqlTest {
                 "WHERE id = '123'", text);
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "\n" +
                 "select * from test_hash_tb a join test_hash_tb b on a.id=b.id join test_hash_tb c  on b.id=c.id where a.id=\"xx\"";

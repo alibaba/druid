@@ -61,7 +61,12 @@ public class SQLCreateFunctionStatement extends SQLStatementImpl implements SQLC
 
     public SQLCreateFunctionStatement clone() {
         SQLCreateFunctionStatement x = new SQLCreateFunctionStatement();
+        cloneTo(x);
+        return x;
+    }
 
+    public void cloneTo(SQLCreateFunctionStatement x) {
+        x.dbType = dbType;
         if (definer != null) {
             x.setDefiner(definer.clone());
         }
@@ -89,8 +94,16 @@ public class SQLCreateFunctionStatement extends SQLStatementImpl implements SQLC
         x.deterministic = deterministic;
         x.pipelined = pipelined;
         x.language = language;
-
-        return x;
+        x.temporary = temporary;
+        x.ifNotExists = ifNotExists;
+        x.parallelEnable = parallelEnable;
+        x.aggregate = aggregate;
+        x.resultCache = resultCache;
+        x.wrappedSource = wrappedSource;
+        if (using != null) {
+            x.setUsing(using.clone());
+        }
+        x.afterSemi = afterSemi;
     }
 
     @Override

@@ -21,12 +21,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.ParserException;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlGrantTest_36 extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "GRANT DELETE, CREATE, DROP ON *.* TO 'oa_2'@'localhost' with grant option";
 
@@ -48,6 +50,7 @@ public class MySqlGrantTest_36 extends MysqlTest {
         assertEquals(0, visitor.getConditions().size());
     }
 
+    @Test
     public void test_error() throws Exception {
         String sql = "GRANT DELETE, CREATE, DROP ON *.* TO 'oa_2'@% with grant option";
 
@@ -60,6 +63,7 @@ public class MySqlGrantTest_36 extends MysqlTest {
         assertNotNull(error);
     }
 
+    @Test
     public void test_error_1() throws Exception {
         String sql = "GRANT DELETE, CREATE, DROP ON *.* TO 'oa_2'@@ with grant option";
 
@@ -72,6 +76,7 @@ public class MySqlGrantTest_36 extends MysqlTest {
         assertNotNull(error);
     }
 
+    @Test
     public void test_error_2() throws Exception {
         String sql = "GRANT DELETE, CREATE, DROP ON *.* TO 'oa_2'@127.0.0.1 with grant option";
 

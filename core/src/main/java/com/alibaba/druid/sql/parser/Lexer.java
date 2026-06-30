@@ -3521,4 +3521,12 @@ public class Lexer {
     protected boolean dialectFeatureEnabled(DialectFeature.LexerFeature feature) {
         return dialectFeature.isEnabled(feature);
     }
+
+    public DialectFeature getDialectFeature() {
+        return dialectFeature;
+    }
+
+    public void setDialectFeature(DialectFeature dialectFeature) {
+        this.dialectFeature = dialectFeature;
+    }
 }

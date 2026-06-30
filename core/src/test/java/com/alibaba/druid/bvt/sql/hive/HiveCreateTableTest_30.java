@@ -22,12 +22,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class HiveCreateTableTest_30 extends OracleTest {
+    @Test
     public void test_0() throws Exception {
         String sql = //
                 "CREATE EXTERNAL TABLE `nation`(\n" +
@@ -107,6 +109,7 @@ public class HiveCreateTableTest_30 extends OracleTest {
         assertTrue(visitor.containsTable("nation"));
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = //
                 "CREATE EXTERNAL TABLE nation_test "
@@ -140,6 +143,7 @@ public class HiveCreateTableTest_30 extends OracleTest {
 
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = //
                 "CREATE EXTERNAL TABLE `tpch_100m_text`.`nation_line_terminated` (\n"
@@ -170,6 +174,7 @@ public class HiveCreateTableTest_30 extends OracleTest {
 
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = "-- 234234\ncreate table a(id varchar)";
 
@@ -178,6 +183,7 @@ public class HiveCreateTableTest_30 extends OracleTest {
                 SQLUtils.toSQLString(statement, JdbcConstants.HIVE));
     }
 
+    @Test
     public void test_4() throws Exception {
         String sql = "alter table partition_text_nation add partition (p=101,q) location 'oss://oss-cn-beijing-for-openanalytics-test/datasets/test/test_partition/text_table/part101/';";
 
@@ -187,6 +193,7 @@ public class HiveCreateTableTest_30 extends OracleTest {
                 SQLUtils.toSQLString(statement, JdbcConstants.HIVE));
     }
 
+    @Test
     public void test_5() throws Exception {
         String sql = "alter table partition_text_nation add partition (p, q=101) location 'oss://oss-cn-beijing-for-openanalytics-test/datasets/test/test_partition/text_table/part101/';";
 

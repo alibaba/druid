@@ -103,6 +103,13 @@ public class SQLSubqueryTableSource extends SQLTableSourceImpl {
             c2.setParent(x);
             x.columns.add(c2);
         }
+
+        if (pivot != null) {
+            x.setPivot(pivot.clone());
+        }
+        if (unpivot != null) {
+            x.setUnpivot(unpivot.clone());
+        }
     }
 
     public SQLSubqueryTableSource clone() {

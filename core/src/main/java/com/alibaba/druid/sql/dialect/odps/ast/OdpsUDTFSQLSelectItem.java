@@ -45,4 +45,11 @@ public class OdpsUDTFSQLSelectItem extends SQLSelectItem implements OdpsObject {
         visitor.endVisit(this);
     }
 
+    @Override
+    public OdpsUDTFSQLSelectItem clone() {
+        OdpsUDTFSQLSelectItem x = new OdpsUDTFSQLSelectItem();
+        cloneTo(x);
+        return x;
+    }
+
 }

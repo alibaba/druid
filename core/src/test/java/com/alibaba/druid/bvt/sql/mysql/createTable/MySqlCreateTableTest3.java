@@ -21,12 +21,14 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlCreateTableTest3 extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "CREATE TABLE tk (col1 INT, col2 CHAR(5), col3 DATE)    PARTITION BY KEY(col3)    PARTITIONS 4;";
 

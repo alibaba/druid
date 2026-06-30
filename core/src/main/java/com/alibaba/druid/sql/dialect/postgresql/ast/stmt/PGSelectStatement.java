@@ -16,10 +16,13 @@
 package com.alibaba.druid.sql.dialect.postgresql.ast.stmt;
 
 import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
+import java.util.ArrayList;
 
 public class PGSelectStatement extends SQLSelectStatement implements PGSQLStatement {
     public PGSelectStatement() {
@@ -43,5 +46,26 @@ public class PGSelectStatement extends SQLSelectStatement implements PGSQLStatem
             acceptChild(visitor, this.select);
         }
         visitor.endVisit(this);
+    }
+
+    @Override
+    public PGSelectStatement clone() {
+        PGSelectStatement x = new PGSelectStatement();
+        x.dbType = dbType;
+        x.afterSemi = afterSemi;
+        if (select != null) {
+            x.setSelect(select.clone());
+        }
+        if (headHints != null) {
+            for (SQLCommentHint h : headHints) {
+                SQLCommentHint h2 = h.clone();
+                h2.setParent(x);
+                if (x.headHints == null) {
+                    x.headHints = new ArrayList<SQLCommentHint>(headHints.size());
+                }
+                x.headHints.add(h2);
+            }
+        }
+        return x;
     }
 }

@@ -97,18 +97,23 @@ public class HiveCreateTableStatement extends SQLCreateTableStatement {
             x.serdeProperties.put(entry.getKey(), entryValue);
         }
 
+        x.skewedByStoreAsDirectories = this.skewedByStoreAsDirectories;
+        x.lbracketUse = this.lbracketUse;
+        x.rbracketUse = this.rbracketUse;
+
         x.setLikeQuery(this.likeQuery);
 
         if (mappedBy != null) {
             for (SQLAssignItem item : mappedBy) {
                 SQLAssignItem item2 = item.clone();
-                item2.setParent(this);
+                item2.setParent(x);
                 x.mappedBy.add(item2);
             }
         }
 
         if (intoBuckets != null) {
             x.intoBuckets = intoBuckets.clone();
+            x.intoBuckets.setParent(x);
         }
 
         if (using != null) {
@@ -150,6 +155,13 @@ public class HiveCreateTableStatement extends SQLCreateTableStatement {
 
     public Map<String, SQLObject> getSerdeProperties() {
         return serdeProperties;
+    }
+
+    public void addSerdeProperty(String key, SQLObject value) {
+        if (value != null) {
+            value.setParent(this);
+        }
+        this.serdeProperties.put(key, value);
     }
 
     public boolean isLikeQuery() {

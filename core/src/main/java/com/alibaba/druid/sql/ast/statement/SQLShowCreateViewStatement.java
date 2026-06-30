@@ -36,6 +36,9 @@ public class SQLShowCreateViewStatement extends SQLStatementImpl implements SQLS
     }
 
     public void setName(SQLName functionName) {
+        if (functionName != null) {
+            functionName.setParent(this);
+        }
         this.name = functionName;
     }
 

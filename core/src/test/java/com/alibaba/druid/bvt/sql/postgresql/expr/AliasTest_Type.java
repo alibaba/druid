@@ -6,6 +6,7 @@ import com.alibaba.druid.sql.dialect.postgresql.parser.PGSQLStatementParser;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGSchemaStatVisitor;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.util.JdbcUtils;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
@@ -15,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * 测试 TYPE作为别名
  */
 public class AliasTest_Type extends PGTest {
+    @Test
     public void test_timestamp() throws Exception {
         String sql = "select column1 as TYPE from table1 where xx=1";
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);

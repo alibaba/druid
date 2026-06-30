@@ -1,10 +1,13 @@
 package com.alibaba.druid.sql.dialect.dm.ast.stmt;
 
 import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.dm.visitor.DmASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
+import java.util.ArrayList;
 
 public class DmSelectStatement extends SQLSelectStatement {
     public DmSelectStatement() {
@@ -29,5 +32,26 @@ public class DmSelectStatement extends SQLSelectStatement {
             acceptChild(visitor, this.select);
         }
         visitor.endVisit(this);
+    }
+
+    @Override
+    public DmSelectStatement clone() {
+        DmSelectStatement x = new DmSelectStatement();
+        x.dbType = dbType;
+        x.afterSemi = afterSemi;
+        if (select != null) {
+            x.setSelect(select.clone());
+        }
+        if (headHints != null) {
+            for (SQLCommentHint h : headHints) {
+                SQLCommentHint h2 = h.clone();
+                h2.setParent(x);
+                if (x.headHints == null) {
+                    x.headHints = new ArrayList<SQLCommentHint>(headHints.size());
+                }
+                x.headHints.add(h2);
+            }
+        }
+        return x;
     }
 }

@@ -5,12 +5,14 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGSQLStatementParser;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PGFilterClauseTest extends PGTest {
+    @Test
     public void test_filter_count() {
         String sql = "SELECT count(*) FILTER (WHERE x > 0) FROM t";
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
@@ -22,6 +24,7 @@ public class PGFilterClauseTest extends PGTest {
         assertTrue(output.contains("WHERE"));
     }
 
+    @Test
     public void test_filter_sum() {
         String sql = "SELECT sum(amount) FILTER (WHERE status = 'active') FROM orders";
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
@@ -33,6 +36,7 @@ public class PGFilterClauseTest extends PGTest {
         assertTrue(output.contains("WHERE"));
     }
 
+    @Test
     public void test_filter_multiple_aggregates() {
         String sql = "SELECT count(*) FILTER (WHERE type = 'A') AS count_a, count(*) FILTER (WHERE type = 'B') AS count_b FROM items";
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
@@ -45,6 +49,7 @@ public class PGFilterClauseTest extends PGTest {
         assertEquals(2, filterCount);
     }
 
+    @Test
     public void test_filter_with_order_by_in_aggregate() {
         String sql = "SELECT department, array_agg(name ORDER BY name) FILTER (WHERE salary > 50000) FROM employees GROUP BY department";
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);

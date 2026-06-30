@@ -216,6 +216,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
                         if (lexer.token() == Token.IDENTIFIER //
                                 || lexer.token() == Token.LITERAL_ALIAS) {
                             SQLColumnDefinition column = this.exprParser.parseColumn();
+                            column.setParent(item);
                             item.getTableElementList().add(column);
                         } else if (lexer.token() == Token.PRIMARY //
                                 || lexer.token() == Token.UNIQUE //
@@ -228,6 +229,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
                             throw new ParserException("TODO " + lexer.info());
                         } else {
                             SQLColumnDefinition column = this.exprParser.parseColumn();
+                            column.setParent(item);
                             item.getTableElementList().add(column);
                         }
 
@@ -573,6 +575,11 @@ public class SQLServerStatementParser extends SQLStatementParser {
 
         SQLBlockStatement block = new SQLBlockStatement();
         parseStatementList(block.getStatementList());
+        for (SQLStatement bodyStmt : block.getStatementList()) {
+            if (bodyStmt != null) {
+                bodyStmt.setParent(block);
+            }
+        }
 
         accept(Token.END);
 

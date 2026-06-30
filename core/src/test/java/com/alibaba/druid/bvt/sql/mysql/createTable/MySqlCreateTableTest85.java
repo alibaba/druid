@@ -21,10 +21,12 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlCreateTableTest85 extends MysqlTest {
+    @Test
     public void test_one() throws Exception {
         String sql = "create table `some table $$`(id int auto_increment key, class varchar(10), data binary) engine=MYISAM;";
 

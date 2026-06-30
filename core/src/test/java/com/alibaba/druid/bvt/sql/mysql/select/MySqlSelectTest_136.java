@@ -6,12 +6,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_136 extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT `tinyint_test` / `tinyint_1bit_test` = `mediumint_test` = `decimal_test` / `double_test`\n" +
                 "FROM `corona_one_db_one_tb`";

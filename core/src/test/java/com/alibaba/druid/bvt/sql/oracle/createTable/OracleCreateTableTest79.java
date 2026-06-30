@@ -19,12 +19,14 @@ import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleCreateTableTest79 extends OracleTest {
+    @Test
     public void test_types() throws Exception {
         String sql = //
                 "CREATE TABLE rules (id NUMBER(38) NOT NULL PRIMARY KEY, name varchar(200), plugin_rule_key varchar(200) NOT NULL, plugin_config_key varchar(200), plugin_name varchar(255) NOT NULL, description source, priority NUMBER(38), cardinality varchar(10), parent_id NUMBER(38), status varchar(40), language varchar(20), created_at TIMESTAMP, updated_at TIMESTAMP) ";

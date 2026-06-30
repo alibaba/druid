@@ -5,10 +5,12 @@ import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGBoxExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGPointExpr;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGExprParser;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class BoxTest extends PGTest {
+    @Test
     public void test_timestamp() throws Exception {
         String sql = "box '((0,0),(1,1))' + point '(2.0,0)'";
         PGExprParser parser = new PGExprParser(sql);

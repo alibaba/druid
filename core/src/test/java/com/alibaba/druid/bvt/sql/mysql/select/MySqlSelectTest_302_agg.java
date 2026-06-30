@@ -19,11 +19,13 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_302_agg
         extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT (CASE WHEN (`test4dmp`.`sum`(1) OVER (PARTITION BY 1) = 1) THEN 1 END) `case when sum(1) OVER (PARTITION BY 1 ) =1 then 1 end`\n" +
                 "FROM\n" +
@@ -38,6 +40,7 @@ public class MySqlSelectTest_302_agg
                 "FROM test", stmt.toString());
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "SELECT (CASE WHEN (`test4dmp`.`sum`(1) = 1) THEN 1 END) " +
                 "FROM\n" +
@@ -52,6 +55,7 @@ public class MySqlSelectTest_302_agg
                 "FROM test", stmt.toString());
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "SELECT sum(1) from " +
                 "  test";
@@ -63,6 +67,7 @@ public class MySqlSelectTest_302_agg
                 "FROM test", stmt.toString());
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = "SELECT db.sum(1) from " +
                 "  test";

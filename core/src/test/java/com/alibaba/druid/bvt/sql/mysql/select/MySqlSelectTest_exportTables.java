@@ -21,12 +21,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_exportTables extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "select *\n" +
                 "from my_table\n" +
@@ -59,6 +61,7 @@ public class MySqlSelectTest_exportTables extends MysqlTest {
         assertTrue(visitor.getTables().contains("my_table"));
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "SELECT * FROM table1 INNER JOIN table2 ON table1.id = table2.id;";
 

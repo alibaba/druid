@@ -9,4 +9,11 @@ public class StarRocksDuplicateKey extends SQLUnique implements SQLTableConstrai
     public void accept0(StarRocksASTVisitor v) {
         super.accept0(v);
     }
+
+    @Override
+    public StarRocksDuplicateKey clone() {
+        StarRocksDuplicateKey x = new StarRocksDuplicateKey();
+        cloneTo(x);
+        return x;
+    }
 }

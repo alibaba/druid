@@ -21,12 +21,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleCreateViewTest4 extends OracleTest {
+    @Test
     public void test_types() throws Exception {
         String sql = //
                 "  CREATE OR REPLACE FORCE VIEW \"SC_001\".\"V_001\" (\"OBJ_OWNER\", \"OBJ_NAME\", \"OBJ_TYPE\", \"OBJ_ROWID\", \"DB_USER\", \"SID\", \"LOCK_TYPE\", \"ROW_WAIT_FILE#\", \"ROW_WAIT_BLOCK#\", \"ROW_WAIT_ROW#\") AS \n" +

@@ -19,12 +19,14 @@ import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleCreateTableTest77 extends OracleTest {
+    @Test
     public void test_types() throws Exception {
         String sql = //
                 " CREATE OR REPLACE FORCE VIEW \"TPC_CPR\".\"TPC_CPR_ITEM_PRICE_V\" (\"CONTRACT_HEADER_ID\", \"CONTRACT_NUMBER\", \"CONTRACT_PRODUCT_ID\", \"PROD_ID\", \"PROD_DES\", \"MI\", \"CONTRACT_DEVICE_ID\", \"DEV_ID\", \"DEV_DES\", \"SITE_ID\", \"SITE_QUANTITY\", \"SITE_DES\", \"CONTRACT_MODULE_ID\", \"MOD_ID\", \"MOD_DES\", \"MODULE_QUANTITY\", \"CONTRACT_ITEM_ID\", \"ITEM_ID\", \"ITEM_DES\", \"ITEM_TYPE\", \"ITEM_QUANTITY\", \"HARD_PARAM\", \"SOFT_PARAM\", \"MAKE_PARAM\", \"RISK_PARAM\", \"SOFT_COST_PARAM\", \"PROD_MANAGER\", \"COST_PRICE04\", \"CONFIRM_ITEM_PARAM\", \"CONFIRM_FLAG04\", \"COST_PRICE\", \"COST_PRICE_PARAMETER\", \"OLD_COST\", \"LIST_PRICE\", \"ITEM_CODE\", \"CONFIRM_COST_PRICE04\", \"PROD_ATTRIBUTE_ID\", \"ITEM_CHIP\") AS \n" +

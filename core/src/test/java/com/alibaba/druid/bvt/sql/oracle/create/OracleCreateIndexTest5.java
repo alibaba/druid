@@ -20,12 +20,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleCreateIndexTest5 extends OracleTest {
+    @Test
     public void test_0() throws Exception {
         String sql = //
                 " CREATE UNIQUE INDEX \"FINANCE\".\"SYS_IOT_TOP_179872\" on \"FINANCE\".\"SYS_JOURNAL_179871\"(\"C0\",\"RID\") INDEX ONLY TOPLEVEL TABLESPACE \"FINANCE\" STORAGE( BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT) NOPARALLEL ;";

@@ -22,12 +22,14 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_109_alias extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "\n" +
                 "select * from t where op_date = date_format(DATE_ADD('2017-12-27', Interval -1 year), \"%Y-%m-%d 00:00:00\")";

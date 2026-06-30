@@ -15,22 +15,28 @@
  */
 package com.alibaba.druid.bvt.sql.mysql.param;
 
+import org.junit.jupiter.api.Test;
+
 public class MySqlParameterizedOutputVisitorTest extends MySQLParameterizedTest {
+    @Test
     public void test_0() throws Exception {
         validate("SELECT * FROM T WHERE ID IN (?, ?, ?)", "SELECT *\nFROM T\nWHERE ID IN (?)");
         paramaterizeAST("SELECT * FROM T WHERE ID IN (?, ?, ?)", "SELECT *\nFROM T\nWHERE ID IN (?, ?, ?)");
     }
 
+    @Test
     public void test_1() throws Exception {
         validate("SELECT * FROM T WHERE ID = 5", "SELECT *\nFROM T\nWHERE ID = ?");
         paramaterizeAST("SELECT * FROM T WHERE ID = 5", "SELECT *\nFROM T\nWHERE ID = ?");
     }
 
+    @Test
     public void test_2() throws Exception {
         validate("SELECT * FROM T WHERE 1 = 0 AND ID = 5", "SELECT *\nFROM T\nWHERE 1 = 0\n\tAND ID = ?");
         paramaterizeAST("SELECT * FROM T WHERE 1 = 0 AND ID = 5", "SELECT *\nFROM T\nWHERE ? = ?\n\tAND ID = ?");
     }
 
+    @Test
     public void test_3() throws Exception {
         validate("SELECT * FROM T WHERE ID = ? OR ID = ?", "SELECT *\nFROM T\nWHERE ID = ?");
         validate("SELECT * FROM T WHERE A.ID = ? OR A.ID = ?", "SELECT *\nFROM T\nWHERE A.ID = ?");

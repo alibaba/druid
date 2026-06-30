@@ -111,7 +111,21 @@ public class SQLDeclareItem extends SQLObjectImpl implements SQLObjectWithDataTy
     }
 
     public void setTableElementList(List<SQLTableElement> tableElementList) {
+        if (tableElementList != null) {
+            for (SQLTableElement element : tableElementList) {
+                if (element != null) {
+                    element.setParent(this);
+                }
+            }
+        }
         this.tableElementList = tableElementList;
+    }
+
+    public void addTableElement(SQLTableElement element) {
+        if (element != null) {
+            element.setParent(this);
+            this.tableElementList.add(element);
+        }
     }
 
     public enum Type {

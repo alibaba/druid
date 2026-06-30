@@ -19,6 +19,7 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
@@ -26,6 +27,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_mtr
         extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT 1 FROM ((SELECT 2) LIMIT 1) AS res; ";
 
@@ -39,6 +41,7 @@ public class MySqlSelectTest_mtr
                 ") res;", stmt.toString());
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "SELECT if(1, NULL, (SELECT min('hello')));  ";
 
@@ -50,6 +53,7 @@ public class MySqlSelectTest_mtr
                 "\t));", stmt.toString());
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "SELECT (SELECT COUNT(DISTINCT func_group_t1_36.b)) FROM func_group_t1_36 GROUP BY func_group_t1_36.a;  ";
 
@@ -63,6 +67,7 @@ public class MySqlSelectTest_mtr
                 "GROUP BY func_group_t1_36.a;", stmt.toString());
     }
 
+    @Test
     public void test_utf32_0() throws Exception {
         String sql = "select _utf32 0x000000610000006200000063, _utf32 X'0000042100000422' ";
 
@@ -72,6 +77,7 @@ public class MySqlSelectTest_mtr
         assertEquals("SELECT 'abc', 'СТ'", stmt.toString());
     }
 
+    @Test
     public void test_utf32_1() throws Exception {
         String sql = "SELECT * FROM ctype_utf32_uca_t1_3 WHERE c LIKE _utf32 0x0000039C00000025 COLLATE utf32_unicode_ci;";
 
@@ -83,6 +89,7 @@ public class MySqlSelectTest_mtr
                 "WHERE c LIKE 'Μ%' COLLATE utf32_unicode_ci;", stmt.toString());
     }
 
+    @Test
     public void test_utf32_2() throws Exception {
         String sql = "SELECT hex(RPAD(_utf32 X'0420',10,_utf32 X'0000042100000422'));";
 
@@ -92,6 +99,7 @@ public class MySqlSelectTest_mtr
         assertEquals("SELECT hex(RPAD('Р', 10, 'СТ'));", stmt.toString());
     }
 
+    @Test
     public void test_utf8_0() throws Exception {
         String sql = "select _utf8 0xD0B0D0B2D0B2, _utf8 X'D0B0D0B2D0B2', _utf8 'D0B0D0B2D0B2'";
 
@@ -101,6 +109,7 @@ public class MySqlSelectTest_mtr
         assertEquals("SELECT 'авв', 'авв', _utf8 'D0B0D0B2D0B2'", stmt.toString());
     }
 
+    @Test
     public void test_utf8_1() throws Exception {
         String sql = "select length(_utf8 0xD0B0D0B2D0B2), length(_utf8 X'D0B0D0B2D0B2'), length(_utf8 'D0B0D0B2D0B2')";
 
@@ -111,6 +120,7 @@ public class MySqlSelectTest_mtr
                 "\t, length(_utf8 'D0B0D0B2D0B2')", stmt.toString());
     }
 
+    @Test
     public void test_utf8_2() throws Exception {
         String sql = "select length(_utf8mb4 0xD0B1), bit_length(_utf8mb4 0xD0B1), char_length(_utf8mb4 0xD0B1);";
 
@@ -121,6 +131,7 @@ public class MySqlSelectTest_mtr
                 "\t, char_length('б');", stmt.toString());
     }
 
+    @Test
     public void test_utf16_0() throws Exception {
         String sql = "select _utf16 0x039C0025, _utf16 X'039C0025', _utf16 '039C0025'";
 
@@ -130,6 +141,7 @@ public class MySqlSelectTest_mtr
         assertEquals("SELECT _utf16 x'039C0025', _utf16 x'039C0025', _utf16 x'3033394330303235'", stmt.toString());
     }
 
+    @Test
     public void test_utf16_1() throws Exception {
         String sql = "select length(_utf16 0x039C0025), length(_utf16 X'039C0025')";
 
@@ -139,6 +151,7 @@ public class MySqlSelectTest_mtr
         assertEquals("SELECT length('Μ%'), length('Μ%')", stmt.toString());
     }
 
+    @Test
     public void test_ucs2_0() throws Exception {
         String sql = "select _ucs2 0x00e400e50068, _ucs2 X'00e400e50068', _ucs2 'ab'";
 
@@ -148,6 +161,7 @@ public class MySqlSelectTest_mtr
         assertEquals("SELECT _utf16 x'00e400e50068', _utf16 x'00e400e50068', _utf16 x'6162'", stmt.toString());
     }
 
+    @Test
     public void test_gbk_0() throws Exception {
         String sql = "select _gbk 0xA14041, _gbk X'A14041'";
 
@@ -157,6 +171,7 @@ public class MySqlSelectTest_mtr
         assertEquals("SELECT '\uE4C6A', '\uE4C6A'", stmt.toString());
     }
 
+    @Test
     public void test_gbk_1() throws Exception {
         String sql = "select length(_gbk 0xA14041), length(_gbk X'A14041')";
 
@@ -166,6 +181,7 @@ public class MySqlSelectTest_mtr
         assertEquals("SELECT length('\uE4C6A'), length('\uE4C6A')", stmt.toString());
     }
 
+    @Test
     public void test_big5_0() throws Exception {
         String sql = "select _big5 0xA4A4B5D8A5C1B0EA, _big5 X'A4A4B5D8A5C1B0EA', _big5 'A4A4B5D8A5C1B0EA'";
 
@@ -175,6 +191,7 @@ public class MySqlSelectTest_mtr
         assertEquals("SELECT '中華民國', '中華民國', _big5 'A4A4B5D8A5C1B0EA'", stmt.toString());
     }
 
+    @Test
     public void test_big5_1() throws Exception {
         String sql = "select length(_big5 0xA4A4B5D8A5C1B0EA), length(_big5 X'A4A4B5D8A5C1B0EA'), length(_big5 'A4A4B5D8A5C1B0EA')";
 
@@ -185,6 +202,7 @@ public class MySqlSelectTest_mtr
                 "\t, length(_big5 'A4A4B5D8A5C1B0EA')", stmt.toString());
     }
 
+    @Test
     public void test_4() throws Exception {
         String sql = "select {fn length(\"hello\")}, { date \"1997-10-20\" };  ";
 
@@ -194,6 +212,7 @@ public class MySqlSelectTest_mtr
         assertEquals("SELECT length('hello'), DATE '1997-10-20';", stmt.toString());
     }
 
+    @Test
     public void test_5() throws Exception {
         String sql = "select 'a' union select concat('a', -'3');";
 
@@ -205,6 +224,7 @@ public class MySqlSelectTest_mtr
                 "SELECT concat('a', -'3');", stmt.toString());
     }
 
+    @Test
     public void test_6() throws Exception {
         String sql = "select * from fulltext_t1_0 where MATCH(a,b) AGAINST (\"collections\" WITH QUERY EXPANSION);\n" +
                 "select * from fulltext_t1_0 where MATCH(a,b) AGAINST (\"indexes\" WITH QUERY EXPANSION);\n" +
@@ -296,6 +316,7 @@ public class MySqlSelectTest_mtr
                 "\n", builder.toString());
     }
 
+    @Test
     public void test_7() throws Exception {
         String sql = "select sql_buffer_result distinct distinct a from gis_split_inf_t_0 where a =1  ;\n" +
                 "SELECT SQL_BIG_RESULT DISTINCT f1 FROM ctype_uca_t1_14;\n" +
@@ -352,6 +373,7 @@ public class MySqlSelectTest_mtr
                 "\n", builder.toString());
     }
 
+    @Test
     public void test_8() throws Exception {
         String sql = "SELECT COUNT(*) FROM   (SELECT * FROM 16k_t1_30 FORCE INDEX (idx,PRIMARY)      WHERE a BETWEEN 2 AND 7 OR pk=1000000) AS t;";
 
@@ -373,6 +395,7 @@ public class MySqlSelectTest_mtr
                 "\n", builder.toString());
     }
 
+    @Test
     public void test_9() throws Exception {
         String sql = "select 1 + /*!00000 2 */ + 3 /*!99999 noise*/ + 4;\n" +
                 "SELECT 100 + /*  + shouldn't fail */ 1 AS result;\n" +
@@ -436,6 +459,7 @@ public class MySqlSelectTest_mtr
                 "\n", builder.toString());
     }
 
+    @Test
     public void test_10() throws Exception {
         String sql = "select create_1ea10_7.1a20,1e+ 1e+10 from create_1ea10_7;";
 
@@ -452,6 +476,7 @@ public class MySqlSelectTest_mtr
                 "\n", builder.toString());
     }
 
+    @Test
     public void test_11() throws Exception {
         String sql = "select join_outer_t1_0.*,join_outer_t2_1.* from { oj join_outer_t2_1 left outer join join_outer_t1_0 on (join_outer_t1_0.a=join_outer_t2_1.a) };\n" +
                 "select join_outer_t1_0.*,join_outer_t2_1.* from join_outer_t1_0 as t0,{ oj join_outer_t2_1 left outer join join_outer_t1_0 on (join_outer_t1_0.a=join_outer_t2_1.a) } WHERE t0.a=2;\n" +

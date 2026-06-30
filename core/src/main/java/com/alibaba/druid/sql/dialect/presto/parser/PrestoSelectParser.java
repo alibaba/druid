@@ -75,7 +75,9 @@ public class PrestoSelectParser extends SQLSelectParser {
 
         if (lexer.token() == Token.TABLE) {
             lexer.nextToken();
-            queryBlock.getSelectList().add(new SQLSelectItem(new SQLAllColumnExpr()));
+            SQLSelectItem allColumnSelectItem = new SQLSelectItem(new SQLAllColumnExpr());
+            allColumnSelectItem.setParent(queryBlock);
+            queryBlock.getSelectList().add(allColumnSelectItem);
             queryBlock.setFrom(parseTableSource());
             return queryRest(queryBlock, acceptUnion);
         }

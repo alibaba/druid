@@ -20,12 +20,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleInsertTest2 extends OracleTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "INSERT INTO employees " +
                 "      (employee_id, last_name, email, hire_date, job_id, salary)" +
@@ -62,6 +64,7 @@ public class OracleInsertTest2 extends OracleTest {
         assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "BEGIN\n" +
                 "\tINSERT INTO employees (first_name, last_name, job_title)\n" +
@@ -95,6 +98,7 @@ public class OracleInsertTest2 extends OracleTest {
         assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "employee_id")));
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "SELECT employee_id, TO_CHAR(TRIM(LEADING 0 FROM hire_date))\n" +
                 "FROM employees\n" +

@@ -5,12 +5,14 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_179 extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT zip(ARRAY[1, 2], ARRAY['1b', null, '3b'])";
 
@@ -22,6 +24,7 @@ public class MySqlSelectTest_179 extends MysqlTest {
         assertEquals("SELECT zip(ARRAY[1, 2], ARRAY['1b', NULL, '3b'])", stmt.toString());
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "SELECT transform(ARRAY [], x -> x + 1);";
 
@@ -33,6 +36,7 @@ public class MySqlSelectTest_179 extends MysqlTest {
         assertEquals("SELECT transform(ARRAY[], x -> x + 1);", stmt.toString());
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "SELECT reduce(ARRAY [5, 20, NULL, 50], 0, (s, x) -> IF(x IS NULL, s, s + x), s -> s);";
 

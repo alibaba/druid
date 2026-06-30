@@ -21,12 +21,14 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_228 extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT *\n" +
                 "FROM (\n" +
@@ -54,6 +56,7 @@ public class MySqlSelectTest_228 extends MysqlTest {
                 ") x", stmt.toString());
     }
 
+    @Test
     public void test_genAlias() throws Exception {
         String sql = "select pk, '1024', varchar_test from select_base_one_one_db_one_tb order by pk limit 10";
         SQLStatement stmt = SQLUtils.parseSingleStatement(sql, DbType.mysql, SQLParserFeature.SelectItemGenerateAlias);
@@ -63,12 +66,14 @@ public class MySqlSelectTest_228 extends MysqlTest {
                 "LIMIT 10", stmt.toString());
     }
 
+    @Test
     public void test_genAlias2() throws Exception {
         String sql = "SELECT json_size('{\"x\": {\"a\": 1, \"b\": 2}}', '$.x')\n";
         SQLStatement stmt = SQLUtils.parseSingleStatement(sql, DbType.mysql, SQLParserFeature.SelectItemGenerateAlias);
         assertEquals("SELECT json_size('{\"x\": {\"a\": 1, \"b\": 2}}', '$.x') AS `json_size('{\"x\": {\"a\": 1, \"b\": 2}}', '$.x')`", stmt.toString());
     }
 
+    @Test
     public void test_genAlias3() throws Exception {
         String sql = "select cardinality(regexp_extract_all('test', '\"meid\":\"'));";
         SQLStatement stmt = SQLUtils.parseSingleStatement(sql, DbType.mysql, SQLParserFeature.SelectItemGenerateAlias);

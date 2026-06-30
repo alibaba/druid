@@ -70,6 +70,37 @@ public class CKCreateTableStatement extends SQLCreateTableStatement {
     }
 
     @Override
+    public CKCreateTableStatement clone() {
+        CKCreateTableStatement x = new CKCreateTableStatement();
+        cloneTo(x);
+        return x;
+    }
+
+    public void cloneTo(CKCreateTableStatement x) {
+        super.cloneTo(x);
+
+        for (SQLAssignItem item : settings) {
+            SQLAssignItem item2 = item.clone();
+            item2.setParent(x);
+            x.settings.add(item2);
+        }
+
+        if (primaryKey != null) {
+            x.setPrimaryKey((SQLPrimaryKey) primaryKey.clone());
+        }
+
+        if (sampleBy != null) {
+            x.setSampleBy(sampleBy.clone());
+        }
+
+        if (ttl != null) {
+            x.setTtl(ttl.clone());
+        }
+
+        x.onClusterName = onClusterName;
+    }
+
+    @Override
     protected void accept0(SQLASTVisitor v) {
         if (v instanceof CKASTVisitor) {
             CKASTVisitor vv = (CKASTVisitor) v;

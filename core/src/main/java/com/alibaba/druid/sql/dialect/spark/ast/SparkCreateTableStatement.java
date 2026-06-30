@@ -72,6 +72,37 @@ public class SparkCreateTableStatement extends HiveCreateTableStatement {
         return datasource;
     }
 
+    public void cloneTo(SparkCreateTableStatement x) {
+        super.cloneTo(x);
+        for (SQLAssignItem item : mappedBy) {
+            SQLAssignItem item2 = item.clone();
+            item2.setParent(x);
+            x.mappedBy.add(item2);
+        }
+        for (SQLExpr item : skewedBy) {
+            x.addSkewedBy(item.clone());
+        }
+        for (SQLExpr item : skewedByOn) {
+            x.addSkewedByOn(item.clone());
+        }
+        for (Map.Entry<String, SQLObject> entry : serdeProperties.entrySet()) {
+            SQLObject entryValue = entry.getValue().clone();
+            entryValue.setParent(x);
+            x.serdeProperties.put(entry.getKey(), entryValue);
+        }
+        if (datasource != null) {
+            x.datasource = datasource.clone();
+            x.datasource.setParent(x);
+        }
+    }
+
+    @Override
+    public SparkCreateTableStatement clone() {
+        SparkCreateTableStatement x = new SparkCreateTableStatement();
+        cloneTo(x);
+        return x;
+    }
+
     protected void accept0(SQLASTVisitor v) {
         if (v instanceof SparkASTVisitor) {
             accept0((SparkASTVisitor) v);

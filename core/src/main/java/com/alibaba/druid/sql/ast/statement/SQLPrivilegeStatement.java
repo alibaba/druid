@@ -77,6 +77,14 @@ public abstract class SQLPrivilegeStatement extends SQLStatementImpl {
         return privileges;
     }
 
+    public void addPrivilege(SQLPrivilegeItem privilege) {
+        if (privilege == null) {
+            return;
+        }
+        privilege.setParent(this);
+        this.privileges.add(privilege);
+    }
+
     public SQLObjectType getResourceType() {
         return resourceType;
     }

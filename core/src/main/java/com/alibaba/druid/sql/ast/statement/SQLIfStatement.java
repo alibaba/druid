@@ -29,6 +29,11 @@ public class SQLIfStatement extends SQLStatementImpl implements SQLReplaceable {
 
     public SQLIfStatement clone() {
         SQLIfStatement x = new SQLIfStatement();
+        cloneTo(x);
+
+        if (condition != null) {
+            x.setCondition(condition.clone());
+        }
 
         for (SQLStatement stmt : statements) {
             SQLStatement stmt2 = stmt.clone();
@@ -180,6 +185,7 @@ public class SQLIfStatement extends SQLStatementImpl implements SQLReplaceable {
                 stmt2.setParent(x);
                 x.statements.add(stmt2);
             }
+            x.setConcatenated(isConcatenated);
 
             return x;
         }

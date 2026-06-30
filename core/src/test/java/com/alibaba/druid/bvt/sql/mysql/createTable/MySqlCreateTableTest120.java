@@ -5,12 +5,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlCreateTableTest120 extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "CREATE TABLE sal_emp (\n" +
                 "    name            int auto_increment unit count 2 index 1 step 0,\n" +
@@ -31,6 +33,7 @@ public class MySqlCreateTableTest120 extends MysqlTest {
                 ");", stmt.toString());
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "CREATE TABLE sal_emp (\n" +
                 "\tname int PRIMARY KEY AUTO_INCREMENT UNIT COUNT 666 INDEX 8 STEP 11110,\n" +
@@ -51,6 +54,7 @@ public class MySqlCreateTableTest120 extends MysqlTest {
                 ");", stmt.toString());
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "CREATE TABLE sal_emp (\n" +
                 "\tname int AUTO_INCREMENT UNIT COUNT 666 INDEX 8 STEP 11110,\n" +
@@ -73,6 +77,7 @@ public class MySqlCreateTableTest120 extends MysqlTest {
                 ");", stmt.toString());
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = "CREATE TABLE `sch1`.`sal_emp` (\n" +
                 "\tname int AUTO_INCREMENT UNIT COUNT 666 INDEX 8 STEP 11110,\n" +

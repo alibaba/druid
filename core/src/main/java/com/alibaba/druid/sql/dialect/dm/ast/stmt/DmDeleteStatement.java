@@ -26,4 +26,11 @@ public class DmDeleteStatement extends SQLDeleteStatement {
         }
         visitor.endVisit(this);
     }
+
+    @Override
+    public DmDeleteStatement clone() {
+        DmDeleteStatement x = new DmDeleteStatement();
+        cloneTo(x);
+        return x;
+    }
 }

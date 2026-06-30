@@ -290,6 +290,18 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         print0(value);
     }
 
+    /**
+     * Terminate a pending end-of-line comment with a newline before more output is appended.
+     * Without this, content emitted through the non-char print paths is glued onto the same line
+     * as a {@code -- } / {@code # } comment and silently swallowed on the next parse.
+     * Callers must invoke this only after confirming {@link #appender} is non-null.
+     */
+    protected void flushEndLineComment() {
+        if (endLineComment) {
+            println();
+        }
+    }
+
     protected final void print0(char value) {
         if (this.appender == null) {
             return;
@@ -302,6 +314,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (this.appender == null) {
             return;
         }
+        flushEndLineComment();
 
         appender.append(value);
     }
@@ -310,6 +323,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (this.appender == null) {
             return;
         }
+        flushEndLineComment();
 
         appender.append(value);
     }
@@ -318,6 +332,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (this.appender == null) {
             return;
         }
+        flushEndLineComment();
 
         appender.append(value);
     }
@@ -326,6 +341,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (this.appender == null) {
             return;
         }
+        flushEndLineComment();
 
         appender.append(value);
     }
@@ -365,6 +381,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (appender == null) {
             return;
         }
+        flushEndLineComment();
 
         this.appender.append(text);
     }
@@ -377,6 +394,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (appender == null || name.isEmpty()) {
             return;
         }
+        flushEndLineComment();
 
         SQLDialect dialect = this.dialect;
         char quote = '"';
@@ -470,7 +488,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         for (int i = 0; i < nodes.size(); i++) {
             if (i != 0) {
                 if (needPrintLine) {
-                    print0(',');
+                    print(',');
                     println();
                 } else {
                     print0(", ");
@@ -3791,11 +3809,34 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         x.getTableSource().accept(this);
 
+        // tableOptions / WITH LABEL / BY NAME are StarRocks(-family) INSERT syntax stored on the shared
+        // SQLInsertInto base; only emit them for a StarRocks/Doris statement so they don't leak into
+        // other dialects. Gate on the statement's own dbType (the visitor's dbType is null for the
+        // generic toString() path that a StarRocks INSERT INTO FILES round-trip relies on).
+        DbType stmtDbType = x.getDbType();
+        boolean starRocksInsert = stmtDbType == DbType.starrocks || stmtDbType == DbType.doris;
+
+        if (starRocksInsert && x.getTableOptions() != null && !x.getTableOptions().isEmpty()) {
+            print0("(");
+            printAndAccept(x.getTableOptions(), ", ");
+            print0(")");
+        }
+
+        if (starRocksInsert && x.getLabel() != null) {
+            print0(ucase ? " WITH LABEL " : " with label ");
+            x.getLabel().accept(this);
+        }
+
         if (x.getPartitions() != null && !x.getPartitions().isEmpty()) {
             print0(ucase ? " PARTITION (" : " partition (");
             printAndAccept(x.getPartitions(), ", ");
             print(')');
         }
+
+        if (starRocksInsert && x.isByName()) {
+            print0(ucase ? " BY NAME" : " by name");
+        }
+
         String columnsString = x.getColumnsString();
         if (columnsString != null) {
             print0(columnsString);
@@ -6365,6 +6406,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print0(ucase ? " NOT ENFORCED" : " not enforced");
         }
 
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLAlterTableSwap x) {
+        print0(ucase ? "SWAP WITH " : "swap with ");
+        x.getName().accept(this);
         return false;
     }
 
@@ -9308,10 +9356,20 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         x.getName().accept(this);
 
+        if (x.isForce()) {
+            print0(ucase ? " FORCE" : " force");
+        }
+
         if (x.isWithNoData()) {
             print0(ucase ? " WITH NO DATA" : " with no data");
         } else if (x.isWithData()) {
             print0(ucase ? " WITH DATA" : " with data");
+        }
+
+        if (x.isSyncMode()) {
+            print0(ucase ? " WITH SYNC MODE" : " with sync mode");
+        } else if (x.isAsyncMode()) {
+            print0(ucase ? " WITH ASYNC MODE" : " with async mode");
         }
 
         return false;
@@ -12527,6 +12585,25 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         println();
         print(ucase ? "RETURN " : "return ");
         returnDataType.accept(this);
+    }
+
+    public boolean visit(SQLLambdaExpr x) {
+        List<SQLExpr> arguments = x.getArguments();
+        if (arguments.size() == 1) {
+            arguments.get(0).accept(this);
+        } else {
+            print('(');
+            for (int i = 0; i < arguments.size(); i++) {
+                if (i != 0) {
+                    print0(", ");
+                }
+                arguments.get(i).accept(this);
+            }
+            print(')');
+        }
+        print0(" -> ");
+        x.getExpr().accept(this);
+        return false;
     }
 
     @Override

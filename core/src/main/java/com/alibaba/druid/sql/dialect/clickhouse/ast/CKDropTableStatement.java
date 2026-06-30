@@ -25,6 +25,14 @@ public class CKDropTableStatement extends SQLDropTableStatement {
     }
 
     @Override
+    public CKDropTableStatement clone() {
+        CKDropTableStatement x = new CKDropTableStatement(getDbType());
+        super.cloneTo(x);
+        x.onClusterName = onClusterName;
+        return x;
+    }
+
+    @Override
     protected void accept0(SQLASTVisitor v) {
         if (v instanceof CKASTVisitor) {
             CKASTVisitor vv = (CKASTVisitor) v;

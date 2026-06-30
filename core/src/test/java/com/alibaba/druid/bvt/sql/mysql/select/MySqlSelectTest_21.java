@@ -19,12 +19,14 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_21 extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "select * from order where a=1 order by b";
 
@@ -49,6 +51,7 @@ public class MySqlSelectTest_21 extends MysqlTest {
         assertEquals(1, visitor.getOrderByColumns().size());
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "select order from t where a=1 order by b";
 

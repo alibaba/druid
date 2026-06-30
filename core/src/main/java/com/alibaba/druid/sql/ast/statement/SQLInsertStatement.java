@@ -55,6 +55,8 @@ public class SQLInsertStatement extends SQLInsertInto implements SQLStatement {
             this.acceptChild(visitor, columns);
             this.acceptChild(visitor, valuesList);
             this.acceptChild(visitor, query);
+            this.acceptChild(visitor, tableOptions);
+            this.acceptChild(visitor, label);
         }
 
         visitor.endVisit(this);
@@ -69,6 +71,12 @@ public class SQLInsertStatement extends SQLInsertInto implements SQLStatement {
         children.addAll(this.valuesList);
         if (query != null) {
             children.add(query);
+        }
+        if (tableOptions != null) {
+            children.addAll(tableOptions);
+        }
+        if (label != null) {
+            children.add(label);
         }
 
         return children;
@@ -94,7 +102,7 @@ public class SQLInsertStatement extends SQLInsertInto implements SQLStatement {
         public ValuesClause clone() {
             ValuesClause x = new ValuesClause(new ArrayList<SQLExpr>(this.values.size()));
             for (Object v : values) {
-                x.addValue(v);
+                x.addValue(v instanceof SQLExpr ? ((SQLExpr) v).clone() : v);
             }
             return x;
         }

@@ -10,6 +10,7 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.repository.SchemaRepository;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Types;
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlCreateTableTest115 extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "CREATE TABLE IF NOT EXISTS `schema`.`Employee` (\n" +
                 "   id int(10),\n" +
@@ -66,7 +68,7 @@ public class MySqlCreateTableTest115 extends MysqlTest {
                 "\t`idAddresses` VARCHAR(45) NULL,\n" +
                 "\tPRIMARY KEY (`Employee_id`),\n" +
                 "\tINDEX `employee_id` USING BTREE(id(5)),\n" +
-                "\tFOREIGN KEY `fkEmployee_Addresses` (`idAddresses`) REFERENCES `schema`.`Addresses` (`idAddresses`) ON DELETE NO ACTION ON UPDATE NO ACTION\n" +
+                "\tCONSTRAINT `fkEmployee_Addresses` FOREIGN KEY `fkEmployee_Addresses` (`idAddresses`) REFERENCES `schema`.`Addresses` (`idAddresses`) ON DELETE NO ACTION ON UPDATE NO ACTION\n" +
                 ") ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_bin", stmt.clone().toString());
 
         SchemaRepository repository = new SchemaRepository(DbType.mysql);
@@ -78,7 +80,7 @@ public class MySqlCreateTableTest115 extends MysqlTest {
                 "\t`idAddresses` VARCHAR(45) NULL,\n" +
                 "\tPRIMARY KEY (`Employee_id`),\n" +
                 "\tINDEX `employee_id` USING BTREE(id(5)),\n" +
-                "\tFOREIGN KEY `fkEmployee_Addresses` (`idAddresses`) REFERENCES `schema`.`Addresses` (`idAddresses`) ON DELETE NO ACTION ON UPDATE NO ACTION\n" +
+                "\tCONSTRAINT `fkEmployee_Addresses` FOREIGN KEY `fkEmployee_Addresses` (`idAddresses`) REFERENCES `schema`.`Addresses` (`idAddresses`) ON DELETE NO ACTION ON UPDATE NO ACTION\n" +
                 ") ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_bin", repository
                 .findTable("Employee")
                 .getStatement()

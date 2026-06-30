@@ -128,7 +128,7 @@ public class SQLSelect extends SQLObjectImpl implements SQLDbTypedObject {
     protected void accept0(SQLASTVisitor v) {
         if (v.visit(this)) {
             if (withSubQuery != null) {
-                withSubQuery.accept0(v);
+                withSubQuery.accept(v);
             }
 
             if (this.query != null) {
@@ -189,6 +189,7 @@ public class SQLSelect extends SQLObjectImpl implements SQLDbTypedObject {
 
         if (withSubQuery != null) {
             x.withSubQuery = withSubQuery.clone();
+            x.withSubQuery.setParent(x);
         }
 
         if (query != null) {

@@ -46,6 +46,9 @@ public class SQLDeleteStatement extends SQLStatementImpl implements SQLReplaceab
 
     protected void cloneTo(SQLDeleteStatement x) {
         if (headHints != null) {
+            if (x.headHints == null) {
+                x.headHints = new ArrayList<SQLCommentHint>();
+            }
             for (SQLCommentHint h : headHints) {
                 SQLCommentHint h2 = h.clone();
                 h2.setParent(x);
@@ -70,6 +73,8 @@ public class SQLDeleteStatement extends SQLStatementImpl implements SQLReplaceab
             x.setUsing(using.clone());
         }
         x.only = only;
+        x.dbType = dbType;
+        x.afterSemi = afterSemi;
     }
 
     public SQLDeleteStatement clone() {

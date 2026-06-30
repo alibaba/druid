@@ -22,12 +22,14 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleCreateViewTest6 extends OracleTest {
+    @Test
     public void test_types() throws Exception {
         String sql = //
                 "   CREATE OR REPLACE FORCE VIEW \"SC_001\".\"TV_001\" (\"ID\", \"GMT_CREATE\", \"CREATOR\", \"GMT_MODIFIED\", \"MODIFIER\", \"IS_DELETED\", \"CONTRACT_PARTY\", \"COMPANY_NAME\", \"PRODUCT_TYPE\", \"PERIOD\", \"JOIN\", \"OVER\", \"CONTRACT_TERM\", \"CONTRACT_CASH\", \"EXEC_CASH\", \"CANCELED_CASH\", \"RECEIVERD_CASH\", \"O_S_CASH\", \"REMARK\", \"FENTAN_CHECK\", \"TOTAL_CASH\", \"NOT_CONFIRMED\", \"PRE_RECEIVED\", \"NOT_RECEIVED\", \"CONTRACT_DATE\", \"OWNER_1\", \"AREA_ID_1\", \"FIRST_OWNER\", \"FIRST_AREA_ID\", \"CONTRACT_ID\", \"IS_RENEW_UPGRADE\", \"CATEGORY_ID_1\", \"CATEGORY_ID_2\", \"FIRST_RECEIPT_DATE\", \"RECEIPT_REMARK\", \"CONTRACT_SERIAL\", \"IS_MERGED\") AS \n" +

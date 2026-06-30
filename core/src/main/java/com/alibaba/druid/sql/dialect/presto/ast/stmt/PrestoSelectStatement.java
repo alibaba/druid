@@ -16,10 +16,13 @@
 package com.alibaba.druid.sql.dialect.presto.ast.stmt;
 
 import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.presto.visitor.PrestoASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
+import java.util.ArrayList;
 
 /**
  * presto 的 select语句
@@ -47,5 +50,26 @@ public class PrestoSelectStatement extends SQLSelectStatement implements PrestoS
 
     public void accept0(PrestoASTVisitor visitor) {
         super.accept0(visitor);
+    }
+
+    @Override
+    public PrestoSelectStatement clone() {
+        PrestoSelectStatement x = new PrestoSelectStatement();
+        x.dbType = dbType;
+        x.afterSemi = afterSemi;
+        if (select != null) {
+            x.setSelect(select.clone());
+        }
+        if (headHints != null) {
+            for (SQLCommentHint h : headHints) {
+                SQLCommentHint h2 = h.clone();
+                h2.setParent(x);
+                if (x.headHints == null) {
+                    x.headHints = new ArrayList<SQLCommentHint>(headHints.size());
+                }
+                x.headHints.add(h2);
+            }
+        }
+        return x;
     }
 }

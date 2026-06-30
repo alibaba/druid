@@ -278,6 +278,13 @@ public class TDDLHint extends SQLCommentHint {
         return type;
     }
 
+    @Override
+    public TDDLHint clone() {
+        // The TDDLHint(String) ctor re-parses the hint text and rebuilds functions/json/type, so this
+        // both preserves the runtime type (was type-slicing to SQLCommentHint) and restores parsed state.
+        return new TDDLHint(getText());
+    }
+
     public static class Function {
         private final String name;
         private final List<Argument> arguments = new ArrayList<Argument>();

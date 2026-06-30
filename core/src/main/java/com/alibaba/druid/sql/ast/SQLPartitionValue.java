@@ -69,6 +69,8 @@ public class SQLPartitionValue extends OracleSegmentAttributesImpl {
     public SQLPartitionValue clone() {
         SQLPartitionValue x = new SQLPartitionValue(operator);
 
+        cloneTo(x);
+
         for (SQLExpr item : items) {
             SQLExpr item2 = item.clone();
             item2.setParent(x);

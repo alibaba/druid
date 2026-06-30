@@ -22,12 +22,14 @@ import com.alibaba.druid.sql.dialect.db2.parser.DB2StatementParser;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DB2SelectTest_10 extends DB2Test {
+    @Test
     public void test_0() throws Exception {
         String sql = "select * from ( select inner2_.*, rownumber() over(order by order of inner2_) as rownumber_ from ("
                 + "     select tsuserstb0_.USERID as USERID1_1_, tsuserstb0_.CREASTAF as CREASTAF2_1_, tsuserstb0_.CREATIME as CREATIME3_1_"

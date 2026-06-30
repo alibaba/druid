@@ -20,11 +20,13 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_300_genAlias
         extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT `current_date`(), `current_timestamp`(), `current_time`(), `localtime`(), `localtimestamp`()";
 
@@ -34,6 +36,7 @@ public class MySqlSelectTest_300_genAlias
         assertEquals("SELECT `current_date`() AS ```current_date``()`, `current_timestamp`() AS ```current_timestamp``()`, `current_time`() AS ```current_time``()`, `localtime`() AS ```localtime``()`, `localtimestamp`() AS ```localtimestamp``()`", stmt.toString());
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "select count(*)  from `aa_lineitem`";
 
@@ -44,6 +47,7 @@ public class MySqlSelectTest_300_genAlias
                 "FROM `aa_lineitem`", stmt.toString());
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "DELETE FROM t1\n" +
                 "WHERE s11 > ANY\n" +

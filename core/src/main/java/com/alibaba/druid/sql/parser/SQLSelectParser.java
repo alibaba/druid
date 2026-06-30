@@ -470,7 +470,9 @@ public class SQLSelectParser extends SQLParser {
 
         if (lexer.token() == Token.TABLE && dialectFeatureEnabled(QueryTable)) {
             lexer.nextToken();
-            queryBlock.getSelectList().add(new SQLSelectItem(new SQLAllColumnExpr()));
+            SQLSelectItem allColumnSelectItem = new SQLSelectItem(new SQLAllColumnExpr());
+            allColumnSelectItem.setParent(queryBlock);
+            queryBlock.getSelectList().add(allColumnSelectItem);
             queryBlock.setFrom(parseTableSource());
             return queryRest(queryBlock, acceptUnion);
         }
@@ -2458,7 +2460,7 @@ public class SQLSelectParser extends SQLParser {
             if (lexer.token() == (Token.LPAREN)) {
                 lexer.nextToken();
                 while (true) {
-                    pivot.getPivotFor().add(new SQLIdentifierExpr(lexer.stringVal()));
+                    pivot.addPivotFor(new SQLIdentifierExpr(lexer.stringVal()));
                     lexer.nextToken();
 
                     if (!(lexer.token() == (Token.COMMA))) {
@@ -2469,7 +2471,7 @@ public class SQLSelectParser extends SQLParser {
 
                 accept(Token.RPAREN);
             } else {
-                pivot.getPivotFor().add(new SQLIdentifierExpr(lexer.stringVal()));
+                pivot.addPivotFor(new SQLIdentifierExpr(lexer.stringVal()));
                 lexer.nextToken();
             }
 
@@ -2522,7 +2524,7 @@ public class SQLSelectParser extends SQLParser {
             if (lexer.token() == (Token.LPAREN)) {
                 lexer.nextToken();
                 while (true) {
-                    unPivot.getPivotFor().add(new SQLIdentifierExpr(lexer.stringVal()));
+                    unPivot.addPivotFor(new SQLIdentifierExpr(lexer.stringVal()));
                     lexer.nextToken();
 
                     if (!(lexer.token() == (Token.COMMA))) {
@@ -2533,7 +2535,7 @@ public class SQLSelectParser extends SQLParser {
 
                 accept(Token.RPAREN);
             } else {
-                unPivot.getPivotFor().add(new SQLIdentifierExpr(lexer.stringVal()));
+                unPivot.addPivotFor(new SQLIdentifierExpr(lexer.stringVal()));
                 lexer.nextToken();
             }
 

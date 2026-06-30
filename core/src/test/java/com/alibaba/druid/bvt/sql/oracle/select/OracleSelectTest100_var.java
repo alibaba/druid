@@ -21,12 +21,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleSelectTest100_var extends OracleTest {
+    @Test
     public void test_0() throws Exception {
         String sql = //
                 "select * from zj_sb_zzs_fb3_mx where fphm=:\"SYS_B_0\" and sssq_q=date:\"SYS_B_1\"\n";

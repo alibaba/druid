@@ -23,12 +23,14 @@ import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_77_is_unkown extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "select 0 in (20 = any (select col1 from t1)) is not null is not unknown as t;";
 

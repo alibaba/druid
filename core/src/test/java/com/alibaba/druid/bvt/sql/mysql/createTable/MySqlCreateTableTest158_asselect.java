@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlCreateTableTest158_asselect extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "create table tmp_eric (pk int key, ia int unique) replace as select * from t;";
 
@@ -22,6 +23,7 @@ public class MySqlCreateTableTest158_asselect extends MysqlTest {
                 "FROM t;", stmt.toString());
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "create table tmp_eric (pk int key, ia int unique) ignore as select * from t;";
 
@@ -36,6 +38,7 @@ public class MySqlCreateTableTest158_asselect extends MysqlTest {
                 "FROM t;", stmt.toString());
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = "create table tmp_eric (pk int key, ia int unique) replace ignore as select * from t;";
 
@@ -46,6 +49,7 @@ public class MySqlCreateTableTest158_asselect extends MysqlTest {
         }
     }
 
+    @Test
     public void test_4() throws Exception {
         String sql = "CREATE TABLE `D` (\n"
                 + " `id` bigint(20) NOT NULL comment 'xxx' AUTO_INCREMENT,\n"
@@ -67,6 +71,7 @@ public class MySqlCreateTableTest158_asselect extends MysqlTest {
                 "FROM a", stmt.toString());
     }
 
+    @Test
     public void test_5() throws Exception {
         String sql = "CREATE TABLE artists_and_works\n" +
                 "  SELECT artist.name, COUNT(work.artist_id) AS number_of_works\n" +
@@ -82,6 +87,7 @@ public class MySqlCreateTableTest158_asselect extends MysqlTest {
                 "GROUP BY artist.id;", stmt.toString());
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "Create Table `aftersale_item_s3combine_1000` (\n" +
                 " `order_status` varchar,\n" +

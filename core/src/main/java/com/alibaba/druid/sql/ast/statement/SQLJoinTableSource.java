@@ -314,9 +314,19 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
 
         x.natural = natural;
         x.asof = asof;
+        x.global = global;
 
         if (udj != null) {
             x.udj = udj.clone();
+            x.udj.setParent(x);
+        }
+
+        if (hints != null) {
+            for (SQLHint hint : hints) {
+                SQLHint hint2 = hint.clone();
+                hint2.setParent(x);
+                x.getHints().add(hint2);
+            }
         }
     }
 
@@ -736,7 +746,10 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
 
         public UDJ clone() {
             UDJ x = new UDJ();
-            x.function = function.clone();
+            if (function != null) {
+                x.function = function.clone();
+                x.function.setParent(x);
+            }
             for (SQLExpr arg : arguments) {
                 SQLExpr t = arg.clone();
                 t.setParent(x);

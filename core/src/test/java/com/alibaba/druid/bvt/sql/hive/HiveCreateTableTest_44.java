@@ -20,12 +20,14 @@ import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class HiveCreateTableTest_44 extends OracleTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "--\n-- Sample on record\n" +
                 "--     {\"bid\":\"360\",\"request_id\":\"12c6b4b7c7d590fc\",\"hour\":\"2018121315\",\"time\":\"1544684400\",\"tagid\":\"2256906\",\"plan_id\":\"636102\",\"sid\":\"288\",\"creative_id\":\"198\",\"cookie_id\":\"7af422884e2fab197c9dfd068181ac0d\",\"ip\":\"117.136.89.121\",\"price\":\"0.2800\",\"bid_price\":\"0.1400\",\"user_agent\":\"Dalvik/2.1.0 (Linux; U; Android 6.0.1; OPPO A57 Build/MMB29M)\",\"refer\":\"\"}\n\n" +

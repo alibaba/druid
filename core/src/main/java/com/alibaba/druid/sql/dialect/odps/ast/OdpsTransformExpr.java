@@ -44,7 +44,40 @@ public class OdpsTransformExpr extends SQLExprImpl implements OdpsObject {
 
     @Override
     public SQLExpr clone() {
-        return null;
+        OdpsTransformExpr x = new OdpsTransformExpr();
+        x.parenthesized = this.parenthesized;
+        x.setParenthesizedCount(this.parenthesizedCount);
+        if (inputRowFormat != null) {
+            SQLExternalRecordFormat c = inputRowFormat.clone();
+            c.setParent(x);
+            x.inputRowFormat = c;
+        }
+        for (SQLExpr item : inputColumns) {
+            SQLExpr c = item.clone();
+            c.setParent(x);
+            x.inputColumns.add(c);
+        }
+        for (SQLColumnDefinition item : outputColumns) {
+            SQLColumnDefinition c = item.clone();
+            c.setParent(x);
+            x.outputColumns.add(c);
+        }
+        if (using != null) {
+            SQLExpr c = using.clone();
+            c.setParent(x);
+            x.using = c;
+        }
+        for (SQLExpr item : resources) {
+            SQLExpr c = item.clone();
+            c.setParent(x);
+            x.resources.add(c);
+        }
+        if (outputRowFormat != null) {
+            SQLExternalRecordFormat c = outputRowFormat.clone();
+            c.setParent(x);
+            x.outputRowFormat = c;
+        }
+        return x;
     }
 
     public SQLExternalRecordFormat getInputRowFormat() {

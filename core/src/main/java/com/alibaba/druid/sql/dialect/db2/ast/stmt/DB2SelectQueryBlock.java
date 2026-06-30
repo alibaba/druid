@@ -112,4 +112,23 @@ public class DB2SelectQueryBlock extends SQLSelectQueryBlock implements DB2Objec
                 new DB2OutputVisitor(buf)
         );
     }
+
+    @Override
+    public DB2SelectQueryBlock clone() {
+        DB2SelectQueryBlock x = new DB2SelectQueryBlock();
+        cloneTo(x);
+        return x;
+    }
+
+    public void cloneTo(DB2SelectQueryBlock x) {
+        super.cloneTo(x);
+        x.isolation = isolation;
+        x.lockRequest = lockRequest;
+        x.forReadOnly = forReadOnly;
+        if (optimizeFor != null) {
+            SQLExpr c = optimizeFor.clone();
+            c.setParent(x);
+            x.optimizeFor = c;
+        }
+    }
 }

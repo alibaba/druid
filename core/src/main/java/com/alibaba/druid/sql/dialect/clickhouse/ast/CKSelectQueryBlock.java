@@ -90,4 +90,36 @@ public class CKSelectQueryBlock extends SQLSelectQueryBlock {
     public void setWithTies(boolean withTies) {
         this.withTies = withTies;
     }
+
+    @Override
+    public CKSelectQueryBlock clone() {
+        CKSelectQueryBlock x = new CKSelectQueryBlock();
+        cloneTo(x);
+        return x;
+    }
+
+    public void cloneTo(CKSelectQueryBlock x) {
+        super.cloneTo(x);
+
+        if (preWhere != null) {
+            x.setPreWhere(preWhere.clone());
+        }
+        if (sample != null) {
+            x.setSample(sample.clone());
+        }
+        if (format != null) {
+            SQLExpr c = format.clone();
+            c.setParent(x);
+            x.format = c;
+        }
+        x.isFinal = isFinal;
+        x.withTotals = withTotals;
+        x.withFill = withFill;
+        x.withTies = withTies;
+        for (SQLAssignItem item : settings) {
+            SQLAssignItem item2 = item.clone();
+            item2.setParent(x);
+            x.settings.add(item2);
+        }
+    }
 }

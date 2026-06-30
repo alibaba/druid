@@ -17,18 +17,24 @@ package com.alibaba.druid.bvt.sql.mysql.param;
 
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlParameterizedOutputVisitorTest_3 extends com.alibaba.druid.bvt.sql.mysql.param.MySQLParameterizedTest {
+    @BeforeEach
     protected void setUp() throws Exception {
         System.setProperty("fastsql.parameterized.shardingSupport", "false");
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         System.clearProperty("fastsql.parameterized.shardingSupport");
     }
 
+    @Test
     public void test_0() throws Exception {
         String sql = "delete from alerts where not (exists (select metric1_.id from metrics metric1_ where id=alerts.metric_id))";
         assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL), sql);

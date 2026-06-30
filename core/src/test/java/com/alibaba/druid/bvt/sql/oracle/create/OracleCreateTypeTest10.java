@@ -21,12 +21,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleCreateTypeTest10 extends OracleTest {
+    @Test
     public void test_types() throws Exception {
         String sql = "CREATE OR REPLACE type body connstrBycomma is\n" +
                 "      static function ODCIAggregateInitialize(sctx IN OUT connstrBycomma)\t\n" +

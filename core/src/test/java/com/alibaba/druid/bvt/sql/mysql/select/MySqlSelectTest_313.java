@@ -19,11 +19,13 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 public class MySqlSelectTest_313
         extends MysqlTest {
+    @Test
     public void test1() {
         String sql = "SELECT 1 FROM t1, t3 RIGHT JOIN t2 ON t2.b=t3.b ";
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, DbType.mysql);
@@ -32,6 +34,7 @@ public class MySqlSelectTest_313
         System.out.println(stmt);
     }
 
+    @Test
     public void test2() {
         String sql = "select row(1,2,row(3,4)) IN (row(3,2,row(3,4)), row(1,2,row(3,NULL)));";
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, DbType.mysql);
@@ -40,6 +43,7 @@ public class MySqlSelectTest_313
         System.out.println(stmt);
     }
 
+    @Test
     public void test3() {
         String sql = "replace into student(id,name,unit) value(?,?,?)";
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, DbType.mysql);

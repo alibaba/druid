@@ -20,11 +20,13 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_304_adb_hints
         extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT COUNT(*)\n" +
                 "FROM t1, t2\n" +
@@ -44,6 +46,7 @@ public class MySqlSelectTest_304_adb_hints
                 "ORDER BY t1.c1", stmt.toString());
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "SELECT COUNT(*)\n" +
                 "FROM t1, t2\n" +
@@ -68,6 +71,7 @@ public class MySqlSelectTest_304_adb_hints
                 "ORDER BY t1.c1/*+output_rows=100*/", stmt.toString());
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "SELECT count(distinct c1.custkey) " +
                 "   from customer c1, customer c2 " +
@@ -82,6 +86,7 @@ public class MySqlSelectTest_304_adb_hints
                 "\tAND c1.custkey = 1/*+filter_factor=0.5*/", stmt.toString());
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = "SELECT COUNT(*) \n" +
                 "FROM  t1  , t2 \n" +
@@ -96,6 +101,7 @@ public class MySqlSelectTest_304_adb_hints
                 "\tAND t1.c1 < 10", stmt.toString());
     }
 
+    @Test
     public void test_4() throws Exception {
         String sql = "SELECT COUNT(*) \n" +
                 "FROM  t1, t2 \n" +
@@ -110,6 +116,7 @@ public class MySqlSelectTest_304_adb_hints
                 "\tAND t1.c1 < 10/*+output_Rows=100*/", stmt.toString());
     }
 
+    @Test
     public void test_5() throws Exception {
         String sql = "SELECT COUNT(*) \n" +
                 "FROM t1, t2 \n" +
@@ -124,6 +131,7 @@ public class MySqlSelectTest_304_adb_hints
                 "\tAND t1.c1 < 10", stmt.toString());
     }
 
+    @Test
     public void test_6() throws Exception {
         String sql = "SELECT COUNT(*) \n" +
                 "FROM t1, t2 \n" +
@@ -138,6 +146,7 @@ public class MySqlSelectTest_304_adb_hints
                 "\tAND t1.c1 < 10/*+filter_factor=0.1*/", stmt.toString());
     }
 
+    @Test
     public void test_7() throws Exception {
         String sql = "SELECT COUNT(*)\n" +
                 "FROM t1, t2\n" +
@@ -154,6 +163,7 @@ public class MySqlSelectTest_304_adb_hints
                 "ORDER BY t1.c1", stmt.toString());
     }
 
+    @Test
     public void test_8() throws Exception {
         String sql = "SELECT COUNT(*)\n" +
                 "FROM t1, t2\n" +
@@ -170,6 +180,7 @@ public class MySqlSelectTest_304_adb_hints
                 "ORDER BY t1.c1", stmt.toString());
     }
 
+    @Test
     public void test_9() throws Exception {
         String sql = "SELECT COUNT(*)\n" +
                 "FROM t1, t2\n" +
@@ -186,6 +197,7 @@ public class MySqlSelectTest_304_adb_hints
                 "ORDER BY t1.c1", stmt.toString());
     }
 
+    @Test
     public void test_10() throws Exception {
         String sql = "SELECT COUNT(*)\n" +
                 "FROM t1, t2\n" +
@@ -202,6 +214,7 @@ public class MySqlSelectTest_304_adb_hints
                 "ORDER BY t1.c1/*+outputRows=100*/", stmt.toString());
     }
 
+    @Test
     public void test_11() throws Exception {
         String sql = "SELECT COUNT(*)\n" +
                 "FROM t1, t2\n" +
@@ -222,6 +235,7 @@ public class MySqlSelectTest_304_adb_hints
                 "LIMIT 10", stmt.toString());
     }
 
+    @Test
     public void test_12() throws Exception {
         String sql = " SELECT   s.acctbal, \n" +
                 "         s.name, \n" +
@@ -284,6 +298,7 @@ public class MySqlSelectTest_304_adb_hints
                 "LIMIT 100", stmt.toString());
     }
 
+    @Test
     public void test_13() throws Exception {
         String sql = "SELECT COUNT(*)\n" +
                 "FROM t1, t2\n" +
@@ -303,6 +318,7 @@ public class MySqlSelectTest_304_adb_hints
                 "LIMIT 10", stmt.toString());
     }
 
+    @Test
     public void test_exists() throws Exception {
         String sql = "SELECT COUNT(*)\n" +
                 "FROM t1, t2\n" +
@@ -324,6 +340,7 @@ public class MySqlSelectTest_304_adb_hints
                 "LIMIT 10", stmt.toString());
     }
 
+    @Test
     public void test_exists2() throws Exception {
         String sql = "SELECT count(1) " +
                 "   from customer c1 " +
@@ -343,6 +360,7 @@ public class MySqlSelectTest_304_adb_hints
                 ") /*+output_rows=10*/", stmt.toString());
     }
 
+    @Test
     public void test_not() throws Exception {
         String sql = "SELECT count(1) " +
                 "   from customer c1 " +
@@ -362,6 +380,7 @@ public class MySqlSelectTest_304_adb_hints
                 ") /*+output_rows=10*/", stmt.toString());
     }
 
+    @Test
     public void test_not2() throws Exception {
         String sql = "SELECT count(1) " +
                 "   from customer c1 " +
@@ -375,6 +394,7 @@ public class MySqlSelectTest_304_adb_hints
                 "AND a < 10)/*+output_rows=10*/", stmt.toString());
     }
 
+    @Test
     public void test_groupby() throws Exception {
         String sql = "SELECT /*+output_rows=count_order*/\n" +
                 "  l.returnflag,\n" +
@@ -400,6 +420,7 @@ public class MySqlSelectTest_304_adb_hints
                 "ORDER BY l.returnflag, l.linestatus", stmt.toString());
     }
 
+    @Test
     public void test_groupby2() throws Exception {
         String sql =
                 "       SELECT\n" +
@@ -431,6 +452,7 @@ public class MySqlSelectTest_304_adb_hints
                 "\tAND l.shipdate BETWEEN DATE '1995-01-01' AND DATE '1996-12-31'/*+output_rows=1*/", stmt.toString());
     }
 
+    @Test
     public void test_tpch_q7() throws Exception {
         String sql = "SELECT\n" +
                 "  supp_nation,\n" +
@@ -499,6 +521,7 @@ public class MySqlSelectTest_304_adb_hints
                 "ORDER BY supp_nation, cust_nation, l_year", stmt.toString());
     }
 
+    @Test
     public void test_tpch_q8() throws Exception {
         String sql = "SELECT\n" +
                 "  o_year,\n" +
@@ -569,6 +592,7 @@ public class MySqlSelectTest_304_adb_hints
                 "ORDER BY o_year", stmt.toString());
     }
 
+    @Test
     public void test_between_and() throws Exception {
         String sql =
                 "       SELECT\n" +

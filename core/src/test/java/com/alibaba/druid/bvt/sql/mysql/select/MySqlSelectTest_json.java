@@ -16,8 +16,10 @@
 package com.alibaba.druid.bvt.sql.mysql.select;
 
 import com.alibaba.druid.sql.MysqlTest;
+import org.junit.jupiter.api.Test;
 
 public class MySqlSelectTest_json extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         parseTrue("SELECT json_size('{\"x\": {\"a\": 1, \"b\": 2}}', '$.x')",
                 "SELECT json_size('{\"x\": {\"a\": 1, \"b\": 2}}', '$.x')");

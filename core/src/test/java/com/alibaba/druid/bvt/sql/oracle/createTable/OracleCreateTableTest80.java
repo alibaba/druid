@@ -19,12 +19,14 @@ import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleCreateTableTest80 extends OracleTest {
+    @Test
     public void test_types() throws Exception {
         String sql = //
                 "CREATE TABLE KTV.ALI_KTV_VISIT_TBD20150401 (\n" +

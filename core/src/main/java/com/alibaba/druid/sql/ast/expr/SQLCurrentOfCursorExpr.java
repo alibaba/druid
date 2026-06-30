@@ -28,6 +28,9 @@ public class SQLCurrentOfCursorExpr extends SQLExprImpl implements SQLReplaceabl
     }
 
     public SQLCurrentOfCursorExpr(SQLName cursorName) {
+        if (cursorName != null) {
+            cursorName.setParent(this);
+        }
         this.cursorName = cursorName;
     }
 

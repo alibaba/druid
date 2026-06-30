@@ -57,6 +57,24 @@ public class OracleXmlColumnProperties extends OracleSQLObjectImpl {
         this.allowAnySchema = allowAnySchema;
     }
 
+    public void cloneTo(OracleXmlColumnProperties x) {
+        if (column != null) {
+            x.setColumn(column.clone());
+        }
+        if (storage != null) {
+            x.setStorage(storage.clone());
+        }
+        x.allowNonSchema = allowNonSchema;
+        x.allowAnySchema = allowAnySchema;
+    }
+
+    @Override
+    public OracleXmlColumnProperties clone() {
+        OracleXmlColumnProperties x = new OracleXmlColumnProperties();
+        cloneTo(x);
+        return x;
+    }
+
     public static class OracleXMLTypeStorage extends OracleSQLObjectImpl {
         private boolean secureFile;
         private boolean basicFile;
@@ -111,6 +129,23 @@ public class OracleXmlColumnProperties extends OracleSQLObjectImpl {
                 x.setParent(this);
             }
             this.lobParameters = x;
+        }
+
+        public void cloneTo(OracleXMLTypeStorage x) {
+            x.secureFile = secureFile;
+            x.basicFile = basicFile;
+            x.clob = clob;
+            x.binaryXml = binaryXml;
+            if (lobParameters != null) {
+                x.setLobParameters(lobParameters.clone());
+            }
+        }
+
+        @Override
+        public OracleXMLTypeStorage clone() {
+            OracleXMLTypeStorage x = new OracleXMLTypeStorage();
+            cloneTo(x);
+            return x;
         }
     }
 }

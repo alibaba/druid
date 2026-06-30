@@ -34,6 +34,13 @@ public class SQLUnpivot extends SQLObjectImpl {
         return pivotFor;
     }
 
+    public void addPivotFor(SQLExpr expr) {
+        if (expr != null) {
+            expr.setParent(this);
+        }
+        this.pivotFor.add(expr);
+    }
+
     public List<SQLSelectItem> getPivotIn() {
         return pivotIn;
     }

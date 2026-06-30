@@ -20,10 +20,12 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.repository.SchemaRepository;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlCreateTable_showColumns_test_4 extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         SchemaRepository repository = new SchemaRepository(JdbcConstants.MYSQL);
         String sql = "create table tmp_eric (pk int key, ia int unique);";

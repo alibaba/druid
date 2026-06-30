@@ -20,12 +20,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleSelectTest5 extends OracleTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT t1.department_id, t2.* FROM hr_info t1, TABLE(t1.people) t2" +
                 "   WHERE t2.department_id = t1.department_id;";

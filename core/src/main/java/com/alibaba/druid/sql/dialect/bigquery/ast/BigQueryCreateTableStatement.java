@@ -28,6 +28,10 @@ public class BigQueryCreateTableStatement
             cloned.setParent(x);
             x.partitionBy.add(cloned);
         }
+        if (collate != null) {
+            x.collate = collate.clone();
+            x.collate.setParent(x);
+        }
     }
 
     public SQLExpr getCollate() {
