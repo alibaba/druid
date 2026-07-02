@@ -44,7 +44,7 @@ public enum DbType {
     antspark(1 << 30),
 
     spark(1 << 30),
-    oceanbase_oracle(1 << 31),
+    oceanbase_oracle(1L << 31),
     /**
      * Alibaba Cloud PolarDB-Oracle 1.0
      */
