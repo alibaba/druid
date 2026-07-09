@@ -56,4 +56,22 @@ public class FilterManagerTest {
             throw new RuntimeException();
         }
     }
+
+    @org.junit.jupiter.api.Test
+    public void test_existsFilter_caseSensitive() throws Exception {
+        java.util.List<com.alibaba.druid.filter.Filter> filterList = new java.util.ArrayList<>();
+        filterList.add(new CaseTestFilter());
+        String exactName = CaseTestFilter.class.getName();
+        String lowerName = exactName.toLowerCase();
+        java.lang.reflect.Method existsFilter = com.alibaba.druid.filter.FilterManager.class
+                .getDeclaredMethod("existsFilter", java.util.List.class, String.class);
+        existsFilter.setAccessible(true);
+        org.junit.jupiter.api.Assertions.assertTrue((Boolean) existsFilter.invoke(null, filterList, exactName));
+        org.junit.jupiter.api.Assertions.assertFalse((Boolean) existsFilter.invoke(null, filterList, lowerName),
+                "existsFilter should be case-sensitive; class names that differ only in case are different classes");
+    }
+
+    public static class CaseTestFilter extends com.alibaba.druid.filter.FilterAdapter {
+    }
+
 }
