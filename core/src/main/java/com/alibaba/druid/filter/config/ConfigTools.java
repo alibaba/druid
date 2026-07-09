@@ -40,6 +40,10 @@ public class ConfigTools {
     public static final String DEFAULT_PUBLIC_KEY_STRING = "MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAKHGwq7q2RmwuRgKxBypQHw0mYu4BQZ3eMsTrdK8E6igRcxsobUC7uT0SoxIjl1WveWniCASejoQtn/BY6hVKWsCAwEAAQ==";
 
     public static void main(String[] args) throws Exception {
+        if (args.length == 0) {
+            System.out.println("Usage: ConfigTools <password>");
+            return;
+        }
         String password = args[0];
         String[] arr = genKeyPair(512);
         System.out.println("privateKey:" + arr[0]);
