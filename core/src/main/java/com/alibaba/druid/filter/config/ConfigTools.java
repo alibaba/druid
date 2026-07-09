@@ -143,7 +143,7 @@ public class ConfigTools {
         byte[] cipherBytes = Base64.base64ToByteArray(cipherText);
         byte[] plainBytes = cipher.doFinal(cipherBytes);
 
-        return new String(plainBytes);
+        return new String(plainBytes, "UTF-8");
     }
 
     public static String encrypt(String plainText) throws Exception {
