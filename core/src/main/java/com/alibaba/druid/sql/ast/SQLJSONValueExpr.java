@@ -44,7 +44,11 @@ public class SQLJSONValueExpr extends SQLExprImpl {
 
     @Override
     public int hashCode() {
-        return Objects.hash(json, path);
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((json == null) ? 0 : json.hashCode());
+        result = prime * result + ((path == null) ? 0 : path.hashCode());
+        return result;
     }
 
     @Override
