@@ -164,6 +164,7 @@ public class SQLUpdateBuilderImpl extends SQLBuilderImpl implements SQLUpdateBui
             case polardbx:
                 return new MySqlUpdateStatement();
             case oracle:
+            case yashandb:
                 return new OracleUpdateStatement();
             case postgresql:
             case greenplum:

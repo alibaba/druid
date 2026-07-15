@@ -132,7 +132,7 @@ public class SQLExprUtils {
         if (quote == '`') {
             expr = new SQLIdentifierExpr(str);
         } else if (quote == '"') {
-            if (dbType == DbType.oracle || dbType == DbType.presto || dbType == DbType.trino || dbType == DbType.supersql) {
+            if (dbType == DbType.oracle || dbType == DbType.yashandb || dbType == DbType.presto || dbType == DbType.trino || dbType == DbType.supersql) {
                 expr = new SQLIdentifierExpr(str);
             } else {
                 expr = new SQLCharExpr(str);

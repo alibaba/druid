@@ -537,6 +537,7 @@ public class SQLUtils {
             case oracle:
             case oceanbase_oracle:
             case polardb2:
+            case yashandb:
                 if (statementList == null || statementList.size() == 1) {
                     return new OracleOutputVisitor(out, false);
                 } else {
@@ -633,6 +634,7 @@ public class SQLUtils {
 
         switch (dbType) {
             case oracle:
+            case yashandb:
                 return new OracleSchemaStatVisitor(repository);
             case mysql:
             case mariadb:
@@ -762,7 +764,7 @@ public class SQLUtils {
             if (StringUtils.isEmpty(pattern)) {
                 pattern = "%Y-%m-%d %H:%i:%s";
             }
-        } else if (DbType.oracle == dbType) {
+        } else if (DbType.oracle == dbType || DbType.yashandb == dbType) {
             formatMethod = "TO_DATE";
             if (StringUtils.isEmpty(pattern)) {
                 pattern = "yyyy-mm-dd hh24:mi:ss";
@@ -1172,6 +1174,7 @@ public class SQLUtils {
                 };
                 break;
             case oracle:
+            case yashandb:
                 visitor = new OracleASTVisitorAdapter() {
                     public boolean visit(SQLExprTableSource x) {
                         if (filter == null || filter.test(x)) {
@@ -1467,6 +1470,7 @@ public class SQLUtils {
                 };
                 break;
             case oracle:
+            case yashandb:
                 visitor = new OracleASTVisitorAdapter() {
                     @Override
                     public boolean visit(SQLAggregateExpr x) {
@@ -1553,6 +1557,7 @@ public class SQLUtils {
                 };
                 break;
             case oracle:
+            case yashandb:
                 visitor = new OracleASTVisitorAdapter() {
                     @Override
                     public boolean visit(SQLMethodInvokeExpr x) {

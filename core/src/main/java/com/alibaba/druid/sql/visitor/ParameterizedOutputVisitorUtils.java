@@ -410,6 +410,7 @@ public class ParameterizedOutputVisitorUtils {
             case oracle:
             case oceanbase_oracle:
             case polardb2:
+            case yashandb:
                 return new OracleParameterizedOutputVisitor(out);
             case mysql:
             case tidb:

@@ -151,7 +151,7 @@ public class SQLParserUtils {
 
     static {
         registerBuiltinStatementParserFactory((sql, dbType, features) -> new OracleStatementParser(sql, features),
-                DbType.oracle, DbType.oceanbase_oracle, DbType.polardb2);
+                DbType.oracle, DbType.oceanbase_oracle, DbType.polardb2, DbType.yashandb);
         registerBuiltinStatementParserFactory((sql, dbType, features) -> new MySqlStatementParser(sql, features),
                 DbType.mysql, DbType.tidb, DbType.mariadb, DbType.goldendb, DbType.oceanbase, DbType.drds, DbType.polardbx);
         registerBuiltinStatementParserFactory((sql, dbType, features) -> {
@@ -191,7 +191,7 @@ public class SQLParserUtils {
         registerBuiltinStatementParserFactory((sql, dbType, features) -> new TDStatementParser(sql, features), DbType.teradata);
         registerBuiltinStatementParserFactory((sql, dbType, features) -> new SQLiteStatementParser(sql, features), DbType.sqlite);
 
-        registerBuiltinExprParserFactory((sql, dbType, features) -> new OracleExprParser(sql, features), DbType.oracle);
+        registerBuiltinExprParserFactory((sql, dbType, features) -> new OracleExprParser(sql, features), DbType.oracle, DbType.yashandb);
         registerBuiltinExprParserFactory((sql, dbType, features) -> new MySqlExprParser(sql, features), DbType.mysql, DbType.mariadb);
         registerBuiltinExprParserFactory((sql, dbType, features) -> {
             MySqlExprParser parser = new MySqlExprParser(sql, features);
@@ -226,7 +226,7 @@ public class SQLParserUtils {
         registerBuiltinExprParserFactory((sql, dbType, features) -> new TDExprParser(sql, features), DbType.teradata);
         registerBuiltinExprParserFactory((sql, dbType, features) -> new SQLiteExprParser(sql, features), DbType.sqlite);
 
-        registerBuiltinLexerFactory((sql, dbType, features) -> new OracleLexer(sql, features), DbType.oracle);
+        registerBuiltinLexerFactory((sql, dbType, features) -> new OracleLexer(sql, features), DbType.oracle, DbType.yashandb);
         registerBuiltinLexerFactory((sql, dbType, features) -> new MySqlLexer(sql, features), DbType.mysql, DbType.mariadb);
         registerBuiltinLexerFactory((sql, dbType, features) -> {
             MySqlLexer lexer = new MySqlLexer(sql, features);
@@ -430,6 +430,7 @@ public class SQLParserUtils {
             case mysql:
                 return new MySqlSelectQueryBlock();
             case oracle:
+            case yashandb:
                 return new OracleSelectQueryBlock();
             case db2:
                 return new DB2SelectQueryBlock();

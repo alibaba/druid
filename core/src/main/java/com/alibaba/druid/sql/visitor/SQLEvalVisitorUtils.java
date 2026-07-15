@@ -119,6 +119,7 @@ public class SQLEvalVisitorUtils {
             case polardbx:
                 return new MySqlEvalVisitorImpl();
             case oracle:
+            case yashandb:
                 return new OracleEvalVisitor();
             case postgresql:
             case greenplum:

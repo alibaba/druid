@@ -85,6 +85,7 @@ public class SchemaRepository {
                 consoleVisitor = new MySqlConsoleSchemaVisitor();
                 break;
             case oracle:
+            case yashandb:
                 consoleVisitor = new OracleConsoleSchemaVisitor();
                 break;
             case sqlserver:
@@ -420,6 +421,7 @@ public class SchemaRepository {
                 resolveVisitor = new SchemaResolveVisitorFactory.MySqlResolveVisitor(this, optionsValue);
                 break;
             case oracle:
+            case yashandb:
                 resolveVisitor = new SchemaResolveVisitorFactory.OracleResolveVisitor(this, optionsValue);
                 break;
             case db2:

@@ -46,6 +46,7 @@ public final class ExportParameterVisitorUtils {
             case polardbx:
                 return new MySqlExportParameterVisitor(out);
             case oracle:
+            case yashandb:
                 return new OracleExportParameterVisitor(out);
             case db2:
                 return new DB2ExportParameterVisitor(out);
