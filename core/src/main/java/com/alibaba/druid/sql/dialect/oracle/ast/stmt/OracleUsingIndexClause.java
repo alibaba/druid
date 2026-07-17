@@ -40,7 +40,13 @@ public class OracleUsingIndexClause extends OracleSegmentAttributesImpl implemen
     }
 
     protected void accept0(SQLASTVisitor visitor) {
-        accept0((OracleASTVisitor) visitor);
+        if (visitor instanceof OracleASTVisitor) {
+            accept0((OracleASTVisitor) visitor);
+            return;
+        }
+        acceptChild(visitor, index);
+        acceptChild(visitor, tablespace);
+        acceptChild(visitor, storage);
     }
 
     @Override

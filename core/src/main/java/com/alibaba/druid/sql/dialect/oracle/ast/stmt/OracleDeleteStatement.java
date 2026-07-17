@@ -46,7 +46,11 @@ public class OracleDeleteStatement extends SQLDeleteStatement {
     }
 
     protected void accept0(SQLASTVisitor visitor) {
-        accept0((OracleASTVisitor) visitor);
+        if (visitor instanceof OracleASTVisitor) {
+            accept0((OracleASTVisitor) visitor);
+            return;
+        }
+        super.accept0(visitor);
     }
 
     protected void accept0(OracleASTVisitor visitor) {

@@ -33,7 +33,11 @@ public class OracleAnalyticWindowing extends SQLObjectImpl implements OracleExpr
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
-        this.accept0((OracleASTVisitor) visitor);
+        if (visitor instanceof OracleASTVisitor) {
+            accept0((OracleASTVisitor) visitor);
+            return;
+        }
+        acceptChild(visitor, this.expr);
     }
 
     public void accept0(OracleASTVisitor visitor) {

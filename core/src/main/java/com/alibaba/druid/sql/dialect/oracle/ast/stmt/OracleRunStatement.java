@@ -43,7 +43,11 @@ public class OracleRunStatement extends SQLStatementImpl implements OracleStatem
     }
 
     protected void accept0(SQLASTVisitor visitor) {
-        accept0((OracleASTVisitor) visitor);
+        if (visitor instanceof OracleASTVisitor) {
+            accept0((OracleASTVisitor) visitor);
+            return;
+        }
+        acceptChild(visitor, expr);
     }
 
     public String toString() {

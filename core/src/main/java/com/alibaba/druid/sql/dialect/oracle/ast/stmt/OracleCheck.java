@@ -34,7 +34,7 @@ public class OracleCheck extends SQLCheck implements OracleConstraint, OracleSQL
             return;
         }
 
-        super.accept(visitor);
+        super.accept0(visitor);
     }
 
     public void accept0(OracleASTVisitor visitor) {

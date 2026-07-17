@@ -34,7 +34,7 @@ public class OracleUnique extends SQLUnique implements OracleConstraint, OracleS
             return;
         }
 
-        super.accept(visitor);
+        super.accept0(visitor);
     }
 
     public void accept0(OracleASTVisitor visitor) {

@@ -59,7 +59,11 @@ public class OracleWithSubqueryEntry extends Entry implements OracleSQLObject {
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
-        this.accept0((OracleASTVisitor) visitor);
+        if (visitor instanceof OracleASTVisitor) {
+            accept0((OracleASTVisitor) visitor);
+            return;
+        }
+        super.accept0(visitor);
     }
 
     public void cloneTo(OracleWithSubqueryEntry x) {

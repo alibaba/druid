@@ -112,7 +112,11 @@ public class OracleCreateIndexStatement extends SQLCreateIndexStatement implemen
     private List<SQLPartitionBy> globalPartitions = new ArrayList<SQLPartitionBy>();
 
     protected void accept0(SQLASTVisitor visitor) {
-        accept0((OracleASTVisitor) visitor);
+        if (visitor instanceof OracleASTVisitor) {
+            accept0((OracleASTVisitor) visitor);
+            return;
+        }
+        super.accept0(visitor);
     }
 
     @Override
