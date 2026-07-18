@@ -1,4 +1,4 @@
-package com.alibaba.druid.test;
+package com.alibaba.druid.bvt;
 
 import com.alibaba.druid.DbType;
 import org.junit.jupiter.api.Test;
