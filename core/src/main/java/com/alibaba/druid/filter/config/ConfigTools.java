@@ -41,7 +41,7 @@ public class ConfigTools {
 
     public static void main(String[] args) throws Exception {
         if (args.length == 0) {
-            System.out.println("Usage: ConfigTools <password>");
+            System.err.println("Usage: ConfigTools <password>");
             return;
         }
         String password = args[0];
