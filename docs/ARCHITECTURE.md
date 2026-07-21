@@ -133,6 +133,8 @@ Lexer (基类)
 └── SnowflakeLexer      # Snowflake 词法
 ```
 
+> **注**: YashanDB（崖山数据库）没有独立的 Lexer/Parser，而是复用 Oracle 的全套解析基础设施（Lexer、Parser、Visitor、Pagination、Wall），通过 `DbType.yashandb` 路由到 Oracle 实现，但设置 `isOracle=false` 以跳过 Oracle 特有的隐式缓存、行预取等优化。
+
 每个方言 Lexer 通过以下方式定制行为：
 1. **静态 DialectFeature 实例**: 定义词法特性位掩码
 2. **自定义 Keywords 表**: 添加方言特有关键字
@@ -336,6 +338,8 @@ SQLASTOutputVisitor (基类)
 
 每个方言 OutputVisitor 覆写基类方法以输出方言特定语法。
 
+> **注**: YashanDB 复用 OracleOutputVisitor，无独立 OutputVisitor 实现。
+
 ### 3.5 DialectFeature 机制
 
 **文件**: `sql/parser/DialectFeature.java`
@@ -482,7 +486,7 @@ DruidDataSourceAutoConfigure
 
 ---
 
-## 9. 支持的数据库方言（29 种）
+## 9. 支持的数据库方言（31 种）
 
 | 方言 | Lexer | ExprParser | StatementParser | OutputVisitor |
 |------|-------|------------|-----------------|---------------|
@@ -515,6 +519,7 @@ DruidDataSourceAutoConfigure
 | Blink | - | - | BlinkStatementParser | BlinkOutputVisitor |
 | Informix | - | - | InformixStatementParser | InformixOutputVisitor |
 | DM(达梦) | (使用通用 + DM Keywords) | - | - | - |
+| YashanDB(崖山) | (复用 Oracle) | (复用 Oracle) | (复用 Oracle) | (复用 Oracle) |
 
 ---
 
