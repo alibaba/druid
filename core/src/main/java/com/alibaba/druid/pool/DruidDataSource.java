@@ -1249,7 +1249,7 @@ public class DruidDataSource extends DruidAbstractDataSource
         if (JdbcUtils.isMySqlDriver(realDriverClassName)) {
             this.validConnectionChecker = new MySqlValidConnectionChecker();
 
-        }else if (JdbcUtils.isYashanDbDriver(realDriverClassName)) {
+        } else if (JdbcUtils.isYashanDbDriver(realDriverClassName)) {
             this.validConnectionChecker = new YashanDbValidConnectionChecker();
 
         } else if (realDriverClassName.equals(JdbcConstants.ORACLE_DRIVER)
