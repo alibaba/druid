@@ -391,6 +391,9 @@ public class GaussDbOutputVisitor extends PGOutputVisitor implements GaussDbASTV
                 }
                 duplicateKeyUpdate.get(i).accept(this);
             }
+        } else if (x.isDuplicateKeyUpdateNothing()) {
+            println();
+            print0(ucase ? "ON DUPLICATE KEY UPDATE NOTHING" : "on duplicate key update nothing");
         }
 
         printOnConflict(x);
