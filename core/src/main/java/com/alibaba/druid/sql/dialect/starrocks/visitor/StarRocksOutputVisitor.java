@@ -23,6 +23,7 @@ import com.alibaba.druid.sql.dialect.starrocks.StarRocks;
 import com.alibaba.druid.sql.dialect.starrocks.ast.StarRocksAggregateKey;
 import com.alibaba.druid.sql.dialect.starrocks.ast.StarRocksDuplicateKey;
 import com.alibaba.druid.sql.dialect.starrocks.ast.StarRocksIndexDefinition;
+import com.alibaba.druid.sql.dialect.starrocks.ast.StarRocksPartitionByExpr;
 import com.alibaba.druid.sql.dialect.starrocks.ast.statement.*;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.util.FnvHash;
@@ -349,6 +350,23 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
         return false;
     }
 
+    public boolean visit(StarRocksPartitionByExpr x) {
+        List<SQLExpr> columns = x.getColumns();
+        if (columns.size() == 1) {
+            columns.get(0).accept(this);
+        } else {
+            print('(');
+            printAndAccept(columns, ", ");
+            print(')');
+        }
+        // Unlike a table partition clause, an MV partition key carries no mandatory definition list;
+        // printSQLPartitions() would emit an empty "()" here.
+        if (!x.getPartitions().isEmpty()) {
+            printSQLPartitions(x.getPartitions());
+        }
+        return false;
+    }
+
     public boolean visit(StarRocksCreateMaterializedViewStatement x) {
         print0(ucase ? "CREATE MATERIALIZED VIEW " : "create materialized view ");
 
@@ -370,6 +388,13 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
             x.getComment().accept(this);
         }
 
+        // Canonical StarRocks DDL places PARTITION BY before DISTRIBUTED BY.
+        if (x.getPartitionBy() != null) {
+            println();
+            print0(ucase ? "PARTITION BY " : "partition by ");
+            x.getPartitionBy().accept(this);
+        }
+
         if (!x.getDistributedBy().isEmpty()) {
             println();
             print0(ucase ? "DISTRIBUTED BY HASH (" : "distributed by hash (");
@@ -379,12 +404,6 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
                 print0(ucase ? " BUCKETS " : " buckets ");
                 x.getBuckets().accept(this);
             }
-        }
-
-        if (x.getPartitionBy() != null) {
-            println();
-            print0(ucase ? "PARTITION BY " : "partition by ");
-            x.getPartitionBy().accept(this);
         }
 
         if (x.getOrderBy() != null) {
@@ -657,6 +676,15 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
         x.getName().accept(this);
         print0(ucase ? " ON " : " on ");
         x.getTableName().accept(this);
+
+        if (x.getColumnTerminatedBy() != null) {
+            println();
+            print0(ucase ? "COLUMNS TERMINATED BY " : "columns terminated by ");
+            x.getColumnTerminatedBy().accept(this);
+            if (!x.getColumns().isEmpty()) {
+                print(',');
+            }
+        }
 
         if (!x.getColumns().isEmpty()) {
             println();

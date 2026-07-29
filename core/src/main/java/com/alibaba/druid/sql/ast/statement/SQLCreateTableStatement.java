@@ -119,6 +119,8 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         this.acceptChild(v, tableOptions);
 //        this.acceptChild(v, tblProperties);
         this.acceptChild(v, lifeCycle);
+        this.acceptChild(v, engine);
+        this.acceptChild(v, orderBy);
     }
 
     public boolean isAutoBucket() {
@@ -452,6 +454,12 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         }
         if (select != null) {
             children.add(select);
+        }
+        if (engine != null) {
+            children.add(engine);
+        }
+        if (orderBy != null) {
+            children.add(orderBy);
         }
         return children;
     }

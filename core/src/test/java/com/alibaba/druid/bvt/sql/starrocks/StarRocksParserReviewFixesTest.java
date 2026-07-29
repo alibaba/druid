@@ -3,13 +3,17 @@ package com.alibaba.druid.bvt.sql.starrocks;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateMaterializedViewStatement;
+import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksCreateRoutineLoadStatement;
 import com.alibaba.druid.sql.dialect.starrocks.ast.statement.StarRocksLoadStatement;
 import com.alibaba.druid.sql.parser.ParserException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -171,5 +175,91 @@ public class StarRocksParserReviewFixesTest {
         StarRocksCreateMaterializedViewStatement mv = (StarRocksCreateMaterializedViewStatement) stmt;
         assertNotNull(mv.getPartitionBy());
         assertEquals(1, mv.getPartitionBy().getColumns().size());
+    }
+
+    // A bare MV partition key must not gain a RANGE keyword on output — it would change the
+    // partition scheme and StarRocks would reject the regenerated statement.
+    @Test
+    public void testMvBarePartitionByRoundTrip() {
+        String sql = "CREATE MATERIALIZED VIEW mv DISTRIBUTED BY HASH(a) "
+                + "PARTITION BY date_trunc('day', dt) REFRESH ASYNC AS SELECT a, dt FROM t";
+        String output = parse(sql).toString();
+        assertTrue(output.contains("PARTITION BY date_trunc('day', dt)"), output);
+        assertFalse(output.toUpperCase().contains("PARTITION BY RANGE"), output);
+        // reparsing the output yields the same text
+        assertEquals(output, parse(output).toString());
+    }
+
+    // Canonical StarRocks DDL emits PARTITION BY before DISTRIBUTED BY.
+    @Test
+    public void testMvPartitionByPrintedBeforeDistributedBy() {
+        String sql = "CREATE MATERIALIZED VIEW mv DISTRIBUTED BY HASH(a) BUCKETS 10 "
+                + "PARTITION BY dt REFRESH ASYNC AS SELECT a, dt FROM t";
+        String output = parse(sql).toString().toUpperCase();
+        assertTrue(output.indexOf("PARTITION BY") < output.indexOf("DISTRIBUTED BY"), output);
+    }
+
+    // The parent-class distributedByType field must survive cloning.
+    @Test
+    public void testMvCloneKeepsDistributedByType() {
+        String sql = "CREATE MATERIALIZED VIEW mv DISTRIBUTED BY HASH(a) REFRESH ASYNC AS SELECT a FROM t";
+        StarRocksCreateMaterializedViewStatement mv = (StarRocksCreateMaterializedViewStatement) parse(sql);
+        mv.setDistributedByType(new SQLIdentifierExpr("HASH"));
+        StarRocksCreateMaterializedViewStatement cloned = mv.clone();
+        assertNotNull(cloned.getDistributedByType());
+        assertEquals("HASH", cloned.getDistributedByType().getSimpleName());
+        assertSame(cloned, cloned.getDistributedByType().getParent());
+    }
+
+    // CREATE ROUTINE LOAD accepts COLUMNS TERMINATED BY, alone and combined with a column list.
+    @Test
+    public void testRoutineLoadColumnsTerminatedBy() {
+        String sql = "CREATE ROUTINE LOAD db.job ON tbl "
+                + "COLUMNS TERMINATED BY ',', COLUMNS (k1, k2) "
+                + "WHERE k1 > 0 "
+                + "PROPERTIES (\"desired_concurrent_number\" = \"1\") "
+                + "FROM KAFKA (\"kafka_topic\" = \"t\")";
+        StarRocksCreateRoutineLoadStatement stmt = (StarRocksCreateRoutineLoadStatement) parse(sql);
+        assertNotNull(stmt.getColumnTerminatedBy());
+        assertEquals(2, stmt.getColumns().size());
+        assertNotNull(stmt.getWhereCondition());
+        assertEquals(1, stmt.getDataSourceProperties().size());
+
+        String output = stmt.toString();
+        assertTrue(output.contains("COLUMNS TERMINATED BY ','"), output);
+        assertEquals(output, parse(output).toString());
+    }
+
+    @Test
+    public void testRoutineLoadColumnsTerminatedByOnly() {
+        String sql = "CREATE ROUTINE LOAD db.job ON tbl COLUMNS TERMINATED BY ',' "
+                + "FROM KAFKA (\"kafka_topic\" = \"t\")";
+        StarRocksCreateRoutineLoadStatement stmt = (StarRocksCreateRoutineLoadStatement) parse(sql);
+        assertNotNull(stmt.getColumnTerminatedBy());
+        assertTrue(stmt.getColumns().isEmpty());
+        assertEquals("KAFKA", stmt.getDataSourceType().getSimpleName());
+    }
+
+    // Deeply self-nested SUBMIT TASK / CREATE PIPE bodies are rejected instead of overflowing the stack.
+    @Test
+    public void testSubmitTaskBodyDepthLimited() {
+        StringBuilder sql = new StringBuilder();
+        for (int i = 0; i < 200; i++) {
+            sql.append("SUBMIT TASK x AS ");
+        }
+        sql.append("SELECT 1");
+        ParserException e = assertThrows(ParserException.class, () -> parse(sql.toString()));
+        assertTrue(e.getMessage().contains("maximum body nesting depth"), e.getMessage());
+    }
+
+    @Test
+    public void testCreatePipeBodyDepthLimited() {
+        StringBuilder sql = new StringBuilder();
+        for (int i = 0; i < 200; i++) {
+            sql.append("CREATE PIPE p AS ");
+        }
+        sql.append("INSERT INTO t SELECT 1");
+        ParserException e = assertThrows(ParserException.class, () -> parse(sql.toString()));
+        assertTrue(e.getMessage().contains("maximum body nesting depth"), e.getMessage());
     }
 }

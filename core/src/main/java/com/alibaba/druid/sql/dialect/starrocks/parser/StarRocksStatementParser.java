@@ -5,6 +5,7 @@ import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.starrocks.ast.StarRocksPartitionByExpr;
 import com.alibaba.druid.sql.dialect.starrocks.ast.statement.*;
 import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.util.FnvHash;
@@ -12,6 +13,15 @@ import com.alibaba.druid.util.FnvHash;
 import java.util.List;
 
 public class StarRocksStatementParser extends SQLStatementParser {
+    /**
+     * Guards {@code SUBMIT TASK ... AS <stmt>} / {@code CREATE PIPE ... AS <stmt>}, whose bodies are
+     * arbitrary statements and may therefore nest back into themselves. Without a cap, crafted input
+     * such as {@code SUBMIT TASK x AS SUBMIT TASK x AS ...} overflows the JVM stack.
+     * Mirrors the {@code MAX_LAMBDA_DEPTH} pattern in {@link SQLExprParser}.
+     */
+    private static final int MAX_BODY_DEPTH = 64;
+    private int bodyDepth;
+
     @Override
     public SQLSelectParser createSQLSelectParser() {
         return new StarRocksSelectParser(this.exprParser, selectListCache);
@@ -321,7 +331,9 @@ public class StarRocksStatementParser extends SQLStatementParser {
         }
 
         // Bare expression / column key form, with no trailing partition-definition list.
-        SQLPartitionByRange partitionBy = new SQLPartitionByRange();
+        // Deliberately not SQLPartitionByRange: the base output visitor would print a RANGE keyword
+        // that is not part of this syntax, corrupting the SQL on round-trip.
+        StarRocksPartitionByExpr partitionBy = new StarRocksPartitionByExpr();
         boolean parens = lexer.nextIf(Token.LPAREN);
         for (; ; ) {
             partitionBy.addColumn(this.exprParser.expr());
@@ -350,6 +362,25 @@ public class StarRocksStatementParser extends SQLStatementParser {
             accept(Token.RPAREN);
         }
         return partitionBy;
+    }
+
+    /**
+     * Parses the statement that follows {@code AS} in {@code SUBMIT TASK} / {@code CREATE PIPE},
+     * bounded by {@link #MAX_BODY_DEPTH} so that self-nesting input cannot overflow the stack.
+     */
+    protected SQLStatement parseEmbeddedBody() {
+        if (lexer.token() == Token.EOF) {
+            throw new ParserException("syntax error, expected statement after AS, " + lexer.info());
+        }
+        if (bodyDepth >= MAX_BODY_DEPTH) {
+            throw new ParserException("exceeded maximum body nesting depth, " + lexer.info());
+        }
+        bodyDepth++;
+        try {
+            return this.parseStatement();
+        } finally {
+            bodyDepth--;
+        }
     }
 
     protected SQLStatement parseSubmitTask() {
@@ -398,11 +429,7 @@ public class StarRocksStatementParser extends SQLStatementParser {
         }
 
         accept(Token.AS);
-        if (lexer.token() == Token.EOF) {
-            throw new ParserException("syntax error, expected statement after AS, " + lexer.info());
-        }
-        SQLStatement body = this.parseStatement();
-        stmt.setBody(body);
+        stmt.setBody(parseEmbeddedBody());
 
         return stmt;
     }
@@ -546,11 +573,7 @@ public class StarRocksStatementParser extends SQLStatementParser {
         }
 
         accept(Token.AS);
-        if (lexer.token() == Token.EOF) {
-            throw new ParserException("syntax error, expected statement after AS, " + lexer.info());
-        }
-        SQLStatement body = this.parseStatement();
-        stmt.setBody(body);
+        stmt.setBody(parseEmbeddedBody());
 
         return stmt;
     }
@@ -845,7 +868,12 @@ public class StarRocksStatementParser extends SQLStatementParser {
         accept(Token.ON);
         stmt.setTableName(this.exprParser.name());
 
-        if (lexer.identifierEquals("COLUMNS")) {
+        // Load-property clauses, comma-separated in StarRocks:
+        //   COLUMNS TERMINATED BY '<sep>', COLUMNS (<col> [, ...])
+        for (; ; ) {
+            if (!lexer.identifierEquals("COLUMNS")) {
+                break;
+            }
             Lexer.SavePoint mark = lexer.markOut();
             lexer.nextToken();
             if (lexer.token() == Token.LPAREN) {
@@ -858,8 +886,16 @@ public class StarRocksStatementParser extends SQLStatementParser {
                     lexer.nextToken();
                 }
                 accept(Token.RPAREN);
+            } else if (lexer.identifierEquals("TERMINATED")) {
+                lexer.nextToken();
+                accept(Token.BY);
+                stmt.setColumnTerminatedBy(parseLoadValue());
             } else {
                 lexer.reset(mark);
+                break;
+            }
+            if (lexer.token() == Token.COMMA) {
+                lexer.nextToken();
             }
         }
 

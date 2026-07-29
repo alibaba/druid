@@ -114,6 +114,7 @@ public class SQLCreateFunctionStatement extends SQLStatementImpl implements SQLC
             acceptChild(visitor, parameters);
             acceptChild(visitor, returnDataType);
             acceptChild(visitor, block);
+            acceptChild(visitor, using);
         }
         visitor.endVisit(this);
     }
@@ -286,6 +287,9 @@ public class SQLCreateFunctionStatement extends SQLStatementImpl implements SQLC
     }
 
     public void setUsing(SQLName using) {
+        if (using != null) {
+            using.setParent(this);
+        }
         this.using = using;
     }
 

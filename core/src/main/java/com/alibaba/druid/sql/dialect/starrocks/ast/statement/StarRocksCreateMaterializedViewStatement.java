@@ -122,6 +122,7 @@ public class StarRocksCreateMaterializedViewStatement extends SQLCreateMateriali
             acceptChild(visitor, getColumns());
             acceptChild(visitor, getComment());
             acceptChild(visitor, getPartitionBy());
+            acceptChild(visitor, getDistributedByType());
             acceptChild(visitor, getDistributedBy());
             acceptChild(visitor, buckets);
             acceptChild(visitor, orderBy);
@@ -145,6 +146,9 @@ public class StarRocksCreateMaterializedViewStatement extends SQLCreateMateriali
         }
         if (getPartitionBy() != null) {
             children.add(getPartitionBy());
+        }
+        if (getDistributedByType() != null) {
+            children.add(getDistributedByType());
         }
         children.addAll(getDistributedBy());
         if (buckets != null) {
@@ -216,6 +220,9 @@ public class StarRocksCreateMaterializedViewStatement extends SQLCreateMateriali
         }
         if (getComment() != null) {
             x.setComment(getComment().clone());
+        }
+        if (getDistributedByType() != null) {
+            x.setDistributedByType(getDistributedByType().clone());
         }
         for (SQLName item : getDistributedBy()) {
             SQLName cloned = item.clone();

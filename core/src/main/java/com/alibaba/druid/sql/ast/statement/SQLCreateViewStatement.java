@@ -274,6 +274,29 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLCreat
             if (subQuery != null) {
                 subQuery.accept(visitor);
             }
+
+            if (to != null) {
+                to.accept(visitor);
+            }
+
+            if (returns != null) {
+                returns.accept(visitor);
+            }
+
+            if (returnsDataType != null) {
+                returnsDataType.accept(visitor);
+            }
+
+            for (int i = 0; i < options.size(); i++) {
+                final SQLAssignItem option = options.get(i);
+                if (option != null) {
+                    option.accept(visitor);
+                }
+            }
+
+            if (script != null) {
+                script.accept(visitor);
+            }
         }
         visitor.endVisit(this);
     }
@@ -289,6 +312,19 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLCreat
         }
         if (subQuery != null) {
             children.add(subQuery);
+        }
+        if (to != null) {
+            children.add(to);
+        }
+        if (returns != null) {
+            children.add(returns);
+        }
+        if (returnsDataType != null) {
+            children.add(returnsDataType);
+        }
+        children.addAll(this.options);
+        if (script != null) {
+            children.add(script);
         }
         return children;
     }

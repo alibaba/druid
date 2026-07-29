@@ -247,6 +247,19 @@ public class SQLUpdateStatement extends SQLStatementImpl implements SQLReplaceab
         if (orderBy != null) {
             orderBy.accept(visitor);
         }
+
+        if (limit != null) {
+            limit.accept(visitor);
+        }
+
+        if (partitions != null) {
+            for (int i = 0; i < partitions.size(); i++) {
+                SQLAssignItem partition = partitions.get(i);
+                if (partition != null) {
+                    partition.accept(visitor);
+                }
+            }
+        }
     }
 
     public List<SQLObject> getChildren() {
@@ -263,6 +276,12 @@ public class SQLUpdateStatement extends SQLStatementImpl implements SQLReplaceab
         }
         if (orderBy != null) {
             children.add(orderBy);
+        }
+        if (limit != null) {
+            children.add(limit);
+        }
+        if (partitions != null) {
+            children.addAll(partitions);
         }
         return children;
     }

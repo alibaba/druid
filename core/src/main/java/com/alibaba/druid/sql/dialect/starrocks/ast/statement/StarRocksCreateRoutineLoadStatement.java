@@ -16,6 +16,7 @@ import java.util.List;
 public class StarRocksCreateRoutineLoadStatement extends SQLStatementImpl implements SQLDDLStatement, SQLCreateStatement {
     private SQLName name;
     private SQLName tableName;
+    private SQLExpr columnTerminatedBy;
     private List<SQLExpr> columns = new ArrayList<>();
     private SQLExpr whereCondition;
     private List<SQLAssignItem> properties = new ArrayList<>();
@@ -51,6 +52,17 @@ public class StarRocksCreateRoutineLoadStatement extends SQLStatementImpl implem
             x.setParent(this);
         }
         this.tableName = x;
+    }
+
+    public SQLExpr getColumnTerminatedBy() {
+        return columnTerminatedBy;
+    }
+
+    public void setColumnTerminatedBy(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.columnTerminatedBy = x;
     }
 
     public List<SQLExpr> getColumns() {
@@ -133,6 +145,7 @@ public class StarRocksCreateRoutineLoadStatement extends SQLStatementImpl implem
         if (visitor.visit(this)) {
             acceptChild(visitor, name);
             acceptChild(visitor, tableName);
+            acceptChild(visitor, columnTerminatedBy);
             acceptChild(visitor, (List) columns);
             acceptChild(visitor, whereCondition);
             acceptChild(visitor, (List) properties);
@@ -150,6 +163,9 @@ public class StarRocksCreateRoutineLoadStatement extends SQLStatementImpl implem
         }
         if (tableName != null) {
             children.add(tableName);
+        }
+        if (columnTerminatedBy != null) {
+            children.add(columnTerminatedBy);
         }
         children.addAll(columns);
         if (whereCondition != null) {
@@ -170,6 +186,9 @@ public class StarRocksCreateRoutineLoadStatement extends SQLStatementImpl implem
         }
         if (this.tableName != null) {
             x.setTableName(this.tableName.clone());
+        }
+        if (this.columnTerminatedBy != null) {
+            x.setColumnTerminatedBy(this.columnTerminatedBy.clone());
         }
         for (SQLExpr item : this.columns) {
             SQLExpr cloned = item.clone();

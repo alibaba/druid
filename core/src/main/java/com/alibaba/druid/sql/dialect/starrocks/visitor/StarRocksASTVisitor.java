@@ -1,9 +1,17 @@
 package com.alibaba.druid.sql.dialect.starrocks.visitor;
 
+import com.alibaba.druid.sql.dialect.starrocks.ast.StarRocksPartitionByExpr;
 import com.alibaba.druid.sql.dialect.starrocks.ast.statement.*;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public interface StarRocksASTVisitor extends SQLASTVisitor {
+    default boolean visit(StarRocksPartitionByExpr x) {
+        return true;
+    }
+
+    default void endVisit(StarRocksPartitionByExpr x) {
+    }
+
     default boolean visit(StarRocksCreateTableStatement x) {
         return true;
     }
