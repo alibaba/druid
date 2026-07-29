@@ -207,7 +207,9 @@ public class SQLExprParser extends SQLParser {
 
     protected SQLLambdaExpr tryParseLambda(SQLExpr expr) {
         if (lambdaDepth >= MAX_LAMBDA_DEPTH) {
-            return null;
+            // returning null here would silently fall through to the JSON-arrow (SubGt) branch and
+            // build a different expression, so fail loudly instead
+            throw new ParserException("lambda nesting too deep, " + lexer.info());
         }
         if (expr instanceof SQLIdentifierExpr) {
             Lexer.SavePoint mark = lexer.markOut();

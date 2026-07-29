@@ -15,6 +15,8 @@ import java.util.List;
 public class StarRocksLoadStatement extends SQLStatementImpl {
     private SQLName label;
     private List<DataDescription> dataDescriptions = new ArrayList<>();
+    private boolean withBroker;
+    private SQLExpr brokerName;
     private List<SQLAssignItem> brokerProperties = new ArrayList<>();
     private List<SQLAssignItem> properties = new ArrayList<>();
 
@@ -52,6 +54,25 @@ public class StarRocksLoadStatement extends SQLStatementImpl {
         this.dataDescriptions.add(x);
     }
 
+    public boolean isWithBroker() {
+        return withBroker;
+    }
+
+    public void setWithBroker(boolean withBroker) {
+        this.withBroker = withBroker;
+    }
+
+    public SQLExpr getBrokerName() {
+        return brokerName;
+    }
+
+    public void setBrokerName(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.brokerName = x;
+    }
+
     public List<SQLAssignItem> getBrokerProperties() {
         return brokerProperties;
     }
@@ -87,6 +108,7 @@ public class StarRocksLoadStatement extends SQLStatementImpl {
         if (visitor.visit(this)) {
             acceptChild(visitor, label);
             acceptChild(visitor, (List) dataDescriptions);
+            acceptChild(visitor, brokerName);
             acceptChild(visitor, (List) brokerProperties);
             acceptChild(visitor, (List) properties);
         }
@@ -100,6 +122,9 @@ public class StarRocksLoadStatement extends SQLStatementImpl {
             children.add(label);
         }
         children.addAll(dataDescriptions);
+        if (brokerName != null) {
+            children.add(brokerName);
+        }
         children.addAll(brokerProperties);
         children.addAll(properties);
         return children;
@@ -107,6 +132,7 @@ public class StarRocksLoadStatement extends SQLStatementImpl {
 
     public StarRocksLoadStatement clone() {
         StarRocksLoadStatement x = new StarRocksLoadStatement();
+        cloneTo(x);
         if (this.label != null) {
             x.setLabel(this.label.clone());
         }
@@ -114,6 +140,10 @@ public class StarRocksLoadStatement extends SQLStatementImpl {
             DataDescription cloned = item.clone();
             cloned.setParent(x);
             x.dataDescriptions.add(cloned);
+        }
+        x.withBroker = this.withBroker;
+        if (this.brokerName != null) {
+            x.setBrokerName(this.brokerName.clone());
         }
         for (SQLAssignItem item : this.brokerProperties) {
             SQLAssignItem cloned = item.clone();

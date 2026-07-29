@@ -129,7 +129,10 @@ public abstract class SQLPartitionBy extends SQLObjectImpl {
             x.storeIn.add(name2);
         }
 
-        x.lifeCycle = lifeCycle;
+        x.auto = auto;
+        if (lifeCycle != null) {
+            x.setLifeCycle(lifeCycle.clone());
+        }
     }
 
     public boolean isPartitionByColumn(long columnNameHashCode64) {

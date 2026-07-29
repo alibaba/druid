@@ -18,6 +18,7 @@ package com.alibaba.druid.sql.ast.expr;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
@@ -69,7 +70,10 @@ public final class SQLAllColumnExpr extends SQLExprImpl implements SQLName {
     }
 
     protected void accept0(SQLASTVisitor visitor) {
-        visitor.visit(this);
+        if (visitor.visit(this)) {
+            acceptChild(visitor, except);
+            acceptChild(visitor, replace);
+        }
         visitor.endVisit(this);
     }
 
@@ -140,6 +144,16 @@ public final class SQLAllColumnExpr extends SQLExprImpl implements SQLName {
 
     @Override
     public List getChildren() {
-        return Collections.emptyList();
+        if ((except == null || except.isEmpty()) && (replace == null || replace.isEmpty())) {
+            return Collections.emptyList();
+        }
+        List<SQLObject> children = new ArrayList<SQLObject>();
+        if (except != null) {
+            children.addAll(except);
+        }
+        if (replace != null) {
+            children.addAll(replace);
+        }
+        return children;
     }
 }

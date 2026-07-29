@@ -86,13 +86,20 @@ public class SQLCastExpr extends SQLExprImpl implements SQLObjectWithDataType, S
             if (this.dataType != null) {
                 this.dataType.accept(visitor);
             }
+
+            if (this.format != null) {
+                this.format.accept(visitor);
+            }
         }
         visitor.endVisit(this);
     }
 
     @Override
     public List getChildren() {
-        return Arrays.asList(this.expr, this.dataType);
+        if (this.format == null) {
+            return Arrays.asList(this.expr, this.dataType);
+        }
+        return Arrays.asList(this.expr, this.dataType, this.format);
     }
 
     @Override

@@ -115,6 +115,7 @@ public class StarRocksCreateCatalogStatement extends SQLStatementImpl implements
 
     public StarRocksCreateCatalogStatement clone() {
         StarRocksCreateCatalogStatement x = new StarRocksCreateCatalogStatement();
+        cloneTo(x);
         x.external = this.external;
         x.orReplace = this.orReplace;
         x.ifNotExists = this.ifNotExists;

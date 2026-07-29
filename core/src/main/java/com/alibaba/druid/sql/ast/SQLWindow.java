@@ -37,6 +37,7 @@ public class SQLWindow extends SQLObjectImpl {
         SQLName name2 = name == null ? null : name.clone();
         SQLOver over2 = over == null ? null : over.clone();
         SQLWindow x = new SQLWindow(name2, over2);
+        cloneTo(x);
         return x;
     }
 

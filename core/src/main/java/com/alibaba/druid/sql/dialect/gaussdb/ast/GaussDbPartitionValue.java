@@ -83,6 +83,7 @@ public class GaussDbPartitionValue extends SQLPartitionValue {
     @Override
     public void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
+            acceptChild(visitor, getItems());
             acceptChild(visitor, start);
             acceptChild(visitor, end);
             acceptChild(visitor, every);

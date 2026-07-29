@@ -89,7 +89,7 @@ public class StarRocksStatementParser extends SQLStatementParser {
                 && tableName instanceof SQLIdentifierExpr
                 && ("FILES".equalsIgnoreCase(tableName.getSimpleName())
                     || "BLACKHOLE".equalsIgnoreCase(tableName.getSimpleName()))) {
-            insertStatement.setDbType(DbType.starrocks);
+            insertStatement.setDbType(this.dbType);
             lexer.nextToken();
             if (lexer.token() != Token.RPAREN) {
                 for (; ; ) {
@@ -105,29 +105,52 @@ public class StarRocksStatementParser extends SQLStatementParser {
         }
     }
 
+    // WITH LABEL and BY NAME are each accepted in two positions: the canonical StarRocks order
+    // (WITH LABEL after PARTITION, BY NAME after the column list) and the order this parser has
+    // historically accepted (before them), so previously-parseable SQL keeps working.
     @Override
     protected void parseInsert0AfterAlias(SQLInsertInto insertStatement) {
-        if (lexer.token() == Token.WITH) {
-            Lexer.SavePoint mark = lexer.markOut();
-            lexer.nextToken();
-            if (lexer.identifierEquals("LABEL")) {
-                lexer.nextToken();
-                insertStatement.setDbType(DbType.starrocks);
-                insertStatement.setLabel(this.exprParser.name());
-            } else {
-                lexer.reset(mark);
-            }
-        }
+        parseInsertLabel(insertStatement);
+    }
+
+    @Override
+    protected void parseInsert0AfterPartition(SQLInsertInto insertStatement) {
+        parseInsertLabel(insertStatement);
     }
 
     @Override
     protected void parseInsert0BeforeColumns(SQLInsertInto insertStatement) {
-        if (lexer.token() == Token.BY) {
-            lexer.nextToken();
-            acceptIdentifier("NAME");
-            insertStatement.setDbType(DbType.starrocks);
-            insertStatement.setByName(true);
+        parseInsertByName(insertStatement);
+    }
+
+    @Override
+    protected void parseInsert0AfterColumns(SQLInsertInto insertStatement) {
+        parseInsertByName(insertStatement);
+    }
+
+    protected void parseInsertLabel(SQLInsertInto insertStatement) {
+        if (insertStatement.getLabel() != null || lexer.token() != Token.WITH) {
+            return;
         }
+        Lexer.SavePoint mark = lexer.markOut();
+        lexer.nextToken();
+        if (lexer.identifierEquals("LABEL")) {
+            lexer.nextToken();
+            insertStatement.setDbType(this.dbType);
+            insertStatement.setLabel(this.exprParser.name());
+        } else {
+            lexer.reset(mark);
+        }
+    }
+
+    protected void parseInsertByName(SQLInsertInto insertStatement) {
+        if (insertStatement.isByName() || lexer.token() != Token.BY) {
+            return;
+        }
+        lexer.nextToken();
+        acceptIdentifier("NAME");
+        insertStatement.setDbType(this.dbType);
+        insertStatement.setByName(true);
     }
 
     @Override
@@ -213,6 +236,7 @@ public class StarRocksStatementParser extends SQLStatementParser {
                 lexer.nextToken();
                 accept(Token.BY);
                 if (lexer.nextIfIdentifier(FnvHash.Constants.HASH)) {
+                    stmt.setDistributedByType(new SQLIdentifierExpr("HASH"));
                     accept(Token.LPAREN);
                     for (; ; ) {
                         SQLName distCol = this.exprParser.name();
@@ -225,6 +249,13 @@ public class StarRocksStatementParser extends SQLStatementParser {
                         break;
                     }
                     accept(Token.RPAREN);
+                } else if (lexer.nextIfIdentifier(FnvHash.Constants.RANDOM)) {
+                    stmt.setDistributedByType(new SQLIdentifierExpr("RANDOM"));
+                } else {
+                    // Neither form present: without this the clause would be consumed and silently
+                    // dropped, losing the distribution entirely.
+                    throw new ParserException("syntax error, expected HASH(...) or RANDOM after DISTRIBUTED BY, "
+                            + lexer.info());
                 }
                 if (lexer.nextIfIdentifier(FnvHash.Constants.BUCKETS)) {
                     stmt.setBuckets(this.exprParser.expr());
@@ -377,7 +408,10 @@ public class StarRocksStatementParser extends SQLStatementParser {
         }
         bodyDepth++;
         try {
-            return this.parseStatement();
+            // parseStatement0(), not parseStatement(): the latter consumes a trailing ';', which
+            // belongs to the enclosing SUBMIT TASK / CREATE PIPE, not to its body. Swallowing it
+            // breaks every multi-statement script containing one of these.
+            return this.parseStatement0();
         } finally {
             bodyDepth--;
         }
@@ -786,12 +820,10 @@ public class StarRocksStatementParser extends SQLStatementParser {
         if (lexer.token() == Token.WITH) {
             lexer.nextToken();
             acceptIdentifier("BROKER");
+            stmt.setWithBroker(true);
             // Optional broker name as a string literal: WITH BROKER "my_broker" (...).
-            // StarRocksLoadStatement has no brokerName field, so the name is consumed but not
-            // stored (it would otherwise be dropped silently and abort the parse on the next
-            // token). TODO: add a brokerName field to StarRocksLoadStatement to preserve it.
             if (lexer.token() == Token.LITERAL_CHARS || lexer.token() == Token.LITERAL_ALIAS) {
-                lexer.nextToken();
+                stmt.setBrokerName(parseLoadValue());
             }
             if (lexer.token() == Token.LPAREN) {
                 accept(Token.LPAREN);

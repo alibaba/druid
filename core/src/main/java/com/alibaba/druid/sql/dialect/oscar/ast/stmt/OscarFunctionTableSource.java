@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.ast.SQLParameter;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.dialect.oscar.ast.OscarObject;
 import com.alibaba.druid.sql.dialect.oscar.visitor.OscarASTVisitor;
-import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
@@ -43,7 +42,17 @@ public class OscarFunctionTableSource extends SQLExprTableSource implements Osca
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
-        this.accept0((PGASTVisitor) visitor);
+        if (visitor instanceof OscarASTVisitor) {
+            this.accept0((OscarASTVisitor) visitor);
+            return;
+        }
+        // the unconditional PGASTVisitor cast used to throw ClassCastException for every other
+        // visitor, including Oscar's own output visitor
+        if (visitor.visit(this)) {
+            acceptChild(visitor, this.expr);
+            acceptChild(visitor, this.parameters);
+        }
+        visitor.endVisit(this);
     }
 
     public void accept0(OscarASTVisitor visitor) {
@@ -59,6 +68,10 @@ public class OscarFunctionTableSource extends SQLExprTableSource implements Osca
         OscarFunctionTableSource x = new OscarFunctionTableSource();
 
         x.setAlias(this.alias);
+
+        if (this.expr != null) {
+            x.setExpr(this.expr.clone());
+        }
 
         for (SQLParameter e : this.parameters) {
             SQLParameter e2 = e.clone();

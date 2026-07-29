@@ -38,6 +38,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreatePackageStatemen
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleFunctionDataType;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleProcedureDataType;
+import com.alibaba.druid.sql.dialect.starrocks.ast.statement.*;
 import com.alibaba.druid.sql.parser.CharTypes;
 import com.alibaba.druid.sql.template.SQLSelectQueryTemplate;
 import com.alibaba.druid.util.FnvHash;
@@ -3810,31 +3811,25 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         x.getTableSource().accept(this);
 
         // tableOptions / WITH LABEL / BY NAME are StarRocks(-family) INSERT syntax stored on the shared
-        // SQLInsertInto base; only emit them for a StarRocks/Doris statement so they don't leak into
-        // other dialects. Gate on the statement's own dbType (the visitor's dbType is null for the
-        // generic toString() path that a StarRocks INSERT INTO FILES round-trip relies on).
-        DbType stmtDbType = x.getDbType();
-        boolean starRocksInsert = stmtDbType == DbType.starrocks || stmtDbType == DbType.doris;
-
-        if (starRocksInsert && x.getTableOptions() != null && !x.getTableOptions().isEmpty()) {
+        // SQLInsertInto base. Gate on the fields themselves rather than on the statement's dbType:
+        // only the StarRocks parser hooks ever populate them, and dbType is unset both for the
+        // generic toString() path and for statements built through the AST API.
+        if (x.getTableOptions() != null && !x.getTableOptions().isEmpty()) {
             print0("(");
             printAndAccept(x.getTableOptions(), ", ");
             print0(")");
         }
 
-        if (starRocksInsert && x.getLabel() != null) {
-            print0(ucase ? " WITH LABEL " : " with label ");
-            x.getLabel().accept(this);
-        }
-
+        // canonical StarRocks order: PARTITION, WITH LABEL, columns, BY NAME
         if (x.getPartitions() != null && !x.getPartitions().isEmpty()) {
             print0(ucase ? " PARTITION (" : " partition (");
             printAndAccept(x.getPartitions(), ", ");
             print(')');
         }
 
-        if (starRocksInsert && x.isByName()) {
-            print0(ucase ? " BY NAME" : " by name");
+        if (x.getLabel() != null) {
+            print0(ucase ? " WITH LABEL " : " with label ");
+            x.getLabel().accept(this);
         }
 
         String columnsString = x.getColumnsString();
@@ -3842,6 +3837,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print0(columnsString);
         } else {
             printInsertColumns(x.getColumns());
+        }
+
+        if (x.isByName()) {
+            print0(ucase ? " BY NAME" : " by name");
         }
 
         if (!x.getValuesList().isEmpty()) {
@@ -12610,4 +12609,64 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     public String toString() {
         return appender.toString();
     }
+
+    /**
+     * StarRocks-only statements reach this generic visitor whenever a caller formats them with an
+     * explicit non-StarRocks dbType. The inherited {@link SQLASTVisitor} defaults return {@code true},
+     * which would descend into the children and print them without any of the surrounding keywords —
+     * silently producing a different, syntactically plausible statement. Delegate to the StarRocks
+     * printer instead so the output is at least correct SQL.
+     *
+     * <p>Only types that {@code StarRocksOutputVisitor} really implements may be routed here;
+     * otherwise the delegation would recurse back into this method.
+     */
+    protected boolean printStarRocksStatement(SQLObject x) {
+        print0(SQLUtils.toSQLString(x, DbType.starrocks));
+        return false;
+    }
+
+    public boolean visit(StarRocksSubmitTaskStatement x) {
+        return printStarRocksStatement(x);
+    }
+
+    public boolean visit(StarRocksCreateCatalogStatement x) {
+        return printStarRocksStatement(x);
+    }
+
+    public boolean visit(StarRocksCreateMaterializedViewStatement x) {
+        return printStarRocksStatement(x);
+    }
+
+    public boolean visit(StarRocksCreatePipeStatement x) {
+        return printStarRocksStatement(x);
+    }
+
+    public boolean visit(StarRocksCreateDictionaryStatement x) {
+        return printStarRocksStatement(x);
+    }
+
+    public boolean visit(StarRocksCreateStorageVolumeStatement x) {
+        return printStarRocksStatement(x);
+    }
+
+    public boolean visit(StarRocksCreateRoutineLoadStatement x) {
+        return printStarRocksStatement(x);
+    }
+
+    public boolean visit(StarRocksCreateResourceStatement x) {
+        return printStarRocksStatement(x);
+    }
+
+    public boolean visit(StarRocksLoadStatement x) {
+        return printStarRocksStatement(x);
+    }
+
+    public boolean visit(StarRocksBackupStatement x) {
+        return printStarRocksStatement(x);
+    }
+
+    public boolean visit(StarRocksRestoreStatement x) {
+        return printStarRocksStatement(x);
+    }
+
 }

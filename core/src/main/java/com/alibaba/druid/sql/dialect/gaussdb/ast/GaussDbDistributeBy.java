@@ -23,6 +23,9 @@ public class GaussDbDistributeBy extends GaussDbObjectImpl {
     }
 
     public void setType(SQLName type) {
+        if (type != null) {
+            type.setParent(this);
+        }
         this.type = type;
     }
 
@@ -83,7 +86,45 @@ public class GaussDbDistributeBy extends GaussDbObjectImpl {
     }
 
     public void setLifeCycle(SQLIntegerExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
         this.lifeCycle = x;
+    }
+
+    @Override
+    public GaussDbDistributeBy clone() {
+        GaussDbDistributeBy x = new GaussDbDistributeBy();
+        cloneTo(x);
+        return x;
+    }
+
+    public void cloneTo(GaussDbDistributeBy x) {
+        super.cloneTo(x);
+        if (subPartitionBy != null) {
+            x.setSubPartitionBy(subPartitionBy.clone());
+        }
+        for (SQLPartition distribution : distributions) {
+            SQLPartition d2 = distribution.clone();
+            d2.setParent(x);
+            x.distributions.add(d2);
+        }
+        for (SQLName name : storeIn) {
+            SQLName n2 = name.clone();
+            n2.setParent(x);
+            x.storeIn.add(n2);
+        }
+        for (SQLExpr column : columns) {
+            SQLExpr c2 = column.clone();
+            c2.setParent(x);
+            x.columns.add(c2);
+        }
+        if (type != null) {
+            x.setType(type.clone());
+        }
+        if (lifeCycle != null) {
+            x.setLifeCycle(lifeCycle.clone());
+        }
     }
 
     @Override

@@ -39,13 +39,13 @@ public class SQLCommitStatement extends SQLStatementImpl {
 
     public SQLCommitStatement clone() {
         SQLCommitStatement x = new SQLCommitStatement();
+        cloneTo(x);
         x.write = write;
         x.wait = wait;
         x.immediate = immediate;
         x.work = work;
         x.chain = chain;
         x.release = release;
-        x.afterSemi = afterSemi;
 
         if (transactionName != null) {
             x.setTransactionName(transactionName.clone());

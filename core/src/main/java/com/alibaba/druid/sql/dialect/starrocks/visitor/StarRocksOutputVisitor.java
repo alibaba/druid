@@ -395,11 +395,17 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
             x.getPartitionBy().accept(this);
         }
 
-        if (!x.getDistributedBy().isEmpty()) {
+        boolean randomDistribution = x.getDistributedByType() != null
+                && "RANDOM".equalsIgnoreCase(x.getDistributedByType().getSimpleName());
+        if (randomDistribution || !x.getDistributedBy().isEmpty()) {
             println();
-            print0(ucase ? "DISTRIBUTED BY HASH (" : "distributed by hash (");
-            printAndAccept(x.getDistributedBy(), ", ");
-            print0(")");
+            if (randomDistribution) {
+                print0(ucase ? "DISTRIBUTED BY RANDOM" : "distributed by random");
+            } else {
+                print0(ucase ? "DISTRIBUTED BY HASH (" : "distributed by hash (");
+                printAndAccept(x.getDistributedBy(), ", ");
+                print0(")");
+            }
             if (x.getBuckets() != null) {
                 print0(ucase ? " BUCKETS " : " buckets ");
                 x.getBuckets().accept(this);
@@ -635,19 +641,26 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
         println();
         print0(")");
 
-        if (!x.getBrokerProperties().isEmpty()) {
+        if (x.isWithBroker() || x.getBrokerName() != null || !x.getBrokerProperties().isEmpty()) {
             println();
-            print0(ucase ? "WITH BROKER (" : "with broker (");
-            incrementIndent();
-            println();
-            int i = 0;
-            for (SQLAssignItem property : x.getBrokerProperties()) {
-                printTableOption(property.getTarget(), property.getValue(), i);
-                ++i;
+            print0(ucase ? "WITH BROKER" : "with broker");
+            if (x.getBrokerName() != null) {
+                print(' ');
+                x.getBrokerName().accept(this);
             }
-            decrementIndent();
-            println();
-            print0(")");
+            if (!x.getBrokerProperties().isEmpty()) {
+                print0(" (");
+                incrementIndent();
+                println();
+                int i = 0;
+                for (SQLAssignItem property : x.getBrokerProperties()) {
+                    printTableOption(property.getTarget(), property.getValue(), i);
+                    ++i;
+                }
+                decrementIndent();
+                println();
+                print0(")");
+            }
         }
 
         if (!x.getProperties().isEmpty()) {
@@ -809,7 +822,13 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
         println();
 
         print0(ucase ? "PROPERTIES" : "properties");
-        print(x.getProperties());
+        if (x.getProperties().isEmpty()) {
+            // print(List) emits nothing at all for an empty list, and the parser requires
+            // "PROPERTIES (" — so a bare "PROPERTIES" would not re-parse.
+            print0(" ()");
+        } else {
+            print(x.getProperties());
+        }
         return false;
     }
 

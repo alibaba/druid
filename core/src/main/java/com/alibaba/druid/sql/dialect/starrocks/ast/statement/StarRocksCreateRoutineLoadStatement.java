@@ -181,6 +181,7 @@ public class StarRocksCreateRoutineLoadStatement extends SQLStatementImpl implem
 
     public StarRocksCreateRoutineLoadStatement clone() {
         StarRocksCreateRoutineLoadStatement x = new StarRocksCreateRoutineLoadStatement();
+        cloneTo(x);
         if (this.name != null) {
             x.setName(this.name.clone());
         }

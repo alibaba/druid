@@ -51,6 +51,7 @@ public class BigQueryTableExpr extends SQLExprImpl implements BigQueryObject {
         if (name != null) {
             x.setName(name.clone());
         }
+        x.setParenthesized(parenthesized);
         return x;
     }
 

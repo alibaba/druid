@@ -14,7 +14,9 @@ public class PrestoDateTimeExpr extends OracleDatetimeExpr implements PrestoObje
     public PrestoDateTimeExpr clone() {
         SQLExpr exprClone = getExpr() == null ? null : getExpr().clone();
         SQLExpr timeZoneClone = getTimeZone() == null ? null : getTimeZone().clone();
-        return new PrestoDateTimeExpr(exprClone, timeZoneClone);
+        PrestoDateTimeExpr x = new PrestoDateTimeExpr(exprClone, timeZoneClone);
+        cloneTo(x);
+        return x;
     }
 
     @Override

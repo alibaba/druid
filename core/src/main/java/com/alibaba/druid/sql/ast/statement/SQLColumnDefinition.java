@@ -106,6 +106,9 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
     }
 
     public void setAggType(SQLCharExpr aggType) {
+        if (aggType != null) {
+            aggType.setParent(this);
+        }
         this.aggType = aggType;
     }
 
@@ -311,6 +314,10 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
             this.acceptChild(visitor, dataType);
             this.acceptChild(visitor, defaultExpr);
             this.acceptChild(visitor, constraints);
+            this.acceptChild(visitor, aggType);
+            this.acceptChild(visitor, encode);
+            this.acceptChild(visitor, compression);
+            this.acceptChild(visitor, blockSize);
         }
         visitor.endVisit(this);
     }
@@ -368,8 +375,8 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
     }
 
     public void setCollateExpr(SQLExpr x) {
-        if (charsetExpr != null) {
-            charsetExpr.setParent(this);
+        if (x != null) {
+            x.setParent(this);
         }
         this.collateExpr = x;
     }
@@ -379,8 +386,8 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
     }
 
     public void setAsExpr(SQLExpr asExpr) {
-        if (charsetExpr != null) {
-            charsetExpr.setParent(this);
+        if (asExpr != null) {
+            asExpr.setParent(this);
         }
         this.asExpr = asExpr;
     }
@@ -925,6 +932,9 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
     }
 
     public void setEncode(SQLExpr encode) {
+        if (encode != null) {
+            encode.setParent(this);
+        }
         this.encode = encode;
     }
 
@@ -933,10 +943,16 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
     }
 
     public void setCompression(SQLExpr compression) {
+        if (compression != null) {
+            compression.setParent(this);
+        }
         this.compression = compression;
     }
 
     public void setBlockSize(SQLIntegerExpr blockSize) {
+        if (blockSize != null) {
+            blockSize.setParent(this);
+        }
         this.blockSize = blockSize;
     }
 

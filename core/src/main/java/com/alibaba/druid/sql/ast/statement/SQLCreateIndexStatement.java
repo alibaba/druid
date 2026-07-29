@@ -161,9 +161,8 @@ public class SQLCreateIndexStatement extends SQLStatementImpl implements SQLCrea
     public void cloneTo(SQLCreateIndexStatement x) {
         indexDefinition.cloneTo(x.indexDefinition);
         x.setIfNotExists(ifNotExists);
-        x.dbType = dbType;
-        x.afterSemi = afterSemi;
-        x.headHints = headHints;
+        // dbType/afterSemi/headHints are handled by SQLStatementImpl.cloneTo
+        super.cloneTo(x);
     }
 
     public SQLCreateIndexStatement clone() {

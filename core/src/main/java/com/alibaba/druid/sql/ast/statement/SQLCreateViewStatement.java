@@ -459,17 +459,6 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLCreat
         }
 
         x.onCluster = onCluster;
-        if (x.to != null) {
-            to = x.to.clone();
-        }
-
-        if (x.returns != null) {
-            returns = x.returns.clone();
-        }
-
-        if (x.returnsDataType != null) {
-            returnsDataType = x.returnsDataType.clone();
-        }
 
         x.setTemporary(temporary);
         x.dbType = dbType;

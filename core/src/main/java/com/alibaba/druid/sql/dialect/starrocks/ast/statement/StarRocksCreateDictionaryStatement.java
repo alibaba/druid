@@ -114,6 +114,7 @@ public class StarRocksCreateDictionaryStatement extends SQLStatementImpl impleme
 
     public StarRocksCreateDictionaryStatement clone() {
         StarRocksCreateDictionaryStatement x = new StarRocksCreateDictionaryStatement();
+        cloneTo(x);
         x.orReplace = this.orReplace;
         if (this.name != null) {
             x.setName(this.name.clone());

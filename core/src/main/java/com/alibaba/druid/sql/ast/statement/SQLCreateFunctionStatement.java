@@ -66,7 +66,8 @@ public class SQLCreateFunctionStatement extends SQLStatementImpl implements SQLC
     }
 
     public void cloneTo(SQLCreateFunctionStatement x) {
-        x.dbType = dbType;
+        // carries dbType, afterSemi, headHints, comments and attributes
+        super.cloneTo(x);
         if (definer != null) {
             x.setDefiner(definer.clone());
         }
@@ -103,7 +104,11 @@ public class SQLCreateFunctionStatement extends SQLStatementImpl implements SQLC
         if (using != null) {
             x.setUsing(using.clone());
         }
-        x.afterSemi = afterSemi;
+        for (SQLAssignItem option : options) {
+            SQLAssignItem option2 = option.clone();
+            option2.setParent(x);
+            x.options.add(option2);
+        }
     }
 
     @Override
@@ -115,6 +120,7 @@ public class SQLCreateFunctionStatement extends SQLStatementImpl implements SQLC
             acceptChild(visitor, returnDataType);
             acceptChild(visitor, block);
             acceptChild(visitor, using);
+            acceptChild(visitor, options);
         }
         visitor.endVisit(this);
     }

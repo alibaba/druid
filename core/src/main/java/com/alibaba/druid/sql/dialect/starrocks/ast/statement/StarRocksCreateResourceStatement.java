@@ -100,6 +100,7 @@ public class StarRocksCreateResourceStatement extends SQLStatementImpl implement
 
     public StarRocksCreateResourceStatement clone() {
         StarRocksCreateResourceStatement x = new StarRocksCreateResourceStatement();
+        cloneTo(x);
         x.external = this.external;
         x.orReplace = this.orReplace;
         if (this.name != null) {

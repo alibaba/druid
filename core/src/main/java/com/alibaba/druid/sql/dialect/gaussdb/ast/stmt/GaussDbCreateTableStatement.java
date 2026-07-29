@@ -130,10 +130,8 @@ public class GaussDbCreateTableStatement extends SQLCreateTableStatement impleme
 
     public void cloneTo(GaussDbCreateTableStatement x) {
         super.cloneTo(x);
-        // GaussDbDistributeBy does not override clone() (inherited SQLObjectImpl.clone() throws),
-        // so reference-copy distributeBy. See compileConcerns.
         if (distributeBy != null) {
-            x.distributeBy = distributeBy;
+            x.setDistributeBy(distributeBy.clone());
         }
         if (toGroup != null) {
             x.setToGroup(toGroup.clone());

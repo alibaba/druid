@@ -193,8 +193,20 @@ public class SQLDropTableStatement extends SQLStatementImpl implements SQLDropSt
     }
 
     protected void cloneTo(SQLDropTableStatement x) {
+        x.dbType = dbType;
         if (hints != null) {
-            x.hints = new ArrayList<>(hints);
+            // clone the elements too: a shared SQLCommentHint lets a mutation of the clone
+            // rewrite the original statement's SQL
+            x.hints = new ArrayList<>(hints.size());
+            for (SQLCommentHint hint : hints) {
+                if (hint == null) {
+                    x.hints.add(null);
+                    continue;
+                }
+                SQLCommentHint hint2 = hint.clone();
+                hint2.setParent(x);
+                x.hints.add(hint2);
+            }
         }
         tableSources.forEach(e -> {
             SQLExprTableSource e2 = e.clone();

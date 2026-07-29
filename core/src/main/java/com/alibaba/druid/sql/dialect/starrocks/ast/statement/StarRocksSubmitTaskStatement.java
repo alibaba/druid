@@ -115,6 +115,7 @@ public class StarRocksSubmitTaskStatement extends SQLStatementImpl {
 
     public StarRocksSubmitTaskStatement clone() {
         StarRocksSubmitTaskStatement x = new StarRocksSubmitTaskStatement();
+        cloneTo(x);
         if (this.name != null) {
             x.setName(this.name.clone());
         }

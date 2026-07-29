@@ -3872,6 +3872,18 @@ public class SQLStatementParser extends SQLParser {
     protected void parseInsert0BeforeColumns(SQLInsertInto insertStatement) {
     }
 
+    /**
+     * Hook after the PARTITION (...) clause. Canonical StarRocks places WITH LABEL here.
+     */
+    protected void parseInsert0AfterPartition(SQLInsertInto insertStatement) {
+    }
+
+    /**
+     * Hook after the column list. Canonical StarRocks places BY NAME here.
+     */
+    protected void parseInsert0AfterColumns(SQLInsertInto insertStatement) {
+    }
+
     protected void parseInsert0(SQLInsertInto insertStatement, boolean acceptSubQuery) {
         if (lexer.nextIf(OVERWRITE) || lexer.nextIfIdentifier(Constants.OVERWRITE)) {
             parseInsertOverwrite(insertStatement);
@@ -3918,6 +3930,8 @@ public class SQLStatementParser extends SQLParser {
             accept(Token.RPAREN);
         }
 
+        parseInsert0AfterPartition(insertStatement);
+
         parseInsert0BeforeColumns(insertStatement);
 
         if (lexer.token == (Token.LPAREN)) {
@@ -3925,6 +3939,8 @@ public class SQLStatementParser extends SQLParser {
             parseInsertColumns(insertStatement);
             accept(Token.RPAREN);
         }
+
+        parseInsert0AfterColumns(insertStatement);
 
         if (lexer.token == Token.VALUES) {
             lexer.nextToken();

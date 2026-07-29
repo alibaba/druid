@@ -106,6 +106,7 @@ public class StarRocksCreatePipeStatement extends SQLStatementImpl implements SQ
 
     public StarRocksCreatePipeStatement clone() {
         StarRocksCreatePipeStatement x = new StarRocksCreatePipeStatement();
+        cloneTo(x);
         x.orReplace = this.orReplace;
         x.ifNotExists = this.ifNotExists;
         if (this.name != null) {

@@ -15,7 +15,6 @@
  */
 package com.alibaba.druid.sql.parser;
 
-import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
@@ -1193,7 +1192,8 @@ public class SQLSelectParser extends SQLParser {
                     break;
                 }
             }
-            if (lexer.token == Token.RPAREN && dbType == DbType.bigquery) {
+            if (lexer.token == Token.RPAREN
+                    && dialectFeatureEnabled(SelectListRparenBreak)) {
                 break;
             }
         }
@@ -1608,7 +1608,8 @@ public class SQLSelectParser extends SQLParser {
             tableSource.addAfterComment(lexer.readAndResetComments());
         }
 
-        if (lexer.token == Token.HINT && dbType == DbType.odps) {
+        if (lexer.token == Token.HINT
+                && dialectFeatureEnabled(TableSourceHint)) {
             List<SQLCommentHint> hints = this.exprParser.parseHints();
             for (SQLCommentHint hint : hints) {
                 tableSource.addAfterComment(hint.getText());

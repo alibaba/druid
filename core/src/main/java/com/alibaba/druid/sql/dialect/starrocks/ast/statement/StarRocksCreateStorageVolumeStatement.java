@@ -140,6 +140,7 @@ public class StarRocksCreateStorageVolumeStatement extends SQLStatementImpl impl
 
     public StarRocksCreateStorageVolumeStatement clone() {
         StarRocksCreateStorageVolumeStatement x = new StarRocksCreateStorageVolumeStatement();
+        cloneTo(x);
         x.ifNotExists = this.ifNotExists;
         x.orReplace = this.orReplace;
         if (this.name != null) {

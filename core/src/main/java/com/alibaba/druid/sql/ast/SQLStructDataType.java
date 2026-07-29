@@ -82,9 +82,11 @@ public class SQLStructDataType extends SQLObjectImpl implements SQLDataType {
 
     public SQLStructDataType clone() {
         SQLStructDataType x = new SQLStructDataType(dbType);
+        cloneTo(x);
 
         for (Field field : fields) {
-            x.addField(field.name == null ? null : field.name.clone(), field.dataType.clone());
+            x.addField(field.name == null ? null : field.name.clone(),
+                    field.dataType == null ? null : field.dataType.clone());
             Field nf = x.fields.get(x.fields.size() - 1);
             nf.setComment(field.comment);
             for (SQLAssignItem option : field.options) {

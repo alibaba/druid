@@ -104,6 +104,7 @@ public class StarRocksRestoreStatement extends SQLStatementImpl {
 
     public StarRocksRestoreStatement clone() {
         StarRocksRestoreStatement x = new StarRocksRestoreStatement();
+        cloneTo(x);
         if (this.snapshotName != null) {
             x.setSnapshotName(this.snapshotName.clone());
         }

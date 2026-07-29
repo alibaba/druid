@@ -214,6 +214,9 @@ public class SQLDeleteStatement extends SQLStatementImpl implements SQLReplaceab
     }
 
     public void setUsing(SQLTableSource using) {
+        if (using != null) {
+            using.setParent(this);
+        }
         this.using = using;
     }
 
