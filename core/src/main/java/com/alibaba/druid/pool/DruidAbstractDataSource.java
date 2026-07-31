@@ -2152,7 +2152,8 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         to.password = this.password;
         to.jdbcUrl = this.jdbcUrl;
         to.driverClass = this.driverClass;
-        to.connectProperties = this.connectProperties;
+        to.connectProperties = new Properties();
+        to.connectProperties.putAll(this.connectProperties);
         to.passwordCallback = this.passwordCallback;
         to.userCallback = this.userCallback;
         to.initialSize = this.initialSize;
