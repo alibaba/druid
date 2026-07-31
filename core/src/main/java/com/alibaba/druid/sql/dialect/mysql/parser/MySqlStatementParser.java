@@ -6210,7 +6210,8 @@ public class MySqlStatementParser extends SQLStatementParser {
                         alterIndex.getIndexDefinition().getOptions().setInvisible(lexer.identifierEquals("INVISIBLE"));
                         lexer.nextToken();
                         stmt.addItem(alterIndex);
-                        break;
+                        // 该子句已成功解析,需返回 true 让外层 alterTableAfterName 的逗号循环继续解析后续子句
+                        return true;
                     }
 
                     MySqlAlterTableAlterFullTextIndex alterIndex = new MySqlAlterTableAlterFullTextIndex();
