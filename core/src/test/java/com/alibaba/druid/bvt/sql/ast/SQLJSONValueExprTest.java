@@ -87,4 +87,12 @@ public class SQLJSONValueExprTest {
 
         assertNotEquals(a, b);
     }
+
+    @Test
+    public void test_not_equals_different_class() {
+        // Per the Object.equals contract: comparison against an unrelated type must return false,
+        // not throw. Exercises the getClass() guard so removing it is caught as a regression.
+        SQLJSONValueExpr expr = new SQLJSONValueExpr();
+        assertNotEquals(expr, new SQLIdentifierExpr("col1"));
+    }
 }
