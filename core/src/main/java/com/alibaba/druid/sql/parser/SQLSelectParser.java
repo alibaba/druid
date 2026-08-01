@@ -968,18 +968,12 @@ public class SQLSelectParser extends SQLParser {
                 accept(Token.RPAREN);
                 groupBy.setParen(true);
 
-                if (lexer.token == Token.COMMA && dialectFeatureEnabled(RewriteGroupByCubeRollupToFunction)) {
+                // 支持 GROUP BY ROLLUP(a), b / CUBE(a), b 这类分组函数后跟更多分组项的形式。
+                // ODPS 通过 RewriteGroupByCubeRollupToFunction 特性开启；标准 SQL（如 PostgreSQL）默认支持。
+                // 两种情形共用 rewriteCubeRollupToFunction 完成一致的函数式重写，避免重复逻辑漂移。
+                if (lexer.token == Token.COMMA) {
                     lexer.nextToken();
-                    SQLMethodInvokeExpr func = new SQLMethodInvokeExpr(groupBy.isWithCube() ? "CUBE" : "ROLLUP");
-                    func.getArguments().addAll(groupBy.getItems());
-                    groupBy.getItems().clear();
-                    groupBy.setWithCube(false);
-                    groupBy.setWithRollUp(false);
-                    for (SQLExpr arg : func.getArguments()) {
-                        arg.setParent(func);
-                    }
-                    groupBy.addItem(func);
-                    this.exprParser.exprList(groupBy.getItems(), groupBy);
+                    rewriteCubeRollupToFunction(groupBy);
                 }
             }
 
@@ -1045,6 +1039,28 @@ public class SQLSelectParser extends SQLParser {
 
             queryBlock.setGroupBy(groupBy);
         }
+    }
+
+    /**
+     * 将已解析的 ROLLUP/CUBE 分组项重写为函数式分组项（SQLMethodInvokeExpr），
+     * 并继续解析其后逗号分隔的更多分组项。
+     * 例如 GROUP BY ROLLUP(a), b 中，ROLLUP(a) 先以 withRollUp 标志解析，
+     * 此处将其重组为 ROLLUP(a) 函数调用，再续解析 ", b"。
+     */
+    private void rewriteCubeRollupToFunction(SQLSelectGroupByClause groupBy) {
+        SQLMethodInvokeExpr func = new SQLMethodInvokeExpr(groupBy.isWithCube() ? "CUBE" : "ROLLUP");
+        func.getArguments().addAll(groupBy.getItems());
+        for (SQLExpr arg : func.getArguments()) {
+            arg.setParent(func);
+        }
+        groupBy.getItems().clear();
+        groupBy.setWithCube(false);
+        groupBy.setWithRollUp(false);
+        // withRollUp/withCube 已清零，paren 标志不再有意义，统一置 false 以保证
+        // 不同方言解析同一 SQL 得到结构一致的 AST（equals/hashCode 不分叉）。
+        groupBy.setParen(false);
+        groupBy.addItem(func);
+        this.exprParser.exprList(groupBy.getItems(), groupBy);
     }
 
     protected void parseOrderByWith(SQLSelectGroupByClause groupBy, SQLSelectQueryBlock queryBlock) {
