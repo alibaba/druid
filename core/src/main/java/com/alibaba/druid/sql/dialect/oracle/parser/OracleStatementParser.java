@@ -2454,6 +2454,10 @@ public class OracleStatementParser extends SQLStatementParser {
 
             if (lexer.token() == (Token.FROM)) {
                 lexer.nextToken();
+                // Oracle allows optimizer hints between FROM and the table, e.g.
+                // `DELETE FROM /*+index(t pk)*/ t`. The pre-FROM hint parse above only
+                // covers `DELETE /*+hint*/ FROM ...`, so consume hints again here.
+                parseHints(deleteStatement.getHints());
             }
 
             if (lexer.identifierEquals("ONLY")) {
