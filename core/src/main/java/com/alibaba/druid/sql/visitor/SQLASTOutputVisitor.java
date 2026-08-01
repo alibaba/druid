@@ -5614,6 +5614,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
 
         this.indentCount--;
+        if (x.isForce()) {
+            print0(ucase ? "FORCE " : "force ");
+        }
+        if (x.getEditionable() != null) {
+            print0(x.getEditionable() ? (ucase ? "EDITIONABLE " : "editionable ")
+                    : (ucase ? "NONEDITIONABLE " : "noneditionable "));
+        }
         if (x.isTemporary()) {
             print0(ucase ? "TEMP " : "temp ");
         }

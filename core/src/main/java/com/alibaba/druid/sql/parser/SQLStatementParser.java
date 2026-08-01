@@ -4237,6 +4237,12 @@ public class SQLStatementParser extends SQLParser {
             lexer.nextIfIdentifier(Constants.FORCE);
         }
 
+        // Oracle 11.2+ EDITIONABLE / NONEDITIONABLE may appear before the object keyword.
+        // Skipped here; the dedicated parser (e.g. parseCreateView) records it. See issue #5135.
+        if (lexer.nextIfIdentifier("EDITIONABLE") || lexer.nextIfIdentifier("NONEDITIONABLE")) {
+            // no-op
+        }
+
         lexer.nextIfIdentifier(Constants.GLOBAL);
 
         if (lexer.identifierEquals(Constants.TEMPORARY)
@@ -5038,6 +5044,14 @@ public class SQLStatementParser extends SQLParser {
         if (lexer.identifierEquals(Constants.FORCE)) {
             lexer.nextToken();
             createView.setForce(true);
+        }
+
+        // Oracle 11.2+ allows EDITIONABLE / NONEDITIONABLE between FORCE and VIEW.
+        // See issue #5135.
+        if (lexer.nextIfIdentifier("EDITIONABLE")) {
+            createView.setEditionable(true);
+        } else if (lexer.nextIfIdentifier("NONEDITIONABLE")) {
+            createView.setEditionable(false);
         }
 
         lexer.nextIfIdentifier(Constants.GLOBAL);
