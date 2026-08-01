@@ -5,8 +5,10 @@ import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterManager;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Method;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -57,21 +59,21 @@ public class FilterManagerTest {
         }
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     public void test_existsFilter_caseSensitive() throws Exception {
-        java.util.List<com.alibaba.druid.filter.Filter> filterList = new java.util.ArrayList<>();
+        List<Filter> filterList = new ArrayList<Filter>();
         filterList.add(new CaseTestFilter());
         String exactName = CaseTestFilter.class.getName();
         String lowerName = exactName.toLowerCase();
-        java.lang.reflect.Method existsFilter = com.alibaba.druid.filter.FilterManager.class
-                .getDeclaredMethod("existsFilter", java.util.List.class, String.class);
+        Method existsFilter = FilterManager.class
+                .getDeclaredMethod("existsFilter", List.class, String.class);
         existsFilter.setAccessible(true);
-        org.junit.jupiter.api.Assertions.assertTrue((Boolean) existsFilter.invoke(null, filterList, exactName));
-        org.junit.jupiter.api.Assertions.assertFalse((Boolean) existsFilter.invoke(null, filterList, lowerName),
+        assertTrue((Boolean) existsFilter.invoke(null, filterList, exactName));
+        assertFalse((Boolean) existsFilter.invoke(null, filterList, lowerName),
                 "existsFilter should be case-sensitive; class names that differ only in case are different classes");
     }
 
-    public static class CaseTestFilter extends com.alibaba.druid.filter.FilterAdapter {
+    public static class CaseTestFilter extends FilterAdapter {
     }
 
 }
