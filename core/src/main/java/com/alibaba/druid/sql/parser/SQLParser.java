@@ -566,6 +566,7 @@ public class SQLParser {
                 case LEAVE:
                 case ENABLE:
                 case DISABLE:
+                case SEGMENT:
                 case REPLACE:
                     alias = lexer.stringVal();
                     lexer.nextToken();
