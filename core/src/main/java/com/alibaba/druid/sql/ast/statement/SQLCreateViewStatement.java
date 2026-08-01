@@ -45,6 +45,8 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLCreat
     private boolean withLocal;
     private boolean withReadOnly;
     private boolean global;
+    // null = unspecified, true = EDITIONABLE, false = NONEDITIONABLE (Oracle 11.2+)
+    private Boolean editionable;
 
     private SQLLiteralExpr comment;
 
@@ -73,6 +75,14 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLCreat
 
     public void setGlobal(boolean global) {
         this.global = global;
+    }
+
+    public Boolean getEditionable() {
+        return editionable;
+    }
+
+    public void setEditionable(Boolean editionable) {
+        this.editionable = editionable;
     }
 
     public String computeName() {
@@ -417,6 +427,7 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLCreat
         x.withLocal = withLocal;
         x.withReadOnly = withReadOnly;
         x.global = global;
+        x.editionable = editionable;
 
         if (comment != null) {
             x.setComment(comment.clone());
