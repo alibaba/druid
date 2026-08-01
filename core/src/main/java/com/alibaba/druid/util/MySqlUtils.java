@@ -1957,6 +1957,11 @@ public class MySqlUtils {
 
     public static String utf32(String hex) {
         byte[] bytes = HexBin.decode(hex);
+        if (bytes == null) {
+            // Odd-length (or otherwise invalid) hex decodes to null; mirror utf16's handling
+            // instead of NPE-ing on bytes.length / new String(bytes, ...). See issue #4280.
+            return null;
+        }
         if (bytes.length == 2) {
             return new String(bytes, UTF16);
         }
@@ -1980,16 +1985,25 @@ public class MySqlUtils {
 
     public static String utf8(String hex) {
         byte[] bytes = HexBin.decode(hex);
+        if (bytes == null) {
+            return null;
+        }
         return new String(bytes, UTF8);
     }
 
     public static String gbk(String hex) {
         byte[] bytes = HexBin.decode(hex);
+        if (bytes == null) {
+            return null;
+        }
         return new String(bytes, GBK);
     }
 
     public static String big5(String hex) {
         byte[] bytes = HexBin.decode(hex);
+        if (bytes == null) {
+            return null;
+        }
         return new String(bytes, BIG5);
     }
 }
