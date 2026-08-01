@@ -3878,11 +3878,17 @@ public class SQLStatementParser extends SQLParser {
             accept(Token.LPAREN);
             for (; ; ) {
                 SQLAssignItem ptExpr = new SQLAssignItem();
-                ptExpr.setTarget(this.exprParser.name());
-                if (lexer.token == Token.EQ || lexer.token == Token.EQEQ) {
-                    lexer.nextTokenValue();
-                    SQLExpr ptValue = this.exprParser.expr();
-                    ptExpr.setValue(ptValue);
+                if (lexer.token == Token.STAR) {
+                    // PARTITION(*) 表示全分区，通配符统一用 SQLAllColumnExpr 建模
+                    ptExpr.setTarget(new SQLAllColumnExpr());
+                    lexer.nextToken();
+                } else {
+                    ptExpr.setTarget(this.exprParser.name());
+                    if (lexer.token == Token.EQ || lexer.token == Token.EQEQ) {
+                        lexer.nextTokenValue();
+                        SQLExpr ptValue = this.exprParser.expr();
+                        ptExpr.setValue(ptValue);
+                    }
                 }
                 insertStatement.addPartition(ptExpr);
                 if (!(lexer.token == (Token.COMMA))) {
