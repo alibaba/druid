@@ -2035,9 +2035,19 @@ public class OracleStatementParser extends SQLStatementParser {
                     accept(Token.RPAREN);
                 }
 
-                accept(Token.IS);
-                SQLSelect select = this.createSQLSelectParser().select();
-                parameter.setDefaultValue(new SQLQueryExpr(select));
+                // PL/SQL cursor specs may declare a RETURN row type (forward declaration with no
+                // body): `CURSOR c1 RETURN departments%ROWTYPE;`. RETURN may also precede the
+                // IS SELECT body. See issue #5680.
+                if (lexer.token() == Token.RETURN) {
+                    lexer.nextToken();
+                    parameter.setReturnDataType(this.exprParser.parseDataType(false));
+                }
+
+                if (lexer.token() == Token.IS) {
+                    lexer.nextToken();
+                    SQLSelect select = this.createSQLSelectParser().select();
+                    parameter.setDefaultValue(new SQLQueryExpr(select));
+                }
 
             } else if (lexer.token() == Token.PROCEDURE
                     || lexer.token() == Token.END
