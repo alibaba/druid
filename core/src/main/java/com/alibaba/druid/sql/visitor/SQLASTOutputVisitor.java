@@ -2772,6 +2772,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         SQLExpr first = limit.getRowCount();
 
         if (DbType.db2 == dbType
+                || DbType.derby == dbType
                 || DbType.oracle == dbType
                 || DbType.sqlserver == dbType
         ) {
