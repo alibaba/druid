@@ -30,6 +30,18 @@ public class PGCreateTableParser extends SQLCreateTableParser {
         super(exprParser);
     }
 
+    @Override
+    protected void createTableBefore(SQLCreateTableStatement createTable) {
+        super.createTableBefore(createTable);
+        // PostgreSQL 允许省略 GLOBAL/LOCAL 前缀：CREATE TEMPORARY/TEMP TABLE ...
+        // 该形式在标准 SQL 之外，仅限 PostgreSQL（及 PG 系方言）；置于 PG 解析器而非基类，
+        // 以免 Oracle 等要求 GLOBAL TEMPORARY 的方言误接受裸 TEMP 形式。
+        if (lexer.nextIfIdentifier("TEMPORARY") || lexer.nextIfIdentifier("TEMP")
+                || lexer.nextIf(Token.TEMPORARY) || lexer.nextIf(Token.TEMP)) {
+            createTable.config(SQLCreateTableStatement.Feature.Temporary);
+        }
+    }
+
     protected void parseCreateTableRest(SQLCreateTableStatement stmt) {
         // For partition of/by for PG
         for (int i = 0; i < 2; i++) {
