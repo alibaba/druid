@@ -29,7 +29,7 @@ public interface SQLObject {
         return 0;
     }
 
-    default void setSource(int column, int line) {
+    default void setSource(int line, int column) {
     }
 
     void accept(SQLASTVisitor visitor);
