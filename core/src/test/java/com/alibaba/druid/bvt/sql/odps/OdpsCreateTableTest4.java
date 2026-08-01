@@ -17,6 +17,7 @@ package com.alibaba.druid.bvt.sql.odps;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 import org.junit.jupiter.api.Test;
@@ -26,6 +27,20 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OdpsCreateTableTest4 {
+    @Test
+    public void test_range_clustered_buckets() {
+        String sql = "CREATE TABLE t (id BIGINT) RANGE CLUSTERED BY (id) INTO 1024 BUCKETS;";
+        List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ODPS);
+        SQLCreateTableStatement stmt = (SQLCreateTableStatement) statementList.get(0);
+
+        assertEquals(1024, stmt.getBuckets());
+        assertEquals("CREATE TABLE t (\n" +
+                "\tid BIGINT\n" +
+                ")\n" +
+                "RANGE CLUSTERED BY (id)\n" +
+                "INTO 1024 BUCKETS;", SQLUtils.toOdpsString(stmt));
+    }
+
     @Test
     public void test_select() throws Exception {
         // 1095288847322
