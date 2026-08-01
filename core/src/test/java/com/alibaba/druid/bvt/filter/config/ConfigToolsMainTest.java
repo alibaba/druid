@@ -1,27 +1,47 @@
 package com.alibaba.druid.bvt.filter.config;
 
 import com.alibaba.druid.filter.config.ConfigTools;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.nio.charset.StandardCharsets;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ConfigToolsMainTest {
     @Test
-    public void main_withNoArgs_printsUsageToStdErr_notAIOOBE() throws Exception {
-        PrintStream origErr = System.err;
-        ByteArrayOutputStream err = new ByteArrayOutputStream();
-        System.setErr(new PrintStream(err, true, "UTF-8"));
+    public void run_withNoArgs_printsUsageToStderr_andReturnsFailureStatus() throws Exception {
+        PrintStream stderr = System.err;
+        ByteArrayOutputStream buf = new ByteArrayOutputStream();
+
+        int status;
         try {
-            Assertions.assertDoesNotThrow(() -> ConfigTools.main(new String[0]),
-                    "main() with no args should print usage, not throw ArrayIndexOutOfBoundsException");
+            System.setErr(new PrintStream(buf, true, "UTF-8"));
+            status = ConfigTools.run(new String[0]);
         } finally {
-            System.setErr(origErr);
+            System.setErr(stderr);
         }
-        String stderr = new String(err.toByteArray(), StandardCharsets.UTF_8);
-        Assertions.assertTrue(stderr.contains("Usage:"),
-                "the usage message is a diagnostic and should be written to System.err, not System.out");
+
+        assertEquals(1, status, "run() with no args should report a usage error, not success");
+        assertTrue(buf.toString("UTF-8").contains("Usage: ConfigTools <password>"),
+                "run() with no args should print the usage message to stderr");
+    }
+
+    @Test
+    public void run_withPassword_returnsSuccessStatus() throws Exception {
+        PrintStream stdout = System.out;
+        ByteArrayOutputStream buf = new ByteArrayOutputStream();
+
+        int status;
+        try {
+            System.setOut(new PrintStream(buf, true, "UTF-8"));
+            status = ConfigTools.run(new String[]{"druid"});
+        } finally {
+            System.setOut(stdout);
+        }
+
+        assertEquals(0, status);
+        assertTrue(buf.toString("UTF-8").contains("password:"));
     }
 }
