@@ -30,6 +30,7 @@ public final class SQLParameter extends SQLObjectImpl implements SQLObjectWithDa
     private boolean isNotNull;
     private SQLName cursorName;
     private final List<SQLParameter> cursorParameters = new ArrayList<>();
+    private SQLDataType returnDataType;
     private boolean order;
     private boolean map;
     private boolean member;
@@ -99,6 +100,7 @@ public final class SQLParameter extends SQLObjectImpl implements SQLObjectWithDa
             acceptChild(visitor, name);
             acceptChild(visitor, dataType);
             acceptChild(visitor, defaultValue);
+            acceptChild(visitor, returnDataType);
         }
         visitor.endVisit(this);
     }
@@ -149,6 +151,17 @@ public final class SQLParameter extends SQLObjectImpl implements SQLObjectWithDa
         this.cursorName = cursorName;
     }
 
+    public SQLDataType getReturnDataType() {
+        return returnDataType;
+    }
+
+    public void setReturnDataType(SQLDataType returnDataType) {
+        if (returnDataType != null) {
+            returnDataType.setParent(this);
+        }
+        this.returnDataType = returnDataType;
+    }
+
     public SQLParameter clone() {
         SQLParameter x = new SQLParameter();
         if (name != null) {
@@ -167,6 +180,9 @@ public final class SQLParameter extends SQLObjectImpl implements SQLObjectWithDa
         x.map = map;
         if (cursorName != null) {
             x.setCursorName(cursorName.clone());
+        }
+        if (returnDataType != null) {
+            x.setReturnDataType(returnDataType.clone());
         }
         for (SQLParameter p : cursorParameters) {
             SQLParameter p2 = p.clone();

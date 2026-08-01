@@ -7872,12 +7872,18 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (x.getDataType().getName().equalsIgnoreCase("CURSOR")) {
             print0(ucase ? "CURSOR " : "cursor ");
             x.getName().accept(this);
-            print0(ucase ? " IS" : " is");
-            this.indentCount++;
-            println();
-            SQLSelect select = ((SQLQueryExpr) x.getDefaultValue()).getSubQuery();
-            select.accept(this);
-            this.indentCount--;
+            if (x.getReturnDataType() != null) {
+                print0(ucase ? " RETURN " : " return ");
+                x.getReturnDataType().accept(this);
+            }
+            if (x.getDefaultValue() != null) {
+                print0(ucase ? " IS" : " is");
+                this.indentCount++;
+                println();
+                SQLSelect select = ((SQLQueryExpr) x.getDefaultValue()).getSubQuery();
+                select.accept(this);
+                this.indentCount--;
+            }
 
         } else {
             if (x.isMap()) {
