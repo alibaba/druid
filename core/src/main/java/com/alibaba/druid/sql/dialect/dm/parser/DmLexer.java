@@ -3,10 +3,14 @@ package com.alibaba.druid.sql.dialect.dm.parser;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.parser.*;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import static com.alibaba.druid.sql.parser.CharTypes.isIdentifierChar;
+import static com.alibaba.druid.sql.parser.DialectFeature.ParserFeature.SQLDateExpr;
+import static com.alibaba.druid.sql.parser.DialectFeature.ParserFeature.SQLTimestampExpr;
 import static com.alibaba.druid.sql.parser.Token.LITERAL_CHARS;
 
 /**
@@ -17,6 +21,14 @@ import static com.alibaba.druid.sql.parser.Token.LITERAL_CHARS;
  * Chinese relational database that supports both Oracle and MySQL syntax extensions.</p>
  */
 public class DmLexer extends Lexer {
+    // DM is Oracle-compatible: it supports the DATE 'literal' syntax (and not the
+    // TIMESTAMP 'literal' shortcut the base lexer enables by default). Mirror the
+    // Oracle lexer's SQLDateExpr/SQLTimestampExpr configuration. See issue #6220.
+    static final DialectFeature DM_FEATURE = new DialectFeature(
+            Arrays.asList(SQLDateExpr),
+            Collections.singletonList(SQLTimestampExpr)
+    );
+
     static final Keywords DM_KEYWORDS;
     static {
         Map<String, Token> map = new HashMap<>();
@@ -91,6 +103,11 @@ public class DmLexer extends Lexer {
         for (SQLParserFeature feature : features) {
             config(feature, true);
         }
+    }
+
+    @Override
+    protected void initDialectFeature() {
+        this.dialectFeature = DM_FEATURE;
     }
 
     @Override
