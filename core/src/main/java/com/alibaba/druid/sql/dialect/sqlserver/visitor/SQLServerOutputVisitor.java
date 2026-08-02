@@ -588,6 +588,22 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
     }
 
     @Override
+    public boolean visit(SQLServerTriggerToggleStatement x) {
+        print0(x.isEnable() ? (ucase ? "ENABLE TRIGGER " : "enable trigger ")
+                : (ucase ? "DISABLE TRIGGER " : "disable trigger "));
+        if (x.isAllServer()) {
+            print0(ucase ? "ALL SERVER" : "all server");
+        } else if (x.isAll()) {
+            print0(ucase ? "ALL" : "all");
+        }
+        if (x.getOn() != null) {
+            print0(ucase ? " ON " : " on ");
+            x.getOn().accept(this);
+        }
+        return false;
+    }
+
+    @Override
     public boolean visit(SQLWhileStatement x) {
         print0(ucase ? "WHILE " : "while ");
         x.getCondition().accept(this);

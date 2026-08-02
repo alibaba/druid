@@ -97,6 +97,11 @@ public class SQLServerStatementParser extends SQLStatementParser {
             return true;
         }
 
+        if (lexer.token() == Token.ENABLE || lexer.token() == Token.DISABLE) {
+            statementList.add(parseTriggerToggle());
+            return true;
+        }
+
         if (lexer.token() == Token.IF) {
             statementList.add(this.parseIf());
             return true;
@@ -492,6 +497,29 @@ public class SQLServerStatementParser extends SQLStatementParser {
             }
             return stmt;
         }
+    }
+
+    // Parses `ENABLE TRIGGER {ALL | ALL SERVER} ON table` and the DISABLE form.
+    private SQLServerTriggerToggleStatement parseTriggerToggle() {
+        boolean enable = lexer.token() == Token.ENABLE;
+        lexer.nextToken();
+        accept(Token.TRIGGER);
+
+        SQLServerTriggerToggleStatement stmt = new SQLServerTriggerToggleStatement(enable);
+        if (lexer.token() == Token.ALL) {
+            lexer.nextToken();
+            if (lexer.identifierEquals("SERVER")) {
+                lexer.nextToken();
+                stmt.setAllServer(true);
+            } else {
+                stmt.setAll(true);
+            }
+        }
+        if (lexer.token() == Token.ON) {
+            lexer.nextToken();
+            stmt.setOn(this.exprParser.name());
+        }
+        return stmt;
     }
 
     public SQLIfStatement parseIf() {
