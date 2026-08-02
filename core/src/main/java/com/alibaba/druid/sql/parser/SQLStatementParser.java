@@ -1593,6 +1593,10 @@ public class SQLStatementParser extends SQLParser {
                     lexer.nextToken();
                     stmt.setResourceType(SQLObjectType.DATABASE);
                     break;
+                case SCHEMA:
+                    lexer.nextToken();
+                    stmt.setResourceType(SQLObjectType.SCHEMA);
+                    break;
                 case IDENTIFIER:
                     if (lexer.identifierEquals("SYSTEM")) {
                         lexer.nextToken();
@@ -2028,6 +2032,14 @@ public class SQLStatementParser extends SQLParser {
                 case USER:
                     lexer.nextToken();
                     stmt.setResourceType(SQLObjectType.USER);
+                    break;
+                case DATABASE:
+                    lexer.nextToken();
+                    stmt.setResourceType(SQLObjectType.DATABASE);
+                    break;
+                case SCHEMA:
+                    lexer.nextToken();
+                    stmt.setResourceType(SQLObjectType.SCHEMA);
                     break;
                 case IDENTIFIER:
                     if (lexer.identifierEquals("SYSTEM")) {
