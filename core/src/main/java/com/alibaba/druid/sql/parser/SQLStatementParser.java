@@ -4753,12 +4753,12 @@ public class SQLStatementParser extends SQLParser {
         for (; ; ) {
             if (lexer.token() == Token.START || lexer.identifierEquals(Constants.START)) {
                 lexer.nextToken();
-                accept(Token.WITH);
+                lexer.nextIf(Token.WITH);
                 stmt.setStartWith(this.exprParser.expr());
                 continue;
             } else if (lexer.identifierEquals(Constants.INCREMENT)) {
                 lexer.nextToken();
-                accept(Token.BY);
+                lexer.nextIf(Token.BY);
                 stmt.setIncrementBy(this.exprParser.expr());
                 continue;
             } else if (lexer.token() == Token.CACHE || lexer.identifierEquals(Constants.CACHE)) {
