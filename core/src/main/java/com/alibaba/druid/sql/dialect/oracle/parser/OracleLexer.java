@@ -206,7 +206,11 @@ public class OracleLexer extends Lexer {
             for (; ; ) {
                 ch = charAt(++pos);
 
-                if (!isIdentifierChar(ch) && ch != ':') {
+                // Allow '.' only inside ${...} / #{...} MyBatis placeholders so dotted
+                // parameter names like ${a.b} are preserved. Plain :VAR bind variables
+                // (e.g. Oracle's :NEW."ID") must NOT consume the dot. See #5172.
+                boolean allowDot = mybatisFlag && ch == '.';
+                if (!isIdentifierChar(ch) && ch != ':' && !allowDot) {
                     break;
                 }
 
