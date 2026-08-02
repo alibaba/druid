@@ -2054,6 +2054,23 @@ public class OracleStatementParser extends SQLStatementParser {
 
                     dataType = new SQLDataTypeImpl("REF CURSOR");
                     dataType.setDbType(dbType);
+                } else if (lexer.identifierEquals("RECORD")) {
+                    // PL/SQL record type: TYPE name IS RECORD (field1 type1, field2 type2, ...).
+                    lexer.nextToken();
+                    accept(Token.LPAREN);
+                    SQLStructDataType structDataType = new SQLStructDataType(dbType);
+                    for (; ; ) {
+                        SQLName fieldName = this.exprParser.name();
+                        SQLDataType fieldType = this.exprParser.parseDataType(false);
+                        structDataType.addField(fieldName, fieldType);
+                        if (lexer.token() == Token.COMMA) {
+                            lexer.nextToken();
+                            continue;
+                        }
+                        break;
+                    }
+                    accept(Token.RPAREN);
+                    dataType = structDataType;
                 } else if (lexer.token() == Token.TABLE) {
                     lexer.nextToken();
                     accept(Token.OF);
