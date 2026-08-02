@@ -11796,12 +11796,51 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         if (x.isIncludeProperties()) {
             print0(ucase ? " INCLUDING PROPERTIES" : " including properties");
-        } else if (x.isExcludeProperties()) {
+        }
+        if (x.isExcludeProperties()) {
             print0(ucase ? " EXCLUDING PROPERTIES" : " excluding properties");
-        } else if (x.isIncludeDistribution()) {
+        }
+        if (x.isIncludeDistribution()) {
             print0(ucase ? " INCLUDING DISTRIBUTION" : " including distribution");
-        } else if (x.isExcludeDistribution()) {
+        }
+        if (x.isExcludeDistribution()) {
             print0(ucase ? " EXCLUDING DISTRIBUTION" : " excluding distribution");
+        }
+        if (x.isIncludeDefaults()) {
+            print0(ucase ? " INCLUDING DEFAULTS" : " including defaults");
+        }
+        if (x.isExcludeDefaults()) {
+            print0(ucase ? " EXCLUDING DEFAULTS" : " excluding defaults");
+        }
+        if (x.isIncludeConstraints()) {
+            print0(ucase ? " INCLUDING CONSTRAINTS" : " including constraints");
+        }
+        if (x.isExcludeConstraints()) {
+            print0(ucase ? " EXCLUDING CONSTRAINTS" : " excluding constraints");
+        }
+        if (x.isIncludeIndexes()) {
+            print0(ucase ? " INCLUDING INDEXES" : " including indexes");
+        }
+        if (x.isExcludeIndexes()) {
+            print0(ucase ? " EXCLUDING INDEXES" : " excluding indexes");
+        }
+        if (x.isIncludeStorage()) {
+            print0(ucase ? " INCLUDING STORAGE" : " including storage");
+        }
+        if (x.isExcludeStorage()) {
+            print0(ucase ? " EXCLUDING STORAGE" : " excluding storage");
+        }
+        if (x.isIncludeComments()) {
+            print0(ucase ? " INCLUDING COMMENTS" : " including comments");
+        }
+        if (x.isExcludeComments()) {
+            print0(ucase ? " EXCLUDING COMMENTS" : " excluding comments");
+        }
+        if (x.isIncludeAll()) {
+            print0(ucase ? " INCLUDING ALL" : " including all");
+        }
+        if (x.isExcludeAll()) {
+            print0(ucase ? " EXCLUDING ALL" : " excluding all");
         }
         return false;
     }

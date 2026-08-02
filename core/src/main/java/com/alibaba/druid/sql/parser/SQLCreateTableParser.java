@@ -143,19 +143,51 @@ public class SQLCreateTableParser extends SQLDDLParser {
             tableLike.setParent(createTable);
             createTable.getTableElementList().add(tableLike);
 
-            if (lexer.identifierEquals(FnvHash.Constants.INCLUDING)) {
-                lexer.nextToken();
-                if (lexer.nextIfIdentifier(FnvHash.Constants.PROPERTIES)) {
-                    tableLike.setIncludeProperties(true);
-                } else if (lexer.nextIfIdentifier("DISTRIBUTION")) {
-                    tableLike.setIncludeDistribution(true);
-                }
-            } else if (lexer.identifierEquals(FnvHash.Constants.EXCLUDING)) {
-                lexer.nextToken();
-                if (lexer.nextIfIdentifier(FnvHash.Constants.PROPERTIES)) {
-                    tableLike.setExcludeProperties(true);
-                } else if (lexer.nextIfIdentifier("DISTRIBUTION")) {
-                    tableLike.setExcludeDistribution(true);
+            for (;;) {
+                if (lexer.identifierEquals(FnvHash.Constants.INCLUDING)) {
+                    lexer.nextToken();
+                    if (lexer.nextIfIdentifier(FnvHash.Constants.PROPERTIES)) {
+                        tableLike.setIncludeProperties(true);
+                    } else if (lexer.nextIfIdentifier("DISTRIBUTION")) {
+                        tableLike.setIncludeDistribution(true);
+                    } else if (lexer.nextIfIdentifier("DEFAULTS")) {
+                        tableLike.setIncludeDefaults(true);
+                    } else if (lexer.nextIfIdentifier("CONSTRAINTS")) {
+                        tableLike.setIncludeConstraints(true);
+                    } else if (lexer.nextIfIdentifier("INDEXES")) {
+                        tableLike.setIncludeIndexes(true);
+                    } else if (lexer.nextIfIdentifier("STORAGE")) {
+                        tableLike.setIncludeStorage(true);
+                    } else if (lexer.nextIfIdentifier("COMMENTS")) {
+                        tableLike.setIncludeComments(true);
+                    } else if (lexer.nextIfIdentifier("ALL")) {
+                        tableLike.setIncludeAll(true);
+                    } else {
+                        break;
+                    }
+                } else if (lexer.identifierEquals(FnvHash.Constants.EXCLUDING)) {
+                    lexer.nextToken();
+                    if (lexer.nextIfIdentifier(FnvHash.Constants.PROPERTIES)) {
+                        tableLike.setExcludeProperties(true);
+                    } else if (lexer.nextIfIdentifier("DISTRIBUTION")) {
+                        tableLike.setExcludeDistribution(true);
+                    } else if (lexer.nextIfIdentifier("DEFAULTS")) {
+                        tableLike.setExcludeDefaults(true);
+                    } else if (lexer.nextIfIdentifier("CONSTRAINTS")) {
+                        tableLike.setExcludeConstraints(true);
+                    } else if (lexer.nextIfIdentifier("INDEXES")) {
+                        tableLike.setExcludeIndexes(true);
+                    } else if (lexer.nextIfIdentifier("STORAGE")) {
+                        tableLike.setExcludeStorage(true);
+                    } else if (lexer.nextIfIdentifier("COMMENTS")) {
+                        tableLike.setExcludeComments(true);
+                    } else if (lexer.nextIfIdentifier("ALL")) {
+                        tableLike.setExcludeAll(true);
+                    } else {
+                        break;
+                    }
+                } else {
+                    break;
                 }
             }
         } else if (lexer.token() == Token.INDEX) {
