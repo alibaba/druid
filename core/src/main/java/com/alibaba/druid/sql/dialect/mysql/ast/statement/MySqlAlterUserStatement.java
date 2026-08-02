@@ -73,6 +73,10 @@ public class MySqlAlterUserStatement extends MySqlStatementImpl implements SQLAl
 
     public static class AuthOption {
         private SQLCharExpr authString;
+        // For IDENTIFIED WITH auth_plugin [BY 'auth_string' | AS 'hash']
+        private SQLExpr authPlugin;
+        private boolean pluginAs;
+        private SQLExpr password;
 
         public SQLCharExpr getAuthString() {
             return authString;
@@ -80,6 +84,30 @@ public class MySqlAlterUserStatement extends MySqlStatementImpl implements SQLAl
 
         public void setAuthString(SQLCharExpr authString) {
             this.authString = authString;
+        }
+
+        public SQLExpr getAuthPlugin() {
+            return authPlugin;
+        }
+
+        public void setAuthPlugin(SQLExpr authPlugin) {
+            this.authPlugin = authPlugin;
+        }
+
+        public boolean isPluginAs() {
+            return pluginAs;
+        }
+
+        public void setPluginAs(boolean pluginAs) {
+            this.pluginAs = pluginAs;
+        }
+
+        public SQLExpr getPassword() {
+            return password;
+        }
+
+        public void setPassword(SQLExpr password) {
+            this.password = password;
         }
     }
 
