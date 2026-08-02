@@ -4703,6 +4703,24 @@ public class SQLExprParser extends SQLParser {
             }
         }
 
+        // PostgreSQL allows a trailing ARRAY on a column type, e.g. `integer ARRAY`
+        // or `integer ARRAY[4]`. MySQL spells its own multi-value index/CAST form
+        // (... AS CHAR(50) ARRAY) and resolves it elsewhere, so only apply this for
+        // postgresql. See #3480.
+        if (dbType == DbType.postgresql
+                && (lexer.identifierEquals(FnvHash.Constants.ARRAY) || lexer.token() == Token.ARRAY)) {
+            lexer.nextToken();
+            SQLArrayDataType arrayType = new SQLArrayDataType(dataType, dbType);
+            if (lexer.token() == Token.LBRACKET) {
+                lexer.nextToken();
+                if (lexer.token() != Token.RBRACKET) {
+                    this.exprList(arrayType.getArguments(), arrayType, true);
+                }
+                accept(Token.RBRACKET);
+            }
+            return arrayType;
+        }
+
         return dataType;
     }
 
