@@ -2331,6 +2331,20 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print('.');
         }
         String name = replaceQuota(x.getName());
+        if (tableMapping != null && x.getParent() instanceof SQLPropertyExpr) {
+            // x is the owner of another property (middle of db.tbl.col); its name
+            // is a table reference and must be rewritten, not only the FROM clause
+            String mappedName = tableMapping.get(x.getName());
+            if (mappedName == null) {
+                String raw = x.getName();
+                if (raw.length() > 2 && raw.charAt(0) == '`' && raw.charAt(raw.length() - 1) == '`') {
+                    mappedName = tableMapping.get(raw.substring(1, raw.length() - 1));
+                }
+            }
+            if (mappedName != null) {
+                name = replaceQuota(mappedName);
+            }
+        }
         if ("*".equals(name)) {
             print0(name);
         } else {
