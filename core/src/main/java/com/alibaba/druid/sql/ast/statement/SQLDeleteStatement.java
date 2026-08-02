@@ -155,6 +155,14 @@ public class SQLDeleteStatement extends SQLStatementImpl implements SQLReplaceab
                 tableSource.accept(visitor);
             }
 
+            if (from != null) {
+                from.accept(visitor);
+            }
+
+            if (using != null) {
+                using.accept(visitor);
+            }
+
             if (where != null) {
                 where.accept(visitor);
             }
@@ -170,6 +178,12 @@ public class SQLDeleteStatement extends SQLStatementImpl implements SQLReplaceab
             children.add(with);
         }
         children.add(tableSource);
+        if (from != null) {
+            children.add(from);
+        }
+        if (using != null) {
+            children.add(using);
+        }
         if (where != null) {
             children.add(where);
         }
@@ -209,6 +223,9 @@ public class SQLDeleteStatement extends SQLStatementImpl implements SQLReplaceab
     }
 
     public void setUsing(SQLTableSource using) {
+        if (using != null) {
+            using.setParent(this);
+        }
         this.using = using;
     }
 
