@@ -3427,6 +3427,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print0(ucase ? "EXTERNAL " : "external ");
         }
 
+        if (x.isForeign()) {
+            print0(ucase ? "FOREIGN " : "foreign ");
+        }
+
         if (x.isDropPartition()) {
             print0(ucase ? "PARTITIONED " : "partitioned ");
         }

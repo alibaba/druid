@@ -37,6 +37,7 @@ public class SQLDropTableStatement extends SQLStatementImpl implements SQLDropSt
     protected boolean ifExists;
     private boolean temporary;
     private boolean external;
+    private boolean foreign;
     private boolean isDropPartition;
     private SQLExpr where;
 
@@ -152,6 +153,14 @@ public class SQLDropTableStatement extends SQLStatementImpl implements SQLDropSt
         this.external = external;
     }
 
+    public boolean isForeign() {
+        return foreign;
+    }
+
+    public void setForeign(boolean foreign) {
+        this.foreign = foreign;
+    }
+
     public List<SQLCommentHint> getHints() {
         return hints;
     }
@@ -203,6 +212,7 @@ public class SQLDropTableStatement extends SQLStatementImpl implements SQLDropSt
         x.ifExists = ifExists;
         x.temporary = temporary;
         x.external = external;
+        x.foreign = foreign;
         x.isDropPartition = isDropPartition;
         if (where != null) {
             x.where = where.clone();
@@ -231,6 +241,7 @@ public class SQLDropTableStatement extends SQLStatementImpl implements SQLDropSt
                 && ifExists == that.ifExists
                 && temporary == that.temporary
                 && external == that.external
+                && foreign == that.foreign
                 && isDropPartition == that.isDropPartition
                 && Objects.equals(hints, that.hints)
                 && Objects.equals(tableSources, that.tableSources)
@@ -247,6 +258,7 @@ public class SQLDropTableStatement extends SQLStatementImpl implements SQLDropSt
         result = 31 * result + Boolean.hashCode(ifExists);
         result = 31 * result + Boolean.hashCode(temporary);
         result = 31 * result + Boolean.hashCode(external);
+        result = 31 * result + Boolean.hashCode(foreign);
         result = 31 * result + Boolean.hashCode(isDropPartition);
         result = 31 * result + Objects.hashCode(where);
         return result;
