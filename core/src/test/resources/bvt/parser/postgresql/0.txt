@@ -1172,11 +1172,11 @@ FROM (
 WHERE 1 = 1
 ------------------------------------------------------------------------------------------------------------------------
 select  offerId,          offerIds
-from  cnres.function_select_get_p4p_offer_by_sps('\'1160160508\',\'1085432755\',\'971765217\'')
+from  cnres.function_select_get_p4p_offer_by_sps('''1160160508'',''1085432755'',''971765217''')
   as a(    offerId character varying(256),    offerIds character varying(4000)   )
 --------------------
 SELECT offerId, offerIds
-FROM cnres.function_select_get_p4p_offer_by_sps('\''1160160508\'',\''1085432755\'',\''971765217\''') AS a
+FROM cnres.function_select_get_p4p_offer_by_sps('''1160160508'',''1085432755'',''971765217''') AS a
 	(offerId character varying(256), offerIds character varying(4000))
 ------------------------------------------------------------------------------------------------------------------------
 SELECT TITLE_ID,WEB_ID,MENU_TYPE_ID,MENU_ID,TITLE
