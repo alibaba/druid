@@ -21,6 +21,7 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStructDataType;
 import com.alibaba.druid.sql.ast.expr.SQLArrayExpr;
+import com.alibaba.druid.sql.ast.expr.SQLCastExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
@@ -71,6 +72,57 @@ public class CKExprParser extends SQLExprParser {
         this.aggregateFunctions = AGGREGATE_FUNCTIONS;
         this.aggregateFunctionHashCodes = AGGREGATE_FUNCTIONS_CODES;
         this.nestedDataType = NESTED_DATA_TYPE;
+    }
+
+    @Override
+    protected SQLExpr parseCast() {
+        // ClickHouse supports the function-style two-argument CAST(x, 'TypeName') in addition
+        // to the SQL-standard CAST(x AS type). Detect the comma form after the first expr
+        // and treat the quoted type name as the target data type. See issue #4421.
+        String castStr = lexer.stringVal();
+        lexer.nextToken();
+        if (lexer.token() != Token.LPAREN) {
+            return new SQLIdentifierExpr(castStr);
+        }
+        lexer.nextToken();
+        SQLExpr expr = this.expr();
+        if (lexer.token() == Token.COMMA) {
+            lexer.nextToken();
+            SQLCharExpr typeLiteral = (SQLCharExpr) this.primary();
+            accept(Token.RPAREN);
+
+            SQLCastExpr cast = new SQLCastExpr();
+            cast.setExpr(expr);
+            // The quoted argument is a ClickHouse type name, e.g. 'String', 'Int64'.
+            cast.setDataType(parseDataTypeFromName(typeLiteral.getText()));
+            return cast;
+        }
+        // Standard form: CAST(x AS type)
+        accept(Token.AS);
+        SQLDataType dataType = parseDataType(false);
+        if (dataType instanceof SQLArrayDataType) {
+            SQLArrayDataType arrayDataType = (SQLArrayDataType) dataType;
+            if (arrayDataType.getDbType() == null) {
+                arrayDataType.setDbType(dbType);
+            }
+            arrayDataType.setUsedForCast(true);
+        }
+        SQLCastExpr cast = new SQLCastExpr();
+        cast.setExpr(expr);
+        cast.setDataType(dataType);
+        cast = parseCastFormat(cast);
+        accept(Token.RPAREN);
+        return cast;
+    }
+
+    private SQLDataType parseDataTypeFromName(String typeName) {
+        // Parse a ClickHouse type name (e.g. "String", "Nullable(Int64)") by feeding it
+        // through the regular data-type parser on a throwaway lexer.
+        Lexer typeLexer = new Lexer(typeName);
+        typeLexer.nextToken();
+        SQLDataType dataType = new SQLExprParser(typeLexer).parseDataType(false);
+        dataType.setDbType(dbType);
+        return dataType;
     }
 
     protected SQLExpr parseAliasExpr(String alias) {
