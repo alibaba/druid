@@ -292,6 +292,10 @@ public class HiveCreateTableParser extends SQLCreateTableParser {
             stmt.setRbracketUse(true);
             lexer.nextToken();
         }
+        if (lexer.nextIf(Token.COMMENT)) {
+            SQLExpr comment = this.exprParser.expr();
+            stmt.setComment(comment);
+        }
         if (lexer.identifierEquals(FnvHash.Constants.LOCATION)) {
             lexer.nextToken();
             SQLExpr location = this.exprParser.primary();
