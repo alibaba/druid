@@ -29,7 +29,7 @@ public class H2ExprParser extends SQLExprParser {
     private static final long[] AGGREGATE_FUNCTIONS_CODES;
 
     static {
-        String[] strings = {"AVG", "COUNT", "MAX", "MIN", "STDDEV", "SUM", "ROW_NUMBER",
+        String[] strings = {"AVG", "COUNT", "LISTAGG", "MAX", "MIN", "STDDEV", "SUM", "ROW_NUMBER",
                 "ROWNUMBER"};
         AGGREGATE_FUNCTIONS_CODES = FnvHash.fnv1a_64_lower(strings, true);
         AGGREGATE_FUNCTIONS = new String[AGGREGATE_FUNCTIONS_CODES.length];
