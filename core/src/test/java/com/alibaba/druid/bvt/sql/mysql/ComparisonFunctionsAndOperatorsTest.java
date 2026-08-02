@@ -356,6 +356,18 @@ public class ComparisonFunctionsAndOperatorsTest {
         assertEquals("SELECT CAST(LEAST(3600, 9223372036854775808.0) AS SIGNED);", text);
     }
 
+    @Test
+    public void test_27() throws Exception {
+        String sql = "SELECT 'ab' MEMBER OF('[23, \"abc\", 17, \"ab\", 10]')";
+
+        SQLStatementParser parser = new MySqlStatementParser(sql);
+        List<SQLStatement> stmtList = parser.parseStatementList();
+
+        String text = output(stmtList);
+
+        assertEquals("SELECT 'ab' MEMBER OF '[23, \"abc\", 17, \"ab\", 10]'", text);
+    }
+
     private String output(List<SQLStatement> stmtList) {
         return SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
     }
