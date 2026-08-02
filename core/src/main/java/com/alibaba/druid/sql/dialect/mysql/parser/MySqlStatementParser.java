@@ -8166,11 +8166,30 @@ public class MySqlStatementParser extends SQLStatementParser {
             }
             if (lexer.identifierEquals("IDENTIFIED")) {
                 lexer.nextToken();
-                accept(Token.BY);
 
                 MySqlAlterUserStatement.AuthOption authOption = new MySqlAlterUserStatement.AuthOption();
-                SQLCharExpr authString = this.exprParser.charExpr();
-                authOption.setAuthString(authString);
+
+                if (lexer.token() == Token.BY) {
+                    lexer.nextToken();
+                    authOption.setAuthString(this.exprParser.charExpr());
+                } else if (lexer.token() == Token.WITH) {
+                    // IDENTIFIED WITH auth_plugin [BY 'auth_string' | AS 'hash']
+                    lexer.nextToken();
+                    authOption.setAuthPlugin(this.exprParser.charExpr());
+
+                    if (lexer.token() == Token.BY || lexer.token() == Token.AS) {
+                        authOption.setPluginAs(lexer.token() == Token.AS);
+                        lexer.nextToken();
+                        if (authOption.isPluginAs()) {
+                            // The hash is a quoted string literal; drop the surrounding quotes.
+                            String hash = lexer.stringVal();
+                            authOption.setPassword(new SQLCharExpr(trimQuotesBeginAndEnd(hash)));
+                            lexer.nextToken();
+                        } else {
+                            authOption.setPassword(this.exprParser.charExpr());
+                        }
+                    }
+                }
 
                 alterUser.setAuthOption(authOption);
             }

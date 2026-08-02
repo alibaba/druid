@@ -4054,9 +4054,19 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             alterUser.getUser().accept(this);
 
             if (alterUser.getAuthOption() != null) {
-                print(" IDENTIFIED BY ");
-                SQLCharExpr authString = alterUser.getAuthOption().getAuthString();
-                authString.accept(this);
+                MySqlAlterUserStatement.AuthOption authOption = alterUser.getAuthOption();
+                if (authOption.getAuthPlugin() != null) {
+                    print(" IDENTIFIED WITH ");
+                    authOption.getAuthPlugin().accept(this);
+                    if (authOption.getPassword() != null) {
+                        print0(authOption.isPluginAs() ? (ucase ? " AS " : " as ") : (ucase ? " BY " : " by "));
+                        authOption.getPassword().accept(this);
+                    }
+                } else {
+                    print(" IDENTIFIED BY ");
+                    SQLCharExpr authString = authOption.getAuthString();
+                    authString.accept(this);
+                }
             }
             if (alterUser.getAccountLockOption() != null) {
                 print0(ucase ? " ACCOUNT " : " account ");
