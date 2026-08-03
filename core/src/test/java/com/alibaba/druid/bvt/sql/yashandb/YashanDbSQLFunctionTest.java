@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class YashanDbSQLFunctionTest {
-
     @Test
     public void test_ifnull_produces_nvl() throws Exception {
         SQLFunctionBuilder builder = new SQLFunctionBuilder(DbType.yashandb);

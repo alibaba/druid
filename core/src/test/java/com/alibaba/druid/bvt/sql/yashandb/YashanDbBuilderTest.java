@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class YashanDbBuilderTest {
-
     @Test
     public void test_delete_builder() throws Exception {
         SQLDeleteBuilder builder = SQLBuilderFactory.createDeleteBuilder(JdbcConstants.YASHANDB);

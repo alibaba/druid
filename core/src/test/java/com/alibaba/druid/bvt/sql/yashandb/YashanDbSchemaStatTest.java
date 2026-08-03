@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class YashanDbSchemaStatTest {
-
     @Test
     public void test_schema_stat_select() throws Exception {
         String sql = "SELECT e.name, d.dept_name FROM employees e JOIN departments d ON e.dept_id = d.id WHERE e.salary > 5000";

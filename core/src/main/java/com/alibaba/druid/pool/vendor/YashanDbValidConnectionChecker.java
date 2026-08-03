@@ -21,10 +21,12 @@ import com.alibaba.druid.util.StringUtils;
 
 import java.io.Serializable;
 import java.sql.Connection;
+import java.util.Properties;
 
 public class YashanDbValidConnectionChecker extends ValidConnectionCheckerAdapter implements ValidConnectionChecker, Serializable {
     private static final long serialVersionUID = -2227528634302168877L;
 
+    private int timeout = 1;
 
     private String defaultValidateQuery = "SELECT 'x' FROM DUAL";
 
@@ -32,6 +34,22 @@ public class YashanDbValidConnectionChecker extends ValidConnectionCheckerAdapte
         configFromProperties(System.getProperties());
     }
 
+    @Override
+    public void configFromProperties(Properties properties) {
+        if (properties == null) {
+            return;
+        }
+
+        String property = properties.getProperty("druid.yashandb.pingTimeout");
+        if (property != null && property.length() > 0) {
+            int value = Integer.parseInt(property);
+            setTimeout(value);
+        }
+    }
+
+    public void setTimeout(int seconds) {
+        this.timeout = seconds;
+    }
 
     public boolean isValidConnection(Connection conn,
                                      String validateQuery,
@@ -44,6 +62,8 @@ public class YashanDbValidConnectionChecker extends ValidConnectionCheckerAdapte
             validateQuery = this.defaultValidateQuery;
         }
 
-        return ValidConnectionCheckerAdapter.execValidQuery(conn, validateQuery, validationQueryTimeout);
+        int queryTimeout = validationQueryTimeout <= 0 ? timeout : validationQueryTimeout;
+
+        return ValidConnectionCheckerAdapter.execValidQuery(conn, validateQuery, queryTimeout);
     }
 }

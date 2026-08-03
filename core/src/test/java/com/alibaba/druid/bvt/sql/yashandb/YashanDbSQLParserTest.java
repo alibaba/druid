@@ -11,7 +11,6 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class YashanDbSQLParserTest {
-
     @Test
     public void test_parse_select() throws Exception {
         String sql = "SELECT id, name FROM employees WHERE salary > 5000";

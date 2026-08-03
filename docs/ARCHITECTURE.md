@@ -1,4 +1,4 @@
-# Alibaba Druid 架构文档
+﻿# Alibaba Druid 架构文档
 
 > 版本: 1.2.28-SNAPSHOT | Java 8+ | Apache License 2.0
 
@@ -486,7 +486,7 @@ DruidDataSourceAutoConfigure
 
 ---
 
-## 9. 支持的数据库方言（31 种）
+## 9. 支持的数据库方言（30 种）
 
 | 方言 | Lexer | ExprParser | StatementParser | OutputVisitor |
 |------|-------|------------|-----------------|---------------|

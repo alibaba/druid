@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class JdbcUtils_yashandb_Test {
-
     @Test
     public void test_isYashanDbDriver_exact() {
         assertTrue(JdbcUtils.isYashanDbDriver("com.yashandb.jdbc.Driver"));
@@ -16,7 +15,7 @@ public class JdbcUtils_yashandb_Test {
 
     @Test
     public void test_isYashanDbDriver_package_prefix() {
-        assertTrue(JdbcUtils.isYashanDbDriver("com.yashandb.jdbc.Driver"));
+        assertTrue(JdbcUtils.isYashanDbDriver("com.yashandb.jdbc.CustomDriver"));
     }
 
     @Test

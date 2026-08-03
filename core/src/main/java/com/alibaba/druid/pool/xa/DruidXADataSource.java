@@ -75,7 +75,7 @@ public class DruidXADataSource extends DruidDataSource implements XADataSource {
                     return null;
                 }
             case yashandb:
-                throw new SQLException("xa not support dbType : " + this.dbTypeName);
+                return YashanDbUtils.createXAConnection(physicalConn);
             case mysql:
             case mariadb:
                 return MySqlUtils.createXAConnection(driver, physicalConn);

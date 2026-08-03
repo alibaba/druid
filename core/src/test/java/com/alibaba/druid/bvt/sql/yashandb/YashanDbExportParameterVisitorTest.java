@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class YashanDbExportParameterVisitorTest {
-
     @Test
     public void test_export_parameter_select() throws Exception {
         String sql = "SELECT * FROM t WHERE id = 1 AND name = 'test'";

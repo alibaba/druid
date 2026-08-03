@@ -672,7 +672,7 @@ public class PagerUtils {
             return visitor.unorderedLimitCount > 0;
         }
 
-        if (DbType.oracle == dbType) {
+        if (DbType.oracle == dbType || DbType.yashandb == dbType) {
             OracleUnorderedLimitDetectVisitor visitor = new OracleUnorderedLimitDetectVisitor();
 
             for (SQLStatement stmt : stmtList) {

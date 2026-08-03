@@ -1978,7 +1978,7 @@ public class SQLUtils {
                 }
 
                 if (!isForced) {
-                    if (DbType.oracle == dbType) {
+                    if (DbType.oracle == dbType || DbType.yashandb == dbType) {
                         if (OracleUtils.isKeyword(normalizeName)) {
                             return name;
                         }

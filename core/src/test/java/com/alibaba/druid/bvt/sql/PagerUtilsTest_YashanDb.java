@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PagerUtilsTest_YashanDb {
-
     @Test
     public void test_count() throws Exception {
         String sql = "select * from t";

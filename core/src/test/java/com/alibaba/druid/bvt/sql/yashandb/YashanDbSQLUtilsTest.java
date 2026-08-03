@@ -10,7 +10,6 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class YashanDbSQLUtilsTest {
-
     @Test
     public void test_format_select() throws Exception {
         String sql = "select * from t where id = 1";
@@ -83,5 +82,32 @@ public class YashanDbSQLUtilsTest {
         String result = SQLUtils.format(sql, DbType.yashandb);
         assertNotNull(result);
         assertTrue(result.toUpperCase().contains("DELETE FROM"));
+    }
+
+    @Test
+    public void test_normalize_keyword_preserves_quotes() throws Exception {
+        String[] keywords = {"\"TABLE\"", "\"INDEX\"", "\"SELECT\"", "\"ORDER\""};
+        for (String keyword : keywords) {
+            String result = SQLUtils.normalize(keyword, DbType.yashandb);
+            assertEquals(keyword, result,
+                    "yashandb: quoted keyword " + keyword + " should be preserved");
+        }
+    }
+
+    @Test
+    public void test_normalize_keyword_matches_oracle() throws Exception {
+        String[] keywords = {"\"TABLE\"", "\"INDEX\"", "\"FROM\"", "\"WHERE\""};
+        for (String keyword : keywords) {
+            String yashanResult = SQLUtils.normalize(keyword, DbType.yashandb);
+            String oracleResult = SQLUtils.normalize(keyword, DbType.oracle);
+            assertEquals(oracleResult, yashanResult,
+                    "yashandb and oracle should produce same normalize result for " + keyword);
+        }
+    }
+
+    @Test
+    public void test_normalize_non_keyword_strips_quotes() throws Exception {
+        assertEquals("my_column", SQLUtils.normalize("\"my_column\"", DbType.yashandb));
+        assertEquals("my_table", SQLUtils.normalize("\"my_table\"", DbType.yashandb));
     }
 }

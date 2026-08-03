@@ -1,4 +1,4 @@
-# Alibaba Druid
+﻿# Alibaba Druid
 
 [![Java CI](https://img.shields.io/github/actions/workflow/status/alibaba/druid/ci.yaml?branch=master&logo=github&logoColor=white)](https://github.com/alibaba/druid/actions/workflows/ci.yaml)
 [![Codecov](https://img.shields.io/codecov/c/github/alibaba/druid/master?logo=codecov&logoColor=white)](https://codecov.io/gh/alibaba/druid/branch/master)
@@ -18,7 +18,7 @@ English | [中文](README.md)
 | Capability | Description |
 |-----------|-------------|
 | **JDBC Connection Pool** | High-performance, monitorable pool implementation `DruidDataSource` with connection warm-up, PSCache, KeepAlive and more |
-| **SQL Parser** | Full parser for 31 SQL dialects, generating AST (Abstract Syntax Tree) with support for formatting, rewriting and analysis |
+| **SQL Parser** | Full parser for 30 SQL dialects, generating AST (Abstract Syntax Tree) with support for formatting, rewriting and analysis |
 | **SQL Firewall** | AST-based `WallFilter` for SQL injection protection, blocking dangerous operations |
 | **Monitoring & Stats** | Built-in `StatFilter` for real-time SQL execution statistics, connection pool status, and Web monitoring console |
 | **Filter Extension** | Pluggable Filter-Chain architecture supporting logging, encryption, statistics and custom extensions |
@@ -126,7 +126,7 @@ druid/
 
 ## SQL Dialect Support
 
-The Druid SQL parser supports 31 database dialects, each with full Lexer, Parser, AST and Visitor implementations:
+The Druid SQL parser supports 30 database dialects, each with full Lexer, Parser, AST and Visitor implementations:
 
 | Category | Supported Databases |
 |----------|-------------------|
