@@ -907,6 +907,9 @@ public class SQLStatementParser extends SQLParser {
                 break;
             case FOREIGN: {
                 SQLDropTableStatement dropTable = parseDropTable(false);
+                if (temporary) {
+                    dropTable.setTemporary(true);
+                }
                 if (hints != null) {
                     dropTable.setHints(hints);
                 }

@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @see <a href="https://github.com/alibaba/druid/issues/6180">Issue #6180</a>
  * @see <a href="https://www.postgresql.org/docs/current/sql-droptable.html">DROP TABLE</a>
  */
-public class Issue6180Test {
+public class Issue6180 {
     @Test
     public void dropForeignTable() {
         String sql = "DROP FOREIGN TABLE odps_user_test";
@@ -43,6 +43,19 @@ public class Issue6180Test {
         assertTrue(drop.isIfExists());
         assertTrue(drop.isCascade());
         assertEquals(2, drop.getTableSources().size());
+    }
+
+    @Test
+    public void clonePreservesForeignFlag() {
+        String sql = "DROP FOREIGN TABLE odps_user_test";
+        SQLDropTableStatement drop = (SQLDropTableStatement)
+                SQLUtils.parseStatements(sql, "postgresql").get(0);
+
+        SQLDropTableStatement clone = drop.clone();
+        assertTrue(clone.isForeign());
+        assertFalse(clone.isExternal());
+        // round-trip survives clone
+        assertEquals(sql, clone.toString());
     }
 
     @Test
