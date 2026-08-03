@@ -905,6 +905,17 @@ public class SQLStatementParser extends SQLParser {
             case SEQUENCE:
                 stmt = parseDropSequence(false);
                 break;
+            case FOREIGN: {
+                SQLDropTableStatement dropTable = parseDropTable(false);
+                if (temporary) {
+                    dropTable.setTemporary(true);
+                }
+                if (hints != null) {
+                    dropTable.setHints(hints);
+                }
+                stmt = dropTable;
+                break;
+            }
             case TABLE: {
                 SQLDropTableStatement dropTable = parseDropTable(false);
                 if (temporary) {
@@ -3328,6 +3339,11 @@ public class SQLStatementParser extends SQLParser {
         if (lexer.identifierEquals(FnvHash.Constants.EXTERNAL)) {
             lexer.nextToken();
             stmt.setExternal(true);
+        }
+
+        if (lexer.token == Token.FOREIGN) {
+            lexer.nextToken();
+            stmt.setForeign(true);
         }
 
         if (lexer.token == TABLE) {
