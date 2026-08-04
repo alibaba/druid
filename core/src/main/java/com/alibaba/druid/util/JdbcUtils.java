@@ -491,7 +491,7 @@ public final class JdbcUtils implements JdbcConstants {
         } else if (rawUrl.startsWith("jdbc:mimer:multi1:")) {
             return "com.mimer.jdbc.Driver";
         } else if (rawUrl.startsWith("jdbc:yasdb:")) {
-            return "com.yashandb.jdbc.Driver";
+            return YASHANDB_DRIVER;
         } else if (rawUrl.startsWith("jdbc:dm:")) {
             return JdbcConstants.DM_DRIVER;
         } else if (rawUrl.startsWith("jdbc:kingbase:")) {
@@ -578,7 +578,7 @@ public final class JdbcUtils implements JdbcConstants {
         } else if (rawUrl.startsWith("jdbc:oracle:") || rawUrl.startsWith("jdbc:log4jdbc:oracle:")) {
             return DbType.oracle;
         } else if (rawUrl.startsWith("jdbc:yasdb:")) {
-            return DbType.oracle;
+            return DbType.yashandb;
         } else if (rawUrl.startsWith("jdbc:alibaba:oracle:")) {
             return DbType.ali_oracle;
         } else if (rawUrl.startsWith("jdbc:oceanbase:oracle:")) {
@@ -940,7 +940,7 @@ public final class JdbcUtils implements JdbcConstants {
             return MySqlUtils.showTables(conn);
         }
 
-        if (dbType == DbType.oracle || dbType == DbType.oceanbase_oracle) {
+        if (dbType == DbType.oracle || dbType == DbType.oceanbase_oracle || dbType == DbType.yashandb) {
             return OracleUtils.showTables(conn);
         }
 
@@ -962,7 +962,7 @@ public final class JdbcUtils implements JdbcConstants {
             return MySqlUtils.getCreateTableScript(conn, sorted, simplify);
         }
 
-        if (dbType == DbType.oracle || dbType == DbType.oceanbase_oracle) {
+        if (dbType == DbType.oracle || dbType == DbType.oceanbase_oracle || dbType == DbType.yashandb) {
             return OracleUtils.getCreateTableScript(conn, sorted, simplify);
         }
 
@@ -979,13 +979,20 @@ public final class JdbcUtils implements JdbcConstants {
     public static boolean isOracleDbType(String dbType) {
         return DbType.oracle.name().equals(dbType) || //
                 DbType.oceanbase_oracle.name().equals(dbType) || //
-                DbType.ali_oracle.name().equalsIgnoreCase(dbType);
+                DbType.ali_oracle.name().equalsIgnoreCase(dbType) || //
+                DbType.yashandb.name().equals(dbType);
     }
 
     public static boolean isOracleDbType(DbType dbType) {
         return DbType.oracle == dbType || //
                 DbType.oceanbase_oracle == dbType || //
-                DbType.ali_oracle == dbType;
+                DbType.ali_oracle == dbType || //
+                DbType.yashandb == dbType;
+    }
+
+    public static boolean isYashanDbDriver(String driverClassName) {
+        return driverClassName != null && (JdbcConstants.YASHANDB_DRIVER.equals(driverClassName)
+                || driverClassName.startsWith("com.yashandb.jdbc."));
     }
 
     public static boolean isMysqlDbType(String dbTypeName) {

@@ -124,6 +124,7 @@ public class SQLDeleteBuilderImpl implements SQLDeleteBuilder {
     public SQLDeleteStatement createSQLDeleteStatement() {
         switch (dbType) {
             case oracle:
+            case yashandb:
                 return new OracleDeleteStatement();
             case mysql:
             case mariadb:

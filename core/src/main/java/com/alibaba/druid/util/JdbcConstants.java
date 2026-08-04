@@ -43,6 +43,8 @@ public interface JdbcConstants {
     DbType ORACLE = DbType.oracle;
     String ORACLE_DRIVER = "oracle.jdbc.OracleDriver";
     String ORACLE_DRIVER2 = "oracle.jdbc.driver.OracleDriver";
+    DbType YASHANDB = DbType.yashandb;
+    String YASHANDB_DRIVER = "com.yashandb.jdbc.Driver";
 
     DbType ALI_ORACLE = DbType.ali_oracle;
     String ALI_ORACLE_DRIVER = "com.alibaba.jdbc.AlibabaDriver";

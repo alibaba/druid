@@ -1151,22 +1151,18 @@ public class DruidDataSource extends DruidAbstractDataSource
         if (dbType == DbType.oracle) {
             isOracle = true;
 
-            // Some Oracle-compatible databases may use non-Oracle JDBC drivers (e.g. YashanDB),
-            // whose version numbers are not aligned with Oracle's. In that case, skip the Oracle
-            // JDBC major version check but still treat the datasource as Oracle style.
-            final String driverClassName = this.driverClass;
-            final boolean oracleCompatibleNonOracleDriver =
-                    driverClassName != null && driverClassName.startsWith("com.yashandb.jdbc.");
-
-            if (!oracleCompatibleNonOracleDriver && driver.getMajorVersion() < 10) {
+            if (driver.getMajorVersion() < 10) {
                 throw new SQLException("not support oracle driver " + driver.getMajorVersion() + "."
-                        + driver.getMinorVersion());
+                                       + driver.getMinorVersion());
             }
 
             if (driver.getMajorVersion() == 10 && isUseOracleImplicitCache()) {
                 this.getConnectProperties().setProperty("oracle.jdbc.FreeMemoryOnEnterImplicitCache", "true");
             }
 
+            oracleValidationQueryCheck();
+        } else if (dbType == DbType.yashandb) {
+            // use oracle validate.
             oracleValidationQueryCheck();
         } else if (dbType == DbType.db2) {
             db2ValidationQueryCheck();
@@ -1253,6 +1249,9 @@ public class DruidDataSource extends DruidAbstractDataSource
         if (JdbcUtils.isMySqlDriver(realDriverClassName)) {
             this.validConnectionChecker = new MySqlValidConnectionChecker();
 
+        } else if (JdbcUtils.isYashanDbDriver(realDriverClassName)) {
+            this.validConnectionChecker = new YashanDbValidConnectionChecker();
+
         } else if (realDriverClassName.equals(JdbcConstants.ORACLE_DRIVER)
                 || realDriverClassName.equals(JdbcConstants.ORACLE_DRIVER2)) {
             this.validConnectionChecker = new OracleValidConnectionChecker();
@@ -1293,7 +1292,9 @@ public class DruidDataSource extends DruidAbstractDataSource
                 this.exceptionSorter = new MySqlExceptionSorter();
                 this.isMySql = true;
             } else if (realDriverClassName.equals(JdbcConstants.ORACLE_DRIVER)
-                    || realDriverClassName.equals(JdbcConstants.ORACLE_DRIVER2)) {
+                    || realDriverClassName.equals(JdbcConstants.ORACLE_DRIVER2)
+                    || JdbcUtils.isYashanDbDriver(realDriverClassName)
+                    || DbType.yashandb == DbType.of(this.dbTypeName)) {
                 this.exceptionSorter = new OracleExceptionSorter();
             } else if (realDriverClassName.equals(JdbcConstants.OCEANBASE_DRIVER)) { // 写一个真实的 TestCase
                 if (JdbcUtils.OCEANBASE_ORACLE.name().equalsIgnoreCase(dbTypeName)) {

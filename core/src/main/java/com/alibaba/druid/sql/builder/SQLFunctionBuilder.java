@@ -67,6 +67,7 @@ public class SQLFunctionBuilder {
             case supersql:
                 return new SQLMethodInvokeExpr("coalesce", null, expr1, expr2);
             case oracle:
+            case yashandb:
                 return new SQLMethodInvokeExpr("nvl", null, expr1, expr2);
             case sqlserver:
                 return new SQLMethodInvokeExpr("isnull", null, expr1, expr2);

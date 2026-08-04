@@ -1,4 +1,4 @@
-# Alibaba Druid
+﻿# Alibaba Druid
 
 [![Java CI](https://img.shields.io/github/actions/workflow/status/alibaba/druid/ci.yaml?branch=master&logo=github&logoColor=white)](https://github.com/alibaba/druid/actions/workflows/ci.yaml)
 [![Codecov](https://img.shields.io/codecov/c/github/alibaba/druid/master?logo=codecov&logoColor=white)](https://codecov.io/gh/alibaba/druid/branch/master)
@@ -131,7 +131,7 @@ The Druid SQL parser supports 30 database dialects, each with full Lexer, Parser
 | Category | Supported Databases |
 |----------|-------------------|
 | **Major RDBMS** | MySQL, PostgreSQL, Oracle, SQL Server, DB2, H2, Informix |
-| **Chinese Databases** | Dameng (DM), Oscar, GaussDB |
+| **Chinese Databases** | Dameng (DM), Oscar, GaussDB, YashanDB |
 | **Analytical / MPP** | ClickHouse, Doris, StarRocks, Teradata, Redshift |
 | **Cloud / Data Warehouse** | BigQuery, Snowflake, Synapse, Hologres, ODPS (MaxCompute) |
 | **Compute Engines** | Hive, Spark, Presto, Impala, Athena, Blink, Databricks |

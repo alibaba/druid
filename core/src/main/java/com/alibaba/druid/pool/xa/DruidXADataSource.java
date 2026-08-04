@@ -74,6 +74,8 @@ public class DruidXADataSource extends DruidDataSource implements XADataSource {
                     LOG.error("create xaConnection error", xae);
                     return null;
                 }
+            case yashandb:
+                return YashanDbUtils.createXAConnection(physicalConn);
             case mysql:
             case mariadb:
                 return MySqlUtils.createXAConnection(driver, physicalConn);

@@ -605,6 +605,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             case edb:
                 return new PGOrderByStatVisitor(x);
             case oracle:
+            case yashandb:
                 return new OracleOrderByStatVisitor(x);
             default:
                 return new OrderByStatVisitor(x);

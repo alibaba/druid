@@ -1,4 +1,4 @@
-# Alibaba Druid
+﻿# Alibaba Druid
 
 [![Java CI](https://img.shields.io/github/actions/workflow/status/alibaba/druid/ci.yaml?branch=master&logo=github&logoColor=white)](https://github.com/alibaba/druid/actions/workflows/ci.yaml)
 [![Codecov](https://img.shields.io/codecov/c/github/alibaba/druid/master?logo=codecov&logoColor=white)](https://codecov.io/gh/alibaba/druid/branch/master)
@@ -133,7 +133,7 @@ Druid SQL 解析器支持 30 种数据库方言，每种方言都提供完整的
 | 分类 | 支持的数据库 |
 |------|------------|
 | **主流关系型** | MySQL, PostgreSQL, Oracle, SQL Server, DB2, H2, Informix |
-| **国产数据库** | 达梦 (DM), Oscar, GaussDB |
+| **国产数据库** | 达梦 (DM), Oscar, GaussDB, YashanDB (崖山) |
 | **分析型/MPP** | ClickHouse, Doris, StarRocks, Teradata, Redshift |
 | **云原生/数仓** | BigQuery, Snowflake, Synapse, Hologres, ODPS (MaxCompute) |
 | **计算引擎** | Hive, Spark, Presto, Impala, Athena, Blink, Databricks |

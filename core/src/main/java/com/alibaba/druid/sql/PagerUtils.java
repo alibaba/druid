@@ -99,6 +99,7 @@ public class PagerUtils {
 
         switch (dbType) {
             case oracle:
+            case yashandb:
                 return limitOracle(select, dbType, offset, count, check);
             case db2:
                 return limitDB2(select, dbType, offset, count, check);
@@ -174,6 +175,7 @@ public class PagerUtils {
             case oracle:
             case oceanbase_oracle:
             case polardb2:
+            case yashandb:
                 return limitOracle(select, dbType, offset, count, check);
             default:
                 throw new UnsupportedOperationException();
@@ -555,6 +557,7 @@ public class PagerUtils {
                 return new MySqlSelectQueryBlock();
             case oracle:
             case polardb2:
+            case yashandb:
                 return new OracleSelectQueryBlock();
             case postgresql:
             case greenplum:
@@ -669,7 +672,7 @@ public class PagerUtils {
             return visitor.unorderedLimitCount > 0;
         }
 
-        if (DbType.oracle == dbType) {
+        if (DbType.oracle == dbType || DbType.yashandb == dbType) {
             OracleUnorderedLimitDetectVisitor visitor = new OracleUnorderedLimitDetectVisitor();
 
             for (SQLStatement stmt : stmtList) {
