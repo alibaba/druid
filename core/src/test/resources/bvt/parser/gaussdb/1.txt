@@ -34,6 +34,30 @@ FROM vdpadmin.ads_longlati_pois_d
 WHERE report_date > '${dt}'
 ON CONFLICT (id) DO NOTHING;
 ------------------------------------------------------------------------------------------------------------------------
+INSERT INTO db1.testOnConflict
+SELECT longitude, latitude
+FROM vdpadmin.ads_longlati_pois_d
+WHERE report_date > '${dt}'
+ON DUPLICATE KEY UPDATE NOTHING;
+--------------------
+INSERT INTO db1.testOnConflict
+SELECT longitude, latitude
+FROM vdpadmin.ads_longlati_pois_d
+WHERE report_date > '${dt}'
+ON DUPLICATE KEY UPDATE NOTHING;
+------------------------------------------------------------------------------------------------------------------------
+INSERT INTO db1.testOnConflict
+SELECT longitude, latitude
+FROM vdpadmin.ads_longlati_pois_d
+WHERE report_date > '${dt}'
+ON DUPLICATE KEY UPDATE NOTHING = '1';
+--------------------
+INSERT INTO db1.testOnConflict
+SELECT longitude, latitude
+FROM vdpadmin.ads_longlati_pois_d
+WHERE report_date > '${dt}'
+ON DUPLICATE KEY UPDATE NOTHING = '1';
+------------------------------------------------------------------------------------------------------------------------
 INSERT INTO db1.testOnDuplicate
 SELECT 
 longitude,

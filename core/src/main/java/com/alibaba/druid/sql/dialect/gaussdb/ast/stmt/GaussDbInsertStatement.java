@@ -9,6 +9,7 @@ import java.util.List;
 public class GaussDbInsertStatement extends PGInsertStatement {
     private boolean isIgnore;
     private final List<SQLExpr> duplicateKeyUpdate = new ArrayList<SQLExpr>();
+    private boolean duplicateKeyUpdateNothing;
 
     public void setIgnore(boolean ignore) {
         isIgnore = ignore;
@@ -20,5 +21,13 @@ public class GaussDbInsertStatement extends PGInsertStatement {
 
     public List<SQLExpr> getDuplicateKeyUpdate() {
         return duplicateKeyUpdate;
+    }
+
+    public boolean isDuplicateKeyUpdateNothing() {
+        return duplicateKeyUpdateNothing;
+    }
+
+    public void setDuplicateKeyUpdateNothing(boolean duplicateKeyUpdateNothing) {
+        this.duplicateKeyUpdateNothing = duplicateKeyUpdateNothing;
     }
 }
