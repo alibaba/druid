@@ -49,7 +49,13 @@ public class OracleLobStorageClause extends OracleSegmentAttributesImpl implemen
     private SQLExpr pctversion;
 
     protected void accept0(SQLASTVisitor visitor) {
-        this.accept0((OracleASTVisitor) visitor);
+        if (visitor instanceof OracleASTVisitor) {
+            accept0((OracleASTVisitor) visitor);
+            return;
+        }
+        acceptChild(visitor, segementName);
+        acceptChild(visitor, items);
+        acceptChild(visitor, tablespace);
     }
 
     @Override

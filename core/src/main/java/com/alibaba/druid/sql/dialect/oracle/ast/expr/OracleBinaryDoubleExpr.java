@@ -46,7 +46,11 @@ public class OracleBinaryDoubleExpr extends SQLNumericLiteralExpr implements Ora
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
-        accept0((OracleASTVisitor) visitor);
+        if (visitor instanceof OracleASTVisitor) {
+            accept0((OracleASTVisitor) visitor);
+            return;
+        }
+        // Leaf node — no child nodes to traverse for base visitors
     }
 
     public void accept0(OracleASTVisitor visitor) {

@@ -450,7 +450,12 @@ public class ModelClause extends OracleSQLObjectImpl {
 
         @Override
         protected void accept0(SQLASTVisitor visitor) {
-            accept0((OracleASTVisitor) visitor);
+            if (visitor instanceof OracleASTVisitor) {
+                accept0((OracleASTVisitor) visitor);
+                return;
+            }
+            acceptChild(visitor, measureColumn);
+            acceptChild(visitor, conditions);
         }
 
         @Override

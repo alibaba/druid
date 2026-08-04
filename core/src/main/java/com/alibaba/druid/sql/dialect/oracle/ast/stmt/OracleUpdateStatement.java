@@ -56,7 +56,7 @@ public class OracleUpdateStatement extends SQLUpdateStatement implements OracleS
             return;
         }
 
-        super.accept(visitor);
+        super.accept0(visitor);
     }
 
     @Override

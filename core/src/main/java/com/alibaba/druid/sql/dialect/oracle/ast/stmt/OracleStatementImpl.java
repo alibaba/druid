@@ -27,7 +27,11 @@ public abstract class OracleStatementImpl extends SQLStatementImpl implements Or
     }
 
     protected void accept0(SQLASTVisitor visitor) {
-        accept0((OracleASTVisitor) visitor);
+        if (visitor instanceof OracleASTVisitor) {
+            accept0((OracleASTVisitor) visitor);
+            return;
+        }
+        // Non-Oracle visitor: no-op (subclasses override with their own child traversal)
     }
 
     public abstract void accept0(OracleASTVisitor visitor);

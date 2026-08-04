@@ -41,7 +41,11 @@ public class OracleExplainStatement extends SQLExplainStatement implements Oracl
     }
 
     protected void accept0(SQLASTVisitor visitor) {
-        accept0((OracleASTVisitor) visitor);
+        if (visitor instanceof OracleASTVisitor) {
+            accept0((OracleASTVisitor) visitor);
+            return;
+        }
+        super.accept0(visitor);
     }
 
     public String toString() {

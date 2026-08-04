@@ -140,7 +140,13 @@ public class OracleIntervalExpr extends SQLExprImpl implements SQLLiteralExpr, O
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
-        this.accept0((OracleASTVisitor) visitor);
+        if (visitor instanceof OracleASTVisitor) {
+            accept0((OracleASTVisitor) visitor);
+            return;
+        }
+        acceptChild(visitor, value);
+        acceptChild(visitor, precision);
+        acceptChild(visitor, toFactionalSecondsPrecision);
     }
 
     @Override
