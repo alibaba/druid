@@ -14,10 +14,7 @@ import com.alibaba.druid.sql.dialect.gaussdb.ast.stmt.GaussDbInsertStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGInsertStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectStatement;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGSQLStatementParser;
-import com.alibaba.druid.sql.parser.EOFParserException;
-import com.alibaba.druid.sql.parser.ParserException;
-import com.alibaba.druid.sql.parser.SQLParserFeature;
-import com.alibaba.druid.sql.parser.Token;
+import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.util.FnvHash;
 
 import java.util.ArrayList;
@@ -158,7 +155,7 @@ public class GaussDbStatementParser extends PGSQLStatementParser {
                 accept(Token.UPDATE);
 
                 if (lexer.identifierEquals(FnvHash.Constants.NOTHING)) {
-                    int mark = lexer.mark();
+                    Lexer.SavePoint mark = lexer.markOut();
                     lexer.nextToken();
                     if (lexer.token() == Token.EQ) {
                         lexer.reset(mark);
@@ -166,7 +163,7 @@ public class GaussDbStatementParser extends PGSQLStatementParser {
                         stmt.setDuplicateKeyUpdateNothing(true);
                     }
                 }
-                } else {
+                if (!stmt.isDuplicateKeyUpdateNothing()) {
                     List<SQLExpr> duplicateKeyUpdate = stmt.getDuplicateKeyUpdate();
                     for (; ; ) {
                         SQLName name = this.exprParser.name();
