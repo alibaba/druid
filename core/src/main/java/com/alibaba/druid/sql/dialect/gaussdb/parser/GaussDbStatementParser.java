@@ -158,8 +158,14 @@ public class GaussDbStatementParser extends PGSQLStatementParser {
                 accept(Token.UPDATE);
 
                 if (lexer.identifierEquals(FnvHash.Constants.NOTHING)) {
+                    int mark = lexer.mark();
                     lexer.nextToken();
-                    stmt.setDuplicateKeyUpdateNothing(true);
+                    if (lexer.token() == Token.EQ) {
+                        lexer.reset(mark);
+                    } else {
+                        stmt.setDuplicateKeyUpdateNothing(true);
+                    }
+                }
                 } else {
                     List<SQLExpr> duplicateKeyUpdate = stmt.getDuplicateKeyUpdate();
                     for (; ; ) {
