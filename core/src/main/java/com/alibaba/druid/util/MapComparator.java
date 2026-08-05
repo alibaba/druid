@@ -34,7 +34,7 @@ public class MapComparator<K extends Object, V extends Object> implements Compar
     }
 
     private int compare(Number o1, Number o2) {
-        return (int) (o1.doubleValue() - o2.doubleValue());
+        return Double.compare(o1.doubleValue(), o2.doubleValue());
     }
 
     private int compare(String o1, String o2) {
@@ -42,7 +42,7 @@ public class MapComparator<K extends Object, V extends Object> implements Compar
     }
 
     private int compare(Date o1, Date o2) {
-        return (int) (o1.getTime() - o2.getTime());
+        return Long.compare(o1.getTime(), o2.getTime());
     }
 
     @Override
@@ -99,7 +99,7 @@ public class MapComparator<K extends Object, V extends Object> implements Compar
         }
 
         if (v1 instanceof Long) {
-            return (int) (((Long) v1).longValue() - ((Number) v2).longValue());
+            return Long.compare(((Long) v1).longValue(), ((Number) v2).longValue());
         }
 
         if (v1 instanceof Number) {
