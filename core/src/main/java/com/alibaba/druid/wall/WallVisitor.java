@@ -159,7 +159,7 @@ public interface WallVisitor extends SQLASTVisitor {
         int selectLimit = config.getSelectLimit();
         if (selectLimit >= 0) {
             SQLSelect select = x.getSelect();
-            PagerUtils.limit(select, getDbType(), 0, selectLimit, true);
+            PagerUtils.limit(select, getDbType(), -1, selectLimit, true);
             setSqlModified(true);
         }
         return true;
