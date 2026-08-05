@@ -68,6 +68,25 @@
 						<include>**/bvt/**/*.java</include>
 					</includes>
 				</configuration>
+				<executions>
+					<!-- Run the charset round-trip test under a non-UTF-8 default charset so it
+					     actually fails if decrypt() stops decoding as UTF-8 (it passes trivially
+					     when the JVM default is already UTF-8). -->
+					<execution>
+						<id>charset-tests</id>
+						<phase>test</phase>
+						<goals>
+							<goal>test</goal>
+						</goals>
+						<configuration>
+							<includes>
+								<include>**/bvt/filter/config/ConfigToolsCharsetTest.java</include>
+							</includes>
+							<argLine>-Dfile.encoding=ISO-8859-1</argLine>
+							<reportsDirectory>${project.build.directory}/surefire-reports-charset</reportsDirectory>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<artifactId>maven-source-plugin</artifactId>
