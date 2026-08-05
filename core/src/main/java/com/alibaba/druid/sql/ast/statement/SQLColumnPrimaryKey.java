@@ -35,6 +35,8 @@ public class SQLColumnPrimaryKey extends SQLConstraintImpl implements SQLColumnC
 
         super.cloneTo(x);
 
+        x.setNotEnforced(notEnforced);
+
         return x;
     }
 

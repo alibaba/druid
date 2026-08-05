@@ -14,6 +14,7 @@ import com.alibaba.druid.sql.parser.SQLCreateTableParser;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.Token;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ImpalaStatementParser extends HiveStatementParser {
@@ -66,8 +67,15 @@ public class ImpalaStatementParser extends HiveStatementParser {
     protected void parseInsert0Hints(SQLInsertInto insertStatement, boolean isInsert) {
         if (insertStatement instanceof ImpalaInsertStatement) {
             ImpalaInsertStatement stmt = (ImpalaInsertStatement) insertStatement;
-            List<SQLHint> hints = isInsert ? stmt.getInsertHints() : stmt.getSelectHints();
+            List<SQLHint> hints = new ArrayList<SQLHint>();
             this.getExprParser().parseHints(hints);
+            for (SQLHint hint : hints) {
+                if (isInsert) {
+                    stmt.addInsertHint(hint);
+                } else {
+                    stmt.addSelectHint(hint);
+                }
+            }
         }
     }
 

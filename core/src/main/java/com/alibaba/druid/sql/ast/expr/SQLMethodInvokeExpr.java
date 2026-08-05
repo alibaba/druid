@@ -379,6 +379,10 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, 
             x.setUsing(using.clone());
         }
 
+        if (hasFor != null) {
+            x.setFor(hasFor.clone());
+        }
+
         if (trimOption != null) {
             x.setTrimOption(trimOption);
         }

@@ -21,6 +21,7 @@ import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class SQLStatementImpl extends SQLObjectImpl implements SQLStatement {
@@ -88,7 +89,21 @@ public abstract class SQLStatementImpl extends SQLObjectImpl implements SQLState
         super.cloneTo(x);
         x.dbType = dbType;
         x.afterSemi = afterSemi;
-        x.headHints = headHints;
+        // deep-copy: sharing the list (or its elements) lets a mutation of the clone's hints
+        // rewrite the original statement's SQL
+        if (headHints != null) {
+            List<SQLCommentHint> hints2 = new ArrayList<SQLCommentHint>(headHints.size());
+            for (SQLCommentHint hint : headHints) {
+                if (hint == null) {
+                    hints2.add(null);
+                    continue;
+                }
+                SQLCommentHint hint2 = hint.clone();
+                hint2.setParent(x);
+                hints2.add(hint2);
+            }
+            x.headHints = hints2;
+        }
     }
 
     public List<SQLCommentHint> getHeadHintsDirect() {

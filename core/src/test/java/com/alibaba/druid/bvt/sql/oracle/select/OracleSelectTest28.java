@@ -20,12 +20,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleSelectTest28 extends OracleTest {
+    @Test
     public void test_0() throws Exception {
         String sql = //
                 "SELECT /*+ ORDERED USE_NL ( \"A1 \") USE_NL ( \"A2 \") USE_NL ( \"A3 \") */  \"A3 \". \"AP_PAY_TIME \", \"A2 \". \"ORDER_ID \", \"A3 \". \"AP_PAY_AMT \", \"A1 \". \"COUNTRY \" FROM  \"ESCROW\". \"TRADE_PAY\"  \"A3 \", \"ESCROW\". \"ESCROW_TRADE\"  \"A2 \", \"ESCROW\". \"BUSINESS_ORDER\"  \"A1 \" WHERE  \"A3 \". \"TRADE_ID \"= \"A2 \". \"ID \" AND  \"A1 \". \"ID \"(+)=TO_NUMBER( \"A2 \". \"OUT_ORDER_ID \") AND  \"A2 \". \"ORDER_FROM \"='wholesale_order' AND  \"A3 \". \"AP_PAY_TIME \">=:1-.003819444444444444444444444444444444444444 AND  \"A3 \". \"AP_PAY_TIME \">=TRUNC(:2)";

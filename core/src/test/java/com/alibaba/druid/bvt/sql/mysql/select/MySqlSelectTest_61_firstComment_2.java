@@ -23,12 +23,14 @@ import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_61_firstComment_2 extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "/* xxx * xxxx */ SELECT * from t where t !  = 1";
 

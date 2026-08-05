@@ -521,6 +521,25 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
             }
         }
 
+        if (storedBy != null) {
+            x.setStoredBy(storedBy.clone());
+        }
+
+        x.setBroadCast(isBroadCast);
+
+        for (Map.Entry<String, SQLName> entry : with.entrySet()) {
+            SQLName value = entry.getValue();
+            x.with.put(entry.getKey(), value == null ? null : value.clone());
+        }
+
+        if (withSelect != null) {
+            x.setWithSelect(withSelect.clone());
+        }
+
+        if (withData != null) {
+            x.setWithData(withData);
+        }
+
         if (single != null) {
             x.setSingle(single);
         }

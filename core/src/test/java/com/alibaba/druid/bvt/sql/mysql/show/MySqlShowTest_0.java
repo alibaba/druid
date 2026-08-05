@@ -19,12 +19,14 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlShowTest_0 extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SHOW TRIGGERS FROM `sonar` LIKE 'action_plans'";
 
@@ -50,6 +52,7 @@ public class MySqlShowTest_0 extends MysqlTest {
 //        assertTrue(visitor.getTables().containsKey(new TableStat.Name("t_basic_store")));
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "SHOW triggers in db where strcmp('test1','test2')";
 

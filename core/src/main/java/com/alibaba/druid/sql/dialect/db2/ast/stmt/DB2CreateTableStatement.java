@@ -64,7 +64,7 @@ public class DB2CreateTableStatement extends SQLCreateTableStatement implements 
     }
 
     public void setValidproc(SQLName x) {
-        if (validproc != null) {
+        if (x != null) {
             x.setParent(this);
         }
         this.validproc = x;
@@ -75,7 +75,7 @@ public class DB2CreateTableStatement extends SQLCreateTableStatement implements 
     }
 
     public void setIndexIn(SQLName x) {
-        if (validproc != null) {
+        if (x != null) {
             x.setParent(this);
         }
         this.indexIn = x;
@@ -119,5 +119,29 @@ public class DB2CreateTableStatement extends SQLCreateTableStatement implements 
             this.acceptChild(visitor, indexIn);
         }
         visitor.endVisit(this);
+    }
+
+    public void cloneTo(DB2CreateTableStatement x) {
+        super.cloneTo(x);
+        x.dataCaptureNone = dataCaptureNone;
+        x.dataCaptureChanges = dataCaptureChanges;
+        if (database != null) {
+            x.setDatabase(database.clone());
+        }
+        if (validproc != null) {
+            x.setValidproc(validproc.clone());
+        }
+        if (indexIn != null) {
+            x.setIndexIn(indexIn.clone());
+        }
+        x.withData = withData;
+        x.withNoData = withNoData;
+    }
+
+    @Override
+    public DB2CreateTableStatement clone() {
+        DB2CreateTableStatement x = new DB2CreateTableStatement();
+        cloneTo(x);
+        return x;
     }
 }

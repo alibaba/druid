@@ -66,8 +66,8 @@ public class SQLExprStatement extends SQLStatementImpl implements SQLReplaceable
 
     protected void cloneTo(SQLExprStatement x) {
         super.cloneTo(x);
-        if (x.getExpr() != null) {
-            x.setExpr(x.getExpr().clone());
+        if (expr != null) {
+            x.setExpr(expr.clone());
         }
     }
 }

@@ -125,6 +125,32 @@ public class OracleUpdateStatement extends SQLUpdateStatement implements OracleS
         this.hints = hints;
     }
 
+    public void cloneTo(OracleUpdateStatement x) {
+        super.cloneTo(x);
+        if (hints != null) {
+            x.hints = new ArrayList<SQLHint>(hints.size());
+            for (SQLHint hint : hints) {
+                SQLHint clone = hint.clone();
+                clone.setParent(x);
+                x.hints.add(clone);
+            }
+        }
+        x.only = only;
+        x.alias = alias;
+        for (SQLExpr item : returningInto) {
+            SQLExpr clone = item.clone();
+            clone.setParent(x);
+            x.returningInto.add(clone);
+        }
+    }
+
+    @Override
+    public OracleUpdateStatement clone() {
+        OracleUpdateStatement x = new OracleUpdateStatement();
+        cloneTo(x);
+        return x;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

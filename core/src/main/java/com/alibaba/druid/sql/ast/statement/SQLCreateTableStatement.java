@@ -119,6 +119,8 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         this.acceptChild(v, tableOptions);
 //        this.acceptChild(v, tblProperties);
         this.acceptChild(v, lifeCycle);
+        this.acceptChild(v, engine);
+        this.acceptChild(v, orderBy);
     }
 
     public boolean isAutoBucket() {
@@ -452,6 +454,12 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         }
         if (select != null) {
             children.add(select);
+        }
+        if (engine != null) {
+            children.add(engine);
+        }
+        if (orderBy != null) {
+            children.add(orderBy);
         }
         return children;
     }
@@ -1283,6 +1291,7 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
     }
 
     public void cloneTo(SQLCreateTableStatement x) {
+        super.cloneTo(x);
         x.features = features;
 
         if (tableSource != null) {
@@ -1356,7 +1365,7 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
 
         for (SQLAssignItem item : this.tableOptions) {
             SQLAssignItem item2 = item.clone();
-            item2.setParent(item);
+            item2.setParent(x);
             x.tableOptions.add(item2);
         }
 
@@ -1390,6 +1399,19 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         x.shards = shards;
         x.afterSemi = afterSemi;
 
+        if (engine != null) {
+            x.setEngine(engine.clone());
+        }
+        if (orderBy != null) {
+            x.setOrderBy(orderBy.clone());
+        }
+        if (unique != null) {
+            x.setUnique(unique.clone());
+        }
+        x.isAutoBucket = isAutoBucket;
+        x.replace = replace;
+        x.ignore = ignore;
+        x.single = single;
     }
 
     public boolean isReplace() {

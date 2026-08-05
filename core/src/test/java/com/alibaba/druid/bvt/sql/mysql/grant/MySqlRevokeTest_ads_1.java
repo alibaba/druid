@@ -21,12 +21,14 @@ import com.alibaba.druid.sql.ast.statement.SQLRevokeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlUserName;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowGrantsStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlRevokeTest_ads_1 extends MysqlTest {
+    @Test
     public void test_doc_0() throws Exception {
         String sql = "REVOKE describe, select ON db_name.table_group_name FROM 'ALIYUN$account_name'@'%';";
 
@@ -40,6 +42,7 @@ public class MySqlRevokeTest_ads_1 extends MysqlTest {
                 stmt.toString());
     }
 
+    @Test
     public void test_doc_1() throws Exception {
         String sql = "REVOKE all ON db_name.table_group_name FROM 'ALIYUN$account_name'@'%';";
 
@@ -53,6 +56,7 @@ public class MySqlRevokeTest_ads_1 extends MysqlTest {
                 stmt.toString());
     }
 
+    @Test
     public void test_doc_2() throws Exception {
         String sql = "REVOKE describe, select (col1, col2) ON db_name.* FROM 'ALIYUN$account_name';";
 
@@ -66,6 +70,7 @@ public class MySqlRevokeTest_ads_1 extends MysqlTest {
                 stmt.toString());
     }
 
+    @Test
     public void test_doc_3() throws Exception {
         String sql = "REVOKE describe, select (col1, col2) ON db_name.table_name FROM 'ALIYUN$account_name';";
 
@@ -79,6 +84,7 @@ public class MySqlRevokeTest_ads_1 extends MysqlTest {
                 stmt.toString());
     }
 
+    @Test
     public void test_show_0() throws Exception {
         String sql = "show grants on db_name.*;";
 
@@ -94,6 +100,7 @@ public class MySqlRevokeTest_ads_1 extends MysqlTest {
                 stmt.toLowerCaseString());
     }
 
+    @Test
     public void test_show_1() throws Exception {
         String sql = "show grants for 'ALIYUN$account_name' on db_name.*;";
 
@@ -109,6 +116,7 @@ public class MySqlRevokeTest_ads_1 extends MysqlTest {
                 stmt.toLowerCaseString());
     }
 
+    @Test
     public void test_show_2() throws Exception {
         String sql = "show grants for user@''";
 
@@ -132,6 +140,7 @@ public class MySqlRevokeTest_ads_1 extends MysqlTest {
         userName.toString();
     }
 
+    @Test
     public void test_show_3() throws Exception {
         String sql = "show grants for 'user'@'localhost' ";
 

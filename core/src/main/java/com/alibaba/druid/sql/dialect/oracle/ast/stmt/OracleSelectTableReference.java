@@ -157,7 +157,7 @@ public class OracleSelectTableReference extends SQLExprTableSource implements Or
         }
 
         if (flashback != null) {
-            setFlashback(flashback.clone());
+            x.setFlashback(flashback.clone());
         }
 
         return x;

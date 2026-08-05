@@ -71,6 +71,37 @@ public class RedshiftCreateTableStatement extends SQLCreateTableStatement implem
     }
 
     @Override
+    public RedshiftCreateTableStatement clone() {
+        RedshiftCreateTableStatement x = new RedshiftCreateTableStatement();
+        cloneTo(x);
+        return x;
+    }
+
+    public void cloneTo(RedshiftCreateTableStatement x) {
+        super.cloneTo(x);
+        if (distStyle != null) {
+            x.setDistStyle(distStyle.clone());
+        }
+        if (distKey != null) {
+            x.setDistKey(distKey.clone());
+        }
+        if (backup != null) {
+            x.setBackup(backup.clone());
+        }
+        if (sortKey != null) {
+            RedshiftSortKey sortKeyClone = new RedshiftSortKey();
+            sortKeyClone.setCompound(sortKey.isCompound());
+            sortKeyClone.setInterleaved(sortKey.isInterleaved());
+            sortKeyClone.setAuto(sortKey.isAuto());
+            for (SQLExpr column : sortKey.getColumns()) {
+                sortKeyClone.addColumn(column == null ? null : column.clone());
+            }
+            x.setSortKey(sortKeyClone);
+        }
+        x.encodeAuto = encodeAuto;
+    }
+
+    @Override
     public void accept0(SQLASTVisitor v) {
         if (v instanceof RedshiftASTVisitor) {
             accept0((RedshiftASTVisitor) v);

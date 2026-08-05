@@ -20,11 +20,13 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_296
         extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT x, array_agg(y ORDER BY y), array_agg(y ORDER BY y) FILTER (WHERE y > 1), count(*) \n" +
                 "FROM (VALUES    (1, 3),    (1, 1),    (2, 3),    (2, 4)) t(x, y) \n" +

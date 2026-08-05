@@ -87,6 +87,7 @@ public class SQLWhileStatement extends SQLStatementImpl implements SQLReplaceabl
             x.statements.add(stmt2);
         }
         x.labelName = labelName;
+        x.afterSemi = afterSemi;
         return x;
     }
 

@@ -175,6 +175,10 @@ public class SQLVariantRefExpr extends SQLExprImpl {
         }
 
         var.index = index;
+        var.hasPrefixComma = hasPrefixComma;
+        var.templateParameter = templateParameter;
+        var.parenthesized = parenthesized;
+        var.parenthesizedCount = parenthesizedCount;
         return var;
     }
 

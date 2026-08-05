@@ -22,12 +22,14 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlUpdateTest_3 extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "update scheme.table set col_1 = 1, col2 = '2' "
                 + "where col_3 = 3 and (length(col_4) > 4 or col_5 <> '5')";

@@ -170,6 +170,10 @@ public class SQLExternalRecordFormat extends SQLObjectImpl {
             x.setDelimitedBy(delimitedBy.clone());
         }
 
+        if (terminatedBy != null) {
+            x.setTerminatedBy(terminatedBy.clone());
+        }
+
         if (escapedBy != null) {
             x.setEscapedBy(escapedBy.clone());
         }

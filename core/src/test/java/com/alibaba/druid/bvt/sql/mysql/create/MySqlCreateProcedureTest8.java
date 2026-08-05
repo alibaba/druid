@@ -22,6 +22,7 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
@@ -39,6 +40,7 @@ public class MySqlCreateProcedureTest8 extends MysqlTest {
      *
      * @throws Exception
      */
+    @Test
     public void test_0() throws Exception {
         String sql = "create or replace procedure test_cursor (in param int(10),out result varchar(90))  "
                 + " begin"
@@ -77,6 +79,7 @@ public class MySqlCreateProcedureTest8 extends MysqlTest {
         assertEquals(1, visitor.getConditions().size());
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "create or replace procedure sp_name(level int,age int)" +
                 " begin" +
@@ -96,6 +99,7 @@ public class MySqlCreateProcedureTest8 extends MysqlTest {
         assertEquals(0, visitor.getConditions().size());
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "create or replace procedure sp_name(level int,age int)" +
                 " begin" +
@@ -115,6 +119,7 @@ public class MySqlCreateProcedureTest8 extends MysqlTest {
         assertEquals(0, visitor.getConditions().size());
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = "create or replace procedure sp_name(level int,age int)" +
                 " begin" +
@@ -134,6 +139,7 @@ public class MySqlCreateProcedureTest8 extends MysqlTest {
         assertEquals(0, visitor.getConditions().size());
     }
 
+    @Test
     public void test_4() throws Exception {
         String sql = "create or replace procedure sp_name(level int,age int)" +
                 " begin" +
@@ -153,6 +159,7 @@ public class MySqlCreateProcedureTest8 extends MysqlTest {
         assertEquals(0, visitor.getConditions().size());
     }
 
+    @Test
     public void test_5() throws Exception {
         String sql = "create or replace procedure sp_name(level int,age int)" +
                 " begin" +

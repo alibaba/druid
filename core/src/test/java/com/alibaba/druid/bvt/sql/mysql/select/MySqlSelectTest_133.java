@@ -6,12 +6,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_133 extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "select (~(43)     ),(     (tinyint_1bit_test MOD integer_test MOD  bigint_test) not in (1,2,'a',(binary  'a'='a '))  )"
             + "from select_base_two_one_db_multi_tb ";

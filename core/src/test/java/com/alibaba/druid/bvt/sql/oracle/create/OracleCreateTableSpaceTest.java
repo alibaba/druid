@@ -4,6 +4,7 @@ import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableSpaceStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
@@ -14,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class OracleCreateTableSpaceTest extends OracleTest {
     // basic tablespace
+    @Test
     public void test_0() throws Exception {
         String sql = "CREATE TABLESPACE omf_ts1";
         OracleStatementParser parser = new OracleStatementParser(sql);

@@ -22,12 +22,14 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class Oracle_pl_1 extends OracleTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "DROP TABLE employees_temp;\n" +
                 "CREATE TABLE employees_temp AS\n" +
@@ -123,6 +125,7 @@ public class Oracle_pl_1 extends OracleTest {
         }
     }
 
+    @Test
     public void test_1() {
         String sql = "DECLARE\n" +
                      "  acct_id INTEGER(4) NOT NULL := 9999;\n" +

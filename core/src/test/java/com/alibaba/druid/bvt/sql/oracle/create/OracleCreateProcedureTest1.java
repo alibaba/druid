@@ -20,12 +20,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleCreateProcedureTest1 extends OracleTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "CREATE OR REPLACE PROCEDURE p (" +
                 "  dept_no NUMBER" +
@@ -74,6 +76,7 @@ public class OracleCreateProcedureTest1 extends OracleTest {
         assertTrue(visitor.getColumns().contains(new TableStat.Column("dept_temp", "department_id")));
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "CREATE OR REPLACE PROCEDURE p (" +
                 "  dept_no NUMBER" +

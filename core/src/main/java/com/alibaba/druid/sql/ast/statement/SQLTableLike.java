@@ -23,6 +23,10 @@ public class SQLTableLike extends SQLObjectImpl implements SQLTableElement {
         if (table != null) {
             x.setTable(table.clone());
         }
+        x.includeProperties = includeProperties;
+        x.includeDistribution = includeDistribution;
+        x.excludeProperties = excludeProperties;
+        x.excludeDistribution = excludeDistribution;
 
         return x;
     }

@@ -4,6 +4,7 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ public class MySqlShowTest_38_hints extends MysqlTest {
             SQLParserFeature.UseInsertColumnsCache, SQLParserFeature.OptimizedForParameterized,
             SQLParserFeature.TDDLHint};
 
+    @Test
     public void test_0() throws Exception {
         String sql = "/* +TDDL:scan()*/show table status from corona_qatest_0;";
 
@@ -31,6 +33,7 @@ public class MySqlShowTest_38_hints extends MysqlTest {
         assertEquals("/*+TDDL:scan()*/\n" + "show table status from corona_qatest_0;", stmt.toLowerCaseString());
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "/* +TDDL:node(1)*/show table status from corona_qatest_0;";
 

@@ -16,10 +16,13 @@
 package com.alibaba.druid.sql.dialect.oscar.ast.stmt;
 
 import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oscar.visitor.OscarASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
+import java.util.ArrayList;
 
 public class OscarSelectStatement extends SQLSelectStatement implements OscarStatement {
     public OscarSelectStatement() {
@@ -43,5 +46,26 @@ public class OscarSelectStatement extends SQLSelectStatement implements OscarSta
             acceptChild(visitor, this.select);
         }
         visitor.endVisit(this);
+    }
+
+    @Override
+    public OscarSelectStatement clone() {
+        OscarSelectStatement x = new OscarSelectStatement();
+        x.dbType = dbType;
+        x.afterSemi = afterSemi;
+        if (select != null) {
+            x.setSelect(select.clone());
+        }
+        if (headHints != null) {
+            for (SQLCommentHint h : headHints) {
+                SQLCommentHint h2 = h.clone();
+                h2.setParent(x);
+                if (x.headHints == null) {
+                    x.headHints = new ArrayList<SQLCommentHint>(headHints.size());
+                }
+                x.headHints.add(h2);
+            }
+        }
+        return x;
     }
 }

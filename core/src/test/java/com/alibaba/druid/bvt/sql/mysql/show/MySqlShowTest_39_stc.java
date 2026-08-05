@@ -5,6 +5,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
@@ -15,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @date 2018/8/27 上午11:41
  */
 public class MySqlShowTest_39_stc extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SHOW STC";
 
@@ -35,6 +37,7 @@ public class MySqlShowTest_39_stc extends MysqlTest {
         assertEquals("SHOW STC", stmt.toString());
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "SHOW STC his";
 

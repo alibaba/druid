@@ -19,12 +19,14 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_206_union extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT uid FROM (select uid, cid, category, empid from comb_opportunity_sales_relation_online where uid = 1723876714657374)  \n" +
                 "union SELECT uid FROM (select uid, cid, category, empid from comb_opportunity_sales_relation_offline where uid = 1723876714657374) ";

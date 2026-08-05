@@ -20,12 +20,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlShowTest_35_PHYSICAL_PROCESSLIST extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SHOW PHYSICAL_PROCESSLIST";
 
@@ -49,6 +51,7 @@ public class MySqlShowTest_35_PHYSICAL_PROCESSLIST extends MysqlTest {
         assertEquals("show physical_processlist", stmt.toLowerCaseString());
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "SHOW FULL PHYSICAL_PROCESSLIST";
 

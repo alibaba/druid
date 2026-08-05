@@ -20,11 +20,13 @@ import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class HiveCreateTableTest_47_dla
         extends OracleTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "CREATE external TABLE IF NOT EXISTS dwd_tfc_bas_rdnet_inter_info (\n" +
                 "inter_id varchar(225) NOT NULL COMMENT ' 路口id ',\n" +

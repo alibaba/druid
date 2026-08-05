@@ -64,6 +64,7 @@ public class SQLStructExpr extends SQLExprImpl implements SQLReplaceable {
     protected void cloneTo(SQLStructExpr x) {
         if (this.dataType != null) {
             x.dataType = this.dataType.clone();
+            x.dataType.setParent(x);
         }
         for (SQLAliasedExpr item : items) {
             x.addItem(item.clone());

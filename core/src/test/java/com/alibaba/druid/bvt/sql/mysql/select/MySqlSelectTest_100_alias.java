@@ -19,12 +19,14 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_100_alias extends MysqlTest {
+    @Test
     public void test_2() throws Exception {
         String sql = "\n" +
                 "select id as \"id\", name as \"\\\"abc\\\"\" from test_hash_tb";
@@ -42,6 +44,7 @@ public class MySqlSelectTest_100_alias extends MysqlTest {
                 "FROM test_hash_tb", text);
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = "select count(Distinct id) from t";
 
@@ -55,6 +58,7 @@ public class MySqlSelectTest_100_alias extends MysqlTest {
                 "FROM t", text);
     }
 
+    @Test
     public void test_4() throws Exception {
         String sql = "select date '2010-01-01'";
 
@@ -67,6 +71,7 @@ public class MySqlSelectTest_100_alias extends MysqlTest {
         assertEquals("SELECT DATE '2010-01-01'", text);
     }
 
+    @Test
     public void test_5() throws Exception {
         String sql = "select 1 from t";
 
@@ -80,6 +85,7 @@ public class MySqlSelectTest_100_alias extends MysqlTest {
                 "FROM t", text);
     }
 
+    @Test
     public void test_6() throws Exception {
         String sql = "select -f1 from t";
 
@@ -93,6 +99,7 @@ public class MySqlSelectTest_100_alias extends MysqlTest {
                 "FROM t", text);
     }
 
+    @Test
     public void test_7() throws Exception {
         String sql = "SELECT 'schema_name'\n" +
                 "FROM information_schema.schemata";
@@ -107,6 +114,7 @@ public class MySqlSelectTest_100_alias extends MysqlTest {
                 "FROM information_schema.schemata", text);
     }
 
+    @Test
     public void test_8() throws Exception {
         String sql = "SELECT -\"calcs\".\"num0\" AS \"TEMP(Test)(4188722171)(0)\"\n" +
                 "FROM mysql.tableau_mysql.\"calcs\"\n" +
@@ -123,6 +131,7 @@ public class MySqlSelectTest_100_alias extends MysqlTest {
                 "GROUP BY 1", text);
     }
 
+    @Test
     public void test_true() throws Exception {
         String sql = "select true from t";
 

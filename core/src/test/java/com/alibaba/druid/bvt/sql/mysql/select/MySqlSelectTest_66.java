@@ -23,12 +23,14 @@ import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_66 extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT * FROM (SELECT number_ios,type,subtype,displayname,source FROM hot_number_20170921 WHERE day_modify > 20170921 AND priority >= 4499000 ORDER BY priority DESC LIMIT 500000) ORDER BY number_ios ASC";
 

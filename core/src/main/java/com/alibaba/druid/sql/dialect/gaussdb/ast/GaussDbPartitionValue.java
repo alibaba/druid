@@ -83,6 +83,7 @@ public class GaussDbPartitionValue extends SQLPartitionValue {
     @Override
     public void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
+            acceptChild(visitor, getItems());
             acceptChild(visitor, start);
             acceptChild(visitor, end);
             acceptChild(visitor, every);
@@ -90,5 +91,33 @@ public class GaussDbPartitionValue extends SQLPartitionValue {
             acceptChild(visitor, dataNode);
             visitor.endVisit(this);
         }
+    }
+
+    @Override
+    public GaussDbPartitionValue clone() {
+        GaussDbPartitionValue x = new GaussDbPartitionValue(operator);
+        cloneTo(x);
+        for (SQLExpr item : items) {
+            SQLExpr item2 = item.clone();
+            item2.setParent(x);
+            x.items.add(item2);
+        }
+        x.setDistribute(isDistribute);
+        if (spaceName != null) {
+            x.setSpaceName(spaceName.clone());
+        }
+        if (dataNode != null) {
+            x.setDataNodes(dataNode.clone());
+        }
+        if (start != null) {
+            x.setStart(start.clone());
+        }
+        if (end != null) {
+            x.setEnd(end.clone());
+        }
+        if (every != null) {
+            x.setEvery(every.clone());
+        }
+        return x;
     }
 }

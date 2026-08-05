@@ -6,6 +6,7 @@ import com.alibaba.druid.sql.PagerUtils;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
@@ -15,6 +16,7 @@ public class OracleSelectTest_limit_join_with_order_by extends OracleTest {
     /**
      * 当sql有order by语句时， 分页结果sql中， join语句丢失on的条件
      */
+    @Test
     public void testLimitJoinWithOrderBy() {
         String sql = "select * from A a " +
                 " left join B b on a.id = b.id " +

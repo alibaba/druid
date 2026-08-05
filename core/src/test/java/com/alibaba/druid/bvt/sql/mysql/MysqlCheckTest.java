@@ -16,6 +16,7 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlExportParameterVisitor;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.fastjson2.JSON;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.regex.Pattern;
@@ -23,6 +24,7 @@ import java.util.regex.Pattern;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MysqlCheckTest extends MysqlTest {
+    @Test
     public void testEndTokenChecking() throws Exception {
         Object[][] samples = {
                     {"update test_tab1 set b= 1 swhere a=1", false, true},
@@ -69,6 +71,7 @@ public class MysqlCheckTest extends MysqlTest {
         }
     }
 
+    @Test
     public void test_create1() {
         String sql = "CREATE TABLE `t12` (\n" +
                 "  `c1` int DEFAULT NULL,\n" +
@@ -145,6 +148,7 @@ public class MysqlCheckTest extends MysqlTest {
         }
     }
 
+    @Test
     public void test_create2() {
         String sql = "CREATE TABLE `t12` (\n" +
                 "\t`c1` int DEFAULT NULL,\n" +
@@ -222,6 +226,7 @@ public class MysqlCheckTest extends MysqlTest {
         }
     }
 
+    @Test
     public void test_alter_add1() {
         String sql = "ALTER TABLE t1 ADD CONSTRAINT chk1 CHECK((a>1));";
 
@@ -247,6 +252,7 @@ public class MysqlCheckTest extends MysqlTest {
         assertEquals("(a > 1)", sqlCheck.getExpr().toString());
     }
 
+    @Test
     public void test_alter_add2() {
         String sql = "ALTER TABLE t1 ADD CONSTRAINT chk1 CHECK((a>1)) NOT ENFORCED; ";
 
@@ -272,6 +278,7 @@ public class MysqlCheckTest extends MysqlTest {
         assertEquals("(a > 1)", sqlCheck.getExpr().toString());
     }
 
+    @Test
     public void test_alter_drop() {
         String sql = "ALTER TABLE t1 DROP CONSTRAINT t1_check ;";
 
@@ -292,6 +299,7 @@ public class MysqlCheckTest extends MysqlTest {
         assertEquals("t1_check", constraint.getConstraintName().getSimpleName());
     }
 
+    @Test
     public void test_alter_alter1() {
         String sql = "alter table t1 ALTER CHECK  t1_check  ENFORCED;";
 
@@ -313,6 +321,7 @@ public class MysqlCheckTest extends MysqlTest {
         assertTrue(constraint.getEnforced());
     }
 
+    @Test
     public void test_alter_alter2() {
         String sql = "alter table t1 ALTER CHECK  t1_check  NOT ENFORCED;";
 

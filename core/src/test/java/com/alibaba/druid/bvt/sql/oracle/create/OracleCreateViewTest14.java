@@ -22,12 +22,14 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleCreateViewTest14 extends OracleTest {
+    @Test
     public void test_types() throws Exception {
         String sql = //
                 "CREATE OR REPLACE FORCE VIEW \"CITSONLINE\".\"VIEW_SK_ORDER_APPLY\" (\"ORDER_ID\", \"PRODUCT_TYPE\", \"ORDER_AGENT\", \"COLLECT_MONEY\", \"CUSTOMER_ID\", \"ADD_USER\", \"ADD_DATE\", \"TEAM_NAME\", \"TEAM_NO\", \"CONTACT\", \"ORDER_ACCOUNT\") AS \n" +

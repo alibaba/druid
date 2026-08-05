@@ -23,12 +23,14 @@ import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_63_alias extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = " SELECT totalNumber, concat(\"\",? , round(memberNumber, 0) , \"\") AS totalDisplay FROM (\n" +
                 "SELECT count(1) AS totalNumber, sum(memberNumber) AS memberNumber FROM(\n" +

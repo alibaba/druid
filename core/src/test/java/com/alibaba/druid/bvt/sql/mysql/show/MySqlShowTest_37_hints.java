@@ -4,6 +4,7 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ public class MySqlShowTest_37_hints extends MysqlTest {
             SQLParserFeature.UseInsertColumnsCache, SQLParserFeature.OptimizedForParameterized,
             SQLParserFeature.TDDLHint};
 
+    @Test
     public void test_0() throws Exception {
         String sql = "/* +TDDL:scan()*/show columns from drds_shard;";
 
@@ -31,6 +33,7 @@ public class MySqlShowTest_37_hints extends MysqlTest {
         assertEquals("/*+TDDL:scan()*/\n" + "show columns from drds_shard;", stmt.toLowerCaseString());
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "/* +TDDL:node(1)*/show columns from drds_shard;";
 

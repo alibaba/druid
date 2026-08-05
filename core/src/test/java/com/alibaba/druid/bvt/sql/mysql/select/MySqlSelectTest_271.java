@@ -19,10 +19,12 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_271 extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT `EXTRACT` AS id, `OVER` AS order_id, `DECIMAL` AS user_id, `INDEX` AS car_id, `ADD` AS plate_number\n" +
                 "\t, `CURSOR` AS from_op_point_id, `INSERT` AS to_op_point_id, `INNER` AS amount, `REFERENCES` AS status, `TIMESTAMP` AS distance\n" +

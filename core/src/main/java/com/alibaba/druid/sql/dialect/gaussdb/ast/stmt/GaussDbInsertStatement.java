@@ -21,4 +21,21 @@ public class GaussDbInsertStatement extends PGInsertStatement {
     public List<SQLExpr> getDuplicateKeyUpdate() {
         return duplicateKeyUpdate;
     }
+
+    public void cloneTo(GaussDbInsertStatement x) {
+        super.cloneTo(x);
+        x.isIgnore = isIgnore;
+        for (SQLExpr item : duplicateKeyUpdate) {
+            SQLExpr item2 = item.clone();
+            item2.setParent(x);
+            x.duplicateKeyUpdate.add(item2);
+        }
+    }
+
+    @Override
+    public GaussDbInsertStatement clone() {
+        GaussDbInsertStatement x = new GaussDbInsertStatement();
+        cloneTo(x);
+        return x;
+    }
 }

@@ -14,6 +14,12 @@ public class SQLAtTimeZoneExpr extends SQLExprImpl {
     }
 
     public SQLAtTimeZoneExpr(SQLExpr expr, SQLExpr timeZone) {
+        if (expr != null) {
+            expr.setParent(this);
+        }
+        if (timeZone != null) {
+            timeZone.setParent(this);
+        }
         this.expr = expr;
         this.timeZone = timeZone;
     }

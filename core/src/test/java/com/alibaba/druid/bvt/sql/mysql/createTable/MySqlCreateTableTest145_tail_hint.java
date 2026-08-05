@@ -4,6 +4,7 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
@@ -17,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @Date 2019-05-09 20:08
  */
 public class MySqlCreateTableTest145_tail_hint extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "CREATE TABLE `log_fake` (\n" +
                 "  `id` varchar(37) NOT NULL COMMENT 'uuid',\n" +

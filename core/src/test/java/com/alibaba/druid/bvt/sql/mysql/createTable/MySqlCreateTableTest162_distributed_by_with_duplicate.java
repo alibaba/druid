@@ -5,10 +5,12 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlCreateTableTest162_distributed_by_with_duplicate extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "CREATE TABLE `test_user` ( `id` int(11) NOT NULL AUTO_INCREMENT ) DISTRIBUTE BY DUPLICATE(g1,g2);";
 
@@ -17,6 +19,7 @@ public class MySqlCreateTableTest162_distributed_by_with_duplicate extends Mysql
         assertEquals(sql, SQLUtils.toSQLString(stmt, DbType.mysql, new SQLUtils.FormatOption(VisitorFeature.OutputUCase)));
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "CREATE TABLE `test_user` ( `id` int(11) NOT NULL AUTO_INCREMENT ) DISTRIBUTED BY DUPLICATE(g1,g2);";
 

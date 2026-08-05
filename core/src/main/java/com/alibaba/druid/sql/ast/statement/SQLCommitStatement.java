@@ -39,6 +39,7 @@ public class SQLCommitStatement extends SQLStatementImpl {
 
     public SQLCommitStatement clone() {
         SQLCommitStatement x = new SQLCommitStatement();
+        cloneTo(x);
         x.write = write;
         x.wait = wait;
         x.immediate = immediate;

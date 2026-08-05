@@ -4,12 +4,14 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlCreateTableTest132_drds_primaryKey extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "create table gxw_test_87 (id int, name varchar(20),  primary key(id, name)) dbpartition by hash(id);";
 

@@ -8,12 +8,14 @@ import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_154 extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT 1 is NULL,(~(NULLIF(1,1 ))) \n" +
                 "FROM corona_select_one_db_one_tb AS layer_0_left_tb \n" +

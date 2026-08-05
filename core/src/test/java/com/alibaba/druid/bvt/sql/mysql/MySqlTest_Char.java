@@ -18,6 +18,7 @@ package com.alibaba.druid.bvt.sql.mysql;
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
@@ -27,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * 测试char()  CHAR(N,... [USING charset_name])
  */
 public class MySqlTest_Char extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT char(888 using utf8)";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -35,6 +37,7 @@ public class MySqlTest_Char extends MysqlTest {
         assertEquals(output(statementList), "SELECT char(888 USING utf8)");
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "SELECT char('abc8a9b10c' using utf8)";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -43,6 +46,7 @@ public class MySqlTest_Char extends MysqlTest {
         assertEquals(output(statementList), "SELECT char('abc8a9b10c' USING utf8)");
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "SELECT char(12,321,'lq9s9f','abc8a9b10c' using utf8)";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -51,6 +55,7 @@ public class MySqlTest_Char extends MysqlTest {
         assertEquals(output(statementList), "SELECT char(12, 321, 'lq9s9f', 'abc8a9b10c' USING utf8)");
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = "SELECT char(12,321,'lq9s9f','abc8a9b10c')";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -59,6 +64,7 @@ public class MySqlTest_Char extends MysqlTest {
         assertEquals(output(statementList), "SELECT char(12, 321, 'lq9s9f', 'abc8a9b10c')");
     }
 
+    @Test
     public void test_4() throws Exception {
         String sql = "SELECT CHAR(77,121,83,81,'76' using utf8)";
         MySqlStatementParser parser = new MySqlStatementParser(sql);

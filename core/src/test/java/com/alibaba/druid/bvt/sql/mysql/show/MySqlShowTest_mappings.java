@@ -23,6 +23,7 @@ import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.statement.SQLShowDatabasesStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
@@ -30,6 +31,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlShowTest_mappings
         extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "show databases where type = 'mapping' and user_name = 'user001'";
 

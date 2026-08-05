@@ -21,12 +21,14 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_214 extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT numbers, animals, n, a\n" +
                 "FROM (\n" +
@@ -60,6 +62,7 @@ public class MySqlSelectTest_214 extends MysqlTest {
                 "\tcross join unnest(numbers, animals) as t (n, a);", stmt.clone().toLowerCaseString());
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "SELECT numbers, animals, n, a\n" +
                 "FROM (\n" +

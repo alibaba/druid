@@ -5,12 +5,14 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_172_trim extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "select 1 as '\\\"f\\\"a';";
 //
@@ -22,6 +24,7 @@ public class MySqlSelectTest_172_trim extends MysqlTest {
         assertEquals("SELECT 1 AS '\"f\"a';", stmt.toString());
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "select 1 as \"\\\"f\\\"\";";
 //
@@ -35,6 +38,7 @@ public class MySqlSelectTest_172_trim extends MysqlTest {
         assertEquals("SELECT 1 AS \"\\\"f\\\"\";", stmt.toString());
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "select 1 as \"\\\"f\\\"\";";
 //
@@ -48,6 +52,7 @@ public class MySqlSelectTest_172_trim extends MysqlTest {
         assertEquals("SELECT 1 AS \"\\\"f\\\"\";", stmt.toString());
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = "select 1 as '\\'f\\'';";
 //
@@ -62,6 +67,7 @@ public class MySqlSelectTest_172_trim extends MysqlTest {
         assertEquals("'f'", stmt.getSelect().getQueryBlock().getSelectItem(0).getAlias2());
     }
 
+    @Test
     public void test_3x() throws Exception {
         String sql = "select 1 as '\\'\\'f\\'';";
 //        System.out.println(sql);
@@ -75,6 +81,7 @@ public class MySqlSelectTest_172_trim extends MysqlTest {
         assertEquals("''f'", stmt.getSelect().getQueryBlock().getSelectItem(0).getAlias2());
     }
 
+    @Test
     public void test_4() throws Exception {
         String sql = "select 1 as \"\\'f\\'\";";
 //        System.out.println(sql);
@@ -90,6 +97,7 @@ public class MySqlSelectTest_172_trim extends MysqlTest {
         assertEquals("'f'", stmt.getSelect().getQueryBlock().getSelectItem(0).getAlias2());
     }
 
+    @Test
     public void test_5() throws Exception {
         String sql = "select 1 as \"\\\"f\\\"\";";
 //
@@ -104,6 +112,7 @@ public class MySqlSelectTest_172_trim extends MysqlTest {
         assertEquals("\"f\"", stmt.getSelect().getQueryBlock().getSelectItem(0).getAlias2());
     }
 
+    @Test
     public void test_6() throws Exception {
         String sql = "select 1 as '\n'";
 //
@@ -119,6 +128,7 @@ public class MySqlSelectTest_172_trim extends MysqlTest {
         assertEquals("\n", stmt.getSelect().getQueryBlock().getSelectItem(0).getAlias2());
     }
 
+    @Test
     public void test_7() throws Exception {
         String sql = "select 1 as '\\\\'";
         System.out.println(sql);
@@ -132,6 +142,7 @@ public class MySqlSelectTest_172_trim extends MysqlTest {
         assertEquals("\\", stmt.getSelect().getQueryBlock().getSelectItem(0).getAlias2());
     }
 
+    @Test
     public void test_8() throws Exception {
         String sql = "select 1 as '\\t'";
         System.out.println(sql);
@@ -145,6 +156,7 @@ public class MySqlSelectTest_172_trim extends MysqlTest {
         assertEquals("\t", stmt.getSelect().getQueryBlock().getSelectItem(0).getAlias2());
     }
 
+    @Test
     public void test_9() throws Exception {
         String sql = "select 1 as \"\"\"\", 2 as ''''";
         System.out.println(sql);

@@ -41,6 +41,24 @@ public class DorisExprTableSource extends SQLExprTableSource implements DorisObj
         this.repeatable = repeatable;
     }
 
+    public DorisExprTableSource clone() {
+        DorisExprTableSource x = new DorisExprTableSource();
+        cloneTo(x);
+        return x;
+    }
+
+    public void cloneTo(DorisExprTableSource x) {
+        super.cloneTo(x);
+        if (tablets != null) {
+            for (SQLExpr tablet : tablets) {
+                x.addTablet(tablet == null ? null : tablet.clone());
+            }
+        }
+        if (repeatable != null) {
+            x.setRepeatable(repeatable.clone());
+        }
+    }
+
     @Override
     public void accept0(SQLASTVisitor v) {
         if (v instanceof DorisASTVisitor) {

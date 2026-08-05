@@ -55,6 +55,9 @@ public class SQLCallStatement extends SQLStatementImpl {
     }
 
     public void setProcedureName(SQLName procedureName) {
+        if (procedureName != null) {
+            procedureName.setParent(this);
+        }
         this.procedureName = procedureName;
     }
 

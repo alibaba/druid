@@ -41,6 +41,9 @@ public class SQLExceptionStatement extends SQLStatementImpl {
         }
 
         public void setWhen(SQLExpr when) {
+            if (when != null) {
+                when.setParent(this);
+            }
             this.when = when;
         }
 

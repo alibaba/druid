@@ -23,6 +23,7 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.stat.TableStat.Condition;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +31,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleSchemaStatVisitorTest extends OracleTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT id, name name from department d" +
                 "   WHERE d.id = ? order by name desc";

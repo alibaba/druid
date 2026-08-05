@@ -75,6 +75,7 @@ public class SQLColumnReference extends SQLConstraintImpl implements SQLColumnCo
         x.referenceMatch = referenceMatch;
         x.onUpdate = onUpdate;
         x.onDelete = onDelete;
+        x.notEnforced = notEnforced;
 
         return x;
     }

@@ -18,10 +18,12 @@ package com.alibaba.druid.bvt.sql.mysql.select;
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_235 extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT ema_user_id\n"
                 + "   FROM(\n"

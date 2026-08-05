@@ -21,12 +21,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleCreateViewTest0 extends OracleTest {
+    @Test
     public void test_types() throws Exception {
         String sql = //
                 "   CREATE OR REPLACE FORCE VIEW \"SC0\".\"V_001\" (\"ID\", \"GROUP_ID\", \"IND_BY_ALL\", \"IND_BY_GROUP\", \"OWNER_MEMBER_ID\", \"OWNER_MEMBER_SEQ\", \"GMT_MODIFIED\") AS \n" +

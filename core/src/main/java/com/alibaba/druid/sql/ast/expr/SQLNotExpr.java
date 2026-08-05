@@ -106,6 +106,7 @@ public final class SQLNotExpr extends SQLExprImpl implements Serializable, SQLRe
         if (expr != null) {
             x.setExpr(expr.clone());
         }
+        cloneTo(x);
         return x;
     }
 

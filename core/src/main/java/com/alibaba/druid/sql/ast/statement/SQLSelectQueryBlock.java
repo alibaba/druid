@@ -613,7 +613,7 @@ public class SQLSelectQueryBlock extends SQLSelectQueryBase implements SQLReplac
 
     public void setFirst(SQLExpr first) {
         if (limit == null) {
-            limit = new SQLLimit();
+            setLimit(new SQLLimit());
         }
         this.limit.setRowCount(first);
     }
@@ -628,7 +628,7 @@ public class SQLSelectQueryBlock extends SQLSelectQueryBase implements SQLReplac
 
     public void setOffset(SQLExpr offset) {
         if (limit == null) {
-            limit = new SQLLimit();
+            setLimit(new SQLLimit());
         }
         this.limit.setOffset(offset);
     }
@@ -1031,6 +1031,7 @@ public class SQLSelectQueryBlock extends SQLSelectQueryBase implements SQLReplac
     }
 
     public void cloneTo(SQLSelectQueryBlock x) {
+        super.cloneTo(x);
         x.parenthesized = parenthesized;
         x.distionOption = distionOption;
 
@@ -1056,6 +1057,10 @@ public class SQLSelectQueryBlock extends SQLSelectQueryBase implements SQLReplac
 
         if (from != null) {
             x.setFrom(from.clone());
+        }
+
+        if (commentsAfterFrom != null) {
+            x.setCommentsAfterFrom(new ArrayList<String>(commentsAfterFrom));
         }
 
         if (into != null) {
@@ -1140,6 +1145,14 @@ public class SQLSelectQueryBlock extends SQLSelectQueryBase implements SQLReplac
 
         if (limit != null) {
             x.setLimit(limit.clone());
+        }
+
+        if (windows != null) {
+            for (SQLWindow w : windows) {
+                SQLWindow w2 = w.clone();
+                w2.setParent(x);
+                x.addWindow(w2);
+            }
         }
     }
 

@@ -23,12 +23,14 @@ import com.alibaba.druid.sql.dialect.db2.parser.DB2StatementParser;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DB2SelectTest_27_interval extends DB2Test {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT current date + 1 YEAR, current date + 3 YEARS + 2 MONTHS + 15 DAYS, current time + 5 HOURS - 3 MINUTES + 10 SECONDS from sysibm.sysdummy1";
 

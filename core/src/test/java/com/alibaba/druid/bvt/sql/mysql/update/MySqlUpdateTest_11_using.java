@@ -22,12 +22,14 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.wall.WallUtils;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlUpdateTest_11_using extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "update t1, t2, t3 inner join t4 using (col_name1, col_name2)\n" +
                 "set t1.value_col = t3.new_value_col, t4.`some-col*` = `t2`.`***` * 2\n" +

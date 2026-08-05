@@ -19,10 +19,12 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_274 extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "/*+ run_async=true,mq-notify-by=ons,mq-delayed-by=10 */ /*+ orc-bloomfilters-enabled=true */ insert into t1( x,y) select * from t2";
 

@@ -4,6 +4,7 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
@@ -13,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author lijun.cailj 2018/1/3
  */
 public class MysqlSelectTest_like extends MysqlTest {
+    @Test
     public void test_2() throws Exception {
         String sql = "select * from table1 where name like \"%lijun%\"";
 

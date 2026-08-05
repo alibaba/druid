@@ -20,6 +20,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -27,11 +28,13 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_55 extends MysqlTest {
+    @Test
     public void test_date() throws Exception {
         System.out.println(new SimpleDateFormat("yyyyMMdd").parse("19050101").getTime());
         System.out.println(new SimpleDateFormat("yyyyMMdd").parse("10010101").toString());
     }
 
+    @Test
     public void test_0() throws Exception {
         String sql = "select count(0)\n" +
                 "from tb_user\n" +

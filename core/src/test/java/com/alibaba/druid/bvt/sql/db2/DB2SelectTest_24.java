@@ -22,12 +22,14 @@ import com.alibaba.druid.sql.dialect.db2.parser.DB2StatementParser;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DB2SelectTest_24 extends DB2Test {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT BANK_CODE, CONN_LOCATION_TYPE,\n" +
                 "OUTER_KEYLABEL_NAME, INNER_KEYLABEL_NAME,\n" +

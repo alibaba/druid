@@ -29,7 +29,6 @@ import com.alibaba.druid.sql.dialect.hive.stmt.HiveMsckRepairStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.FullTextType;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlExprParser;
-import com.alibaba.druid.sql.dialect.oracle.parser.OracleExprParser;
 import com.alibaba.druid.sql.repository.SchemaRepository;
 import com.alibaba.druid.util.FnvHash;
 import com.alibaba.druid.util.FnvHash.Constants;
@@ -593,6 +592,9 @@ public class SQLStatementParser extends SQLParser {
 
         if (lexer.identifierEquals(FnvHash.Constants.COMMIT)) {
             SQLStatement stmt = parseCommit();
+            if (stmt != null) {
+                stmt.setParent(parent);
+            }
             statementList.add(stmt);
             if (parent instanceof SQLBlockStatement
                     && dialectFeatureEnabled(ParseStatementListCommitReturn)) {
@@ -1626,6 +1628,9 @@ public class SQLStatementParser extends SQLParser {
             lexer.nextToken();
             for (; ; ) {
                 SQLExpr user = parseUser();
+                if (user != null) {
+                    user.setParent(stmt);
+                }
                 stmt.getUsers().add(user);
                 if (lexer.token() == Token.COMMA) {
                     lexer.nextToken();
@@ -1979,7 +1984,7 @@ public class SQLStatementParser extends SQLParser {
                     accept(Token.RPAREN);
                 }
 
-                expr.setParent(parent);
+                privilegeItem.setParent(parent);
                 privileges.add(privilegeItem);
             }
 
@@ -2058,7 +2063,7 @@ public class SQLStatementParser extends SQLParser {
                     lexer.nextToken();
                 }
                 SQLExpr user = parseUser();
-                stmt.getUsers().add(user);
+                stmt.addUser(user);
                 if (lexer.token() == Token.COMMA) {
                     lexer.nextToken();
                     continue;
@@ -2317,6 +2322,12 @@ public class SQLStatementParser extends SQLParser {
                         alterTableChange(stmt);
                     } else if (lexer.identifierEquals(Constants.EXCHANGE)) {
                         alterTableExchange(stmt);
+                    } else if (lexer.identifierEquals("SWAP")) {
+                        lexer.nextToken();
+                        accept(Token.WITH);
+                        SQLAlterTableSwap swap = new SQLAlterTableSwap();
+                        swap.setName(this.exprParser.name());
+                        stmt.addItem(swap);
                     } else if (lexer.identifierEquals("RENAME")) {
                         stmt.addItem(parseAlterTableRename());
                     } else if (lexer.identifierEquals("TOUCH")) {
@@ -3133,7 +3144,7 @@ public class SQLStatementParser extends SQLParser {
             lexer.nextToken();
             paren = true;
         }
-        this.exprParser.names(item.getColumns());
+        this.exprParser.names(item.getColumns(), item);
         if (paren) {
             accept(RPAREN);
         }
@@ -3189,7 +3200,7 @@ public class SQLStatementParser extends SQLParser {
             parseAlterDropRest(stmt, item);
         } else if (lexer.token == Token.LITERAL_ALIAS) {
             SQLAlterTableDropColumnItem item = new SQLAlterTableDropColumnItem();
-            this.exprParser.names(item.getColumns());
+            this.exprParser.names(item.getColumns(), item);
 
             if (lexer.token == Token.CASCADE) {
                 item.setCascade(true);
@@ -3852,6 +3863,27 @@ public class SQLStatementParser extends SQLParser {
     protected void parseInsertOverwrite(SQLInsertInto insertStatement) {
         insertStatement.setOverwrite(true);
     }
+    protected void parseInsert0AfterTableName(SQLInsertInto insertStatement, SQLName tableName) {
+    }
+
+    protected void parseInsert0AfterAlias(SQLInsertInto insertStatement) {
+    }
+
+    protected void parseInsert0BeforeColumns(SQLInsertInto insertStatement) {
+    }
+
+    /**
+     * Hook after the PARTITION (...) clause. Canonical StarRocks places WITH LABEL here.
+     */
+    protected void parseInsert0AfterPartition(SQLInsertInto insertStatement) {
+    }
+
+    /**
+     * Hook after the column list. Canonical StarRocks places BY NAME here.
+     */
+    protected void parseInsert0AfterColumns(SQLInsertInto insertStatement) {
+    }
+
     protected void parseInsert0(SQLInsertInto insertStatement, boolean acceptSubQuery) {
         if (lexer.nextIf(OVERWRITE) || lexer.nextIfIdentifier(Constants.OVERWRITE)) {
             parseInsertOverwrite(insertStatement);
@@ -3861,6 +3893,8 @@ public class SQLStatementParser extends SQLParser {
 
         SQLName tableName = this.exprParser.name();
         insertStatement.setTableName(tableName);
+
+        parseInsert0AfterTableName(insertStatement, tableName);
 
         if (lexer.token == Token.LITERAL_ALIAS) {
             insertStatement.setAlias(tableAlias());
@@ -3872,6 +3906,8 @@ public class SQLStatementParser extends SQLParser {
             insertStatement.setAlias(lexer.stringVal());
             lexer.nextToken();
         }
+
+        parseInsert0AfterAlias(insertStatement);
 
         if (lexer.token == Token.PARTITION) {
             lexer.nextToken();
@@ -3894,11 +3930,17 @@ public class SQLStatementParser extends SQLParser {
             accept(Token.RPAREN);
         }
 
+        parseInsert0AfterPartition(insertStatement);
+
+        parseInsert0BeforeColumns(insertStatement);
+
         if (lexer.token == (Token.LPAREN)) {
             lexer.nextToken();
             parseInsertColumns(insertStatement);
             accept(Token.RPAREN);
         }
+
+        parseInsert0AfterColumns(insertStatement);
 
         if (lexer.token == Token.VALUES) {
             lexer.nextToken();
@@ -4361,9 +4403,7 @@ public class SQLStatementParser extends SQLParser {
         parseCreateMaterializedViewRest(stmt);
 
         for (; ; ) {
-            if (exprParser instanceof OracleExprParser) {
-                ((OracleExprParser) exprParser).parseSegmentAttributes(stmt);
-            }
+            exprParser.parseSegmentAttributes(stmt);
 
             if (lexer.identifierEquals("REFRESH")) {
                 lexer.nextToken();
@@ -6356,6 +6396,9 @@ public class SQLStatementParser extends SQLParser {
                 }
             } else {
                 values = new SQLInsertStatement.ValuesClause(new ArrayList<SQLExpr>(0));
+                if (parent != null) {
+                    values.setParent(parent);
+                }
             }
 
             valueClauseList.add(values);
@@ -6894,6 +6937,9 @@ public class SQLStatementParser extends SQLParser {
                 }
             } else {
                 values = new SQLInsertStatement.ValuesClause(new ArrayList<SQLExpr>(0));
+                if (parent != null) {
+                    values.setParent(parent);
+                }
             }
 
             valueClauseList.add(values);
@@ -7867,6 +7913,9 @@ public class SQLStatementParser extends SQLParser {
             accept(Token.THEN);
 
             this.parseStatementList(item.getStatements(), -1, item);
+            for (SQLStatement itemStmt : item.getStatements()) {
+                itemStmt.setParent(item);
+            }
 
             stmt.addItem(item);
 

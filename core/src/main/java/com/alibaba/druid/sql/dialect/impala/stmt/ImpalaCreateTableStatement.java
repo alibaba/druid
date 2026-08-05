@@ -8,6 +8,21 @@ public class ImpalaCreateTableStatement extends HiveCreateTableStatement {
     private SQLExpr cachedPool;
     private int cachedReplication = -1;
 
+    public ImpalaCreateTableStatement clone() {
+        ImpalaCreateTableStatement x = new ImpalaCreateTableStatement();
+        cloneTo(x);
+        return x;
+    }
+
+    public void cloneTo(ImpalaCreateTableStatement x) {
+        super.cloneTo(x);
+        x.unCached = unCached;
+        x.cachedReplication = cachedReplication;
+        if (cachedPool != null) {
+            x.setCachedPool(cachedPool.clone());
+        }
+    }
+
     public boolean isCached() {
         return cachedPool != null;
     }

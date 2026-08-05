@@ -18,10 +18,12 @@ package com.alibaba.druid.bvt.sql.mysql.create;
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateUserStatement;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlCreateUserTest_6 extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "CREATE USER 'jeffrey'@'localhost' IDENTIFIED BY 'password';";
 
@@ -31,6 +33,7 @@ public class MySqlCreateUserTest_6 extends MysqlTest {
                 SQLUtils.toMySqlString(stmt));
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "CREATE USER jeffrey@'localhost' IDENTIFIED BY 'password';";
 
@@ -40,6 +43,7 @@ public class MySqlCreateUserTest_6 extends MysqlTest {
                 SQLUtils.toMySqlString(stmt));
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "CREATE USER 'jeffrey'@localhost IDENTIFIED BY 'password';";
 

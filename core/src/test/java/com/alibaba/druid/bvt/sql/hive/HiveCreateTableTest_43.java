@@ -21,12 +21,14 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class HiveCreateTableTest_43 extends OracleTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "CREATE EXTERNAL TABLE tbl2_copy  STORED AS PARQUET LOCATION 'oss://oss-cn-beijing-for-openanalytics-test-2/datasets/jinluo/tbl1_copy/' TBLPROPERTIES ('auto.create.location' = 'true')" +
                 " like SELECT * FROM tbl1;";

@@ -30,4 +30,11 @@ public class DmUpdateStatement extends SQLUpdateStatement {
         }
         visitor.endVisit(this);
     }
+
+    @Override
+    public DmUpdateStatement clone() {
+        DmUpdateStatement x = new DmUpdateStatement();
+        cloneTo(x);
+        return x;
+    }
 }

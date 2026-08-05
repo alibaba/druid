@@ -19,12 +19,14 @@ import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleExplainTest extends OracleTest {
+    @Test
     public void test_0() throws Exception {
         String sql = //
                 "EXPLAIN PLAN SET STATEMENT_ID='PLUS19628905' FOR select *   from( select row_.*, rownum rownum_   from( SELECT  h.id taskId, t.id tradeId, t.OUT_ORDER_ID orderId, t.SELLER_SEQ sellerSeq, t.BUYER_SEQ buyerSeq, h.RECORD_TYPE recordType, t.SELLER_LOGIN_ID sellerLoginId, t.SELLER_ADMIN_SEQ sellerAdminSeq, h.GMT_CREATE gmtTaskCreate, h.GMT_MODIFIED gmtTaskModified, h.GMT_FETCH_TASK gmtFetchTask, h.GMT_FINISH_TASK gmtFinishTask, h.STATUS status, h.OWNER owner   FROM HT_TASK_TRADE_HISTORY h, escrow_trade t  WHERE h.TRADE_ID= t.ID    and h.OWNER='zhoufei.zhangzf'    and h.STATUS in('running') ORDER BY h.TASK_FLOW_LEVEL, t.GMT_CREATE, h.GMT_MODIFIED DESC) row_ where rownum<= 100)  where rownum_>= 80";

@@ -3,6 +3,7 @@ package com.alibaba.druid.bvt.sql.mysql.select;
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
@@ -16,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @Date 2019-07-17 10:30
  */
 public class MySqlSelectTest_plus_ques extends MysqlTest {
+    @Test
     public void test_0() {
         String sql = "select +?;";
 

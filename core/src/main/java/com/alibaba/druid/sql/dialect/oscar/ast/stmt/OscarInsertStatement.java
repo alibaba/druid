@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.dialect.oscar.visitor.OscarASTVisitor;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGInsertStatement;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
@@ -56,6 +55,30 @@ public class OscarInsertStatement extends SQLInsertStatement implements OscarSta
             x.setReturning(returning.clone());
         }
         x.defaultValues = defaultValues;
+        if (onConflictTarget != null) {
+            List<SQLExpr> onConflictTargetClone = new ArrayList<SQLExpr>();
+            for (SQLExpr item : onConflictTarget) {
+                SQLExpr item2 = item.clone();
+                item2.setParent(x);
+                onConflictTargetClone.add(item2);
+            }
+            x.setOnConflictTarget(onConflictTargetClone);
+        }
+        if (onConflictConstraint != null) {
+            x.setOnConflictConstraint(onConflictConstraint.clone());
+        }
+        if (onConflictWhere != null) {
+            x.setOnConflictWhere(onConflictWhere.clone());
+        }
+        if (onConflictUpdateWhere != null) {
+            x.setOnConflictUpdateWhere(onConflictUpdateWhere.clone());
+        }
+        x.setOnConflictDoNothing(onConflictDoNothing);
+        if (onConflictUpdateSetItems != null) {
+            for (SQLUpdateSetItem item : onConflictUpdateSetItems) {
+                x.addConflicUpdateItem(item.clone());
+            }
+        }
     }
 
     public SQLExpr getReturning() {
@@ -120,8 +143,8 @@ public class OscarInsertStatement extends SQLInsertStatement implements OscarSta
         visitor.endVisit(this);
     }
 
-    public PGInsertStatement clone() {
-        PGInsertStatement x = new PGInsertStatement();
+    public OscarInsertStatement clone() {
+        OscarInsertStatement x = new OscarInsertStatement();
         cloneTo(x);
         return x;
     }

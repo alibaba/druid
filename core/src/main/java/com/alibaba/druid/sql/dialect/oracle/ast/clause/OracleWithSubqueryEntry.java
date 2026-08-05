@@ -66,11 +66,11 @@ public class OracleWithSubqueryEntry extends Entry implements OracleSQLObject {
         super.cloneTo(x);
 
         if (searchClause != null) {
-            setSearchClause(searchClause.clone());
+            x.setSearchClause(searchClause.clone());
         }
 
         if (cycleClause != null) {
-            setCycleClause(cycleClause.clone());
+            x.setCycleClause(cycleClause.clone());
         }
     }
 

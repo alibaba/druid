@@ -8,12 +8,14 @@ import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_152 extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "select (3,4) in ((1,2),(3,4)) from dual";
 //
@@ -30,6 +32,7 @@ public class MySqlSelectTest_152 extends MysqlTest {
                 ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, VisitorFeature.OutputParameterizedZeroReplaceNotUseOriginalSql));
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "select (3,4) in ((1,2),(3,4)) from dual";
 //

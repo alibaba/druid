@@ -6,6 +6,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
@@ -19,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @Date 2019-07-16 17:28
  */
 public class MySqlSelectTest_eq_null_parameterized extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "select * from test_null_shard where id = null;";
 

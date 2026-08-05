@@ -6,12 +6,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_134 extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "/*TDDL:RETRY_ERROR_SQL_ON_OLD_SERVER=FALSE*/\n" +
                 "select   (('b')not between('a')AND ('x-3')    )\n" +
@@ -31,6 +33,7 @@ public class MySqlSelectTest_134 extends MysqlTest {
                 "FROM select_base_two_one_db_one_tb", ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL));
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "SELECT HEX(WEIGHT_STRING(0x007fff LEVEL 1));";
 
@@ -44,6 +47,7 @@ public class MySqlSelectTest_134 extends MysqlTest {
         assertEquals("SELECT HEX(WEIGHT_STRING(? LEVEL 1));", ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL));
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "SELECT HEX(WEIGHT_STRING(0x007fff LEVEL 1 DESC));";
 
@@ -57,6 +61,7 @@ public class MySqlSelectTest_134 extends MysqlTest {
         assertEquals("SELECT HEX(WEIGHT_STRING(? LEVEL 1 DESC));", ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL));
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = "SELECT HEX(WEIGHT_STRING(0x007fff LEVEL 2, 3, 5));";
 
@@ -70,6 +75,7 @@ public class MySqlSelectTest_134 extends MysqlTest {
         assertEquals("SELECT HEX(WEIGHT_STRING(? LEVEL 2, 3, 5));", ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL));
     }
 
+    @Test
     public void test_4() throws Exception {
         String sql = "SELECT HEX(WEIGHT_STRING(0x007fff LEVEL 1 DESC REVERSE));";
 

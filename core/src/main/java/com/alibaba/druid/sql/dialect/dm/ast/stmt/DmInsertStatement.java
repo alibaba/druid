@@ -11,6 +11,13 @@ public class DmInsertStatement extends SQLInsertStatement {
     }
 
     @Override
+    public DmInsertStatement clone() {
+        DmInsertStatement x = new DmInsertStatement();
+        cloneTo(x);
+        return x;
+    }
+
+    @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor instanceof DmASTVisitor) {
             accept0((DmASTVisitor) visitor);

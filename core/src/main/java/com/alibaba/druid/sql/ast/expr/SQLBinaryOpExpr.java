@@ -231,6 +231,10 @@ public class SQLBinaryOpExpr extends SQLExprImpl implements SQLReplaceable, Seri
             x.hint = hint.clone();
         }
         x.setParenthesized(parenthesized);
+        // setParenthesized() mutates parenthesizedCount as a side effect, corrupting the
+        // value already copied by super.cloneTo(); restore the authoritative count so the
+        // clone round-trips identical parenthesization (e.g. (a) does not become ((a))).
+        x.parenthesizedCount = parenthesizedCount;
     }
 
     public SQLBinaryOpExpr clone() {

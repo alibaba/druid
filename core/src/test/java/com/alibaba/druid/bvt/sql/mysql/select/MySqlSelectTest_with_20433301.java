@@ -20,10 +20,12 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_with_20433301 extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "WITH total AS(\n" +
                 "SELECT cinema_id, count(1) as scheduleCnt, sum(hall_seat_cnt) as hall_seat_cnt, sum(sold_seat_cnt) as sold_seat_cnt, sum(avg_ticket_price*sold_seat_cnt) as box_office\n" +

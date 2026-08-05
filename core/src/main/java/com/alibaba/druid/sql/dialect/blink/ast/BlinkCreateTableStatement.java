@@ -21,4 +21,18 @@ public class BlinkCreateTableStatement extends SQLCreateTableStatement {
         }
         this.periodFor = x;
     }
+
+    public void cloneTo(BlinkCreateTableStatement x) {
+        super.cloneTo(x);
+        if (periodFor != null) {
+            x.setPeriodFor(periodFor.clone());
+        }
+    }
+
+    @Override
+    public BlinkCreateTableStatement clone() {
+        BlinkCreateTableStatement x = new BlinkCreateTableStatement();
+        cloneTo(x);
+        return x;
+    }
 }

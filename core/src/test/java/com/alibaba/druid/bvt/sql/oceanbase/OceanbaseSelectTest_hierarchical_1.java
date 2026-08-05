@@ -21,6 +21,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
@@ -29,6 +30,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class OceanbaseSelectTest_hierarchical_1 extends MysqlTest {
     protected final DbType dbType = JdbcConstants.MYSQL;
 
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT last_name, employee_id, manager_id, LEVEL\n" +
                 "      FROM employees\n" +

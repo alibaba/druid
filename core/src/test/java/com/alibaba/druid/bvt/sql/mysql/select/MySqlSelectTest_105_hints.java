@@ -19,12 +19,14 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_105_hints extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "\n" +
                 "select * from t FORCE INDEX(name_1),abc FORCE INDEX(name_2) where id = 1";

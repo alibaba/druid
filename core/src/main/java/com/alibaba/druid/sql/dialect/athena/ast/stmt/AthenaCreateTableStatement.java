@@ -21,4 +21,20 @@ public class AthenaCreateTableStatement extends PrestoCreateTableStatement imple
     public Map<String, SQLObject> getSerdeProperties() {
         return serdeProperties;
     }
+
+    public void cloneTo(AthenaCreateTableStatement x) {
+        super.cloneTo(x);
+        for (Map.Entry<String, SQLObject> entry : serdeProperties.entrySet()) {
+            SQLObject entryValue = entry.getValue().clone();
+            entryValue.setParent(x);
+            x.serdeProperties.put(entry.getKey(), entryValue);
+        }
+    }
+
+    @Override
+    public AthenaCreateTableStatement clone() {
+        AthenaCreateTableStatement x = new AthenaCreateTableStatement();
+        cloneTo(x);
+        return x;
+    }
 }

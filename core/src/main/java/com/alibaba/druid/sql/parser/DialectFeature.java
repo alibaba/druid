@@ -21,6 +21,13 @@ public class DialectFeature {
         );
     }
 
+    public DialectFeature copy() {
+        DialectFeature copy = new DialectFeature();
+        copy.lexerFeature = this.lexerFeature;
+        copy.parserFeature = this.parserFeature;
+        return copy;
+    }
+
     public DialectFeature(List<Feature> configFeatures, List<Feature> unConfigFeatures) {
         this();
         if (configFeatures != null) {
@@ -202,7 +209,12 @@ public class DialectFeature {
         AsSequence(1L << 52),
         AsDatabase(1L << 53),
         AsDefault(1L << 54),
-        AliasLiteralFloat(1L << 55);
+        AliasLiteralFloat(1L << 55),
+        Lambda(1L << 56),
+        SelectItemDistinctPrefix(1L << 57),
+        SelectListRparenBreak(1L << 58),
+        TableSourceHint(1L << 59);
+        // next available bits: 60, 61, 62, 63
 
         private final long mask;
 

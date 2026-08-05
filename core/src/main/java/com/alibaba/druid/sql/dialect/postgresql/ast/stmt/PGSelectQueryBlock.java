@@ -132,6 +132,15 @@ public class PGSelectQueryBlock extends SQLSelectQueryBlock implements PGSQLObje
             visitor.endVisit(this);
         }
 
+        public FetchClause clone() {
+            FetchClause x = new FetchClause();
+            x.option = option;
+            if (count != null) {
+                x.count = count.clone();
+                x.count.setParent(x);
+            }
+            return x;
+        }
     }
 
     public static class ForClause extends PGSQLObjectImpl {
@@ -183,6 +192,47 @@ public class PGSelectQueryBlock extends SQLSelectQueryBlock implements PGSQLObje
             }
             visitor.endVisit(this);
         }
+
+        public ForClause clone() {
+            ForClause x = new ForClause();
+            x.option = option;
+            x.noWait = noWait;
+            x.skipLocked = skipLocked;
+            for (SQLExpr item : of) {
+                SQLExpr item2 = item.clone();
+                item2.setParent(x);
+                x.of.add(item2);
+            }
+            return x;
+        }
+    }
+
+    @Override
+    public PGSelectQueryBlock clone() {
+        PGSelectQueryBlock x = new PGSelectQueryBlock();
+        cloneTo(x);
+        return x;
+    }
+
+    public void cloneTo(PGSelectQueryBlock x) {
+        super.cloneTo(x);
+
+        for (SQLExpr item : distinctOn) {
+            SQLExpr item2 = item.clone();
+            item2.setParent(x);
+            x.distinctOn.add(item2);
+        }
+
+        if (fetch != null) {
+            x.fetch = fetch.clone();
+            x.fetch.setParent(x);
+        }
+        if (forClause != null) {
+            x.forClause = forClause.clone();
+            x.forClause.setParent(x);
+        }
+
+        x.intoOption = intoOption;
     }
 
 }

@@ -158,6 +158,9 @@ public class SQLParserUtils {
             MySqlStatementParser parser = new MySqlStatementParser(sql, features);
             parser.dbType = dbType;
             parser.exprParser.dbType = dbType;
+            DialectFeature df = parser.getLexer().getDialectFeature().copy();
+            df.configFeature(DialectFeature.ParserFeature.SelectItemDistinctPrefix);
+            parser.getLexer().setDialectFeature(df);
             return parser;
         }, DbType.elastic_search);
         registerBuiltinStatementParserFactory((sql, dbType, features) -> new PGSQLStatementParser(sql, features),
@@ -196,6 +199,9 @@ public class SQLParserUtils {
         registerBuiltinExprParserFactory((sql, dbType, features) -> {
             MySqlExprParser parser = new MySqlExprParser(sql, features);
             parser.dbType = dbType;
+            DialectFeature df = parser.getLexer().getDialectFeature().copy();
+            df.configFeature(DialectFeature.ParserFeature.SelectItemDistinctPrefix);
+            parser.getLexer().setDialectFeature(df);
             return parser;
         }, DbType.elastic_search);
         registerBuiltinExprParserFactory((sql, dbType, features) -> new H2ExprParser(sql, features), DbType.h2, DbType.lealone);
@@ -231,6 +237,11 @@ public class SQLParserUtils {
         registerBuiltinLexerFactory((sql, dbType, features) -> {
             MySqlLexer lexer = new MySqlLexer(sql, features);
             lexer.dbType = dbType;
+            // keep parity with the statement/expr parser factories above, otherwise a parser
+            // assembled on top of this lexer loses select-item DISTINCT support
+            DialectFeature df = lexer.getDialectFeature().copy();
+            df.configFeature(DialectFeature.ParserFeature.SelectItemDistinctPrefix);
+            lexer.setDialectFeature(df);
             return lexer;
         }, DbType.elastic_search);
         registerBuiltinLexerFactory((sql, dbType, features) -> new H2Lexer(sql, features), DbType.h2, DbType.lealone);

@@ -20,11 +20,13 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_310
         extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT orders.extras->\"$.case_no\"";
 
@@ -34,6 +36,7 @@ public class MySqlSelectTest_310
         assertEquals("SELECT orders.extras -> '$.case_no'", stmt.toString());
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "SELECT orders.extras -> \"$.case_no\" > 1";
 
@@ -43,6 +46,7 @@ public class MySqlSelectTest_310
         assertEquals("SELECT orders.extras -> '$.case_no' > 1", stmt.toString());
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "SELECT orders.extras -> '$.case_no' > 1";
 
@@ -52,6 +56,7 @@ public class MySqlSelectTest_310
         assertEquals("SELECT orders.extras -> '$.case_no' > 1", stmt.toString());
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = "--abc\nSELECT orders.extras -> '$.case_no' > 1";
 
@@ -62,6 +67,7 @@ public class MySqlSelectTest_310
                 "SELECT orders.extras -> '$.case_no' > 1", stmt.toString());
     }
 
+    @Test
     public void test_4() throws Exception {
         String sql = "SELECT 1#abc\n";
 
@@ -87,6 +93,7 @@ public class MySqlSelectTest_310
         assertEquals("SELECT 1 # abc", stmt.toString());
     }
 
+    @Test
     public void test_5() throws Exception {
         String sql = "SELECT 1--abc";
 

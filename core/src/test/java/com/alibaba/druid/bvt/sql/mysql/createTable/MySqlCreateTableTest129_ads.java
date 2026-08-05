@@ -5,12 +5,14 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlCreateTableTest129_ads extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "CREATE TABLE cache_table_1 OPTIONS(cache=true) AS /*+ engine=MPP */ SELECT * FROM test_realtime1 LIMIT 200;";
 
@@ -29,6 +31,7 @@ public class MySqlCreateTableTest129_ads extends MysqlTest {
                 "LIMIT 200;", stmt.toString());
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "CREATE TABLE employees (\n" +
                 "    id INT NOT NULL,\n" +
@@ -61,6 +64,7 @@ public class MySqlCreateTableTest129_ads extends MysqlTest {
                 "TABLEGROUP group0;", stmt.toString());
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "CREATE TABLE employees (\n" +
                 "    id INT NOT NULL,\n" +
@@ -108,6 +112,7 @@ public class MySqlCreateTableTest129_ads extends MysqlTest {
                 "TABLEGROUP group0;", stmt.toString());
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = "CREATE TABLE employees (\n" +
                 "    id INT NOT NULL,\n" +
@@ -154,6 +159,7 @@ public class MySqlCreateTableTest129_ads extends MysqlTest {
                 "TABLEGROUP group0;", stmt.toString());
     }
 
+    @Test
     public void test_4() throws Exception {
         String sql = "CREATE TABLE employees (\n" +
                 "    id INT NOT NULL,\n" +
@@ -202,6 +208,7 @@ public class MySqlCreateTableTest129_ads extends MysqlTest {
                 "TABLEGROUP group0;", stmt.toString());
     }
 
+    @Test
     public void test_create_table_as() {
         String sql = "CREATE TABLE triangle (\n" +
                 "  sidea DOUBLE,\n" +
@@ -218,6 +225,7 @@ public class MySqlCreateTableTest129_ads extends MysqlTest {
                 ");", stmt.toString());
     }
 
+    @Test
     public void test_create_table_new() {
         String sql = "select label from t";
 

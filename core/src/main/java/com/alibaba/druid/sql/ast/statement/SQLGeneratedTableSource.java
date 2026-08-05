@@ -68,6 +68,9 @@ public class SQLGeneratedTableSource extends SQLTableSourceImpl
     }
 
     public void setMethodName(SQLIdentifierExpr methodName) {
+        if (methodName != null) {
+            methodName.setParent(this);
+        }
         this.methodName = methodName;
     }
 }

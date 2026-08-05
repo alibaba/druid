@@ -4,11 +4,13 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.statement.SQLCreateDatabaseStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlCreateDatabaseTest9_issue_3975
         extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "create database user default charset=utf8 collate=utf8_general_ci;";
 
@@ -17,6 +19,7 @@ public class MySqlCreateDatabaseTest9_issue_3975
         assertEquals("CREATE DATABASE user CHARACTER SET utf8 COLLATE utf8_general_ci;", stmt.toString());
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "create database user COLLATE=utf8_bin default CHARSET=utf8";
 
@@ -25,6 +28,7 @@ public class MySqlCreateDatabaseTest9_issue_3975
         assertEquals("CREATE DATABASE user CHARACTER SET utf8 COLLATE utf8_bin", stmt.toString());
     }
 
+    @Test
     public void test_craeteTable() throws Exception {
         String sql = "create table test_option(a int) COLLATE=utf8_bin default CHARSET=utf8; ";
 

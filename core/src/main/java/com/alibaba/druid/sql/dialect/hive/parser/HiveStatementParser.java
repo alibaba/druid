@@ -393,11 +393,6 @@ public class HiveStatementParser extends SQLStatementParser {
         return stmt;
     }
 
-    public SQLCreateTableStatement parseCreateTable() {
-        SQLCreateTableParser parser = getSQLCreateTableParser();
-        return parser.parseCreateTable();
-    }
-
     public SQLCreateFunctionStatement parseCreateFunction() {
         return parseHiveCreateFunction();
     }

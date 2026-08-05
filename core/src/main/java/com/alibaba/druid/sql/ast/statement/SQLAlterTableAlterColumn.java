@@ -87,6 +87,9 @@ public class SQLAlterTableAlterColumn extends SQLObjectImpl implements SQLAlterT
     }
 
     public void setSetDefault(SQLExpr setDefault) {
+        if (setDefault != null) {
+            setDefault.setParent(this);
+        }
         this.setDefault = setDefault;
     }
 

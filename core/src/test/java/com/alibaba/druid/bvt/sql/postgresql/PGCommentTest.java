@@ -21,12 +21,14 @@ import com.alibaba.druid.sql.dialect.postgresql.parser.PGSQLStatementParser;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.stat.TableStat;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PGCommentTest extends PGTest {
+    @Test
     public void test_0() {
         String sql = "/*multiline comment test"
                 + ".\r\n multiline comment test select * from a;";
@@ -40,6 +42,7 @@ public class PGCommentTest extends PGTest {
         }
     }
 
+    @Test
     public void test_1() {
         String sql = "select a.id,--single line comment test a.name from a;";
 
@@ -52,6 +55,7 @@ public class PGCommentTest extends PGTest {
         }
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "/*multiline comment test"
                 + ".\r\n multiline comment test*"

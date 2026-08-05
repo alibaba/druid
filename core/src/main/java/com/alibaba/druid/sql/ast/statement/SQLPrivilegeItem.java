@@ -17,6 +17,9 @@ public class SQLPrivilegeItem extends SQLObjectImpl {
     }
 
     public void setAction(SQLExpr action) {
+        if (action != null) {
+            action.setParent(this);
+        }
         this.action = action;
     }
 

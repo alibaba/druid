@@ -19,12 +19,14 @@ import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleExplainTest3 extends OracleTest {
+    @Test
     public void test_0() throws Exception {
         String sql = //
                 "explain plan for select   'enaliint'||m.login_id     from vaccount v, company c, member m    where m.company_id = c.id      and v.id = c.id      and v.status = 'enabled'      and (v.service_type = 'cgs' or v.service_type = 'tp' or          v.service_type = 'hkgs' or v.service_type = 'twgs')      and m.company_id > 0      and m.status = 'enabled'      and m.gmt_create > c.gmt_modified";

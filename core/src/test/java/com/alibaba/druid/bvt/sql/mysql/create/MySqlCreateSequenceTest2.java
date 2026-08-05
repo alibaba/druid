@@ -20,12 +20,14 @@ import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlCreateSequenceTest2 extends OracleTest {
+    @Test
     public void test_0() throws Exception {
         String sql = //
                 "CREATE GROUP SEQUENCE seq1;";
@@ -59,6 +61,7 @@ public class MySqlCreateSequenceTest2 extends OracleTest {
         // assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "order_mode")));
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = //
                 "CREATE SIMPLE SEQUENCE seq1;";

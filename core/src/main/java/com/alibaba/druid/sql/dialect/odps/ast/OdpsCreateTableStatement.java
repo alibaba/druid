@@ -62,6 +62,25 @@ public class OdpsCreateTableStatement extends HiveCreateTableStatement {
         setAutoPartitionedBy(new SQLAliasedExpr(x, alias));
     }
 
+    public void cloneTo(OdpsCreateTableStatement x) {
+        super.cloneTo(x);
+        if (autoPartitionedBy != null) {
+            x.setAutoPartitionedBy(autoPartitionedBy.clone());
+        }
+        for (SQLExpr item : withSerdeproperties) {
+            SQLExpr item2 = item.clone();
+            item2.setParent(x);
+            x.withSerdeproperties.add(item2);
+        }
+    }
+
+    @Override
+    public OdpsCreateTableStatement clone() {
+        OdpsCreateTableStatement x = new OdpsCreateTableStatement();
+        cloneTo(x);
+        return x;
+    }
+
     @Override
     protected void accept0(SQLASTVisitor v) {
         if (v instanceof OdpsASTVisitor) {

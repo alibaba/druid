@@ -63,7 +63,7 @@ public class StarRocksCreateTableParser extends SQLCreateTableParser {
             index.setIndexName(this.exprParser.name());
             accept(Token.LPAREN);
             for (; ; ) {
-                index.getColumns().add(this.exprParser.name());
+                index.addColumn(this.exprParser.name());
                 if (!(lexer.token() == (Token.COMMA))) {
                     break;
                 } else {

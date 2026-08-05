@@ -19,10 +19,12 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_293_group_concat_clone extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT student_name,\n" +
                 "         GROUP_CONCAT(DISTINCT test_score\n" +

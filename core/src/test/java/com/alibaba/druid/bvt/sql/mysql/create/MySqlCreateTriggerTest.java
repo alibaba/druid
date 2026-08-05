@@ -18,12 +18,14 @@ package com.alibaba.druid.bvt.sql.mysql.create;
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlCreateTriggerTest extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "CREATE TRIGGER ins_sum BEFORE INSERT ON account FOR EACH ROW SET @sum = @sum + NEW.amount;";
 
@@ -34,6 +36,7 @@ public class MySqlCreateTriggerTest extends MysqlTest {
         assertEquals(1, statementList.size());
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "CREATE TRIGGER testref BEFORE INSERT ON test1" + " FOR EACH ROW" + " BEGIN"
                 + " INSERT INTO test2 SET a2 = NEW.a1;" + " DELETE FROM test3 WHERE a3 = NEW.a1;"

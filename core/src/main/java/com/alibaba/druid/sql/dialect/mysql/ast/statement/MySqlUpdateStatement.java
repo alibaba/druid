@@ -238,4 +238,34 @@ public class MySqlUpdateStatement extends SQLUpdateStatement implements MySqlSta
         this.hints = hints;
     }
 
+    public void cloneTo(MySqlUpdateStatement x) {
+        super.cloneTo(x);
+        x.lowPriority = lowPriority;
+        x.ignore = ignore;
+        x.commitOnSuccess = commitOnSuccess;
+        x.rollBackOnFail = rollBackOnFail;
+        x.queryOnPk = queryOnPk;
+        if (targetAffectRow != null) {
+            x.setTargetAffectRow(targetAffectRow.clone());
+        }
+        x.forceAllPartitions = forceAllPartitions;
+        if (forcePartition != null) {
+            x.setForcePartition(forcePartition.clone());
+        }
+        if (hints != null) {
+            for (SQLCommentHint hint : hints) {
+                SQLCommentHint hintClone = hint.clone();
+                hintClone.setParent(x);
+                x.getHints().add(hintClone);
+            }
+        }
+    }
+
+    @Override
+    public MySqlUpdateStatement clone() {
+        MySqlUpdateStatement x = new MySqlUpdateStatement();
+        cloneTo(x);
+        return x;
+    }
+
 }

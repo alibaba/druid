@@ -19,10 +19,12 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_251 extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "select tinyint '--127', smallint '--127', INTEGER '--128', bigint '--127'";
 

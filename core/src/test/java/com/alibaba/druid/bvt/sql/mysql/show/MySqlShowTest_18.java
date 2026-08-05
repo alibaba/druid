@@ -20,12 +20,14 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowHMSMetaStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlShowTest_18 extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SHOW HMSMETA s1.table1";
 
@@ -39,6 +41,7 @@ public class MySqlShowTest_18 extends MysqlTest {
         assertEquals("table1", stmt.getTableName());
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "SHOW HMSMETA table1";
 

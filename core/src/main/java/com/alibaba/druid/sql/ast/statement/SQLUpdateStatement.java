@@ -72,6 +72,11 @@ public class SQLUpdateStatement extends SQLStatementImpl implements SQLReplaceab
             x.tableSource.setParent(x);
         }
 
+        if (from != null) {
+            x.setFrom(from.clone());
+            x.from.setParent(x);
+        }
+
         for (SQLUpdateSetItem item : items) {
             SQLUpdateSetItem clone = item.clone();
             clone.setParent(x);
@@ -89,6 +94,19 @@ public class SQLUpdateStatement extends SQLStatementImpl implements SQLReplaceab
         if (orderBy != null) {
             x.orderBy = orderBy.clone();
             x.orderBy.setParent(x);
+        }
+
+        if (limit != null) {
+            x.setLimit(limit.clone());
+        }
+
+        if (partitions != null) {
+            x.partitions = new ArrayList<SQLAssignItem>(partitions.size());
+            for (SQLAssignItem partition : partitions) {
+                SQLAssignItem p2 = partition.clone();
+                p2.setParent(x);
+                x.partitions.add(p2);
+            }
         }
     }
 
@@ -229,6 +247,19 @@ public class SQLUpdateStatement extends SQLStatementImpl implements SQLReplaceab
         if (orderBy != null) {
             orderBy.accept(visitor);
         }
+
+        if (limit != null) {
+            limit.accept(visitor);
+        }
+
+        if (partitions != null) {
+            for (int i = 0; i < partitions.size(); i++) {
+                SQLAssignItem partition = partitions.get(i);
+                if (partition != null) {
+                    partition.accept(visitor);
+                }
+            }
+        }
     }
 
     public List<SQLObject> getChildren() {
@@ -245,6 +276,12 @@ public class SQLUpdateStatement extends SQLStatementImpl implements SQLReplaceab
         }
         if (orderBy != null) {
             children.add(orderBy);
+        }
+        if (limit != null) {
+            children.add(limit);
+        }
+        if (partitions != null) {
+            children.addAll(partitions);
         }
         return children;
     }

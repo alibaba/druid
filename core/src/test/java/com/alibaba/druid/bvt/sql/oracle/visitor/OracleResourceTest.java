@@ -23,6 +23,7 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.Utils;
+import org.junit.jupiter.api.Test;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -32,6 +33,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleResourceTest extends OracleTest {
+    @Test
     public void test_0_9() throws Exception {
         for (int i = 0; i <= 9; ++i) { // 57
             exec_test("bvt/parser/oracle-" + i + ".txt");
@@ -39,6 +41,7 @@ public class OracleResourceTest extends OracleTest {
         }
     }
 
+    @Test
     public void test_10_19() throws Exception {
         for (int i = 10; i <= 19; ++i) { // 57
             exec_test("bvt/parser/oracle-" + i + ".txt");
@@ -46,6 +49,7 @@ public class OracleResourceTest extends OracleTest {
         }
     }
 
+    @Test
     public void test_20_29() throws Exception {
         for (int i = 20; i <= 29; ++i) { // 57
             exec_test("bvt/parser/oracle-" + i + ".txt");
@@ -53,6 +57,7 @@ public class OracleResourceTest extends OracleTest {
         }
     }
 
+    @Test
     public void test_30_39() throws Exception {
         for (int i = 30; i <= 39; ++i) { // 57
             exec_test("bvt/parser/oracle-" + i + ".txt");
@@ -60,6 +65,7 @@ public class OracleResourceTest extends OracleTest {
         }
     }
 
+    @Test
     public void test_40_49() throws Exception {
         for (int i = 40; i <= 49; ++i) { // 57
             exec_test("bvt/parser/oracle-" + i + ".txt");
@@ -67,6 +73,7 @@ public class OracleResourceTest extends OracleTest {
         }
     }
 
+    @Test
     public void test_50_57() throws Exception {
         for (int i = 50; i <= 57; ++i) { // 57
             exec_test("bvt/parser/oracle-" + i + ".txt");
@@ -74,26 +81,32 @@ public class OracleResourceTest extends OracleTest {
         }
     }
 
+    @Test
     public void test_58() throws Exception {
         exec_test("bvt/parser/oracle-58.txt");
     }
 
+    @Test
     public void test_59() throws Exception {
         exec_test("bvt/parser/oracle-59.txt");
     }
 
+    @Test
     public void test_60() throws Exception {
         exec_test("bvt/parser/oracle-60.txt");
     }
 
+    @Test
     public void test_61() throws Exception {
         // exec_test("bvt/parser/oracle-61.txt");
     }
 
+    @Test
     public void test_62() throws Exception {
         exec_test("bvt/parser/oracle-62.txt");
     }
 
+    @Test
     public void test_63() throws Exception {
         exec_test("bvt/parser/oracle-63.txt");
     }

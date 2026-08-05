@@ -19,12 +19,14 @@ import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleBlockTest4 extends OracleTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "DECLARE" +
                 "  done  BOOLEAN;" +
@@ -57,6 +59,7 @@ public class OracleBlockTest4 extends OracleTest {
         assertEquals(0, visitor.getColumns().size());
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "DECLARE" +
                      "  done  BOOLEAN;" +

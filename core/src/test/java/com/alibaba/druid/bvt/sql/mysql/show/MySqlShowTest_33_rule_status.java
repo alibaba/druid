@@ -20,12 +20,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlShowTest_33_rule_status extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SHOW RULE STATUS";
 
@@ -49,6 +51,7 @@ public class MySqlShowTest_33_rule_status extends MysqlTest {
         assertEquals("show rule status", stmt.toLowerCaseString());
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "SHOW RULE VERSION STATUS";
 
@@ -72,6 +75,7 @@ public class MySqlShowTest_33_rule_status extends MysqlTest {
         assertEquals("show rule version status", stmt.toLowerCaseString());
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "SHOW RULE FULL STATUS";
 
@@ -95,6 +99,7 @@ public class MySqlShowTest_33_rule_status extends MysqlTest {
         assertEquals("show rule full status", stmt.toLowerCaseString());
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = "SHOW RULE FULL STATUS where GMT_MODIFIED_MANAGER > \"2018-03-29 13:53:18\" order by VERSION "
                 + "desc limit 1,2";

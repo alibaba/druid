@@ -120,11 +120,14 @@ public class SQLWithSubqueryClause extends SQLObjectImpl {
             }
 
             if (returningStatement != null) {
-                setReturningStatement(returningStatement.clone());
+                x.setReturningStatement(returningStatement.clone());
             }
 
             x.alias = alias;
-            x.expr = expr;
+            if (expr != null) {
+                x.expr = expr.clone();
+                x.expr.setParent(x);
+            }
             x.prefixAlias = prefixAlias;
             x.materialized = materialized;
         }
@@ -175,6 +178,9 @@ public class SQLWithSubqueryClause extends SQLObjectImpl {
         }
 
         public void setExpr(SQLExpr expr) {
+            if (expr != null) {
+                expr.setParent(this);
+            }
             this.expr = expr;
         }
 

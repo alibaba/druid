@@ -22,12 +22,14 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleCreateViewTest2 extends OracleTest {
+    @Test
     public void test_types() throws Exception {
         String sql = //
                 "  CREATE OR REPLACE FORCE VIEW \"RMAN\".\"V_001\" (\"DB_KEY\", \"DB_ID\", \"BS_KEY\", \"RECID\", \"STAMP\", \"SET_STAMP\", \"SET_COUNT\", \"BACKUP_TYPE\", \"INCREMENTAL_LEVEL\", \"PIECES\", \"START_TIME\", \"COMPLETION_TIME\", \"ELAPSED_SECONDS\", \"STATUS\", \"CONTROLFILE_INCLUDED\", \"INPUT_FILE_SCAN_ONLY\", \"KEEP\", \"KEEP_UNTIL\", \"KEEP_OPTIONS\") AS \n" +

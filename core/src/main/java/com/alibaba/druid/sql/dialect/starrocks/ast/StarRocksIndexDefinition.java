@@ -2,6 +2,7 @@ package com.alibaba.druid.sql.dialect.starrocks.ast;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLTableElement;
@@ -39,6 +40,9 @@ public class StarRocksIndexDefinition extends SQLObjectImpl implements SQLTableE
     }
 
     public void setIndexName(SQLName indexName) {
+        if (indexName != null) {
+            indexName.setParent(this);
+        }
         this.indexName = indexName;
     }
 
@@ -47,7 +51,21 @@ public class StarRocksIndexDefinition extends SQLObjectImpl implements SQLTableE
     }
 
     public void setColumns(List<SQLName> columns) {
+        if (columns != null) {
+            for (SQLName column : columns) {
+                if (column != null) {
+                    column.setParent(this);
+                }
+            }
+        }
         this.columns = columns;
+    }
+
+    public void addColumn(SQLName column) {
+        if (column != null) {
+            column.setParent(this);
+        }
+        this.columns.add(column);
     }
 
     public SQLExpr getComment() {
@@ -55,7 +73,23 @@ public class StarRocksIndexDefinition extends SQLObjectImpl implements SQLTableE
     }
 
     public void setComment(SQLExpr comment) {
+        if (comment != null) {
+            comment.setParent(this);
+        }
         this.comment = comment;
+    }
+
+    public List<SQLObject> getChildren() {
+        List<SQLObject> children = new ArrayList<SQLObject>();
+        if (indexName != null) {
+            children.add(indexName);
+        }
+        children.addAll(columns);
+        if (comment != null) {
+            children.add(comment);
+        }
+        children.addAll(indexOption);
+        return children;
     }
 
     @Override
@@ -63,6 +97,8 @@ public class StarRocksIndexDefinition extends SQLObjectImpl implements SQLTableE
         if (v.visit(this)) {
             acceptChild(v, indexName);
             acceptChild(v, columns);
+            acceptChild(v, comment);
+            acceptChild(v, indexOption);
         }
         v.endVisit(this);
 
@@ -80,7 +116,14 @@ public class StarRocksIndexDefinition extends SQLObjectImpl implements SQLTableE
             x.columns.add(columnCloned);
         }
         x.indexType = indexType;
-        x.comment = comment;
+        if (comment != null) {
+            x.setComment(comment.clone());
+        }
+        for (SQLAssignItem option : indexOption) {
+            SQLAssignItem optionCloned = option.clone();
+            optionCloned.setParent(x);
+            x.indexOption.add(optionCloned);
+        }
         return x;
     }
 }

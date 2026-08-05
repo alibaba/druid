@@ -22,12 +22,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLGrantStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlGrantTest_ads extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "GRANT SELECT ON TABLE * TO 'ALIYUN$ads_user1@aliyun.com'";
 
@@ -49,6 +51,7 @@ public class MySqlGrantTest_ads extends MysqlTest {
         assertEquals(0, visitor.getConditions().size());
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "GRANT SELECT(C1, C2), DUMP DATA(C3, C4), SELECT(C3, DB1.TB1.C4) ON TABLE DB1.TB1 TO 'ALIYUN$ads_user1@aliyun.com', 'ALIYUN$ads_user2@aliyun.com' WITH MAX_QUERIES_PER_HOUR 1";
 
@@ -70,6 +73,7 @@ public class MySqlGrantTest_ads extends MysqlTest {
         assertEquals(0, visitor.getConditions().size());
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "GRANT SELECT(C1, C2), DUMP DATA(C3, C4), SELECT(C3, DB1.TB1.C4) ON TABLE *.* TO 'ALIYUN$ads_user1@aliyun.com', 'ALIYUN$ads_user2@aliyun.com' WITH MAX_QUERIES_PER_HOUR 1";
 
@@ -91,6 +95,7 @@ public class MySqlGrantTest_ads extends MysqlTest {
         assertEquals(0, visitor.getConditions().size());
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = "GRANT ALL ON SYSTEM *.* TO 'ALIYUN$ads_user1@aliyun.com', 'ALIYUN$ads_user2@aliyun.com' ";
 
@@ -112,6 +117,7 @@ public class MySqlGrantTest_ads extends MysqlTest {
         assertEquals(0, visitor.getConditions().size());
     }
 
+    @Test
     public void test_4() throws Exception {
         String sql = "GRANT ALL ON *.* TO 'ALIYUN$ads_user1@aliyun.com', 'ALIYUN$ads_user2@aliyun.com'";
 
@@ -133,6 +139,7 @@ public class MySqlGrantTest_ads extends MysqlTest {
         assertEquals(0, visitor.getConditions().size());
     }
 
+    @Test
     public void test_5() throws Exception {
         String sql = "GRANT INSERT ON *.* TO 'ALIYUN$ads_user1@aliyun.com', 'ALIYUN$ads_user2@aliyun.com'";
 
@@ -154,6 +161,7 @@ public class MySqlGrantTest_ads extends MysqlTest {
         assertEquals(0, visitor.getConditions().size());
     }
 
+    @Test
     public void test_6() throws Exception {
         String sql = "GRANT DELETE, UPDATE ON *.* TO 'ALIYUN$ads_user1@aliyun.com', 'ALIYUN$ads_user2@aliyun.com'";
 
@@ -175,6 +183,7 @@ public class MySqlGrantTest_ads extends MysqlTest {
         assertEquals(0, visitor.getConditions().size());
     }
 
+    @Test
     public void test_7() throws Exception {
         String sql = "GRANT ALL ON sysdb.* TO '%'@'192.168.1.2'";
 
@@ -196,6 +205,7 @@ public class MySqlGrantTest_ads extends MysqlTest {
         assertEquals(0, visitor.getConditions().size());
     }
 
+    @Test
     public void test_8() throws Exception {
         String sql = "GRANT ALL ON sysdb.* TO '%'@'192.168.1.2'";
 
@@ -217,6 +227,7 @@ public class MySqlGrantTest_ads extends MysqlTest {
         assertEquals(0, visitor.getConditions().size());
     }
 
+    @Test
     public void test_9() throws Exception {
         String sql = "GRANT ALL  ON   sysdb.*   TO   '%'@'192.168.1/20'";
 
@@ -238,6 +249,7 @@ public class MySqlGrantTest_ads extends MysqlTest {
         assertEquals(0, visitor.getConditions().size());
     }
 
+    @Test
     public void test_10() throws Exception {
         String sql = "GRANT ALL  ON   sysdb.*   TO   '%'@'192.168.1/20', 'ALIYUN$ads_user1@aliyun.com'";
 
@@ -266,6 +278,7 @@ public class MySqlGrantTest_ads extends MysqlTest {
         assertEquals(0, visitor.getConditions().size());
     }
 
+    @Test
     public void test_11() throws Exception {
         String sql = "GRANT Select, Show  ON   ads.*   TO    'ALIYUN$ads_user1@aliyun.com'";
 
@@ -290,6 +303,7 @@ public class MySqlGrantTest_ads extends MysqlTest {
         assertEquals(0, visitor.getConditions().size());
     }
 
+    @Test
     public void test_doc_0() throws Exception {
         String sql = "GRANT describe, select ON db_name.table_group_name TO 'ALIYUN$account_name'@'%';";
 
@@ -303,6 +317,7 @@ public class MySqlGrantTest_ads extends MysqlTest {
                 stmt.toString());
     }
 
+    @Test
     public void test_doc_1() throws Exception {
         String sql = "GRANT all ON db_name.table_group_name TO 'ALIYUN$account_name'@'%';";
 
@@ -316,6 +331,7 @@ public class MySqlGrantTest_ads extends MysqlTest {
                 stmt.toString());
     }
 
+    @Test
     public void test_doc_2() throws Exception {
         String sql = "GRANT describe, select (col1, col2) ON db_name.* TO 'ALIYUN$account_name';";
 
@@ -329,6 +345,7 @@ public class MySqlGrantTest_ads extends MysqlTest {
                 stmt.toString());
     }
 
+    @Test
     public void test_doc_3() throws Exception {
         String sql = "GRANT describe, select (col1, col2) ON db_name.table_name TO 'ALIYUN$account_name';";
 

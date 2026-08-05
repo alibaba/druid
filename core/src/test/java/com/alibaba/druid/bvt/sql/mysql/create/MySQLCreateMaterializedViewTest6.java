@@ -19,10 +19,12 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySQLCreateMaterializedViewTest6 extends MysqlTest {
+    @Test
     public void test1() throws Exception {
         String sql = "CREATE MATERIALIZED VIEW mymv (\n" +
                 "  PRIMARY KEY(id)\n" +
@@ -43,6 +45,7 @@ public class MySQLCreateMaterializedViewTest6 extends MysqlTest {
                 "FROM base;");
     }
 
+    @Test
     public void test2() throws Exception {
         String sql = "CREATE MATERIALIZED VIEW mymv (\n" +
                 "  PRIMARY KEY(id)\n" +
@@ -66,6 +69,7 @@ public class MySQLCreateMaterializedViewTest6 extends MysqlTest {
                 "FROM base;");
     }
 
+    @Test
     public void test3() throws Exception {
         String sql = "CREATE MATERIALIZED VIEW mymv\n" +
                 "AS SELECT id FROM base;";
@@ -76,6 +80,7 @@ public class MySQLCreateMaterializedViewTest6 extends MysqlTest {
                 "FROM base;");
     }
 
+    @Test
     public void test4() throws Exception {
         String sql = "CREATE MATERIALIZED VIEW mymv (\n" +
                 "  default_col varcahr,\n" +
@@ -98,6 +103,7 @@ public class MySQLCreateMaterializedViewTest6 extends MysqlTest {
                 "FROM base;");
     }
 
+    @Test
     public void test5() throws Exception {
         String sql = "CREATE MATERIALIZED VIEW mymv\n" +
                 "REFRESH COMPLETE\n" +
@@ -112,6 +118,7 @@ public class MySQLCreateMaterializedViewTest6 extends MysqlTest {
                 "FROM base;");
     }
 
+    @Test
     public void test6() throws Exception {
         String sql = "CREATE MATERIALIZED VIEW mymv\n" +
                 "ENABLE QUERY REWRITE\n" +
@@ -124,6 +131,7 @@ public class MySQLCreateMaterializedViewTest6 extends MysqlTest {
                 "FROM base;");
     }
 
+    @Test
     public void test7() throws Exception {
         String sql = "CREATE MATERIALIZED VIEW mymv (\n" +
                 "  default_col varcahr,\n" +
@@ -143,6 +151,7 @@ public class MySQLCreateMaterializedViewTest6 extends MysqlTest {
                 "FROM base;");
     }
 
+    @Test
     public void test8() throws Exception {
         String sql = "CREATE MATERIALIZED VIEW mymv\n" +
                 "REFRESH ON DEMAND\n" +
@@ -157,6 +166,7 @@ public class MySQLCreateMaterializedViewTest6 extends MysqlTest {
                 "FROM base;");
     }
 
+    @Test
     public void test9() throws Exception {
         String sql = "CREATE MATERIALIZED VIEW myview " +
                 " REFRESH NEXT now() + interval 1 day " +
@@ -168,6 +178,7 @@ public class MySQLCreateMaterializedViewTest6 extends MysqlTest {
                 "SELECT now() AS t");
     }
 
+    @Test
     public void test10() throws Exception {
         String sql = "ALTER MATERIALIZED VIEW myview " +
                 " REFRESH NEXT now() + interval 1 day ";
@@ -176,6 +187,7 @@ public class MySQLCreateMaterializedViewTest6 extends MysqlTest {
                 "REFRESH NEXT now() + INTERVAL 1 DAY");
     }
 
+    @Test
     public void test11() throws Exception {
         String sql = "CREATE MATERIALIZED VIEW myview " +
                 " REFRESH FAST ON COMMIT " +
@@ -190,6 +202,7 @@ public class MySQLCreateMaterializedViewTest6 extends MysqlTest {
                 "FROM base");
     }
 
+    @Test
     public void test12() throws Exception {
         String sql = "CREATE MATERIALIZED VIEW myview " +
                 " REFRESH COMPLETE ON OVERWRITE " +

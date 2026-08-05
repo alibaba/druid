@@ -37,6 +37,9 @@ public class OracleLobParameters extends OracleSQLObjectImpl {
     }
 
     public void setTableSpace(SQLName tableSpace) {
+        if (tableSpace != null) {
+            tableSpace.setParent(this);
+        }
         this.tableSpace = tableSpace;
     }
 
@@ -53,6 +56,9 @@ public class OracleLobParameters extends OracleSQLObjectImpl {
     }
 
     public void setChunk(SQLExpr chunk) {
+        if (chunk != null) {
+            chunk.setParent(this);
+        }
         this.chunk = chunk;
     }
 
@@ -97,5 +103,32 @@ public class OracleLobParameters extends OracleSQLObjectImpl {
             x.setParent(this);
         }
         this.pctVersion = x;
+    }
+
+    public void cloneTo(OracleLobParameters x) {
+        if (tableSpace != null) {
+            x.setTableSpace(tableSpace.clone());
+        }
+        x.enableStorageInRow = enableStorageInRow;
+        if (chunk != null) {
+            x.setChunk(chunk.clone());
+        }
+        x.cache = cache;
+        x.logging = logging;
+        x.compress = compress;
+        x.keepDuplicates = keepDuplicates;
+        if (storage != null) {
+            x.setStorage(storage.clone());
+        }
+        if (pctVersion != null) {
+            x.setPctVersion(pctVersion.clone());
+        }
+    }
+
+    @Override
+    public OracleLobParameters clone() {
+        OracleLobParameters x = new OracleLobParameters();
+        cloneTo(x);
+        return x;
     }
 }

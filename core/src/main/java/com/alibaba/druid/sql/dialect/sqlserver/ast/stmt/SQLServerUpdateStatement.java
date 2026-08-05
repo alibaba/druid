@@ -54,6 +54,22 @@ public class SQLServerUpdateStatement extends SQLUpdateStatement implements SQLS
         this.output = output;
     }
 
+    public void cloneTo(SQLServerUpdateStatement x) {
+        super.cloneTo(x);
+        if (top != null) {
+            x.setTop(top.clone());
+        }
+        if (output != null) {
+            x.setOutput(output.clone());
+        }
+    }
+
+    public SQLServerUpdateStatement clone() {
+        SQLServerUpdateStatement x = new SQLServerUpdateStatement();
+        cloneTo(x);
+        return x;
+    }
+
     @Override
     public void accept0(SQLASTVisitor visitor) {
         if (visitor instanceof SQLServerASTVisitor) {

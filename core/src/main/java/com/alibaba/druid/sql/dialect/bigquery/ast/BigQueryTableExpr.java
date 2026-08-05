@@ -47,7 +47,12 @@ public class BigQueryTableExpr extends SQLExprImpl implements BigQueryObject {
 
     @Override
     public SQLExpr clone() {
-        return null;
+        BigQueryTableExpr x = new BigQueryTableExpr();
+        if (name != null) {
+            x.setName(name.clone());
+        }
+        x.setParenthesized(parenthesized);
+        return x;
     }
 
     public void acceptChild(SQLASTVisitor v) {

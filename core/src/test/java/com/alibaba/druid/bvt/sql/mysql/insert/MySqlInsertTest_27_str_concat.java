@@ -22,6 +22,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +30,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlInsertTest_27_str_concat extends MysqlTest {
+    @Test
     public void test_insert_concat() throws Exception {
         String sql = "insert ignore into ktv_sms_test (cp) values ('a' 'b')";
 
@@ -58,6 +60,7 @@ public class MySqlInsertTest_27_str_concat extends MysqlTest {
         }
     }
 
+    @Test
     public void test_insert_concat_2() throws Exception {
         String sql = "insert ignore into ktv_sms_test (cp) values (\"a\" \"b\")";
 
@@ -87,6 +90,7 @@ public class MySqlInsertTest_27_str_concat extends MysqlTest {
         }
     }
 
+    @Test
     public void test_insert_concat_3() throws Exception {
         String sql = "insert ignore into ktv_sms_test (cp) values (\"a\" 'b')";
 

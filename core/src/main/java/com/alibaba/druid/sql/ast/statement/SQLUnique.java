@@ -132,6 +132,7 @@ public class SQLUnique extends SQLConstraintImpl implements SQLUniqueConstraint,
         super.cloneTo(x);
 
         indexDefinition.cloneTo(x.indexDefinition);
+        x.disableNovalidate = disableNovalidate;
     }
 
     public SQLUnique clone() {

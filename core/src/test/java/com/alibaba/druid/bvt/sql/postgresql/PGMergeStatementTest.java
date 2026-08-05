@@ -6,12 +6,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLMergeStatement;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGSQLStatementParser;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PGMergeStatementTest extends PGTest {
+    @Test
     public void testMerge_basic() {
         String sql = "MERGE INTO target t USING source s ON t.id = s.id "
                 + "WHEN MATCHED THEN UPDATE SET t.val = s.val "
@@ -35,6 +37,7 @@ public class PGMergeStatementTest extends PGTest {
         assertTrue(output.contains("INSERT"));
     }
 
+    @Test
     public void testMerge_matchedDoNothing() {
         String sql = "MERGE INTO target t USING source s ON t.id = s.id "
                 + "WHEN MATCHED THEN DO NOTHING "
@@ -54,6 +57,7 @@ public class PGMergeStatementTest extends PGTest {
         assertTrue(output.contains("DO NOTHING"));
     }
 
+    @Test
     public void testMerge_notMatchedDoNothing() {
         String sql = "MERGE INTO target t USING source s ON t.id = s.id "
                 + "WHEN MATCHED AND s.deleted THEN DELETE "
@@ -78,6 +82,7 @@ public class PGMergeStatementTest extends PGTest {
         assertTrue(output.contains("DELETE"));
     }
 
+    @Test
     public void testMerge_customerAccount() {
         String sql = "MERGE INTO customer_account ca "
                 + "USING recent_transactions t ON t.customer_id = ca.customer_id "
@@ -97,6 +102,7 @@ public class PGMergeStatementTest extends PGTest {
         assertTrue(output.contains("recent_transactions"));
     }
 
+    @Test
     public void testMerge_doNothingRoundtrip() {
         String sql = "MERGE INTO target t USING source s ON t.id = s.id "
                 + "WHEN MATCHED THEN DO NOTHING "

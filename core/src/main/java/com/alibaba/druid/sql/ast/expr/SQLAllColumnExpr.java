@@ -18,6 +18,7 @@ package com.alibaba.druid.sql.ast.expr;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
@@ -69,7 +70,10 @@ public final class SQLAllColumnExpr extends SQLExprImpl implements SQLName {
     }
 
     protected void accept0(SQLASTVisitor visitor) {
-        visitor.visit(this);
+        if (visitor.visit(this)) {
+            acceptChild(visitor, except);
+            acceptChild(visitor, replace);
+        }
         visitor.endVisit(this);
     }
 
@@ -88,9 +92,30 @@ public final class SQLAllColumnExpr extends SQLExprImpl implements SQLName {
 
     public SQLAllColumnExpr clone() {
         SQLAllColumnExpr x = new SQLAllColumnExpr();
-        x.setOwner(owner);
+        if (owner != null) {
+            x.setOwner(owner.clone());
+        }
 
         x.resolvedTableSource = resolvedTableSource;
+
+        if (except != null) {
+            List<SQLExpr> exceptClone = new ArrayList<SQLExpr>(except.size());
+            for (SQLExpr item : except) {
+                SQLExpr item2 = item.clone();
+                item2.setParent(x);
+                exceptClone.add(item2);
+            }
+            x.except = exceptClone;
+        }
+
+        for (SQLAliasedExpr item : replace) {
+            SQLAliasedExpr item2 = item.clone();
+            item2.setParent(x);
+            x.replace.add(item2);
+        }
+
+        x.parenthesized = parenthesized;
+
         return x;
     }
 
@@ -119,6 +144,16 @@ public final class SQLAllColumnExpr extends SQLExprImpl implements SQLName {
 
     @Override
     public List getChildren() {
-        return Collections.emptyList();
+        if ((except == null || except.isEmpty()) && (replace == null || replace.isEmpty())) {
+            return Collections.emptyList();
+        }
+        List<SQLObject> children = new ArrayList<SQLObject>();
+        if (except != null) {
+            children.addAll(except);
+        }
+        if (replace != null) {
+            children.addAll(replace);
+        }
+        return children;
     }
 }

@@ -18,10 +18,12 @@ package com.alibaba.druid.bvt.sql.mysql.select;
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_adsHintAndTypeConvert extends MysqlTest {
+    @Test
     public void test_1() throws Exception {
         String sql = "/*+engine=mpp*/ select timestamp '2017-01-01 11:11:11'";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -30,6 +32,7 @@ public class MySqlSelectTest_adsHintAndTypeConvert extends MysqlTest {
         assertEquals("/*+engine=mpp*/\n" + "SELECT TIMESTAMP '2017-01-01 11:11:11'", statement.toString());
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "/*+engine=mpp*/select year_of_week(DATE '2017-01-01')";
 
@@ -39,6 +42,7 @@ public class MySqlSelectTest_adsHintAndTypeConvert extends MysqlTest {
         assertEquals("/*+engine=mpp*/\n" + "SELECT year_of_week(DATE '2017-01-01')", statement.toString());
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = "/*+engine=mpp*/select year_of_week(DATE '2017-01-01')";
 
@@ -48,6 +52,7 @@ public class MySqlSelectTest_adsHintAndTypeConvert extends MysqlTest {
         assertEquals("/*+engine=mpp*/\n" + "SELECT year_of_week(DATE '2017-01-01')", statement.toString());
     }
 
+    @Test
     public void test_4() throws Exception {
         String sql = "select * from test1 where TIMESTAMP '2019-1-1 00:00:00' = timestamp_test";
 
@@ -57,6 +62,7 @@ public class MySqlSelectTest_adsHintAndTypeConvert extends MysqlTest {
         assertEquals("SELECT *\n" + "FROM test1\n" + "WHERE TIMESTAMP '2019-1-1 00:00:00' = timestamp_test", statement.toString());
     }
 
+    @Test
     public void test_5() throws Exception {
         String sql = "select * from test1 where timestamp_test = TIMESTAMP '2019-1-1 00:00:00'";
 
@@ -66,6 +72,7 @@ public class MySqlSelectTest_adsHintAndTypeConvert extends MysqlTest {
         assertEquals("SELECT *\n" + "FROM test1\n" + "WHERE timestamp_test = TIMESTAMP '2019-1-1 00:00:00'", statement.toString());
     }
 
+    @Test
     public void test_6() throws Exception {
         String sql = "select * from test1 where  DATE '2019-1-1' = date_test";
 

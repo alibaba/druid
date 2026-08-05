@@ -20,12 +20,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleDeleteTest extends OracleTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "delete from BILLING_LOG_MONITOR log where log.guid in (" +
                 "'wb_xinmin.zhao_test121','wb_xinmin.zhao_test122'" +

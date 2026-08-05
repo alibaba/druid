@@ -54,6 +54,7 @@ public class SQLPartitionByList extends SQLPartitionBy {
 
     public void cloneTo(SQLPartitionByList x) {
         super.cloneTo(x);
+        x.type = type;
     }
     public enum PartitionByListType {
         LIST_EXPRESSION,

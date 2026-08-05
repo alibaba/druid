@@ -20,6 +20,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
@@ -28,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class OracleCreateTableTest85 extends OracleTest {
     //oracle 支持  column char, column2 varchar , 默认字符长度
     //https://docs.oracle.com/cd/B28359_01/server.111/b28286/sql_elements001.htm#SQLRF0021
+    @Test
     public void test_0() throws Exception {
         String sql = //
                 "create table char_data_type_test (CHAR1 CHAR,CHAR2 CHAR(100),CHAR3 CHAR(100 BYTE),CHAR4 CHAR(100 CHAR),VARCHAR21 VARCHAR2(100),VARCHAR22 VARCHAR2(100 BYTE),VARCHAR23 VARCHAR2(100 CHAR),NCHAR1 NCHAR,NCHAR2 NCHAR(100),NVARCHAR21 NVARCHAR2(100));";

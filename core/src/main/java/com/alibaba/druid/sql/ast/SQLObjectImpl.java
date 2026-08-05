@@ -43,9 +43,24 @@ public abstract class SQLObjectImpl implements SQLObject {
         x.parent = this.parent;
         if (this.attributes != null) {
             x.attributes = new HashMap<>(attributes);
+            // The comment lists are mutable and reached through the shared-but-shallow-copied map.
+            // Copy them so addBeforeComment/addAfterComment on the clone never pollutes the original.
+            copyCommentAttribute(x, "rowFormat.before_comment");
+            copyCommentAttribute(x, "rowFormat.after_comment");
+        }
+        if (this.hint != null) {
+            x.hint = this.hint.clone();
         }
         x.sourceLine = this.sourceLine;
         x.sourceColumn = this.sourceColumn;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static void copyCommentAttribute(SQLObjectImpl x, String key) {
+        Object value = x.attributes.get(key);
+        if (value instanceof List) {
+            x.attributes.put(key, new ArrayList<String>((List<String>) value));
+        }
     }
 
     public final void accept(SQLASTVisitor visitor) {

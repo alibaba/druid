@@ -20,12 +20,14 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_49_for_update_no_wait extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "select /*MS-ARCORE-AR-II-M-QUERY-IN-LOCK-BY-AR-NOS*/ /*+INDEX(AR_II_M_004 PRIMARY) */         tnt_inst_id,   ar_no,   ar_nm,   ar_tp_code,   ar_entity_type       " +
                 "from         tb_001       " +

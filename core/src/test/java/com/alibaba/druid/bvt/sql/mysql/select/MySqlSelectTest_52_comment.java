@@ -20,12 +20,14 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_52_comment extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT comment.id,user.id AS user_id,user.username,user.avatar,comment.created_at,\n" +
                 "                getDistance('31.860968', '117.252579', user.latitude, user.longitude) AS distance,\n" +

@@ -6,12 +6,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleGroupingSetsTest extends OracleTest {
+    @Test
     public void test_grouping_sets() throws Exception {
         String sql = //
                 "select department_id,job_id,avg(salary) from hr.employees group by grouping sets ((department_id,job_id));";

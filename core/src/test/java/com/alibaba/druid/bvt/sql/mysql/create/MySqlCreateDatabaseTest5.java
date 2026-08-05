@@ -22,12 +22,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlCreateDatabaseTest5 extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "CREATE SCHEMA IF NOT EXISTS schema_name with (property_name = 'expression')\n";
 
@@ -44,6 +46,7 @@ public class MySqlCreateDatabaseTest5 extends MysqlTest {
                 ")", output);
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "CREATE SCHEMA IF NOT EXISTS `schema_name` with (property_name = 'expression')\n";
 

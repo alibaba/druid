@@ -21,11 +21,13 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_295
         extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "select * from teacher_text a join teacher b on a.id=b.id  where row(a.id,'B') not in (select a.id,a.coid from community a where coid ='B') order by 1;";
 
@@ -46,6 +48,7 @@ public class MySqlSelectTest_295
         assertEquals("CAST(ROW(`id_0_3`, `coid`) AS ROW(bigint,varchar))", SQLUtils.toMySqlString(expr));
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "SELECT \"$operator$HASH_CODE\"(ARRAY[1, 2])";
 
@@ -55,6 +58,7 @@ public class MySqlSelectTest_295
         assertEquals("SELECT $operator$HASH_CODE(ARRAY[1, 2])", stmt.toString());
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "alter table ddlDb.addCluKey add CLUSTERING key ck1(c1)";
 
@@ -65,6 +69,7 @@ public class MySqlSelectTest_295
                 "\tADD CLUSTERING KEY ck1 (c1)", stmt.toString());
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = "select cast(row(1,row(2,3)) as row(varchar, row(integer)));";
 

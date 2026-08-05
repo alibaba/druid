@@ -439,6 +439,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
 
                         if (isColumn) {
                             column = this.exprParser.parseColumn();
+                            column.setParent(stmt);
                             stmt.getTableElementList().add(column);
                         } else {
                             stmt.getTableElementList().add(parseConstraint());
@@ -472,6 +473,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                         }
                     } else {
                         column = this.exprParser.parseColumn();
+                        column.setParent(stmt);
                         stmt.getTableElementList().add(column);
                     }
 

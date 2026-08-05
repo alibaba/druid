@@ -4,12 +4,14 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlCreateTableTest116 extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "CREATE TABLE IF NOT EXISTS `Employee` (\n" +
                 "   id int(10)" +
@@ -26,6 +28,7 @@ public class MySqlCreateTableTest116 extends MysqlTest {
                 ") BROADCAST ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_bin", stmt.toString());
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "CREATE TABLE `t1` (\n" +
                 "  `id` int NOT NULL,\n" +

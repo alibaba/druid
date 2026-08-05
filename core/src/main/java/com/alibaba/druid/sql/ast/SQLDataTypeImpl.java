@@ -423,6 +423,10 @@ public class SQLDataTypeImpl extends SQLObjectImpl
         if (indexBy != null) {
             x.setIndexBy(indexBy.clone());
         }
+
+        if (enumList != null) {
+            x.setEnumList(enumList.clone());
+        }
     }
 
     public String toString() {

@@ -5,12 +5,14 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlInsertTest_17 extends MysqlTest {
+    @Test
     public void test_insert_rollback_on_fail() throws Exception {
         String sql = "/*+engine=MPP, mppNativeInsertFromSelect=true*/\n"
                 + "INSERT INTO dashboard_crowd_analysis(cname,cvalue,orders,users,dt,tagid)\n"

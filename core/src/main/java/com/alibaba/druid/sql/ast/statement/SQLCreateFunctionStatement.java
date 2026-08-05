@@ -61,7 +61,13 @@ public class SQLCreateFunctionStatement extends SQLStatementImpl implements SQLC
 
     public SQLCreateFunctionStatement clone() {
         SQLCreateFunctionStatement x = new SQLCreateFunctionStatement();
+        cloneTo(x);
+        return x;
+    }
 
+    public void cloneTo(SQLCreateFunctionStatement x) {
+        // carries dbType, afterSemi, headHints, comments and attributes
+        super.cloneTo(x);
         if (definer != null) {
             x.setDefiner(definer.clone());
         }
@@ -89,8 +95,20 @@ public class SQLCreateFunctionStatement extends SQLStatementImpl implements SQLC
         x.deterministic = deterministic;
         x.pipelined = pipelined;
         x.language = language;
-
-        return x;
+        x.temporary = temporary;
+        x.ifNotExists = ifNotExists;
+        x.parallelEnable = parallelEnable;
+        x.aggregate = aggregate;
+        x.resultCache = resultCache;
+        x.wrappedSource = wrappedSource;
+        if (using != null) {
+            x.setUsing(using.clone());
+        }
+        for (SQLAssignItem option : options) {
+            SQLAssignItem option2 = option.clone();
+            option2.setParent(x);
+            x.options.add(option2);
+        }
     }
 
     @Override
@@ -101,6 +119,8 @@ public class SQLCreateFunctionStatement extends SQLStatementImpl implements SQLC
             acceptChild(visitor, parameters);
             acceptChild(visitor, returnDataType);
             acceptChild(visitor, block);
+            acceptChild(visitor, using);
+            acceptChild(visitor, options);
         }
         visitor.endVisit(this);
     }
@@ -273,6 +293,9 @@ public class SQLCreateFunctionStatement extends SQLStatementImpl implements SQLC
     }
 
     public void setUsing(SQLName using) {
+        if (using != null) {
+            using.setParent(this);
+        }
         this.using = using;
     }
 

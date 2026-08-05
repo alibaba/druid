@@ -20,12 +20,14 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlAlterUserTest extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "ALTER USER 'jeffrey'@'localhost' PASSWORD EXPIRE;";
 
@@ -47,6 +49,7 @@ public class MySqlAlterUserTest extends MysqlTest {
         assertEquals(0, visitor.getConditions().size());
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "alter user IF EXISTS user1 IDENTIFIED BY 'auth_string'";
 
@@ -55,6 +58,7 @@ public class MySqlAlterUserTest extends MysqlTest {
         assertEquals("ALTER USER IF EXISTS user1 IDENTIFIED BY 'auth_string'", statement.toString());
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "alter user IF EXISTS user1 IDENTIFIED BY 'auth_string' PASSWORD EXPIRE";
 
@@ -63,6 +67,7 @@ public class MySqlAlterUserTest extends MysqlTest {
         assertEquals("ALTER USER IF EXISTS user1 IDENTIFIED BY 'auth_string' PASSWORD EXPIRE", statement.toString());
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = "alter user IF EXISTS user1 IDENTIFIED BY 'auth_string' PASSWORD EXPIRE DEFAULT";
 
@@ -71,6 +76,7 @@ public class MySqlAlterUserTest extends MysqlTest {
         assertEquals("ALTER USER IF EXISTS user1 IDENTIFIED BY 'auth_string' PASSWORD EXPIRE DEFAULT", statement.toString());
     }
 
+    @Test
     public void test_4() throws Exception {
         String sql = "alter user IF EXISTS user1 IDENTIFIED BY 'auth_string' PASSWORD EXPIRE NEVER";
 
@@ -79,6 +85,7 @@ public class MySqlAlterUserTest extends MysqlTest {
         assertEquals("ALTER USER IF EXISTS user1 IDENTIFIED BY 'auth_string' PASSWORD EXPIRE NEVER", statement.toString());
     }
 
+    @Test
     public void test_5() throws Exception {
         String sql = "alter user IF EXISTS user1 IDENTIFIED BY 'auth_string' PASSWORD EXPIRE INTERVAL 5 DAY";
 
@@ -87,6 +94,7 @@ public class MySqlAlterUserTest extends MysqlTest {
         assertEquals("ALTER USER IF EXISTS user1 IDENTIFIED BY 'auth_string' PASSWORD EXPIRE INTERVAL 5 DAY", statement.toString());
     }
 
+    @Test
     public void test_6() throws Exception {
         String sql = "alter user IF EXISTS user1 IDENTIFIED BY 'auth_string', user2 IDENTIFIED BY 'auth_string' PASSWORD EXPIRE INTERVAL 5 DAY";
 

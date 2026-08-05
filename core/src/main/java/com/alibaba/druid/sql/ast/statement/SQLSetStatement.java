@@ -136,17 +136,25 @@ public class SQLSetStatement extends SQLStatementImpl {
 
     public SQLSetStatement clone() {
         SQLSetStatement x = new SQLSetStatement();
+        cloneTo(x);
+        x.option = option;
+        x.useSet = useSet;
         for (SQLAssignItem item : items) {
             SQLAssignItem item2 = item.clone();
             item2.setParent(x);
             x.items.add(item2);
         }
         if (hints != null) {
+            x.hints = new ArrayList<SQLCommentHint>();
             for (SQLCommentHint hint : hints) {
                 SQLCommentHint h2 = hint.clone();
                 h2.setParent(x);
                 x.hints.add(h2);
             }
+        }
+        if (maridbSetForStatement != null) {
+            x.maridbSetForStatement = maridbSetForStatement.clone();
+            x.maridbSetForStatement.setParent(x);
         }
         return x;
     }

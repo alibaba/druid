@@ -5,12 +5,14 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_166_xor extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "select 1 from corona_select_multi_db_multi_tb where (1 XOR 2 ) between 3 and 4";
 //
@@ -24,6 +26,7 @@ public class MySqlSelectTest_166_xor extends MysqlTest {
                 "WHERE (1 XOR 2) BETWEEN 3 AND 4", stmt.toString());
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "select * from t where id != 4 or id = 4 xor (id = 4 or id < 4)";
 //
@@ -39,6 +42,7 @@ public class MySqlSelectTest_166_xor extends MysqlTest {
                 "\t\tOR id < 4)", stmt.toString());
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "SELECT ((10)!=(( (HEX ('abc' )) is FALSE )) ),( (( (( (( 'a')&& (null )) "
             + "not in(layer_1_left_tb.bigint_test, layer_0_right_tb.smallint_test,layer_1_left_tb.datetime_test,"

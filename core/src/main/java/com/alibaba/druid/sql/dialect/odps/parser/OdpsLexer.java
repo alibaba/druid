@@ -73,7 +73,8 @@ public class OdpsLexer extends HiveLexer {
                     AsSkip,
                     AsSequence,
                     AsDatabase,
-                    AsDefault
+                    AsDefault,
+                    TableSourceHint
             ),
             Arrays.asList(
                     ParseStatementListSelectUnsupportedSyntax,

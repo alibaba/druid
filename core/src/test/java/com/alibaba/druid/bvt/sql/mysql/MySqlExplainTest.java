@@ -21,6 +21,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlExplainStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
@@ -30,6 +31,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * See https://dev.mysql.com/doc/refman/5.7/en/explain.html for test cases.
  */
 public class MySqlExplainTest extends MysqlTest {
+    @Test
     public void testExplainTable() throws Exception {
         String sql = " EXPLAIN City";
         SQLStatement statement = testParseFormat(sql);
@@ -41,6 +43,7 @@ public class MySqlExplainTest extends MysqlTest {
         assertHasSeenTable(stats, "City");
     }
 
+    @Test
     public void testExplainTableWithColumn() throws Exception {
         String sql = " EXPLAIN City name";
         SQLStatement statement = testParseFormat(sql);
@@ -53,6 +56,7 @@ public class MySqlExplainTest extends MysqlTest {
         assertHasSeenTableColumn(stats, "City", "name");
     }
 
+    @Test
     public void testExplainTableWithWild() throws Exception {
         String sql = " EXPLAIN City '%ame'";
         SQLStatement statement = testParseFormat(sql);
@@ -64,6 +68,7 @@ public class MySqlExplainTest extends MysqlTest {
         assertHasSeenTable(stats, "City");
     }
 
+    @Test
     public void testExplainExplainableStatements() throws Exception {
         testExplainExplainableStatement("EXPLAIN SELECT * FROM City", "City", 1);
         testExplainExplainableStatement("EXPLAIN DELETE FROM City", "City", 0);
@@ -72,6 +77,7 @@ public class MySqlExplainTest extends MysqlTest {
         testExplainExplainableStatement("EXPLAIN UPDATE City SET name = 'Beijing'", "City", 1);
     }
 
+    @Test
     public void testExplainExtendedExplainableStatements() throws Exception {
         testExplainExplainableStatement("EXPLAIN EXTENDED SELECT * FROM City", "City", 1);
         testExplainExplainableStatement("EXPLAIN EXTENDED DELETE FROM City", "City", 0);
@@ -80,6 +86,7 @@ public class MySqlExplainTest extends MysqlTest {
         testExplainExplainableStatement("EXPLAIN EXTENDED UPDATE City SET name = 'Beijing'", "City", 1);
     }
 
+    @Test
     public void testExplainPartitionsExplainableStatements() throws Exception {
         testExplainExplainableStatement("EXPLAIN PARTITIONS SELECT * FROM City", "City", 1);
         testExplainExplainableStatement("EXPLAIN PARTITIONS DELETE FROM City", "City", 0);
@@ -88,6 +95,7 @@ public class MySqlExplainTest extends MysqlTest {
         testExplainExplainableStatement("EXPLAIN PARTITIONS UPDATE City SET name = 'Beijing'", "City", 1);
     }
 
+    @Test
     public void testExplainFormatTraditionalExplainableStatements() throws Exception {
         testExplainExplainableStatement("EXPLAIN FORMAT = TRADITIONAL SELECT * FROM City", "City", 1);
         testExplainExplainableStatement("EXPLAIN FORMAT = TRADITIONAL DELETE FROM City", "City", 0);
@@ -96,6 +104,7 @@ public class MySqlExplainTest extends MysqlTest {
         testExplainExplainableStatement("EXPLAIN FORMAT = TRADITIONAL UPDATE City SET name = 'Beijing'", "City", 1);
     }
 
+    @Test
     public void testExplainFormatJsonExplainableStatements() throws Exception {
         testExplainExplainableStatement("EXPLAIN FORMAT = JSON SELECT * FROM City", "City", 1);
         testExplainExplainableStatement("EXPLAIN FORMAT = JSON DELETE FROM City", "City", 0);
@@ -104,6 +113,7 @@ public class MySqlExplainTest extends MysqlTest {
         testExplainExplainableStatement("EXPLAIN FORMAT = JSON UPDATE City SET name = 'Beijing'", "City", 1);
     }
 
+    @Test
     public void testExplainForConnections() throws Exception {
         testExplainForConnection("EXPLAIN FOR CONNECTION 1");
         testExplainForConnection("EXPLAIN EXTENDED FOR CONNECTION 1");

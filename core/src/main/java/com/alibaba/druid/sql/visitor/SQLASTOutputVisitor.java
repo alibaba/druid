@@ -38,6 +38,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreatePackageStatemen
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleFunctionDataType;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleProcedureDataType;
+import com.alibaba.druid.sql.dialect.starrocks.ast.statement.*;
 import com.alibaba.druid.sql.parser.CharTypes;
 import com.alibaba.druid.sql.template.SQLSelectQueryTemplate;
 import com.alibaba.druid.util.FnvHash;
@@ -290,6 +291,18 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         print0(value);
     }
 
+    /**
+     * Terminate a pending end-of-line comment with a newline before more output is appended.
+     * Without this, content emitted through the non-char print paths is glued onto the same line
+     * as a {@code -- } / {@code # } comment and silently swallowed on the next parse.
+     * Callers must invoke this only after confirming {@link #appender} is non-null.
+     */
+    protected void flushEndLineComment() {
+        if (endLineComment) {
+            println();
+        }
+    }
+
     protected final void print0(char value) {
         if (this.appender == null) {
             return;
@@ -302,6 +315,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (this.appender == null) {
             return;
         }
+        flushEndLineComment();
 
         appender.append(value);
     }
@@ -310,6 +324,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (this.appender == null) {
             return;
         }
+        flushEndLineComment();
 
         appender.append(value);
     }
@@ -318,6 +333,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (this.appender == null) {
             return;
         }
+        flushEndLineComment();
 
         appender.append(value);
     }
@@ -326,6 +342,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (this.appender == null) {
             return;
         }
+        flushEndLineComment();
 
         appender.append(value);
     }
@@ -365,6 +382,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (appender == null) {
             return;
         }
+        flushEndLineComment();
 
         this.appender.append(text);
     }
@@ -377,6 +395,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (appender == null || name.isEmpty()) {
             return;
         }
+        flushEndLineComment();
 
         SQLDialect dialect = this.dialect;
         char quote = '"';
@@ -470,7 +489,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         for (int i = 0; i < nodes.size(); i++) {
             if (i != 0) {
                 if (needPrintLine) {
-                    print0(',');
+                    print(',');
                     println();
                 } else {
                     print0(", ");
@@ -3791,16 +3810,37 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         x.getTableSource().accept(this);
 
+        // tableOptions / WITH LABEL / BY NAME are StarRocks(-family) INSERT syntax stored on the shared
+        // SQLInsertInto base. Gate on the fields themselves rather than on the statement's dbType:
+        // only the StarRocks parser hooks ever populate them, and dbType is unset both for the
+        // generic toString() path and for statements built through the AST API.
+        if (x.getTableOptions() != null && !x.getTableOptions().isEmpty()) {
+            print0("(");
+            printAndAccept(x.getTableOptions(), ", ");
+            print0(")");
+        }
+
+        // canonical StarRocks order: PARTITION, WITH LABEL, columns, BY NAME
         if (x.getPartitions() != null && !x.getPartitions().isEmpty()) {
             print0(ucase ? " PARTITION (" : " partition (");
             printAndAccept(x.getPartitions(), ", ");
             print(')');
         }
+
+        if (x.getLabel() != null) {
+            print0(ucase ? " WITH LABEL " : " with label ");
+            x.getLabel().accept(this);
+        }
+
         String columnsString = x.getColumnsString();
         if (columnsString != null) {
             print0(columnsString);
         } else {
             printInsertColumns(x.getColumns());
+        }
+
+        if (x.isByName()) {
+            print0(ucase ? " BY NAME" : " by name");
         }
 
         if (!x.getValuesList().isEmpty()) {
@@ -6365,6 +6405,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print0(ucase ? " NOT ENFORCED" : " not enforced");
         }
 
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLAlterTableSwap x) {
+        print0(ucase ? "SWAP WITH " : "swap with ");
+        x.getName().accept(this);
         return false;
     }
 
@@ -9308,10 +9355,20 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         x.getName().accept(this);
 
+        if (x.isForce()) {
+            print0(ucase ? " FORCE" : " force");
+        }
+
         if (x.isWithNoData()) {
             print0(ucase ? " WITH NO DATA" : " with no data");
         } else if (x.isWithData()) {
             print0(ucase ? " WITH DATA" : " with data");
+        }
+
+        if (x.isSyncMode()) {
+            print0(ucase ? " WITH SYNC MODE" : " with sync mode");
+        } else if (x.isAsyncMode()) {
+            print0(ucase ? " WITH ASYNC MODE" : " with async mode");
         }
 
         return false;
@@ -12529,8 +12586,87 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         returnDataType.accept(this);
     }
 
+    public boolean visit(SQLLambdaExpr x) {
+        List<SQLExpr> arguments = x.getArguments();
+        if (arguments.size() == 1) {
+            arguments.get(0).accept(this);
+        } else {
+            print('(');
+            for (int i = 0; i < arguments.size(); i++) {
+                if (i != 0) {
+                    print0(", ");
+                }
+                arguments.get(i).accept(this);
+            }
+            print(')');
+        }
+        print0(" -> ");
+        x.getExpr().accept(this);
+        return false;
+    }
+
     @Override
     public String toString() {
         return appender.toString();
     }
+
+    /**
+     * StarRocks-only statements reach this generic visitor whenever a caller formats them with an
+     * explicit non-StarRocks dbType. The inherited {@link SQLASTVisitor} defaults return {@code true},
+     * which would descend into the children and print them without any of the surrounding keywords —
+     * silently producing a different, syntactically plausible statement. Delegate to the StarRocks
+     * printer instead so the output is at least correct SQL.
+     *
+     * <p>Only types that {@code StarRocksOutputVisitor} really implements may be routed here;
+     * otherwise the delegation would recurse back into this method.
+     */
+    protected boolean printStarRocksStatement(SQLObject x) {
+        print0(SQLUtils.toSQLString(x, DbType.starrocks));
+        return false;
+    }
+
+    public boolean visit(StarRocksSubmitTaskStatement x) {
+        return printStarRocksStatement(x);
+    }
+
+    public boolean visit(StarRocksCreateCatalogStatement x) {
+        return printStarRocksStatement(x);
+    }
+
+    public boolean visit(StarRocksCreateMaterializedViewStatement x) {
+        return printStarRocksStatement(x);
+    }
+
+    public boolean visit(StarRocksCreatePipeStatement x) {
+        return printStarRocksStatement(x);
+    }
+
+    public boolean visit(StarRocksCreateDictionaryStatement x) {
+        return printStarRocksStatement(x);
+    }
+
+    public boolean visit(StarRocksCreateStorageVolumeStatement x) {
+        return printStarRocksStatement(x);
+    }
+
+    public boolean visit(StarRocksCreateRoutineLoadStatement x) {
+        return printStarRocksStatement(x);
+    }
+
+    public boolean visit(StarRocksCreateResourceStatement x) {
+        return printStarRocksStatement(x);
+    }
+
+    public boolean visit(StarRocksLoadStatement x) {
+        return printStarRocksStatement(x);
+    }
+
+    public boolean visit(StarRocksBackupStatement x) {
+        return printStarRocksStatement(x);
+    }
+
+    public boolean visit(StarRocksRestoreStatement x) {
+        return printStarRocksStatement(x);
+    }
+
 }

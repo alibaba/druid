@@ -4,12 +4,14 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlCreateTableTest125_drds extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "CREATE TABLE t_order (\n" +
                 "  `id` bigint(11) NOT NULL AUTO_INCREMENT,\n" +
@@ -46,6 +48,7 @@ public class MySqlCreateTableTest125_drds extends MysqlTest {
                 "DBPARTITION BY hash(`order_id`);", stmt.toString());
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "CREATE TABLE t_order (\n" +
                 "  `id` bigint(11) NOT NULL AUTO_INCREMENT,\n" +
@@ -80,6 +83,7 @@ public class MySqlCreateTableTest125_drds extends MysqlTest {
                 + "DBPARTITION BY hash(`order_id`);", stmt.toString());
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "CREATE TABLE t_order (\n" +
                 "  `id` bigint(11) NOT NULL AUTO_INCREMENT,\n" +
@@ -114,6 +118,7 @@ public class MySqlCreateTableTest125_drds extends MysqlTest {
                 + "DBPARTITION BY hash(`order_id`);", stmt.toString());
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = "CREATE TABLE t_order (\n" + "  `id` bigint(11) NOT NULL AUTO_INCREMENT,\n"
                 + "  `order_id` varchar(20) DEFAULT NULL,\n" + "  `buyer_id` varchar(20) DEFAULT NULL,\n"
@@ -141,6 +146,7 @@ public class MySqlCreateTableTest125_drds extends MysqlTest {
                 stmt.toString());
     }
 
+    @Test
     public void test_4() throws Exception {
         String sql = "CREATE TABLE t_order (\n"
                 + "  `id` bigint(11) NOT NULL AUTO_INCREMENT,\n"

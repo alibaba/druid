@@ -20,10 +20,12 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlShowTest_7_show_rule extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SHOW RULE";
 
@@ -40,6 +42,7 @@ public class MySqlShowTest_7_show_rule extends MysqlTest {
         assertEquals(0, visitor.getConditions().size());
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "SHOW RULE from t";
 

@@ -22,12 +22,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleSelectTest111 extends OracleTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "select EFFECTIVE_START_DATE, EFFECTIVE_END_DATE, ASSIGNMENT_NUMBER, CONTRACT, substr(EMPLOYMENT_CATEGORY, 1, 200) EMPLOYMENT_CATEGORY, substr(GRADE, 1, 200) GRADE, INTERNAL_ADDRESS, substr(JOB, 1, 200) JOB, LAST_UPDATED_BY, LAST_UPDATE_DATE, LOCATION, MANAGER, NORMAL_END_TIME, NORMAL_HOURS, NORMAL_START_TIME, substr(ORGANIZATION, 1, 200) ORGANIZATION, PAYROLL, substr(PEOPLE_GROUP, 1, 200) PEOPLE_GROUP, substr(POSITION, 1, 200) POSITION, PRIMARY, PROBATION_END_DATE, PROBATION_PERIOD, substr(PROBATION_UNITS, 1, 200) PROBATION_UNITS, substr(REASON, 1, 200) REASON, substr(RECRUITER, 1, 200) RECRUITER, RECRUITMENT_ACTIVITY, SALARY_BASIS, SPECIAL_CEILING_POINT, substr(STATUS, 1, 200) STATUS, substr(STATUTORY_INFORMATION, 1, 200) STATUTORY_INFORMATION, substr(SUPERVISOR, 1, 200) SUPERVISOR, TITLE, VACANCY, substr(WORKING_HOURS_FREQUENCY, 1, 200) WORKING_HOURS_FREQUENCY from PER_ALL_ASSIGNMENTS_D where ASSIGNMENT_ID = 26587 order by effective_start_date desc";
 
@@ -77,6 +79,7 @@ public class OracleSelectTest111 extends OracleTest {
         assertEquals(1, visitor.getOrderByColumns().size());
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "SELECT instance_id\n" + "FROM JTF_FM_SERVICE_MONITOR\n" + "WHERE server_id = 5000\n"
                 + "      AND health = 'A'\n" + "      AND primary = 'Y'\n"

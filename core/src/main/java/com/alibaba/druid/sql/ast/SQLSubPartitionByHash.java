@@ -53,6 +53,7 @@ public class SQLSubPartitionByHash extends SQLSubPartitionBy {
 
     public SQLSubPartitionByHash clone() {
         SQLSubPartitionByHash x = new SQLSubPartitionByHash();
+        cloneTo(x);
         if (expr != null) {
             x.setExpr(expr.clone());
         }

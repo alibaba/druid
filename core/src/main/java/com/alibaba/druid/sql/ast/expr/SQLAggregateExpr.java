@@ -317,6 +317,16 @@ public class SQLAggregateExpr extends SQLMethodInvokeExpr implements Serializabl
 
         x.ignoreNulls = ignoreNulls;
 
+        x.respectNulls = respectNulls;
+
+        if (filter != null) {
+            x.setFilter(filter.clone());
+        }
+
+        if (limit != null) {
+            x.setLimit(limit.clone());
+        }
+
         if (attributes != null) {
             for (Map.Entry<String, Object> entry : attributes.entrySet()) {
                 String key = entry.getKey();

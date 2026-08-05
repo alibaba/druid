@@ -4,10 +4,12 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.parser.ParserException;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlCreateTableTest161_storage_policy extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         //for ADB
         String sql = "create table event_log(log_id bigint, log_time datetime)\n" +
@@ -26,6 +28,7 @@ public class MySqlCreateTableTest161_storage_policy extends MysqlTest {
                 "LIFECYCLE 180", stmt.toString());
     }
 
+    @Test
     public void test_1() throws Exception {
         //for ADB
         String sql = "create table event_log(log_id bigint, log_time datetime)\n" +
@@ -44,6 +47,7 @@ public class MySqlCreateTableTest161_storage_policy extends MysqlTest {
                 "LIFECYCLE 180;", stmt.toString());
     }
 
+    @Test
     public void test_2() throws Exception {
         //for ADB
         String sql = "create table event_log(log_id bigint, log_time datetime)\n" +
@@ -62,6 +66,7 @@ public class MySqlCreateTableTest161_storage_policy extends MysqlTest {
                 "LIFECYCLE 180;", stmt.toString());
     }
 
+    @Test
     public void test_3() throws Exception {
         //for ADB
         String sql = "create table event_log(log_id bigint, log_time datetime)\n" +

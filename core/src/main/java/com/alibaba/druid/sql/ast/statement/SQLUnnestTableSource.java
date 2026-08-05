@@ -100,7 +100,7 @@ public class SQLUnnestTableSource extends SQLTableSourceImpl
         x.withOffset = withOffset;
 
         if (offset != null) {
-            x.setOffset(offset);
+            x.setOffset(offset.clone());
         }
 
         return x;

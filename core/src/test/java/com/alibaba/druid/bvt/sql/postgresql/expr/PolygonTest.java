@@ -4,10 +4,12 @@ import com.alibaba.druid.sql.PGTest;
 import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLUnaryOperator;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGExprParser;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PolygonTest extends PGTest {
+    @Test
     public void test_timestamp() throws Exception {
         String sql = "# '((1,0),(0,1),(-1,0))'";
         PGExprParser parser = new PGExprParser(sql);

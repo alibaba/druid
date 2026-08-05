@@ -19,10 +19,12 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_293_operator_precedence extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT ALL + + ( + col1 ) \n" +
                 "FROM random_aggregates_23_tab2 AS cor0 \n" +
@@ -38,6 +40,7 @@ public class MySqlSelectTest_293_operator_precedence extends MysqlTest {
         System.out.println(stmt.toString());
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "SELECT - CAST( 73 AS SIGNED ) + 60 AS col0";
 
@@ -49,6 +52,7 @@ public class MySqlSelectTest_293_operator_precedence extends MysqlTest {
         System.out.println(stmt.toString());
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "SELECT + 81 * 58 + - 33 DIV + CASE 58 WHEN - 15 + + 31 THEN + 95 WHEN - CAST( - NULLIF ( + 49, - 18 ) AS SIGNED ) + + 33"
             + " THEN - - 23 + + 54 ELSE 53 END DIV - + 77 DIV 49 AS col1 ";
@@ -65,6 +69,7 @@ public class MySqlSelectTest_293_operator_precedence extends MysqlTest {
         System.out.println(stmt.toString());
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = "SELECT DISTINCT CASE + 27 \n" +
                 "\tWHEN - ( MIN( + - 75 ) ) / - COUNT( * ) * ( - - 52 ) - - COUNT( * ) - - 36 / + + 56 * - 24 * - 2 THEN 64 \n" +
@@ -86,6 +91,7 @@ public class MySqlSelectTest_293_operator_precedence extends MysqlTest {
         System.out.println(stmt.toString());
     }
 
+    @Test
     public void test_4() throws Exception {
         String sql = "SELECT 1 \n" +
                 "FROM (select 1 col0, 2 col1, 3 col2) x \n" +
@@ -101,6 +107,7 @@ public class MySqlSelectTest_293_operator_precedence extends MysqlTest {
                 "WHERE NOT (-(+col2) * ++col0) = col0", stmt.toString());
     }
 
+    @Test
     public void test_5() throws Exception {
         String sql = "SELECT 78 DIV + - 73 * - 86 DIV 61 AS col0";
 
@@ -112,6 +119,7 @@ public class MySqlSelectTest_293_operator_precedence extends MysqlTest {
         System.out.println(stmt.toString());
     }
 
+    @Test
     public void test_6() throws Exception {
         String sql = "SELECT DISTINCT 81 DIV + 73 * - 85 DIV + + 50 AS col1";
 
@@ -122,6 +130,7 @@ public class MySqlSelectTest_293_operator_precedence extends MysqlTest {
 
         System.out.println(stmt.toString());
     }
+    @Test
     public void test_9999() throws Exception {
         String sql = "SELECT  NULLIF ( 5, + 589999 * MIN( 67 ) + COUNT( * ) * 8 ) * 47 + CAST( NULL AS SIGNED ) from aaa";
 
@@ -129,6 +138,7 @@ public class MySqlSelectTest_293_operator_precedence extends MysqlTest {
             .parseSingleStatement(sql, DbType.mysql);
         System.out.println(stmt.toString());
     }
+    @Test
     public void test_7() throws Exception {
         String sql = "SELECT + CASE WHEN 33 NOT BETWEEN - + 16 AND ( + COUNT( * ) "
             + "+ COUNT( * ) / - COALESCE ( - 27, ( - MAX( ALL 41 ) ) / 24 * - - 95 - - 80 + - COUNT( * ) * CAST( NULL AS DECIMAL ) / + 76 - - + 74 * - 49 + - - 25 ) * 89 * - "

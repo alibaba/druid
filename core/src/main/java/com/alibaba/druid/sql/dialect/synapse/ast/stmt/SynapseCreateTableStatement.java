@@ -41,6 +41,9 @@ public class SynapseCreateTableStatement extends SQLCreateTableStatement {
     }
 
     public void setDistribution(SQLExpr distribution) {
+        if (distribution != null) {
+            distribution.setParent(this);
+        }
         this.distribution = distribution;
     }
 
@@ -58,5 +61,28 @@ public class SynapseCreateTableStatement extends SQLCreateTableStatement {
 
     public void setDistributionHash(boolean distributionHash) {
         isDistributionHash = distributionHash;
+    }
+
+    public void cloneTo(SynapseCreateTableStatement x) {
+        super.cloneTo(x);
+
+        if (distribution != null) {
+            x.setDistribution(distribution.clone());
+        }
+
+        for (SQLExpr e : clusteredIndexColumns) {
+            SQLExpr e2 = e.clone();
+            e2.setParent(x);
+            x.clusteredIndexColumns.add(e2);
+        }
+
+        x.isDistributionHash = isDistributionHash;
+    }
+
+    @Override
+    public SynapseCreateTableStatement clone() {
+        SynapseCreateTableStatement x = new SynapseCreateTableStatement();
+        cloneTo(x);
+        return x;
     }
 }

@@ -20,11 +20,13 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_316_json_table
         extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT *\n" +
                 "FROM\n" +
@@ -66,6 +68,7 @@ public class MySqlSelectTest_316_json_table
         assertEquals(0, visitor.getOrderByColumns().size());
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "SELECT *\n" +
                 "FROM\n" +
@@ -119,6 +122,7 @@ public class MySqlSelectTest_316_json_table
         assertEquals(0, visitor.getOrderByColumns().size());
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "SELECT *\n" +
                 "FROM\n" +
@@ -168,6 +172,7 @@ public class MySqlSelectTest_316_json_table
         assertEquals(0, visitor.getOrderByColumns().size());
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = "SELECT *\n" +
                 "FROM\n" +

@@ -295,6 +295,7 @@ public class SQLExprTableSource extends SQLTableSourceImpl implements SQLReplace
     }
 
     public void cloneTo(SQLExprTableSource x) {
+        super.cloneTo(x);
         x.alias = alias;
         x.lateral = lateral;
 
@@ -315,6 +316,10 @@ public class SQLExprTableSource extends SQLTableSourceImpl implements SQLReplace
             }
         }
 
+        if (sampling != null) {
+            x.setSampling(sampling.clone());
+        }
+
         if (schemaObject != null) {
             x.setSchemaObject(schemaObject);
         }
@@ -327,6 +332,18 @@ public class SQLExprTableSource extends SQLTableSourceImpl implements SQLReplace
                 clonedColumn.setParent(x);
                 x.columns.add(clonedColumn);
             }
+        }
+
+        if (pivot != null) {
+            x.setPivot(pivot.clone());
+        }
+        if (unpivot != null) {
+            x.setUnpivot(unpivot.clone());
+        }
+
+        x.needAsTokenForAlias = needAsTokenForAlias;
+        if (flashback != null) {
+            x.setFlashback(flashback.clone());
         }
     }
 

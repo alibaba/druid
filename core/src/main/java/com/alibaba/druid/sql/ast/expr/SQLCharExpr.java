@@ -71,6 +71,7 @@ public class SQLCharExpr extends SQLTextLiteralExpr implements SQLValuableExpr, 
     public SQLCharExpr clone() {
         SQLCharExpr expr = new SQLCharExpr(this.text);
         expr.setCollate(collate);
+        cloneTo(expr);
         return expr;
     }
 

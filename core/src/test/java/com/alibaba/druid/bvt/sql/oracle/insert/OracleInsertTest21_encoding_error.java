@@ -22,12 +22,14 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleInsertTest21_encoding_error extends OracleTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "INSERT INTO  x1_use_agent (ID, company_name, company_id, amount, start_time, end_time, is_deleted,attr2) VALUES (seq_fee_use_agent.nextval,'\n" +
                 "w[���р  Pl�','19929',(select c.FEE_AGENT from cfg_fee_agent c), to_date((select to_char(sysdate,'yyyy-mm-dd HH24:mi:ss') from dual), 'yyyy-mm-dd HH24:mi:ss'),to_date((select to_char(sysdate + interval '1' year ,'yyyy-mm-dd HH24:mi:ss') from dual), 'yyyy-mm-dd HH24:mi:ss'),'0','ZB20170831142805148890')";

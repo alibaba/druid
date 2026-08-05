@@ -22,12 +22,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_199_hint extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "  SELECT NAME \n" + "  FROM CUSTOMER \n" + "  INNER JOIN ORDERS ON\n"
                 + "  CUSTOMER.CUSTKEY = ORDERS.CUSTKEY /*+ dynamicFilter = true */\n";
@@ -44,6 +46,7 @@ public class MySqlSelectTest_199_hint extends MysqlTest {
         }
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "SELECT NAME\n" + "  FROM CUSTOMER, ORDERS\n"
                 + "  WHERE CUSTOMER.CUSTKEY = ORDERS.CUSTKEY /*+ dynamicFilter = true*/  \n";
@@ -65,6 +68,7 @@ public class MySqlSelectTest_199_hint extends MysqlTest {
         }
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "SELECT NAME \n"
                 + "      FROM CUSTOMER \n"
@@ -89,6 +93,7 @@ public class MySqlSelectTest_199_hint extends MysqlTest {
         }
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = "\n  EXPLAIN SELECT name \n" + "  FROM customer  \n" + "  INNER JOIN orders  \n"
                 + "  ON customer.custkey=orders.custkey/*+ dynamicFilter=true */ \n"
@@ -112,6 +117,7 @@ public class MySqlSelectTest_199_hint extends MysqlTest {
         }
     }
 
+    @Test
     public void test_4() throws Exception {
         String sql = "EXPLAIN SELECT name \n" + "  FROM customer  \n" + "  INNER JOIN orders  \n"
                 + "  ON customer.custkey=orders.custkey/*+ dynamicFilter=fdseoi */ \n"
@@ -137,6 +143,7 @@ public class MySqlSelectTest_199_hint extends MysqlTest {
         }
     }
 
+    @Test
     public void test_5() throws Exception {
         String sql = "EXPLAIN SELECT name \n" + "  FROM customer  \n" + "  INNER JOIN orders  \n"
                 + "  ON customer.custkey=orders.custkey/*+ wefwe=true */ \n"
@@ -163,6 +170,7 @@ public class MySqlSelectTest_199_hint extends MysqlTest {
         }
     }
 
+    @Test
     public void test_6() throws Exception {
         String sql = "explain (format text)\n"
                 + "SELECT c_name,\n"
@@ -212,6 +220,7 @@ public class MySqlSelectTest_199_hint extends MysqlTest {
         }
     }
 
+    @Test
     public void test_7() throws Exception {
         String sql = "SELECT ss_store_sk, sum(ss_ext_sales_price) ext_price \n"
                 + "FROM item, store_sales \n"
@@ -251,6 +260,7 @@ public class MySqlSelectTest_199_hint extends MysqlTest {
         }
     }
 
+    @Test
     public void test_8() throws Exception {
         String sql = "SELECT\n"
                 + "  w_state\n"
@@ -309,6 +319,7 @@ public class MySqlSelectTest_199_hint extends MysqlTest {
         }
     }
 
+    @Test
     public void test_9() throws Exception {
         String sql = "SELECT ss_store_sk, sum(ss_ext_sales_price) ext_price \n"
                 + "FROM item, store_sales \n"
@@ -350,6 +361,7 @@ public class MySqlSelectTest_199_hint extends MysqlTest {
         }
     }
 
+    @Test
     public void test_10() throws Exception {
         String sql = "SELECT count(*)\n" +
                 "FROM orders\n" +
@@ -375,6 +387,7 @@ public class MySqlSelectTest_199_hint extends MysqlTest {
         }
     }
 
+    @Test
     public void test_11() throws Exception {
         String sql = "SELECT count(*)\n" +
                 "FROM orders\n" +
@@ -400,6 +413,7 @@ public class MySqlSelectTest_199_hint extends MysqlTest {
         }
     }
 
+    @Test
     public void test_12() throws Exception {
         String sql = "SELECT count(*)\n" +
                 "FROM orders\n" +
@@ -425,6 +439,7 @@ public class MySqlSelectTest_199_hint extends MysqlTest {
         }
     }
 
+    @Test
     public void test_13() throws Exception {
         String sql = " explain (FORMAT detail) SELECT customer.NAME, MAX(customer.CUSTKEY) MAXKEY" +
                 "      FROM CUSTOMER," +
@@ -467,6 +482,7 @@ public class MySqlSelectTest_199_hint extends MysqlTest {
         }
     }
 
+    @Test
     public void test_14() throws Exception {
         String sql = "SELECT  count(*)" +
                 "FROM     orders o " +
@@ -492,6 +508,7 @@ public class MySqlSelectTest_199_hint extends MysqlTest {
         }
     }
 
+    @Test
     public void test_15() throws Exception {
         String sql = "SELECT  count(*)" +
                 "FROM     orders o " +
@@ -517,6 +534,7 @@ public class MySqlSelectTest_199_hint extends MysqlTest {
         }
     }
 
+    @Test
     public void test_16() throws Exception {
         String sql = "SELECT  count(*)" +
                 "FROM     orders o " +
@@ -542,6 +560,7 @@ public class MySqlSelectTest_199_hint extends MysqlTest {
         }
     }
 
+    @Test
     public void test_17() throws Exception {
         String sql = "SELECT  count(*)" +
                 "FROM     orders o " +
@@ -567,6 +586,7 @@ public class MySqlSelectTest_199_hint extends MysqlTest {
         }
     }
 
+    @Test
     public void test_18() throws Exception {
         String sql = "SELECT  count(*)" +
                 "FROM     orders o " +
@@ -592,6 +612,7 @@ public class MySqlSelectTest_199_hint extends MysqlTest {
         }
     }
 
+    @Test
     public void test_19() throws Exception {
         String sql = "select count(*) from t1 inner join t2 on t1.col1=t2.col1 and t1.col2=t2.col2 /*+join_criteria=2*/;";
 
@@ -614,6 +635,7 @@ public class MySqlSelectTest_199_hint extends MysqlTest {
         }
     }
 
+    @Test
     public void test_20() throws Exception {
         String sql = "select count(*) from t1, t2 where t1.col1=t2.col1 and t1.col2=t2.col2 /*+join_criteria=2*/;";
 

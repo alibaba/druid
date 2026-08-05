@@ -31,6 +31,13 @@ public class ImpalaInsertStatement extends HiveInsertStatement {
     }
 
     @Override
+    public ImpalaInsertStatement clone() {
+        ImpalaInsertStatement x = new ImpalaInsertStatement();
+        cloneTo(x);
+        return x;
+    }
+
+    @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, with);
@@ -52,11 +59,25 @@ public class ImpalaInsertStatement extends HiveInsertStatement {
         this.insertHints = insertHints;
     }
 
+    public void addInsertHint(SQLHint hint) {
+        if (hint != null) {
+            hint.setParent(this);
+        }
+        this.insertHints.add(hint);
+    }
+
     public List<SQLHint> getSelectHints() {
         return selectHints;
     }
 
     public void setSelectHints(List<SQLHint> selectHint) {
         this.selectHints = selectHint;
+    }
+
+    public void addSelectHint(SQLHint hint) {
+        if (hint != null) {
+            hint.setParent(this);
+        }
+        this.selectHints.add(hint);
     }
 }

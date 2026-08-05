@@ -319,6 +319,76 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
         visitor.endVisit(this);
     }
 
+    public void cloneTo(OracleCreateTableStatement x) {
+        super.cloneTo(x);
+
+        x.inMemoryMetadata = inMemoryMetadata;
+        x.cursorSpecificSegment = cursorSpecificSegment;
+
+        x.parallel = parallel;
+        if (parallelValue != null) {
+            x.setParallelValue(parallelValue.clone());
+        }
+
+        if (storage != null) {
+            x.setStorage(storage.clone());
+        }
+        if (lobStorage != null) {
+            x.setLobStorage(lobStorage.clone());
+        }
+
+        x.pctfree = pctfree;
+        x.pctused = pctused;
+        x.initrans = initrans;
+        x.maxtrans = maxtrans;
+        x.pctincrease = pctincrease;
+
+        x.compressLevel = compressLevel;
+        x.compressForOltp = compressForOltp;
+
+        x.cache = cache;
+
+        x.deferredSegmentCreation = deferredSegmentCreation;
+
+        x.enableRowMovement = enableRowMovement;
+
+        for (SQLName e : clusterColumns) {
+            SQLName e2 = e.clone();
+            e2.setParent(x);
+            x.clusterColumns.add(e2);
+        }
+        if (cluster != null) {
+            x.setCluster(cluster.clone());
+        }
+
+        if (organization != null) {
+            x.setOrganization(organization.clone());
+        }
+
+        if (of != null) {
+            x.setOf(of.clone());
+        }
+        if (oidIndex != null) {
+            x.setOidIndex(oidIndex.clone());
+        }
+        x.monitoring = monitoring;
+        for (SQLName e : including) {
+            SQLName e2 = e.clone();
+            e2.setParent(x);
+            x.including.add(e2);
+        }
+        if (xmlTypeColumnProperties != null) {
+            x.setXmlTypeColumnProperties(xmlTypeColumnProperties.clone());
+        }
+    }
+
+    @Override
+    public OracleCreateTableStatement clone() {
+        OracleCreateTableStatement x = new OracleCreateTableStatement();
+        cloneTo(x);
+        return x;
+    }
+
     public static enum DeferredSegmentCreation {
         IMMEDIATE, DEFERRED
     }
@@ -393,6 +463,35 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
         public List<SQLExpr> getExternalDirectoryLocation() {
             return externalDirectoryLocation;
         }
+
+        public void cloneTo(Organization x) {
+            super.cloneTo(x);
+            x.type = type;
+            if (externalType != null) {
+                x.setExternalType(externalType.clone());
+            }
+            if (externalDirectory != null) {
+                x.setExternalDirectory(externalDirectory.clone());
+            }
+            if (externalDirectoryRecordFormat != null) {
+                x.setExternalDirectoryRecordFormat(externalDirectoryRecordFormat.clone());
+            }
+            for (SQLExpr e : externalDirectoryLocation) {
+                SQLExpr e2 = e.clone();
+                e2.setParent(x);
+                x.externalDirectoryLocation.add(e2);
+            }
+            if (externalRejectLimit != null) {
+                x.setExternalRejectLimit(externalRejectLimit.clone());
+            }
+        }
+
+        @Override
+        public Organization clone() {
+            Organization x = new Organization();
+            cloneTo(x);
+            return x;
+        }
     }
 
     public OracleXmlColumnProperties getXmlTypeColumnProperties() {
@@ -432,6 +531,20 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
                 name.setParent(this);
             }
             this.name = name;
+        }
+
+        public void cloneTo(OIDIndex x) {
+            super.cloneTo(x);
+            if (name != null) {
+                x.setName(name.clone());
+            }
+        }
+
+        @Override
+        public OIDIndex clone() {
+            OIDIndex x = new OIDIndex();
+            cloneTo(x);
+            return x;
         }
     }
 

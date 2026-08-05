@@ -19,12 +19,16 @@ public class BigQueryExecuteImmediateStatement
 
     public void addUsing(SQLExpr x) {
         x.setParent(this);
-        using.add(new SQLAliasedExpr(x));
+        SQLAliasedExpr item = new SQLAliasedExpr(x);
+        item.setParent(this);
+        using.add(item);
     }
 
     public void addUsing(SQLExpr x, String alias) {
         x.setParent(this);
-        using.add(new SQLAliasedExpr(x, alias));
+        SQLAliasedExpr item = new SQLAliasedExpr(x, alias);
+        item.setParent(this);
+        using.add(item);
     }
 
     @Override

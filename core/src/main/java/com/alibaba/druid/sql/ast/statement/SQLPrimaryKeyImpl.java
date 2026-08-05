@@ -44,6 +44,7 @@ public class SQLPrimaryKeyImpl extends SQLUnique implements SQLPrimaryKey, SQLTa
         super.cloneTo(x);
         x.disableNovalidate = disableNovalidate;
         x.clustered = clustered;
+        x.notEnforced = notEnforced;
     }
 
     public boolean isDisableNovalidate() {

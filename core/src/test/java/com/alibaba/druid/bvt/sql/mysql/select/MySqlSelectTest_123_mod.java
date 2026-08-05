@@ -7,12 +7,14 @@ import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_123_mod extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT 3 mod";
 
@@ -24,6 +26,7 @@ public class MySqlSelectTest_123_mod extends MysqlTest {
         assertEquals("SELECT 3 AS mod", stmt.toString());
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "SELECT 3 `mod`";
 
@@ -35,6 +38,7 @@ public class MySqlSelectTest_123_mod extends MysqlTest {
         assertEquals("SELECT 3 AS `mod`", stmt.toString());
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "SELECT n mod m from t";
 
@@ -47,6 +51,7 @@ public class MySqlSelectTest_123_mod extends MysqlTest {
                 "FROM t", stmt.toString());
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = "select 2.1 mod 2 = 2";
 

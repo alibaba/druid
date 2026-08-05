@@ -113,6 +113,7 @@ public class BigQuerySelectQueryBlock extends SQLSelectQueryBlock
         x.asStruct = this.asStruct;
         if (differentialPrivacy != null) {
             x.differentialPrivacy = this.differentialPrivacy.clone();
+            x.differentialPrivacy.setParent(x);
         }
         return x;
     }

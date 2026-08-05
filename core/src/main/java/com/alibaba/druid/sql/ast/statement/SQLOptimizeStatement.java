@@ -71,6 +71,9 @@ public class SQLOptimizeStatement extends SQLStatementImpl {
     }
 
     public void setCluster(SQLName cluster) {
+        if (cluster != null) {
+            cluster.setParent(this);
+        }
         this.cluster = cluster;
     }
 

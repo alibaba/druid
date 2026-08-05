@@ -23,12 +23,14 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlCreateViewTest2 extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "create view revenue0 as \n" +
                 "select l_suppkey as supplier_no, sum(l_extendedprice * (1 - l_discount)) as total_revenue \n" +

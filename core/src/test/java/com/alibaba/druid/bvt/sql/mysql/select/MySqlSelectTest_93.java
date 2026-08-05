@@ -21,12 +21,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_93 extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "select a as `a`, b `b`, c 'c', d \"d\" from t1";
 
@@ -39,6 +41,7 @@ public class MySqlSelectTest_93 extends MysqlTest {
         assertEquals("SELECT a AS a, b AS b, c AS c, d AS d\n" + "FROM t1", stmt.toString());
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "select a as `b` from t1 `t`";
 
@@ -51,6 +54,7 @@ public class MySqlSelectTest_93 extends MysqlTest {
         assertEquals("SELECT a AS b\n" + "FROM t1 t", stmt.toString());
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "select a as `b` from t1 `t`";
 
@@ -63,6 +67,7 @@ public class MySqlSelectTest_93 extends MysqlTest {
         assertEquals("SELECT a AS b\n" + "FROM t1 t", stmt.toString());
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = "select a as `a.a`, b 'b.b' from t1 `t`";
 
@@ -76,6 +81,7 @@ public class MySqlSelectTest_93 extends MysqlTest {
                 "FROM t1 t", stmt.toString());
     }
 
+    @Test
     public void test_5() throws Exception {
         String sql = "INSERT INTO brand_crm_ship.imp_order_lock \n" + "            (tid, \n" + "             pid, \n"
                 + "             __aid, \n" + "             pv) SELECT 121, \n" + "       48868196, \n"
@@ -102,6 +108,7 @@ public class MySqlSelectTest_93 extends MysqlTest {
         System.out.println(s);
     }
 
+    @Test
     public void test_4() throws Exception {
         String sql = "select  b 'c' from t1 `t`";
 
@@ -114,6 +121,7 @@ public class MySqlSelectTest_93 extends MysqlTest {
         assertEquals("SELECT b AS c\n" + "FROM t1 t", stmt.toString());
     }
 
+    @Test
     public void test_9() throws Exception {
         String sql = " select * from (select pk from test_tb) as `a` order by `a`.pk;";
 

@@ -2239,7 +2239,7 @@ public class MySqlExprParser extends SQLExprParser {
         fk.setReferencedTableName(this.name());
 
         accept(Token.LPAREN);
-        this.names(fk.getReferencedColumns());
+        this.names(fk.getReferencedColumns(), fk);
         accept(Token.RPAREN);
 
         if (lexer.identifierEquals(FnvHash.Constants.MATCH)) {

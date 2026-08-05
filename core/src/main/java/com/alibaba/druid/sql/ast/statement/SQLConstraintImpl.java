@@ -43,6 +43,11 @@ public abstract class SQLConstraintImpl extends SQLObjectImpl implements SQLCons
         x.enable = enable;
         x.validate = validate;
         x.rely = rely;
+        x.dbType = dbType;
+        if (comment != null) {
+            x.comment = comment.clone();
+            x.comment.setParent(x);
+        }
     }
 
     public List<SQLCommentHint> getHints() {

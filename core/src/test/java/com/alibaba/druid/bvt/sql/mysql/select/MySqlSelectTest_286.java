@@ -20,10 +20,12 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_286 extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT a " +
                 "FROM (VALUES 1) t(a) " +

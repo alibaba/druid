@@ -22,6 +22,7 @@ import com.alibaba.druid.sql.ast.statement.SQLBeginStatement;
 import com.alibaba.druid.sql.ast.statement.SQLBlockStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
@@ -31,56 +32,67 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author lizongbo
  */
 public class TiDBBeginTest extends MysqlTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "BEGIN ;";
         testSql(sql);
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "BEGIN";
         testSql(sql);
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "BEGIN PESSIMISTIC;";
         testSql(sql);
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = "BEGIN PESSIMISTIC";
         testSql(sql);
     }
 
+    @Test
     public void test_4() throws Exception {
         String sql = "BEGIN OPTIMISTIC;";
         testSql(sql);
     }
 
+    @Test
     public void test_5() throws Exception {
         String sql = "BEGIN OPTIMISTIC";
         testSql(sql);
     }
 
+    @Test
     public void test_6() throws Exception {
         String sql = "BEGIN /*T! PESSIMISTIC */";
         testSql(sql);
     }
 
+    @Test
     public void test_7() throws Exception {
         String sql = "BEGIN /*T! PESSIMISTIC */;";
         testSql(sql);
     }
 
+    @Test
     public void test_8() throws Exception {
         String sql = "BEGIN /*T! OPTIMISTIC */";
         testSql(sql);
     }
 
+    @Test
     public void test_9() throws Exception {
         String sql = "BEGIN /*T! OPTIMISTIC */;";
         testSql(sql);
     }
 
+    @Test
     public void test_10() throws Exception {
         String sql = "BEGIN\n"
             + "    INSERT INTO `table_test` (`111`);\n"

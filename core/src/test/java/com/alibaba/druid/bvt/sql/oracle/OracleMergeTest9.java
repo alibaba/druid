@@ -21,12 +21,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLMergeStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleMergeTest9 extends OracleTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "MERGE INTO tb_xxx_test t1\n" +
                 "USING (SELECT '1' AS aa_item_id, '2' AS mem_test_id FROM dual) t2\n" +

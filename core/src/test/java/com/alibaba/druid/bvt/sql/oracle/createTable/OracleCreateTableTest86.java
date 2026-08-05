@@ -20,12 +20,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleCreateTableTest86 extends OracleTest {
+    @Test
     public void test_0() throws Exception {
         String sql = //
                 "create table mid_users_restore_nogen_598 as\n" +
@@ -60,6 +62,7 @@ public class OracleCreateTableTest86 extends OracleTest {
         assertEquals(8, visitor.getColumns().size());
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = //
                 "create table mid_users_restore_nogen_594 as\n" + " select/*+ordered user_hash(a b)*/ a.*,\n"

@@ -67,7 +67,7 @@ public abstract class SQLPartitionBy extends SQLObjectImpl {
     }
 
     public void setPartitionsCount(int partitionsCount) {
-        this.partitionsCount = new SQLIntegerExpr(partitionsCount);
+        setPartitionsCount(new SQLIntegerExpr(partitionsCount));
     }
 
     public boolean isLinear() {
@@ -117,6 +117,7 @@ public abstract class SQLPartitionBy extends SQLObjectImpl {
             x.setPartitionsCount(partitionsCount.clone());
         }
         x.linear = linear;
+        x.setLogical(logical);
         for (SQLPartition p : partitions) {
             SQLPartition p2 = p.clone();
             p2.setParent(x);
@@ -128,7 +129,10 @@ public abstract class SQLPartitionBy extends SQLObjectImpl {
             x.storeIn.add(name2);
         }
 
-        x.lifeCycle = lifeCycle;
+        x.auto = auto;
+        if (lifeCycle != null) {
+            x.setLifeCycle(lifeCycle.clone());
+        }
     }
 
     public boolean isPartitionByColumn(long columnNameHashCode64) {
@@ -151,6 +155,9 @@ public abstract class SQLPartitionBy extends SQLObjectImpl {
     }
 
     public void setLifeCycle(SQLIntegerExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
         this.lifeCycle = x;
     }
 

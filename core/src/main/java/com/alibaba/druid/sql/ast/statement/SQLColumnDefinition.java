@@ -106,6 +106,9 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
     }
 
     public void setAggType(SQLCharExpr aggType) {
+        if (aggType != null) {
+            aggType.setParent(this);
+        }
         this.aggType = aggType;
     }
 
@@ -194,6 +197,9 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
     }
 
     public void setName(SQLName name) {
+        if (name != null) {
+            name.setParent(this);
+        }
         this.name = name;
     }
 
@@ -308,6 +314,10 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
             this.acceptChild(visitor, dataType);
             this.acceptChild(visitor, defaultExpr);
             this.acceptChild(visitor, constraints);
+            this.acceptChild(visitor, aggType);
+            this.acceptChild(visitor, encode);
+            this.acceptChild(visitor, compression);
+            this.acceptChild(visitor, blockSize);
         }
         visitor.endVisit(this);
     }
@@ -365,8 +375,8 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
     }
 
     public void setCollateExpr(SQLExpr x) {
-        if (charsetExpr != null) {
-            charsetExpr.setParent(this);
+        if (x != null) {
+            x.setParent(this);
         }
         this.collateExpr = x;
     }
@@ -376,8 +386,8 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
     }
 
     public void setAsExpr(SQLExpr asExpr) {
-        if (charsetExpr != null) {
-            charsetExpr.setParent(this);
+        if (asExpr != null) {
+            asExpr.setParent(this);
         }
         this.asExpr = asExpr;
     }
@@ -603,7 +613,6 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
 
         x.stored = stored;
         x.virtual = virtual;
-        x.ifNotExists = ifNotExists;
 
         if (identity != null) {
             x.setIdentity(identity.clone());
@@ -635,7 +644,7 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
         if (mappedBy != null) {
             for (SQLAssignItem item : mappedBy) {
                 SQLAssignItem item2 = item.clone();
-                item2.setParent(this);
+                item2.setParent(x);
                 if (x.mappedBy == null) {
                     x.mappedBy = new ArrayList<SQLAssignItem>();
                 }
@@ -646,12 +655,69 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
         if (colProperties != null) {
             for (SQLAssignItem item : colProperties) {
                 SQLAssignItem item2 = item.clone();
-                item2.setParent(this);
+                item2.setParent(x);
                 if (x.colProperties == null) {
                     x.colProperties = new ArrayList<SQLAssignItem>();
                 }
                 x.colProperties.add(item2);
             }
+        }
+
+        x.ifNotExists = ifNotExists;
+        x.disableNovalidate = disableNovalidate;
+        x.visible = visible;
+        x.disableIndex = disableIndex;
+        x.sequenceType = sequenceType;
+        x.generateByDefault = generateByDefault;
+
+        if (generatedAlwaysAs != null) {
+            x.setGeneratedAlwaysAs(generatedAlwaysAs.clone());
+        }
+
+        if (delimiterTokenizer != null) {
+            x.setDelimiterTokenizer(delimiterTokenizer.clone());
+        }
+
+        if (unitCount != null) {
+            x.setUnitCount(unitCount.clone());
+        }
+
+        if (unitIndex != null) {
+            x.setUnitIndex(unitIndex.clone());
+        }
+
+        if (step != null) {
+            x.setStep(step.clone());
+        }
+
+        if (encode != null) {
+            x.setEncode(encode.clone());
+        }
+
+        if (compression != null) {
+            x.setCompression(compression.clone());
+        }
+
+        if (aggType != null) {
+            x.setAggType(aggType.clone());
+        }
+
+        if (bitmap != null) {
+            x.setBitmap(bitmap.clone());
+        }
+
+        if (indexComment != null) {
+            x.setIndexComment(indexComment.clone());
+        }
+
+        if (blockSize != null) {
+            x.setBlockSize(blockSize.clone());
+        }
+
+        // preserve the SQLAlterTableAlterColumn parent context so the dialect output
+        // visitor still renders the "TYPE" keyword (e.g. PostgreSQL ALTER COLUMN ... TYPE)
+        if (parent instanceof SQLAlterTableAlterColumn) {
+            x.setParent(parent);
         }
 
         return x;
@@ -866,6 +932,9 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
     }
 
     public void setEncode(SQLExpr encode) {
+        if (encode != null) {
+            encode.setParent(this);
+        }
         this.encode = encode;
     }
 
@@ -874,10 +943,16 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
     }
 
     public void setCompression(SQLExpr compression) {
+        if (compression != null) {
+            compression.setParent(this);
+        }
         this.compression = compression;
     }
 
     public void setBlockSize(SQLIntegerExpr blockSize) {
+        if (blockSize != null) {
+            blockSize.setParent(this);
+        }
         this.blockSize = blockSize;
     }
 

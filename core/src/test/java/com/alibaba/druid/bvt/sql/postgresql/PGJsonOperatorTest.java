@@ -5,12 +5,14 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGSQLStatementParser;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PGJsonOperatorTest extends PGTest {
+    @Test
     public void test_arrow() {
         String sql = "SELECT data->'name' FROM users";
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
@@ -21,6 +23,7 @@ public class PGJsonOperatorTest extends PGTest {
         assertTrue(output.contains("->"));
     }
 
+    @Test
     public void test_double_arrow() {
         String sql = "SELECT data->>'email' FROM users";
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
@@ -31,6 +34,7 @@ public class PGJsonOperatorTest extends PGTest {
         assertTrue(output.contains("->>"));
     }
 
+    @Test
     public void test_hash_arrow() {
         String sql = "SELECT data#>'{address,city}' FROM users";
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
@@ -41,6 +45,7 @@ public class PGJsonOperatorTest extends PGTest {
         assertTrue(output.contains("#>"), "Expected #> in: " + output);
     }
 
+    @Test
     public void test_hash_double_arrow() {
         String sql = "SELECT data#>>'{address,city}' FROM users";
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
@@ -51,6 +56,7 @@ public class PGJsonOperatorTest extends PGTest {
         assertTrue(output.contains("#>>"), "Expected #>> in: " + output);
     }
 
+    @Test
     public void test_at_greater_than() {
         String sql = "SELECT * FROM users WHERE data @> '{\"active\": true}'::jsonb";
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
@@ -61,6 +67,7 @@ public class PGJsonOperatorTest extends PGTest {
         assertTrue(output.contains("@>"));
     }
 
+    @Test
     public void test_less_than_at() {
         String sql = "SELECT * FROM users WHERE '{\"a\":1}' <@ data";
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
@@ -71,6 +78,7 @@ public class PGJsonOperatorTest extends PGTest {
         assertTrue(output.contains("<@"));
     }
 
+    @Test
     public void test_question_mark() {
         String sql = "SELECT * FROM users WHERE data ? 'name'";
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
@@ -81,6 +89,7 @@ public class PGJsonOperatorTest extends PGTest {
         assertTrue(output.contains("?"));
     }
 
+    @Test
     public void test_question_pipe() {
         String sql = "SELECT * FROM users WHERE data ?| array['name', 'email']";
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
@@ -91,6 +100,7 @@ public class PGJsonOperatorTest extends PGTest {
         assertTrue(output.contains("?|"));
     }
 
+    @Test
     public void test_question_amp() {
         String sql = "SELECT * FROM users WHERE data ?& array['name', 'email']";
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);

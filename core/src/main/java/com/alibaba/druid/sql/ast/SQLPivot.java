@@ -16,8 +16,22 @@ public class SQLPivot extends SQLObjectImpl {
         return pivotFor;
     }
 
+    public void addPivotFor(SQLExpr expr) {
+        if (expr != null) {
+            expr.setParent(this);
+        }
+        this.pivotFor.add(expr);
+    }
+
     public List<SQLSelectItem> getPivotIn() {
         return pivotIn;
+    }
+
+    public void addPivotIn(SQLSelectItem item) {
+        if (item != null) {
+            item.setParent(this);
+        }
+        this.pivotIn.add(item);
     }
 
     @Override

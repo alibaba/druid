@@ -15,7 +15,6 @@
  */
 package com.alibaba.druid.sql.parser;
 
-import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
@@ -470,7 +469,9 @@ public class SQLSelectParser extends SQLParser {
 
         if (lexer.token() == Token.TABLE && dialectFeatureEnabled(QueryTable)) {
             lexer.nextToken();
-            queryBlock.getSelectList().add(new SQLSelectItem(new SQLAllColumnExpr()));
+            SQLSelectItem allColumnSelectItem = new SQLSelectItem(new SQLAllColumnExpr());
+            allColumnSelectItem.setParent(queryBlock);
+            queryBlock.getSelectList().add(allColumnSelectItem);
             queryBlock.setFrom(parseTableSource());
             return queryRest(queryBlock, acceptUnion);
         }
@@ -1191,7 +1192,8 @@ public class SQLSelectParser extends SQLParser {
                     break;
                 }
             }
-            if (lexer.token == Token.RPAREN && dbType == DbType.bigquery) {
+            if (lexer.token == Token.RPAREN
+                    && dialectFeatureEnabled(SelectListRparenBreak)) {
                 break;
             }
         }
@@ -1606,7 +1608,8 @@ public class SQLSelectParser extends SQLParser {
             tableSource.addAfterComment(lexer.readAndResetComments());
         }
 
-        if (lexer.token == Token.HINT && dbType == DbType.odps) {
+        if (lexer.token == Token.HINT
+                && dialectFeatureEnabled(TableSourceHint)) {
             List<SQLCommentHint> hints = this.exprParser.parseHints();
             for (SQLCommentHint hint : hints) {
                 tableSource.addAfterComment(hint.getText());
@@ -2458,7 +2461,7 @@ public class SQLSelectParser extends SQLParser {
             if (lexer.token() == (Token.LPAREN)) {
                 lexer.nextToken();
                 while (true) {
-                    pivot.getPivotFor().add(new SQLIdentifierExpr(lexer.stringVal()));
+                    pivot.addPivotFor(new SQLIdentifierExpr(lexer.stringVal()));
                     lexer.nextToken();
 
                     if (!(lexer.token() == (Token.COMMA))) {
@@ -2469,7 +2472,7 @@ public class SQLSelectParser extends SQLParser {
 
                 accept(Token.RPAREN);
             } else {
-                pivot.getPivotFor().add(new SQLIdentifierExpr(lexer.stringVal()));
+                pivot.addPivotFor(new SQLIdentifierExpr(lexer.stringVal()));
                 lexer.nextToken();
             }
 
@@ -2522,7 +2525,7 @@ public class SQLSelectParser extends SQLParser {
             if (lexer.token() == (Token.LPAREN)) {
                 lexer.nextToken();
                 while (true) {
-                    unPivot.getPivotFor().add(new SQLIdentifierExpr(lexer.stringVal()));
+                    unPivot.addPivotFor(new SQLIdentifierExpr(lexer.stringVal()));
                     lexer.nextToken();
 
                     if (!(lexer.token() == (Token.COMMA))) {
@@ -2533,7 +2536,7 @@ public class SQLSelectParser extends SQLParser {
 
                 accept(Token.RPAREN);
             } else {
-                unPivot.getPivotFor().add(new SQLIdentifierExpr(lexer.stringVal()));
+                unPivot.addPivotFor(new SQLIdentifierExpr(lexer.stringVal()));
                 lexer.nextToken();
             }
 

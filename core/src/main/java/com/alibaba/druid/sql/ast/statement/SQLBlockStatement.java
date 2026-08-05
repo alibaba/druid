@@ -126,6 +126,7 @@ public class SQLBlockStatement extends SQLStatementImpl {
 
     public SQLBlockStatement clone() {
         SQLBlockStatement x = new SQLBlockStatement();
+        cloneTo(x);
         x.labelName = labelName;
         x.endLabel = endLabel;
 

@@ -18,6 +18,17 @@ public class TDDateDataType extends SQLDataTypeImpl implements TDObject {
     public SQLExpr getFormat() {
         return format;
     }
+
+    @Override
+    public TDDateDataType clone() {
+        TDDateDataType x = new TDDateDataType(getName());
+        cloneTo(x);
+        if (format != null) {
+            x.setFormat(format.clone());
+        }
+        return x;
+    }
+
     @Override
     public void accept0(TDASTVisitor visitor) {
         if (visitor.visit(this)) {
