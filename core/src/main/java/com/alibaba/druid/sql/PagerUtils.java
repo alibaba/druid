@@ -33,6 +33,10 @@ import com.alibaba.druid.util.JdbcUtils;
 import java.util.List;
 
 public class PagerUtils {
+    public static String count(String sql, String dbType) {
+        return count(sql, DbType.of(dbType));
+    }
+
     public static String count(String sql, DbType dbType) {
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, dbType);
 
@@ -48,6 +52,10 @@ public class PagerUtils {
 
         SQLSelectStatement selectStmt = (SQLSelectStatement) stmt;
         return count(selectStmt.getSelect(), dbType);
+    }
+
+    public static String limit(String sql, String dbType, int offset, int count) {
+        return limit(sql, DbType.of(dbType), offset, count);
     }
 
     public static String limit(String sql, DbType dbType, int offset, int count) {
@@ -86,6 +94,12 @@ public class PagerUtils {
         limit(selectStmt.getSelect(), dbType, offset, count, check);
 
         return selectStmt.toString();
+    }
+
+    public static String limit(SQLSelect select, String dbType, int offset, int count) {
+        limit(select, DbType.of(dbType), offset, count, false);
+
+        return SQLUtils.toSQLString(select, dbType);
     }
 
     public static String limit(SQLSelect select, DbType dbType, int offset, int count) {
