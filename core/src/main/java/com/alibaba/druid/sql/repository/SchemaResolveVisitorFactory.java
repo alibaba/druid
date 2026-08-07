@@ -1699,10 +1699,14 @@ class SchemaResolveVisitorFactory {
                     return; // skip
                 }
             }
-
+            String subQueryAlias = from.getAlias();
             for (SQLSelectItem subSelectItem : subSelectList) {
                 String alias = subSelectItem.computeAlias();
-                columns.add(new SQLSelectItem(new SQLIdentifierExpr(alias)));
+                if (subQueryAlias != null) {
+                    columns.add(new SQLSelectItem(new SQLPropertyExpr(subQueryAlias, alias)));
+                } else {
+                    columns.add(new SQLSelectItem(new SQLIdentifierExpr(alias)));
+                }
             }
         } else if (from instanceof SQLUnionQueryTableSource) {
             SQLSelectQueryBlock firstQueryBlock = ((SQLUnionQueryTableSource) from).getUnion().getFirstQueryBlock();
