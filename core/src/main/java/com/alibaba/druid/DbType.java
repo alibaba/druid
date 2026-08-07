@@ -20,6 +20,7 @@ public enum DbType {
     dm(1 << 12), // dm.jdbc.driver.DmDriver
     kingbase(1 << 13),
     gbase(1 << 14),
+    gbase8s(0),
 
     oceanbase(1 << 15),
     informix(1 << 16),
