@@ -66,7 +66,7 @@ public class ValidConnectionCheckerAdapter implements ValidConnectionChecker {
                 stmt.setQueryTimeout(validationQueryTimeout);
             }
             rs = stmt.executeQuery(query);
-            return rs.next();
+            return true;
         } finally {
             JdbcUtils.close(rs);
             if (!isDruidStatementConnection) {
