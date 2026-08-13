@@ -1089,24 +1089,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public boolean visit(OracleDatetimeExpr x) {
-        x.getExpr().accept(this);
-        SQLExpr timeZone = x.getTimeZone();
-
-        if (timeZone instanceof SQLIdentifierExpr) {
-            if (((SQLIdentifierExpr) timeZone).getName().equalsIgnoreCase("LOCAL")) {
-                print0(ucase ? " AT LOCAL" : "alter session set ");
-                return false;
-            }
-        }
-
-        print0(ucase ? " AT TIME ZONE " : " at time zone ");
-        timeZone.accept(this);
-
-        return false;
-    }
-
-    @Override
     public boolean visit(OracleSysdateExpr x) {
         print0(ucase ? "SYSDATE" : "sysdate");
         if (x.getOption() != null) {
