@@ -46,7 +46,6 @@ public class OdpsLexer extends HiveLexer {
                     JoinAt,
                     UserDefinedJoin,
                     TwoConsecutiveUnion,
-                    RewriteGroupByCubeRollupToFunction,
                     PrimaryTwoConsecutiveSet,
                     ParseAllIdentifier,
                     PrimaryRestCommaAfterLparen,

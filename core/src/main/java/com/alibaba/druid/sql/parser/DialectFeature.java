@@ -161,7 +161,6 @@ public class DialectFeature {
         TwoConsecutiveUnion(1L << 11),
         QueryTable(1L << 12),
         GroupByAll(1L << 13),
-        RewriteGroupByCubeRollupToFunction(1L << 14),
         GroupByPostDesc(1L << 15),
         GroupByItemOrder(1L << 16),
         SQLDateExpr(1L << 17),
