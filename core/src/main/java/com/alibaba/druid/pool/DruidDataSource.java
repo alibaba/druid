@@ -26,6 +26,7 @@ import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidPooledPreparedStatement.PreparedStatementKey;
 import com.alibaba.druid.pool.vendor.*;
 import com.alibaba.druid.proxy.DruidDriver;
+import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxyConfig;
 import com.alibaba.druid.proxy.jdbc.TransactionInfo;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -1514,13 +1515,33 @@ public class DruidDataSource extends DruidAbstractDataSource
 
         Connection connection = holder.getConnection();
         if (connection != null) {
-            Connection rawConnection = connection;
-            if (connection instanceof DruidStatementConnection) {
-                rawConnection = ((DruidStatementConnection) connection).getConnection();
+            Connection unwrapped = connection;
+            if (connection instanceof ConnectionProxy) {
+                unwrapped = ((ConnectionProxy) connection).getRawObject();
+            }
+
+            Statement statement = null;
+            Connection driverConnection = unwrapped;
+            if (unwrapped instanceof DruidStatementConnection) {
+                DruidStatementConnection statementConnection = (DruidStatementConnection) unwrapped;
+                statement = statementConnection.getStatement();
+                driverConnection = statementConnection.getConnection();
+            }
+
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (Exception ex) {
+                    discardErrorLast = ex;
+                    discardErrorCountUpdater.incrementAndGet(this);
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("close evicted statement error", ex);
+                    }
+                }
             }
 
             try {
-                rawConnection.close();
+                driverConnection.close();
             } catch (Exception ex) {
                 discardErrorLast = ex;
                 discardErrorCountUpdater.incrementAndGet(this);
