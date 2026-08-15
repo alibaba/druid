@@ -26,6 +26,7 @@ import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidPooledPreparedStatement.PreparedStatementKey;
 import com.alibaba.druid.pool.vendor.*;
 import com.alibaba.druid.proxy.DruidDriver;
+import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxyConfig;
 import com.alibaba.druid.proxy.jdbc.TransactionInfo;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -1503,6 +1504,57 @@ public class DruidDataSource extends DruidAbstractDataSource
             lock.unlock();
         }
         return emptySignalCalled;
+    }
+
+    private void closePhysicalConnectionOnEvict(DruidConnectionHolder holder) {
+        if (holder == null) {
+            return;
+        }
+
+        holder.clearStatementCache();
+
+        Connection connection = holder.getConnection();
+        if (connection != null) {
+            Connection unwrapped = connection;
+            if (connection instanceof ConnectionProxy) {
+                unwrapped = ((ConnectionProxy) connection).getRawObject();
+            }
+
+            Statement statement = null;
+            Connection driverConnection = unwrapped;
+            if (unwrapped instanceof DruidStatementConnection) {
+                DruidStatementConnection statementConnection = (DruidStatementConnection) unwrapped;
+                statement = statementConnection.getStatement();
+                driverConnection = statementConnection.getConnection();
+            }
+
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (Exception ex) {
+                    discardErrorLast = ex;
+                    discardErrorCountUpdater.incrementAndGet(this);
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("close evicted statement error", ex);
+                    }
+                }
+            }
+
+            try {
+                driverConnection.close();
+            } catch (Exception ex) {
+                discardErrorLast = ex;
+                discardErrorCountUpdater.incrementAndGet(this);
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("close evicted connection error", ex);
+                }
+            }
+        }
+
+        Socket socket = holder.socket;
+        if (socket != null) {
+            JdbcUtils.close(socket);
+        }
     }
 
     @Override
@@ -3181,9 +3233,7 @@ public class DruidDataSource extends DruidAbstractDataSource
 
         if (evictCount > 0) {
             for (int i = 0; i < evictCount; ++i) {
-                DruidConnectionHolder item = evictConnections[i];
-                Connection connection = item.getConnection();
-                JdbcUtils.close(connection);
+                closePhysicalConnectionOnEvict(evictConnections[i]);
                 destroyCountUpdater.incrementAndGet(this);
             }
             // use HotSpot intrinsic function _arraycopy for performance optimization.
