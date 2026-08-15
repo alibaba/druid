@@ -1505,6 +1505,37 @@ public class DruidDataSource extends DruidAbstractDataSource
         return emptySignalCalled;
     }
 
+    private void closePhysicalConnectionOnEvict(DruidConnectionHolder holder) {
+        if (holder == null) {
+            return;
+        }
+
+        holder.clearStatementCache();
+
+        Connection connection = holder.getConnection();
+        if (connection != null) {
+            Connection rawConnection = connection;
+            if (connection instanceof DruidStatementConnection) {
+                rawConnection = ((DruidStatementConnection) connection).getConnection();
+            }
+
+            try {
+                rawConnection.close();
+            } catch (Exception ex) {
+                discardErrorLast = ex;
+                discardErrorCountUpdater.incrementAndGet(this);
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("close evicted connection error", ex);
+                }
+            }
+        }
+
+        Socket socket = holder.socket;
+        if (socket != null) {
+            JdbcUtils.close(socket);
+        }
+    }
+
     @Override
     public boolean discardConnection(DruidConnectionHolder holder) {
         boolean emptySignalCalled = false;
@@ -3181,9 +3212,7 @@ public class DruidDataSource extends DruidAbstractDataSource
 
         if (evictCount > 0) {
             for (int i = 0; i < evictCount; ++i) {
-                DruidConnectionHolder item = evictConnections[i];
-                Connection connection = item.getConnection();
-                JdbcUtils.close(connection);
+                closePhysicalConnectionOnEvict(evictConnections[i]);
                 destroyCountUpdater.incrementAndGet(this);
             }
             // use HotSpot intrinsic function _arraycopy for performance optimization.
