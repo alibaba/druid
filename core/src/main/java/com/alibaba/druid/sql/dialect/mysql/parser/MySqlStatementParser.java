@@ -8287,7 +8287,12 @@ public class MySqlStatementParser extends SQLStatementParser {
         if (lexer.token() == Token.BEGIN) {
             block = this.parseBlock();
         } else {
-            block = this.parseStatement();
+            // Simple-form RETURN body is not a complete script; parseStatement()
+            // would reject leftover tokens via checkEndToken.
+            block = this.parseStatement0();
+            if (lexer.nextIf(Token.SEMI)) {
+                block.setAfterSemi(true);
+            }
         }
 
         stmt.setBlock(block);
@@ -8369,7 +8374,10 @@ public class MySqlStatementParser extends SQLStatementParser {
         if (lexer.token() == Token.BEGIN) {
             block = this.parseBlock();
         } else {
-            block = this.parseStatement();
+            block = this.parseStatement0();
+            if (lexer.nextIf(Token.SEMI)) {
+                block.setAfterSemi(true);
+            }
         }
 
         stmt.setBlock(block);
