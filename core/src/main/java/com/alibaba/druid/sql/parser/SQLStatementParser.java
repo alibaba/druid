@@ -288,6 +288,9 @@ public class SQLStatementParser extends SQLParser {
                     stmt.addBeforeComment(comments);
                     stmt.setParent(parent);
                     statementList.add(stmt);
+                    if (createStatementConsumedSemi(stmt)) {
+                        semi = true;
+                    }
                     continue;
                 }
                 case INSERT: {
@@ -5326,6 +5329,23 @@ public class SQLStatementParser extends SQLParser {
             // keep exception format consistent with parseStatementList method.
             throw new ParserException(UNSUPPORT_TOKEN_MSG_PREFIX + lexer.info());
         }
+    }
+
+    /**
+     * Simple-form CREATE FUNCTION/PROCEDURE consumes the statement terminator on
+     * the body, not on the CREATE statement itself.
+     */
+    private static boolean createStatementConsumedSemi(SQLStatement stmt) {
+        if (stmt.isAfterSemi()) {
+            return true;
+        }
+        SQLStatement block = null;
+        if (stmt instanceof SQLCreateFunctionStatement) {
+            block = ((SQLCreateFunctionStatement) stmt).getBlock();
+        } else if (stmt instanceof SQLCreateProcedureStatement) {
+            block = ((SQLCreateProcedureStatement) stmt).getBlock();
+        }
+        return block != null && block.isAfterSemi();
     }
 
     public void parseExplainFormatPartition(SQLExplainStatement explain) {
