@@ -1634,6 +1634,21 @@ public class SQLSelectParser extends SQLParser {
                     }
                 }
                 break;
+                case INNER: {
+                    Lexer.SavePoint mark = lexer.mark();
+                    String strVal = lexer.stringVal();
+                    lexer.nextToken();
+                    if (lexer.token == Token.OUTER
+                            || lexer.token == Token.JOIN
+                            || lexer.identifierEquals(FnvHash.Constants.ANTI)
+                            || lexer.identifierEquals(FnvHash.Constants.ARRAY)
+                            || lexer.identifierEquals(FnvHash.Constants.SEMI)) {
+                        lexer.reset(mark);
+                    } else {
+                        tableSource.setAlias(strVal);
+                    }
+                }
+                break;
                 case OUTER:
                     break;
                 default:
