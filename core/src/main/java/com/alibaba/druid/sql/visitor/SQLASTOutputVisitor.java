@@ -7543,6 +7543,19 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     @Override
+    public boolean visit(SQLAlterTableCompact x) {
+        if (!x.getPartition().isEmpty()) {
+            print0(ucase ? "PARTITION (" : "partition (");
+            printAndAccept(x.getPartition(), ", ");
+            print0(") ");
+        }
+
+        print0(ucase ? "COMPACT " : "compact ");
+        print0(ucase ? (x.isMajor() ? "MAJOR" : "MINOR") : (x.isMajor() ? "major" : "minor"));
+        return false;
+    }
+
+    @Override
     public boolean visit(SQLAlterTableDisableLifecycle x) {
         if (!x.getPartition().isEmpty()) {
             print0(ucase ? "PARTITION (" : "partition (");

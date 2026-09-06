@@ -2563,6 +2563,11 @@ public class SQLStatementParser extends SQLParser {
             return;
         }
 
+        if (dbType == DbType.odps && lexer.identifierEquals("COMPACT")) {
+            alterTablePartitionCompact(stmt, renamePartition);
+            return;
+        }
+
         if (lexer.identifierEquals(Constants.ADD)) {
             alterTableAdd(stmt);
             return;
@@ -2589,6 +2594,26 @@ public class SQLStatementParser extends SQLParser {
             condition.setParent(archive);
         }
         stmt.addItem(archive);
+    }
+
+    private void alterTablePartitionCompact(SQLAlterTableStatement stmt,
+                                            SQLAlterTableRenamePartition renamePartition) {
+        SQLAlterTableCompact compact = new SQLAlterTableCompact();
+        for (SQLAssignItem condition : renamePartition.getPartition()) {
+            compact.getPartition().add(condition);
+            condition.setParent(compact);
+        }
+        lexer.nextToken();
+        parseCompactType(compact);
+        stmt.addItem(compact);
+    }
+
+    protected void parseCompactType(SQLAlterTableCompact compact) {
+        if (lexer.nextIfIdentifier("MAJOR")) {
+            compact.setMajor(true);
+        } else if (lexer.nextIfIdentifier("MINOR")) {
+            compact.setMajor(false);
+        }
     }
 
     private static void alterTablePartitionMerge(SQLAlterTableStatement stmt,

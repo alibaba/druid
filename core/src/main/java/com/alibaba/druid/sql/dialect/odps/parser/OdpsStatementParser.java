@@ -1669,6 +1669,11 @@ public class OdpsStatementParser extends HiveStatementParser {
             lexer.nextToken();
             acceptIdentifier("CLUSTERED");
             stmt.setNotClustered(true);
+        } else if (lexer.identifierEquals("COMPACT")) {
+            lexer.nextToken();
+            SQLAlterTableCompact compact = new SQLAlterTableCompact();
+            parseCompactType(compact);
+            stmt.addItem(compact);
         } else {
             return true;
         }
