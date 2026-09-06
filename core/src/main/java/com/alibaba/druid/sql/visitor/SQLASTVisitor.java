@@ -1164,6 +1164,13 @@ public interface SQLASTVisitor {
     default void endVisit(SQLAlterTableArchive x) {
     }
 
+    default boolean visit(SQLAlterTableCompact x) {
+        return true;
+    }
+
+    default void endVisit(SQLAlterTableCompact x) {
+    }
+
     default boolean visit(SQLAlterTablePartition x) {
         return true;
     }
