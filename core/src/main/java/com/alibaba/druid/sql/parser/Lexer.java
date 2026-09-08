@@ -3445,6 +3445,12 @@ public class Lexer {
             this.keepSourceLocation = state;
         } else if (feature == SkipComments) {
             this.skipComment = state;
+            // SkipComments must also stop comments from being attached to the AST,
+            // otherwise they are still retained via keepComments (e.g. set by the
+            // dialect lexer constructors) and re-emitted on toString().
+            if (state) {
+                this.keepComments = false;
+            }
         }
     }
 
