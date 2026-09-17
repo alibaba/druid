@@ -902,11 +902,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             )) {
                 // precedence requires grouping; emit parentheses explicitly when the child is not
                 // already parenthesized (otherwise visitBinaryOpExpr would print them and we'd double up).
-                // Limited to arithmetic operators, where the priority table matches the parser and the
-                // parentheses are semantically required for programmatically-built ASTs (see issue #6408);
-                // other operators keep their historical output to avoid spurious parentheses.
+                // Arithmetic grouping preserves associativity; logical grouping is needed only when
+                // the child binds less tightly than its parent (issues #6408 and #6720).
                 boolean printParen = !binaryRight.isParenthesized()
-                        && rightOp.isArithmetic() && op.isArithmetic();
+                        && ((rightOp.isArithmetic() && op.isArithmetic())
+                        || (rightOp.isLogical() && op.isLogical() && rightOp.priority > op.priority));
                 if (rightRational) { //这里需要验证
                     this.indentCount++;
                 }
@@ -983,9 +983,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             if (bracket) {
                 // precedence requires grouping; emit parentheses explicitly when the child is not
                 // already parenthesized (otherwise visitBinaryOpExpr would print them and we'd double up).
-                // Limited to arithmetic operators (see issue #6408 and visitorBinaryRight).
+                // Preserve lower-precedence logical children as well as arithmetic grouping.
                 boolean printParen = !binaryLeft.isParenthesized()
-                        && leftOp.isArithmetic() && op.isArithmetic();
+                        && ((leftOp.isArithmetic() && op.isArithmetic())
+                        || (leftOp.isLogical() && op.isLogical() && leftOp.priority > op.priority));
                 if (leftRational) {
                     this.indentCount++;
                 }
