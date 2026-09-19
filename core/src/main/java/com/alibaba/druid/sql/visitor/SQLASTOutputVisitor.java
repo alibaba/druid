@@ -567,7 +567,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         this.indentCount++;
         for (int i = 0, lineItemCount = 0, size = selectList.size(); i < size; ++i, ++lineItemCount) {
             SQLSelectItem selectItem = selectList.get(i);
-            if (selectItem.hasBeforeComment()) {
+            if (i == 0 && selectItem.hasBeforeComment()) {
                 printlnComments(selectItem.getBeforeCommentsDirect());
             }
             SQLExpr selectItemExpr = selectItem.getExpr();
@@ -603,7 +603,18 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 if (selectItem.getExpr() instanceof SQLVariantRefExpr && !((SQLVariantRefExpr) selectItem.getExpr()).isHasPrefixComma()) {
                     print0(" ");
                 } else {
-                    print0(", ");
+                    print0(selectItem.hasBeforeComment() ? "," : ", ");
+                }
+                if (selectItem.hasBeforeComment()) {
+                    if (!isPrettyFormat() && selectItem.getBeforeCommentsDirect().get(0).startsWith("--")) {
+                        // Keep the leading comment off the comma's line, even in compact output.
+                        print0('\n');
+                        lines++;
+                        printIndent();
+                    } else {
+                        println();
+                    }
+                    printlnComments(selectItem.getBeforeCommentsDirect());
                 }
             }
 

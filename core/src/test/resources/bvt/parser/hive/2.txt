@@ -1,0 +1,12 @@
+SELECT
+    -- first column
+    a,
+    -- second column
+    b
+FROM demo_table
+--------------------
+SELECT -- first column
+	a,
+	-- second column
+	b
+FROM demo_table
