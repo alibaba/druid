@@ -1144,7 +1144,7 @@ public class SQLSelectParser extends SQLParser {
         final List<SQLSelectItem> selectList = queryBlock.getSelectList();
         boolean hasComma = true;
         for (; ; ) {
-            List<String> previousComments = lexer.comments;
+            List<String> previousComments = lexer.readAndResetComments();
             final SQLSelectItem selectItem = this.exprParser.parseSelectItem();
             selectItem.addBeforeComment(previousComments);
             selectList.add(selectItem);
