@@ -3099,6 +3099,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         } else if (expr instanceof SQLPropertyExpr) {
             SQLPropertyExpr propertyExpr = (SQLPropertyExpr) expr;
             SQLExpr owner = propertyExpr.getOwner();
+            final String name = replaceQuota(propertyExpr.getName());
+            boolean shardingSupport = this.shardingSupport
+                    && this.parameterized;
+            String nameUnwrapped = shardingSupport
+                    ? unwrapShardingTable(name)
+                    : name;
+            boolean shardingTable = !name.equals(nameUnwrapped);
 
             if (owner instanceof SQLIdentifierExpr) {
                 SQLIdentifierExpr identOwner = (SQLIdentifierExpr) owner;
@@ -3107,7 +3114,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 if (!this.parameterized) {
                     printName0(ownerName);
                 } else {
-                    if (shardingSupport) {
+                    // Only merge a sharding schema when its table is sharded as well.
+                    if (shardingSupport && shardingTable) {
                         ownerName = unwrapShardingTable(ownerName);
                     }
                     printName0(ownerName);
@@ -3117,23 +3125,17 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             }
             print('.');
 
-            final String name = replaceQuota(propertyExpr.getName());
             if (!this.parameterized) {
                 printName0(name);
                 return;
             }
 
-            boolean shardingSupport = this.shardingSupport
-                    && this.parameterized;
-
             if (shardingSupport) {
-                String nameUnwrappe = unwrapShardingTable(name);
-
-                if (!name.equals(nameUnwrappe)) {
+                if (shardingTable) {
                     incrementReplaceCunt();
                 }
 
-                printName0(nameUnwrappe);
+                printName0(nameUnwrapped);
             } else {
                 printName0(name);
             }
