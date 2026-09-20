@@ -695,7 +695,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                 if (lexer.token() == Token.EQ) {
                     lexer.nextToken();
                 }
-                stmt.setComment(this.exprParser.expr());
+                stmt.setComment(this.exprParser.charExpr());
                 continue;
             }
 
