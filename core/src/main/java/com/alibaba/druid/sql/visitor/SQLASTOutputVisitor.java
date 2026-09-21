@@ -5658,7 +5658,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         if (x.isWithCheckOption()) {
             println();
-            print0(ucase ? "WITH CHECK OPTION" : "with check option");
+            print0(ucase ? "WITH " : "with ");
+            if (x.isWithLocal()) {
+                print0(ucase ? "LOCAL " : "local ");
+            } else if (x.isWithCascaded()) {
+                print0(ucase ? "CASCADED " : "cascaded ");
+            }
+            print0(ucase ? "CHECK OPTION" : "check option");
         }
 
         return false;
