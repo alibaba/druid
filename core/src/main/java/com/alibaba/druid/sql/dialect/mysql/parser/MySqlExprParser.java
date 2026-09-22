@@ -391,7 +391,7 @@ public class MySqlExprParser extends SQLExprParser {
         SQLExpr defaultExpr;
         if (lexer.token() == Token.LITERAL_CHARS) {
             defaultExpr = new SQLCharExpr(lexer.stringVal());
-            lexer.nextToken();
+            defaultExpr = primaryLiteralCharsRest(defaultExpr);
         } else {
             defaultExpr = bitOr();
         }
