@@ -33,7 +33,9 @@ public class HiveExprParser extends SQLExprParser {
 
     static {
         String[] strings = {"AVG", "COUNT", "MAX", "MIN", "STDDEV", "SUM", "ROW_NUMBER",
-                "ROWNUMBER"};
+                "ROWNUMBER",
+                "COLLECT_LIST",
+                "COLLECT_SET"};
 
         AGGREGATE_FUNCTIONS_CODES = FnvHash.fnv1a_64_lower(strings, true);
         AGGREGATE_FUNCTIONS = new String[AGGREGATE_FUNCTIONS_CODES.length];
