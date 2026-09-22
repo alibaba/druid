@@ -43,6 +43,7 @@ public class StatViewServlet extends ResourceServlet {
     private static final long serialVersionUID = 1L;
 
     public static final String PARAM_NAME_RESET_ENABLE = "resetEnable";
+    public static final String PARAM_NAME_CLASSPATH_ENABLE = "classpathEnable";
 
     public static final String PARAM_NAME_JMX_URL = "jmxUrl";
     public static final String PARAM_NAME_JMX_USERNAME = "jmxUsername";
@@ -80,6 +81,19 @@ public class StatViewServlet extends ResourceServlet {
             }
         } catch (Exception e) {
             String msg = "initParameter config error, resetEnable : " + getInitParameter(PARAM_NAME_RESET_ENABLE);
+            LOG.error(msg, e);
+        }
+
+        try {
+            String param = getInitParameter(PARAM_NAME_CLASSPATH_ENABLE);
+            if (param != null && param.trim().length() != 0) {
+                param = param.trim();
+                boolean classpathEnable = Boolean.parseBoolean(param);
+                statService.setClasspathEnable(classpathEnable);
+            }
+        } catch (Exception e) {
+            String msg = "initParameter config error, classpathEnable : "
+                    + getInitParameter(PARAM_NAME_CLASSPATH_ENABLE);
             LOG.error(msg, e);
         }
 

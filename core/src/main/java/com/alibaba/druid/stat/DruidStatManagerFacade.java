@@ -41,6 +41,11 @@ import java.util.concurrent.atomic.AtomicLong;
 public final class DruidStatManagerFacade {
     private static final DruidStatManagerFacade instance = new DruidStatManagerFacade();
     private boolean resetEnable = true;
+    /**
+     * Whether to expose java.class.path in StatView basic.json.
+     * Disable it to avoid leaking local filesystem layout.
+     */
+    private boolean classpathEnable = true;
     private final AtomicLong resetCount = new AtomicLong();
 
     private DruidStatManagerFacade() {
@@ -98,6 +103,14 @@ public final class DruidStatManagerFacade {
 
     public void setResetEnable(boolean resetEnable) {
         this.resetEnable = resetEnable;
+    }
+
+    public boolean isClasspathEnable() {
+        return classpathEnable;
+    }
+
+    public void setClasspathEnable(boolean classpathEnable) {
+        this.classpathEnable = classpathEnable;
     }
 
     public Object getSqlStatById(Integer id) {
@@ -379,7 +392,10 @@ public final class DruidStatManagerFacade {
         dataMap.put("ResetCount", getResetCount());
         dataMap.put("JavaVMName", System.getProperty("java.vm.name"));
         dataMap.put("JavaVersion", System.getProperty("java.version"));
-        dataMap.put("JavaClassPath", System.getProperty("java.class.path"));
+        dataMap.put("ClasspathEnable", isClasspathEnable());
+        if (isClasspathEnable()) {
+            dataMap.put("JavaClassPath", System.getProperty("java.class.path"));
+        }
         dataMap.put("StartTime", Utils.getStartTime());
         return dataMap;
     }

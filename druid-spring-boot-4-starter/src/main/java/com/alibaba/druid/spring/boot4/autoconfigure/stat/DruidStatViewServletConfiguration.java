@@ -53,6 +53,9 @@ public class DruidStatViewServletConfiguration {
         if (config.getResetEnable() != null) {
             registrationBean.addInitParameter("resetEnable", config.getResetEnable());
         }
+        if (config.getClasspathEnable() != null) {
+            registrationBean.addInitParameter("classpathEnable", config.getClasspathEnable());
+        }
         return registrationBean;
     }
 }

@@ -36,6 +36,10 @@
 								<td id="ResetEnable"></td>
 							</tr>
 							<tr >
+								<td valign="top" class="td_lable lang" langKey="ClasspathEnable"> ClasspathEnable </td>
+								<td id="ClasspathEnable"></td>
+							</tr>
+							<tr >
 								<td valign="top" class="td_lable lang" langKey="ResetCount"> ResetCount </td>
 								<td id="ResetCount"></td>
 							</tr>
@@ -78,11 +82,16 @@
 									$("#DruidDrivers").html(driverHtml);
 								}
 								$("#ResetEnable").text(data.Content.ResetEnable)
+								$("#ClasspathEnable").text(data.Content.ClasspathEnable)
 								$("#ResetCount").text(data.Content.ResetCount)
 								$("#JavaVersion").text(data.Content.JavaVersion)
 								$("#JavaVMName").text(data.Content.JavaVMName)
-								var splittor = /^[a-zA-Z]:\\/g.test(data.Content.JavaClassPath) ? ";" : ":";
-								$("#JavaClassPath").html(data.Content.JavaClassPath.split(splittor).join("<br/>"))
+								if (data.Content.JavaClassPath) {
+									var splittor = /^[a-zA-Z]:\\/g.test(data.Content.JavaClassPath) ? ";" : ":";
+									$("#JavaClassPath").html(data.Content.JavaClassPath.split(splittor).join("<br/>"))
+								} else {
+									$("#JavaClassPath").text("-")
+								}
 								$("#StartTime").text(data.Content.StartTime)
 								
 								druid.lang.trigger();

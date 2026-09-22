@@ -61,6 +61,7 @@ public class DruidStatProperties {
         private String loginUsername;
         private String loginPassword;
         private String resetEnable;
+        private String classpathEnable;
 
         public boolean isEnabled() {
             return enabled;
@@ -116,6 +117,14 @@ public class DruidStatProperties {
 
         public void setResetEnable(String resetEnable) {
             this.resetEnable = resetEnable;
+        }
+
+        public String getClasspathEnable() {
+            return classpathEnable;
+        }
+
+        public void setClasspathEnable(String classpathEnable) {
+            this.classpathEnable = classpathEnable;
         }
     }
 

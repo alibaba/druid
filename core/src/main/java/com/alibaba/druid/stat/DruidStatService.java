@@ -75,6 +75,14 @@ public final class DruidStatService implements DruidStatServiceMBean {
         statManagerFacade.setResetEnable(value);
     }
 
+    public boolean isClasspathEnable() {
+        return statManagerFacade.isClasspathEnable();
+    }
+
+    public void setClasspathEnable(boolean value) {
+        statManagerFacade.setClasspathEnable(value);
+    }
+
     public String service(String url) {
         Map<String, String> parameters = getParameters(url);
 
