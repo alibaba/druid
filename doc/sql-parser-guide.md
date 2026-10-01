@@ -66,11 +66,15 @@ System.out.println("Tables: " + visitor.getTables());
 
 // 获取列信息
 System.out.println("Columns: " + visitor.getColumns());
-// 输出: [users.name, orders.total, users.id, orders.user_id, users.age]
+// 输出: [users.id, orders.user_id, users.name, orders.total, users.age]
 
-// 获取 WHERE 条件
+// 获取查询条件（包括 JOIN 和 WHERE 中的列条件）
 System.out.println("Conditions: " + visitor.getConditions());
-// 输出: [users.id = orders.user_id, users.age > 18]
+// 输出: [users.id =, orders.user_id =, users.age > 18]
+
+// 获取列之间的关系；列与列的比较不会作为 Condition 的值输出
+System.out.println("Relationships: " + visitor.getRelationships());
+// 输出: [users.id = orders.user_id]
 ```
 
 ### 核心 API
