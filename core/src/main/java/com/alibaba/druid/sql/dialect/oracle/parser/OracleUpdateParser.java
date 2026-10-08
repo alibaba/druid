@@ -60,6 +60,13 @@ public class OracleUpdateParser extends SQLStatementParser {
 
         parseErrorLoging(update);
 
+        // Reject trailing garbage (e.g. a typo'd "WHER" instead of "WHERE") instead of
+        // silently swallowing it as a separate statement. This aligns Oracle with the other
+        // dialects, which already raise "not supported." via the base checkEndToken() path.
+        if (lexer.token() != Token.EOF && lexer.token() != Token.SEMI) {
+            throw new ParserException("not supported. " + lexer.info());
+        }
+
         return update;
     }
 
