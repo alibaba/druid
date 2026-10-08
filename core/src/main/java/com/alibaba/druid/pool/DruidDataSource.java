@@ -2688,8 +2688,36 @@ public class DruidDataSource extends DruidAbstractDataSource
                 } catch (RuntimeException e) {
                     LOG.error("create connection RuntimeException", e);
                     // unknown fatal exception
-                    setFailContinuous(true);
-                    continue;
+
+                    errorCount++;
+                    if (errorCount > connectionErrorRetryAttempts && timeBetweenConnectErrorMillis > 0) {
+                        // fail over retry attempts
+                        setFailContinuous(true);
+                        if (failFast) {
+                            lock.lock();
+                            try {
+                                notEmpty.signalAll();
+                            } finally {
+                                lock.unlock();
+                            }
+                        }
+
+                        if (breakAfterAcquireFailure || closing || closed) {
+                            lock.lock();
+                            try {
+                                clearCreateTask(taskId);
+                            } finally {
+                                lock.unlock();
+                            }
+                            return;
+                        }
+
+                        // reset errorCount
+                        this.errorCount = 0;
+                        createSchedulerFutures.put(this,
+                                createScheduler.schedule(this, timeBetweenConnectErrorMillis, TimeUnit.MILLISECONDS));
+                        return;
+                    }
                 } catch (Error e) {
                     lock.lock();
                     try {
@@ -2827,8 +2855,31 @@ public class DruidDataSource extends DruidAbstractDataSource
                     }
                 } catch (RuntimeException e) {
                     LOG.error("create connection RuntimeException", e);
-                    setFailContinuous(true);
-                    continue;
+                    // unknown fatal exception
+
+                    errorCount++;
+                    if (errorCount > connectionErrorRetryAttempts && timeBetweenConnectErrorMillis > 0) {
+                        // fail over retry attempts
+                        setFailContinuous(true);
+                        if (failFast) {
+                            lock.lock();
+                            try {
+                                notEmpty.signalAll();
+                            } finally {
+                                lock.unlock();
+                            }
+                        }
+
+                        if (breakAfterAcquireFailure || closing || closed) {
+                            break;
+                        }
+
+                        try {
+                            Thread.sleep(timeBetweenConnectErrorMillis);
+                        } catch (InterruptedException interruptEx) {
+                            break;
+                        }
+                    }
                 } catch (Error e) {
                     LOG.error("create connection Error", e);
                     break;
