@@ -48,4 +48,24 @@ public class Issue6702 {
         assertThrows(ParserException.class,
                 () -> SQLUtils.parseStatements("UPDATE test SET value = 1 WHER id = 1", DbType.mysql));
     }
+
+    @Test
+    public void test_trailing_line_comment_is_not_rejected() {
+        // A trailing line comment (`-- ...`) after a well-formed UPDATE must NOT be treated
+        // as trailing garbage. The lexer skips the comment and stops at EOF, so the statement
+        // parses as a single statement. (Regression guard for issue #6702's strict end-of-statement check.)
+        String sql = "UPDATE test SET value = 1 WHERE id = 1 -- some trailing note";
+        SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, DbType.oracle);
+        List<SQLStatement> statementList = parser.parseStatementList();
+        assertEquals(1, statementList.size());
+    }
+
+    @Test
+    public void test_trailing_block_comment_is_not_rejected() {
+        // Same as above, but with a block comment (`/* ... */`).
+        String sql = "UPDATE test SET value = 1 WHERE id = 1 /* some trailing note */";
+        SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, DbType.oracle);
+        List<SQLStatement> statementList = parser.parseStatementList();
+        assertEquals(1, statementList.size());
+    }
 }
