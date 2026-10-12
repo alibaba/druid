@@ -2986,7 +2986,10 @@ public class SQLExprParser extends SQLParser {
         SQLSelectOrderByItem item = parseSelectOrderByItem();
         item.setParent(parent);
         items.add(item);
-        while (lexer.nextIf(Token.COMMA) || (item.getExpr() instanceof SQLVariantRefExpr && lexer.token == IDENTIFIER)) {
+        while (lexer.nextIf(Token.COMMA)
+                || (item.getExpr() instanceof SQLVariantRefExpr
+                && ((SQLVariantRefExpr) item.getExpr()).isTemplateParameter()
+                && lexer.token == IDENTIFIER)) {
             item = parseSelectOrderByItem();
             item.setParent(parent);
             items.add(item);
