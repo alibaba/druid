@@ -101,6 +101,7 @@ public enum DbType {
     polardb2(1L << 57),
     synapse(1L << 58),
     duckdb(1L << 59),
+    gbase8s(1L << 60), //com.gbasedbt.jdbc.Driver
 
     ingres(0),
     cloudscape(0),
