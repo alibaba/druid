@@ -15,21 +15,21 @@
  */
 package com.alibaba.druid.bvt.pool.basic;
 
+import com.alibaba.druid.PoolTestCase;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.ExceptionSorter;
+import com.alibaba.druid.pool.JDBC4ValidConnectionChecker;
+import com.alibaba.druid.stat.DataSourceMonitorable;
+import com.alibaba.druid.stat.DruidDataSourceStatManager;
+
 import java.util.Arrays;
 import java.util.Properties;
 
-import com.alibaba.druid.PoolTestCase;
-import com.alibaba.druid.pool.JDBC4ValidConnectionChecker;
-
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.pool.ExceptionSorter;
-import com.alibaba.druid.stat.DataSourceMonitorable;
-import com.alibaba.druid.stat.DruidDataSourceStatManager;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestDataSourceBasic2 extends PoolTestCase {
     public void test_0() throws Exception {
         DruidDataSourceStatManager.clear();
-
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
 
@@ -129,5 +129,4 @@ public class TestDataSourceBasic2 extends PoolTestCase {
 
         super.tearDown();
     }
-
 }

@@ -4,15 +4,18 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class HiveInsert_1 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class HiveInsert_1 {
+    @Test
     public void test_select() throws Exception {
         String sql = "FROM page_view_stg pvs\n" +
                 "INSERT OVERWRITE TABLE page_view PARTITION(dt='2008-06-08', country)\n" +
-                "       SELECT pvs.viewTime, pvs.userid, pvs.page_url, pvs.referrer_url, null, null, pvs.ip, pvs.cnt";//
+                "       SELECT pvs.viewTime, pvs.userid, pvs.page_url, pvs.referrer_url, null, null, pvs.ip, pvs.cnt";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.HIVE);
         SQLStatement stmt = statementList.get(0);
@@ -40,6 +43,5 @@ public class HiveInsert_1 extends TestCase {
         assertEquals(2, visitor.getTables().size());
         assertEquals(8, visitor.getColumns().size());
         assertEquals(0, visitor.getConditions().size());
-
     }
 }

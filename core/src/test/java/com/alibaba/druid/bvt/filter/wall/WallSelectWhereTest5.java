@@ -15,23 +15,23 @@
  */
 package com.alibaba.druid.bvt.filter.wall;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallUtils;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author wenshao
  */
-public class WallSelectWhereTest5 extends TestCase {
+public class WallSelectWhereTest5 {
     private String sql = "select * from t WHERE FID = 256 OR CONCAT(CHR(67)||CHR(65)||CHR(84), '-DOG') = 'CAT-DOG'";
 
 //    public void testMySql() throws Exception {
-//        Assert.assertFalse(WallUtils.isValidateMySql(sql));
+//        assertFalse(WallUtils.isValidateMySql(sql));
 //    }
 
+    @Test
     public void testORACLE() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateOracle(sql));
+        assertFalse(WallUtils.isValidateOracle(sql));
     }
 }

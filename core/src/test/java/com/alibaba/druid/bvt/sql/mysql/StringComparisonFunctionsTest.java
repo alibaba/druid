@@ -20,12 +20,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class StringComparisonFunctionsTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class StringComparisonFunctionsTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT '?' LIKE 'ae' COLLATE latin1_german2_ci;";
 
@@ -34,9 +36,10 @@ public class StringComparisonFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT '?' LIKE 'ae' COLLATE latin1_german2_ci;", text);
+        assertEquals("SELECT '?' LIKE 'ae' COLLATE latin1_german2_ci;", text);
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "SELECT '?' = 'ae' COLLATE latin1_german2_ci;";
 
@@ -45,9 +48,10 @@ public class StringComparisonFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT '?' = 'ae' COLLATE latin1_german2_ci;", text);
+        assertEquals("SELECT '?' = 'ae' COLLATE latin1_german2_ci;", text);
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "SELECT 'a' = 'a ', 'a' LIKE 'a ';";
 
@@ -56,9 +60,10 @@ public class StringComparisonFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT 'a' = 'a ', 'a' LIKE 'a ';", text);
+        assertEquals("SELECT 'a' = 'a ', 'a' LIKE 'a ';", text);
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = "SELECT 'David!' LIKE 'David_';";
 
@@ -67,9 +72,10 @@ public class StringComparisonFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT 'David!' LIKE 'David_';", text);
+        assertEquals("SELECT 'David!' LIKE 'David_';", text);
     }
 
+    @Test
     public void test_4() throws Exception {
         String sql = "SELECT 'David!' LIKE '%D%v%';";
 
@@ -78,9 +84,10 @@ public class StringComparisonFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT 'David!' LIKE '%D%v%';", text);
+        assertEquals("SELECT 'David!' LIKE '%D%v%';", text);
     }
 
+    @Test
     public void test_5() throws Exception {
         String sql = "SELECT 'David!' LIKE 'David\\_';";
 
@@ -89,9 +96,10 @@ public class StringComparisonFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT 'David!' LIKE 'David\\_';", text);
+        assertEquals("SELECT 'David!' LIKE 'David\\_';", text);
     }
 
+    @Test
     public void test_6() throws Exception {
         String sql = "SELECT 'David_' LIKE 'David|_' ESCAPE '|'";
 
@@ -100,9 +108,10 @@ public class StringComparisonFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT 'David_' LIKE 'David|_' ESCAPE '|'", text);
+        assertEquals("SELECT 'David_' LIKE 'David|_' ESCAPE '|'", text);
     }
 
+    @Test
     public void test_7() throws Exception {
         String sql = "SELECT 'abc' LIKE BINARY 'ABC'";
 
@@ -111,9 +120,10 @@ public class StringComparisonFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT 'abc' LIKE BINARY 'ABC'", text);
+        assertEquals("SELECT 'abc' LIKE BINARY 'ABC'", text);
     }
 
+    @Test
     public void test_8() throws Exception {
         String sql = "SELECT 10 LIKE '1%'";
 
@@ -122,9 +132,10 @@ public class StringComparisonFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT 10 LIKE '1%'", text);
+        assertEquals("SELECT 10 LIKE '1%'", text);
     }
 
+    @Test
     public void test_9() throws Exception {
         String sql = "SELECT filename, filename LIKE '%\\\\' FROM t1";
 
@@ -133,9 +144,10 @@ public class StringComparisonFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT filename, filename LIKE '%\\\\'\nFROM t1", text);
+        assertEquals("SELECT filename, filename LIKE '%\\\\'\nFROM t1", text);
     }
 
+    @Test
     public void test_10() throws Exception {
         String sql = "SELECT STRCMP('text', 'text2')";
 
@@ -144,9 +156,10 @@ public class StringComparisonFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT STRCMP('text', 'text2')", text);
+        assertEquals("SELECT STRCMP('text', 'text2')", text);
     }
 
+    @Test
     public void test_11() throws Exception {
         String sql = "SET @s1 = _latin1 'x' COLLATE latin1_general_ci;";
 
@@ -155,9 +168,10 @@ public class StringComparisonFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SET @s1 = _latin1 'x' COLLATE latin1_general_ci;", text);
+        assertEquals("SET @s1 = _latin1 'x' COLLATE latin1_general_ci;", text);
     }
 
+    @Test
     public void test_12() throws Exception {
         String sql = "SET @s2 = _latin1 'X' COLLATE latin1_general_ci;";
 
@@ -166,9 +180,10 @@ public class StringComparisonFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SET @s2 = _latin1 'X' COLLATE latin1_general_ci;", text);
+        assertEquals("SET @s2 = _latin1 'X' COLLATE latin1_general_ci;", text);
     }
 
+    @Test
     public void test_13() throws Exception {
         String sql = "SELECT STRCMP(@s1, @s2), STRCMP(@s3, @s4);";
 
@@ -177,10 +192,11 @@ public class StringComparisonFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT STRCMP(@s1, @s2)\n" +
+        assertEquals("SELECT STRCMP(@s1, @s2)\n" +
                 "\t, STRCMP(@s3, @s4);", text);
     }
 
+    @Test
     public void test_14() throws Exception {
         String sql = "SELECT STRCMP(@s1, @s3 COLLATE latin1_general_ci);";
 
@@ -189,7 +205,7 @@ public class StringComparisonFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT STRCMP(@s1, @s3 COLLATE latin1_general_ci);", text);
+        assertEquals("SELECT STRCMP(@s1, @s3 COLLATE latin1_general_ci);", text);
     }
 
     private String output(List<SQLStatement> stmtList) {

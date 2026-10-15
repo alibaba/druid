@@ -15,23 +15,22 @@
  */
 package com.alibaba.druid.benckmark.pool;
 
+import com.alibaba.druid.TestUtil;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.jolbox.bonecp.BoneCPDataSource;
+import com.mchange.v2.c3p0.ComboPooledDataSource;
+import org.apache.commons.dbcp.BasicDataSource;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import javax.sql.DataSource;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.NumberFormat;
 
-import javax.sql.DataSource;
-
-import junit.framework.TestCase;
-
-import org.apache.commons.dbcp.BasicDataSource;
-
-import com.alibaba.druid.TestUtil;
-import com.alibaba.druid.pool.DruidDataSource;
-import com.jolbox.bonecp.BoneCPDataSource;
-import com.mchange.v2.c3p0.ComboPooledDataSource;
-
-public class Case0 extends TestCase {
+public class Case0 {
     private String jdbcUrl;
     private String user;
     private String password;
@@ -41,12 +40,13 @@ public class Case0 extends TestCase {
     private int maxIdle = 8;
     private int maxActive = 8;
     private String validationQuery = "SELECT 1";
-    private boolean testOnBorrow = false;
+    private boolean testOnBorrow;
 
     private long minEvictableIdleTimeMillis = 3000;
     public final int LOOP_COUNT = 5;
     public final int COUNT = 1000 * 1000 * 1;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
         user = "dragoon25";
@@ -58,6 +58,7 @@ public class Case0 extends TestCase {
 //        password = "x";
     }
 
+    @Test
     public void test_druid() throws Exception {
         DruidDataSource dataSource = new DruidDataSource();
 

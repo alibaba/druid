@@ -15,27 +15,29 @@
  */
 package com.alibaba.druid.bvt.pool;
 
-import java.util.Hashtable;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.DruidDataSourceFactory;
+import com.alibaba.druid.util.JdbcUtils;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 import javax.naming.Reference;
 import javax.naming.StringRefAddr;
 import javax.sql.DataSource;
 
-import junit.framework.TestCase;
+import java.util.Hashtable;
 
-import org.junit.Assert;
+import static org.junit.jupiter.api.Assertions.*;
 
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.pool.DruidDataSourceFactory;
-import com.alibaba.druid.util.JdbcUtils;
-
-public class DruidDataSourceFactoryTest extends TestCase {
+public class DruidDataSourceFactoryTest {
     private DruidDataSource dataSource;
 
+    @AfterEach
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
     }
 
+    @Test
     public void test_factory() throws Exception {
         DruidDataSourceFactory factory = new DruidDataSourceFactory();
 
@@ -51,9 +53,9 @@ public class DruidDataSourceFactoryTest extends TestCase {
 
         dataSource = (DruidDataSource) factory.getObjectInstance(ref, null, null, env);
 
-        Assert.assertTrue(dataSource.isRemoveAbandoned());
-        Assert.assertEquals(20, dataSource.getMaxActive());
-        Assert.assertEquals(30000, dataSource.getSocketTimeout());
-        Assert.assertEquals(15000, dataSource.getConnectTimeout());
+        assertTrue(dataSource.isRemoveAbandoned());
+        assertEquals(20, dataSource.getMaxActive());
+        assertEquals(30000, dataSource.getSocketTimeout());
+        assertEquals(15000, dataSource.getConnectTimeout());
     }
 }

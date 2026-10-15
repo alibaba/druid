@@ -22,6 +22,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleCreateTableTest77 extends OracleTest {
     public void test_types() throws Exception {
         String sql = //
@@ -162,7 +164,7 @@ public class OracleCreateTableTest77 extends OracleTest {
                         "\t\tWHERE ITEM.INVENTORY_ITEM_ID = P.INVENTORY_ITEM_ID\n" +
                         "\t\t\tAND ITEM.INVENTORY_ITEM_ID = SYS_ITEM.INVENTORY_ITEM_ID\n" +
                         "\t\t\tAND ITEM.ENABLED_FLAG = 'Y'\n" +
-                        "\t) I ON Mod.CONTRACT_MODULE_ID = I.CONTRACT_MODULE_ID ",//
+                        "\t) I ON Mod.CONTRACT_MODULE_ID = I.CONTRACT_MODULE_ID ",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 //
 //        SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ORACLE);

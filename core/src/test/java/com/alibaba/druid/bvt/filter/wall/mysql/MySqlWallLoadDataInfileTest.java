@@ -15,20 +15,19 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallUtils;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * 这个场景测试访问MySql系统函数
  *
  * @author admin
  */
-public class MySqlWallLoadDataInfileTest extends TestCase {
+public class MySqlWallLoadDataInfileTest {
+    @Test
     public void test_permit_stmt() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateMySql("load data infile 'c:/boot.ini' into table foo"));
+        assertFalse(WallUtils.isValidateMySql("load data infile 'c:/boot.ini' into table foo"));
     }
-
 }

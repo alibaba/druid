@@ -10,9 +10,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class GaussDbLexer extends PGLexer {
-    @Override
-    protected Keywords loadKeywords() {
-        Map<String, Token> map = new HashMap<String, Token>();
+    static final Keywords GAUSSDB_KEYWORDS;
+    static {
+        Map<String, Token> map = new HashMap<>();
         map.put("DISTRIBUTE", Token.DISTRIBUTE);
         map.put("SET", Token.SET);
         map.put("PARTITION", Token.PARTITION);
@@ -21,9 +21,14 @@ public class GaussDbLexer extends PGLexer {
         map.put("KEY", Token.KEY);
         map.put("OVERWRITE", Token.OVERWRITE);
         map.put("LOCAL", Token.LOCAL);
-        map.putAll(super.loadKeywords().getKeywords());
+        map.putAll(PGLexer.PG_KEYWORDS.getKeywords());
         map.remove("LANGUAGE"); // GaussDB does not consider it as a reserved keyword
-        return new Keywords(map);
+        GAUSSDB_KEYWORDS = new Keywords(map);
+    }
+
+    @Override
+    protected Keywords loadKeywords() {
+        return GAUSSDB_KEYWORDS;
     }
 
     public GaussDbLexer(String input, SQLParserFeature... features) {

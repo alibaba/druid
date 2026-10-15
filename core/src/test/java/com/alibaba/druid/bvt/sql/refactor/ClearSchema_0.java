@@ -2,18 +2,17 @@ package com.alibaba.druid.bvt.sql.refactor;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.ast.expr.SQLCaseExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitorAdapter;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-import java.util.List;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class ClearSchema_0 extends TestCase {
+public class ClearSchema_0 {
+    @Test
     public void test_insert_0() throws Exception {
         String sql = "INSERT INTO testdb.Websites (name, country)\n" +
                 "SELECT app_name, country FROM testdb.apps;";

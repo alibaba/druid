@@ -15,21 +15,20 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import org.junit.jupiter.api.Test;
 
-public class MySqlWallTest106 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlWallTest106 {
+    @Test
     public void test_false() throws Exception {
         WallProvider provider = new MySqlWallProvider();
         provider.getConfig().setCommentAllow(false);
 
         String sql = "select * from t where id = ? or bin(1) = 1";
 
-        Assert.assertFalse(provider.checkValid(sql));
+        assertFalse(provider.checkValid(sql));
     }
-
 }

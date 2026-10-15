@@ -2954,6 +2954,22 @@ public class OracleStatementParser extends SQLStatementParser {
                         }
                         accept(Token.RPAREN);
                         varItem.setDataType(recordDataType);
+                    } else if (lexer.token() == Token.TABLE) {
+                        lexer.nextToken();
+                        accept(Token.OF);
+
+                        SQLDataType tableOfDataType = this.exprParser.parseDataType(false);
+                        String typeName = "TABLE OF " + tableOfDataType.toString();
+                        SQLDataTypeImpl tableOfType = new SQLDataTypeImpl(typeName);
+
+                        if (lexer.token() == Token.INDEX) {
+                            lexer.nextToken();
+                            accept(Token.BY);
+                            SQLExpr indexBy = this.exprParser.primary();
+                            tableOfType.setIndexBy(indexBy);
+                        }
+                        tableOfType.setDbType(dbType);
+                        varItem.setDataType(tableOfType);
                     } else {
                         acceptIdentifier("REF");
                         accept(Token.CURSOR);

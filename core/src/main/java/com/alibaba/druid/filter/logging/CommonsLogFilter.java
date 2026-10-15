@@ -94,7 +94,7 @@ public class CommonsLogFilter extends LogFilter {
     }
 
     public void setResultSetLogger(Log resultSetLogger) {
-        this.resultSetLogger = statementLogger;
+        this.resultSetLogger = resultSetLogger;
         if (resultSetLogger instanceof Log4JLogger) {
             this.resultSetLoggerName = ((Log4JLogger) resultSetLogger).getLogger().getName();
         }

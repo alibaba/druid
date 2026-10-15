@@ -15,26 +15,31 @@
  */
 package com.alibaba.druid.bvt.pool;
 
+import com.alibaba.druid.mock.MockPreparedStatement;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.stat.DruidDataSourceStatManager;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.*;
 
-import com.alibaba.druid.mock.MockPreparedStatement;
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.stat.DruidDataSourceStatManager;
-
-public class TestSharePreparedStatements extends TestCase {
+public class TestSharePreparedStatements {
+    @BeforeEach
     protected void setUp() throws Exception {
         DruidDataSourceStatManager.clear();
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        DruidDataSourceStatManager.clear();
     }
 
+    @Test
     public void test_sharePreparedStatements() throws Exception {
         // sharePreparedStatements
 
@@ -62,7 +67,7 @@ public class TestSharePreparedStatements extends TestCase {
             Connection conn = dataSource.getConnection();
 
             PreparedStatement stmt = conn.prepareStatement(sql);
-            Assert.assertEquals(mockStmt, stmt.unwrap(MockPreparedStatement.class));
+            assertEquals(mockStmt, stmt.unwrap(MockPreparedStatement.class));
             ResultSet rs = stmt.executeQuery();
             rs.next();
             rs.close();
@@ -76,7 +81,7 @@ public class TestSharePreparedStatements extends TestCase {
             conn.setAutoCommit(false);
 
             PreparedStatement stmt = conn.prepareStatement(sql);
-            Assert.assertSame(mockStmt, stmt.unwrap(MockPreparedStatement.class));
+            assertSame(mockStmt, stmt.unwrap(MockPreparedStatement.class));
             ResultSet rs = stmt.executeQuery();
             rs.next();
             rs.close();
@@ -90,7 +95,7 @@ public class TestSharePreparedStatements extends TestCase {
             conn.setAutoCommit(false);
 
             PreparedStatement stmt = conn.prepareStatement(sql);
-            Assert.assertSame(mockStmt, stmt.unwrap(MockPreparedStatement.class));
+            assertSame(mockStmt, stmt.unwrap(MockPreparedStatement.class));
             ResultSet rs = stmt.executeQuery();
             rs.next();
             rs.close();

@@ -3,28 +3,33 @@ package com.alibaba.druid.sql.dialect.starrocks.parser;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class StarRocksStatementParserTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class StarRocksStatementParserTest {
+    @Test
     public void testParseCreate() {
         for (int i = 0; i < StarRocksCreateTableParserTest.caseList.length; i++) {
             final String sql = StarRocksCreateTableParserTest.caseList[i];
             final StarRocksStatementParser starRocksStatementParser = new StarRocksStatementParser(sql);
             final SQLStatement parsed = starRocksStatementParser.parseCreate();
             final String result = parsed.toString();
-            assertEquals("第 " + (i + 1) + "个用例验证失败", sql, result);
+            assertEquals(sql, result, "第 " + (i + 1) + "个用例验证失败");
         }
     }
 
+    @Test
     public void testParseBySQLUtil() {
         for (int i = 0; i < StarRocksCreateTableParserTest.caseList.length; i++) {
             final String sql = StarRocksCreateTableParserTest.caseList[i];
             final SQLStatement parsed = SQLUtils.parseSingleStatement(sql, DbType.starrocks);
             final String result = parsed.toString();
-            assertEquals("第 " + (i + 1) + "个用例验证失败", sql, result);
+            assertEquals(sql, result, "第 " + (i + 1) + "个用例验证失败");
         }
     }
 
+    @Test
     public void testParseCreateResource() {
         String[] ddlList = new String[] {
                 "CREATE EXTERNAL RESOURCE \"spark0\"\n" +

@@ -20,10 +20,12 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.Token;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
-public class MySqlAlterTableDropPrimaryKey extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlAlterTableDropPrimaryKey {
+    @Test
     public void test_alter_first() throws Exception {
         String sql = "alter table tableName DROP PRIMARY KEY";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -38,14 +40,13 @@ public class MySqlAlterTableDropPrimaryKey extends TestCase {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals("ALTER TABLE tableName" + //
+        assertEquals("ALTER TABLE tableName" +
                 "\n\tDROP PRIMARY KEY", SQLUtils.toMySqlString(stmt));
 
-        Assert.assertEquals("alter table tableName" + //
+        assertEquals("alter table tableName" +
                 "\n\tdrop primary key", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(0, visitor.getColumns().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(0, visitor.getColumns().size());
     }
-
 }

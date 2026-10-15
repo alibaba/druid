@@ -1,27 +1,29 @@
 package com.alibaba.druid.bvt.pool;
 
-import java.sql.Connection;
-import java.util.concurrent.atomic.AtomicInteger;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.ValidConnectionCheckerAdapter;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.sql.PooledConnection;
 
-import junit.framework.TestCase;
+import java.sql.Connection;
+import java.util.concurrent.atomic.AtomicInteger;
 
-import org.junit.Assert;
-
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.pool.ValidConnectionCheckerAdapter;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * 这个场景测试defaultAutoCommit
  *
  * @author wenshao [szujobs@hotmail.com]
  */
-public class DruidDataSourceTest_testOnWhileIdleFailed extends TestCase {
+public class DruidDataSourceTest_testOnWhileIdleFailed {
     private DruidDataSource dataSource;
 
     private AtomicInteger validCount = new AtomicInteger();
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
@@ -47,23 +49,25 @@ public class DruidDataSourceTest_testOnWhileIdleFailed extends TestCase {
         });
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
     }
 
+    @Test
     public void test_conn() throws Exception {
         {
             PooledConnection conn = dataSource.getPooledConnection();
             conn.close();
         }
 
-        Assert.assertEquals(1, validCount.get()); // createValidate
+        assertEquals(1, validCount.get()); // createValidate
 
-        Assert.assertEquals(1, dataSource.getPoolingCount());
-        Assert.assertEquals(1, dataSource.getCreateCount());
-        Assert.assertEquals(0, dataSource.getDiscardCount());
-        Assert.assertEquals(1, dataSource.getConnectCount());
-        Assert.assertEquals(1, dataSource.getCloseCount());
+        assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(1, dataSource.getCreateCount());
+        assertEquals(0, dataSource.getDiscardCount());
+        assertEquals(1, dataSource.getConnectCount());
+        assertEquals(1, dataSource.getCloseCount());
 
         Thread.sleep(21);
 
@@ -72,12 +76,12 @@ public class DruidDataSourceTest_testOnWhileIdleFailed extends TestCase {
             conn.close();
         }
 
-        Assert.assertEquals(3, validCount.get()); // createValidate
+        assertEquals(3, validCount.get()); // createValidate
 
-        Assert.assertEquals(1, dataSource.getPoolingCount());
-        Assert.assertEquals(2, dataSource.getCreateCount());
-        Assert.assertEquals(1, dataSource.getDiscardCount());
-        Assert.assertEquals(3, dataSource.getConnectCount());
-        Assert.assertEquals(2, dataSource.getCloseCount());
+        assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(2, dataSource.getCreateCount());
+        assertEquals(1, dataSource.getDiscardCount());
+        assertEquals(3, dataSource.getConnectCount());
+        assertEquals(2, dataSource.getCloseCount());
     }
 }

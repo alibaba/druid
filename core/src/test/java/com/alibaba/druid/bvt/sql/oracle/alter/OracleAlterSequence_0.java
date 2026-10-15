@@ -19,19 +19,22 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.parser.Token;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
-public class OracleAlterSequence_0 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OracleAlterSequence_0 {
+    @Test
     public void test_alter_seq_0() throws Exception {
         String sql = "ALTER SEQUENCE SEQ_XXX INCREMENT BY 2";
         OracleStatementParser parser = new OracleStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toOracleString(stmt);
-        Assert.assertEquals("ALTER SEQUENCE SEQ_XXX INCREMENT BY 2", output);
+        assertEquals("ALTER SEQUENCE SEQ_XXX INCREMENT BY 2", output);
     }
 
+    @Test
     public void test_alter_seq_1() throws Exception {
         String sql = "ALTER SEQUENCE customers_seq \n" +
                 "   MAXVALUE 1500;";
@@ -39,9 +42,10 @@ public class OracleAlterSequence_0 extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toOracleString(stmt);
-        Assert.assertEquals("ALTER SEQUENCE customers_seq MAXVALUE 1500;", output);
+        assertEquals("ALTER SEQUENCE customers_seq MAXVALUE 1500;", output);
     }
 
+    @Test
     public void test_alter_seq_2() throws Exception {
         String sql = "ALTER SEQUENCE customers_seq \n" +
                 "   CYCLE\n" +
@@ -50,6 +54,6 @@ public class OracleAlterSequence_0 extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toOracleString(stmt);
-        Assert.assertEquals("ALTER SEQUENCE customers_seq CYCLE CACHE 5;", output);
+        assertEquals("ALTER SEQUENCE customers_seq CYCLE CACHE 5;", output);
     }
 }

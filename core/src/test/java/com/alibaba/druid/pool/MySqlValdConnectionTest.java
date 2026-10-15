@@ -15,13 +15,12 @@
  */
 package com.alibaba.druid.pool;
 
+import com.alibaba.druid.pool.vendor.MySqlExceptionSorter;
+import org.junit.jupiter.api.Test;
+
 import java.sql.Connection;
 
-import junit.framework.TestCase;
-
-import com.alibaba.druid.pool.vendor.MySqlExceptionSorter;
-
-public class MySqlValdConnectionTest extends TestCase {
+public class MySqlValdConnectionTest {
     private String jdbcUrl;
     private String user;
     private String password;
@@ -34,6 +33,7 @@ public class MySqlValdConnectionTest extends TestCase {
         driverClass = "com.mysql.jdbc.Driver";
     }
 
+    @Test
     public void test_0() throws Exception {
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setDriverClassName(driverClass);

@@ -20,12 +20,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class SHOW_WARNINGS_Syntax_Test extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class SHOW_WARNINGS_Syntax_Test {
+    @Test
     public void test_0() throws Exception {
         String sql = "SHOW WARNINGS;";
 
@@ -37,6 +39,7 @@ public class SHOW_WARNINGS_Syntax_Test extends TestCase {
         assertEquals("SHOW WARNINGS;", text);
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "SHOW COUNT(*) WARNINGS;";
 
@@ -45,9 +48,10 @@ public class SHOW_WARNINGS_Syntax_Test extends TestCase {
 
         String text = SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
 
-        Assert.assertEquals("SHOW COUNT(*) WARNINGS;", text);
+        assertEquals("SHOW COUNT(*) WARNINGS;", text);
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "SHOW WARNINGS LIMIT 1;";
 
@@ -56,9 +60,10 @@ public class SHOW_WARNINGS_Syntax_Test extends TestCase {
 
         String text = SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
 
-        Assert.assertEquals("SHOW WARNINGS LIMIT 1;", text);
+        assertEquals("SHOW WARNINGS LIMIT 1;", text);
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = "SHOW WARNINGS LIMIT 10, 10;";
 
@@ -67,7 +72,6 @@ public class SHOW_WARNINGS_Syntax_Test extends TestCase {
 
         String text = SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
 
-        Assert.assertEquals("SHOW WARNINGS LIMIT 10, 10;", text);
+        assertEquals("SHOW WARNINGS LIMIT 10, 10;", text);
     }
-
 }

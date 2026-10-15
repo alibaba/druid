@@ -1,0 +1,21 @@
+SELECT listagg(CASE WHEN is_touch=1 THEN custom_utm_advertising_type END,',') WITHIN GROUP (ORDER BY touchpoint_time) AS advertising_type
+FROM t
+--------------------
+SELECT listagg(CASE
+		WHEN is_touch = 1 THEN custom_utm_advertising_type
+	END, ',') WITHIN GROUP (ORDER BY touchpoint_time) AS advertising_type
+FROM t
+------------------------------------------------------------------------------------------------------------------------
+SELECT listagg(DISTINCT custom_utm_advertising_type,',') AS all_source_advertising_type_unique
+FROM t
+--------------------
+SELECT listagg(DISTINCT custom_utm_advertising_type, ',') AS all_source_advertising_type_unique
+FROM t
+------------------------------------------------------------------------------------------------------------------------
+SELECT listagg(DISTINCT CASE WHEN is_touch=1 THEN custom_utm_advertising_type END,',') AS advertising_type_unique
+FROM t
+--------------------
+SELECT listagg(DISTINCT CASE
+		WHEN is_touch = 1 THEN custom_utm_advertising_type
+	END, ',') AS advertising_type_unique
+FROM t

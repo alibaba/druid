@@ -16,11 +16,14 @@
 package com.alibaba.druid.sql.dialect.presto.visitor;
 
 import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.SQLDialect;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.ast.expr.SQLArrayExpr;
 import com.alibaba.druid.sql.ast.expr.SQLDecimalExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.presto.Presto;
 import com.alibaba.druid.sql.dialect.presto.ast.PrestoColumnWith;
 import com.alibaba.druid.sql.dialect.presto.ast.PrestoDateTimeExpr;
 import com.alibaba.druid.sql.dialect.presto.ast.stmt.PrestoAlterFunctionStatement;
@@ -44,15 +47,19 @@ public class PrestoOutputVisitor extends SQLASTOutputVisitor implements PrestoAS
     }
 
     public PrestoOutputVisitor(StringBuilder appender, DbType dbType) {
-        super(appender, dbType);
+        super(appender, dbType, Presto.DIALECT);
+    }
+
+    public PrestoOutputVisitor(StringBuilder appender, DbType dbType, SQLDialect dialect) {
+        super(appender, dbType, dialect);
     }
 
     public PrestoOutputVisitor(StringBuilder appender, boolean parameterized) {
-        this(appender, DbType.presto, parameterized);
+        this(appender, DbType.presto, Presto.DIALECT, parameterized);
     }
 
-    public PrestoOutputVisitor(StringBuilder appender, DbType dbType, boolean parameterized) {
-        super(appender, dbType, parameterized);
+    public PrestoOutputVisitor(StringBuilder appender, DbType dbType, SQLDialect dialect, boolean parameterized) {
+        super(appender, dbType, dialect, parameterized);
     }
 
     @Override
@@ -149,7 +156,17 @@ public class PrestoOutputVisitor extends SQLASTOutputVisitor implements PrestoAS
 
     @Override
     public boolean visit(SQLArrayExpr x) {
-        print0(ucase ? "ARRAY[" : "array[");
+        SQLExpr expr = x.getExpr();
+        // ARRAY[...] constructor vs subscript access base[...] (e.g. col['k']); see issue #6631
+        boolean arrayKeyword = expr == null
+                || (expr instanceof SQLIdentifierExpr
+                    && "ARRAY".equalsIgnoreCase(((SQLIdentifierExpr) expr).getName()));
+        if (arrayKeyword) {
+            print0(ucase ? "ARRAY[" : "array[");
+        } else {
+            expr.accept(this);
+            print('[');
+        }
         printAndAccept(x.getValues(), ", ");
         print(']');
         return false;
@@ -201,5 +218,9 @@ public class PrestoOutputVisitor extends SQLASTOutputVisitor implements PrestoAS
         print0(ucase ? " AT TIME ZONE " : " at time zone ");
         timeZone.accept(this);
         return false;
+    }
+
+    public void printArrayExprPrefix() {
+        print0(ucase ? "ARRAY" : "array");
     }
 }

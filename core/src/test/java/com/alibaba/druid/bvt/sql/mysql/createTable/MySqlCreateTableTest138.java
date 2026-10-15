@@ -1,13 +1,13 @@
 package com.alibaba.druid.bvt.sql.mysql.createTable;
 
 import com.alibaba.druid.sql.MysqlTest;
-import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlCreateTableTest138 extends MysqlTest {
     public void test_0() throws Exception {
@@ -41,7 +41,6 @@ public class MySqlCreateTableTest138 extends MysqlTest {
         MySqlCreateTableStatement stmt = (MySqlCreateTableStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
-
 
         assertEquals("CREATE TABLE `t_push_branch3` (\n" +
                 "\t`id` varchar(50) NOT NULL COMMENT '主键id',\n" +
@@ -122,8 +121,5 @@ public class MySqlCreateTableTest138 extends MysqlTest {
                 "\tpartition PMAX values less than maxvalue\n" +
                 "\t\tstorage engine InnoDB\n" +
                 ");", stmt.toLowerCaseString());
-
     }
-
-
 }

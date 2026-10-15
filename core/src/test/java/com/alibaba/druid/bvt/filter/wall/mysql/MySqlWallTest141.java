@@ -15,18 +15,18 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import org.junit.jupiter.api.Test;
 
-public class MySqlWallTest141 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlWallTest141 {
+    @Test
     public void test_false() throws Exception {
         WallProvider provider = new MySqlWallProvider();
 
         String sql = "SELECT name, '******' password, createTime from user where length(name) = 999999.9 or ascii(substring((database()),1,1))=127";
-        Assert.assertFalse(provider.checkValid(sql));
+        assertFalse(provider.checkValid(sql));
     }
 }

@@ -4,11 +4,11 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
-import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlCreateTableTest108_drds extends MysqlTest {
     public void test_0() throws Exception {

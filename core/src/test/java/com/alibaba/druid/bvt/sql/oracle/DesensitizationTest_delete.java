@@ -2,12 +2,15 @@ package com.alibaba.druid.bvt.sql.oracle;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by wenshao on 19/06/2017.
  */
-public class DesensitizationTest_delete extends TestCase {
+public class DesensitizationTest_delete {
+    @Test
     public void test_for_desensitization() throws Exception {
         String sql = "DELETE FROM customers\n" +
                 "WHERE last_name = 'Smith';";

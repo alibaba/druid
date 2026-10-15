@@ -15,6 +15,12 @@
  */
 package com.alibaba.druid.bvt.pool.basic;
 
+import com.alibaba.druid.mock.MockResultSet;
+import com.alibaba.druid.pool.DruidPooledResultSet;
+import com.alibaba.druid.pool.DruidPooledStatement;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;
@@ -25,19 +31,14 @@ import java.sql.Ref;
 import java.sql.SQLException;
 import java.sql.SQLXML;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Assert;
-
-import com.alibaba.druid.mock.MockResultSet;
-import com.alibaba.druid.pool.DruidPooledResultSet;
-import com.alibaba.druid.pool.DruidPooledStatement;
-
-public class ResultSetTest extends TestCase {
+public class ResultSetTest {
     private DruidPooledStatement stmt;
     private MockResultSet raw;
     private DruidPooledResultSet resultSet;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         stmt = new DruidPooledStatement(null, null) {
             protected SQLException checkException(Throwable error) throws SQLException {
@@ -55,14 +56,15 @@ public class ResultSetTest extends TestCase {
     }
 
     @SuppressWarnings("deprecation")
+    @Test
     public void test_get() throws Exception {
-        Assert.assertTrue(stmt == resultSet.getPoolableStatement());
-        Assert.assertTrue(raw == resultSet.getRawResultSet());
+        assertTrue(stmt == resultSet.getPoolableStatement());
+        assertTrue(raw == resultSet.getRawResultSet());
 
-        Assert.assertTrue(resultSet.next());
-        Assert.assertTrue(resultSet.wasNull() == false);
+        assertTrue(resultSet.next());
+        assertTrue(resultSet.wasNull() == false);
         resultSet.getString(1);
-        Assert.assertTrue(resultSet.wasNull());
+        assertTrue(resultSet.wasNull());
         resultSet.getBoolean(1);
         resultSet.getByte(1);
         resultSet.getShort(1);
@@ -97,60 +99,61 @@ public class ResultSetTest extends TestCase {
         resultSet.getAsciiStream("1");
         resultSet.getUnicodeStream("1");
         resultSet.getBinaryStream("1");
-
     }
 
+    @Test
     public void test_set() throws Exception {
         long currentMillis = System.currentTimeMillis();
 
-        Assert.assertTrue(resultSet.next());
+        assertTrue(resultSet.next());
 
         resultSet.updateNull(1);
-        Assert.assertNull(resultSet.getString(1));
+        assertNull(resultSet.getString(1));
         resultSet.updateBoolean(1, true);
-        Assert.assertEquals(true, resultSet.getBoolean(1));
+        assertEquals(true, resultSet.getBoolean(1));
 
         resultSet.updateByte(1, (byte) 12);
-        Assert.assertEquals(12, resultSet.getByte(1));
+        assertEquals(12, resultSet.getByte(1));
 
         resultSet.updateShort(1, (short) 23);
-        Assert.assertEquals(23, resultSet.getShort(1));
+        assertEquals(23, resultSet.getShort(1));
 
         resultSet.updateInt(1, 34);
-        Assert.assertEquals(34, resultSet.getInt(1));
+        assertEquals(34, resultSet.getInt(1));
 
         resultSet.updateLong(1, 45);
-        Assert.assertEquals(45, resultSet.getLong(1));
+        assertEquals(45, resultSet.getLong(1));
 
         resultSet.updateFloat(1, 1.0F);
-        Assert.assertEquals(true, 1.0F == resultSet.getFloat(1));
+        assertEquals(true, 1.0F == resultSet.getFloat(1));
 
         resultSet.updateDouble(1, 2.0D);
-        Assert.assertEquals(true, 2.0D == resultSet.getDouble(1));
+        assertEquals(true, 2.0D == resultSet.getDouble(1));
 
         resultSet.updateBigDecimal(1, new BigDecimal("33"));
-        Assert.assertEquals(new BigDecimal("33"), resultSet.getBigDecimal(1));
+        assertEquals(new BigDecimal("33"), resultSet.getBigDecimal(1));
 
         resultSet.updateString(1, "xxx");
-        Assert.assertEquals("xxx", resultSet.getString(1));
+        assertEquals("xxx", resultSet.getString(1));
 
         resultSet.updateBytes(1, new byte[0]);
-        Assert.assertEquals(0, resultSet.getBytes(1).length);
+        assertEquals(0, resultSet.getBytes(1).length);
 
         resultSet.updateDate(1, new java.sql.Date(currentMillis));
-        Assert.assertEquals(new java.sql.Date(currentMillis), resultSet.getDate(1));
+        assertEquals(new java.sql.Date(currentMillis), resultSet.getDate(1));
 
         resultSet.updateTime(1, new java.sql.Time(1000));
-        Assert.assertEquals(new java.sql.Time(1000), resultSet.getTime(1));
+        assertEquals(new java.sql.Time(1000), resultSet.getTime(1));
 
         resultSet.updateTimestamp(1, new java.sql.Timestamp(currentMillis));
-        Assert.assertEquals(new java.sql.Timestamp(currentMillis), resultSet.getTimestamp(1));
+        assertEquals(new java.sql.Timestamp(currentMillis), resultSet.getTimestamp(1));
     }
 
+    @Test
     public void test_set_error() throws Exception {
         long currentMillis = System.currentTimeMillis();
 
-        Assert.assertTrue(resultSet.next());
+        assertTrue(resultSet.next());
 
         {
             SQLException error = null;
@@ -159,7 +162,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -169,7 +172,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -179,7 +182,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -189,7 +192,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -199,7 +202,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -209,7 +212,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -219,7 +222,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -229,7 +232,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -239,7 +242,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -249,7 +252,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -259,7 +262,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -269,7 +272,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -279,7 +282,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -289,62 +292,64 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
     }
 
+    @Test
     public void test_setByName() throws Exception {
         long currentMillis = System.currentTimeMillis();
 
-        Assert.assertTrue(resultSet.next());
+        assertTrue(resultSet.next());
 
         resultSet.updateNull("1");
-        Assert.assertNull(resultSet.getString(1));
+        assertNull(resultSet.getString(1));
         resultSet.updateBoolean("1", true);
-        Assert.assertEquals(true, resultSet.getBoolean("1"));
+        assertEquals(true, resultSet.getBoolean("1"));
 
         resultSet.updateByte("1", (byte) 12);
-        Assert.assertEquals(12, resultSet.getByte("1"));
+        assertEquals(12, resultSet.getByte("1"));
 
         resultSet.updateShort("1", (short) 23);
-        Assert.assertEquals(23, resultSet.getShort("1"));
+        assertEquals(23, resultSet.getShort("1"));
 
         resultSet.updateInt("1", 34);
-        Assert.assertEquals(34, resultSet.getInt("1"));
+        assertEquals(34, resultSet.getInt("1"));
 
         resultSet.updateLong("1", 45);
-        Assert.assertEquals(45, resultSet.getLong("1"));
+        assertEquals(45, resultSet.getLong("1"));
 
         resultSet.updateFloat("1", 1.0F);
-        Assert.assertEquals(true, 1.0F == resultSet.getFloat("1"));
+        assertEquals(true, 1.0F == resultSet.getFloat("1"));
 
         resultSet.updateDouble("1", 2.0D);
-        Assert.assertEquals(true, 2.0D == resultSet.getDouble("1"));
+        assertEquals(true, 2.0D == resultSet.getDouble("1"));
 
         resultSet.updateBigDecimal("1", new BigDecimal("33"));
-        Assert.assertEquals(new BigDecimal("33"), resultSet.getBigDecimal("1"));
+        assertEquals(new BigDecimal("33"), resultSet.getBigDecimal("1"));
 
         resultSet.updateString("1", "xxx");
-        Assert.assertEquals("xxx", resultSet.getString("1"));
+        assertEquals("xxx", resultSet.getString("1"));
 
         resultSet.updateBytes("1", new byte[0]);
-        Assert.assertEquals(0, resultSet.getBytes("1").length);
+        assertEquals(0, resultSet.getBytes("1").length);
 
         resultSet.updateDate("1", new java.sql.Date(currentMillis));
-        Assert.assertEquals(new java.sql.Date(currentMillis), resultSet.getDate("1"));
+        assertEquals(new java.sql.Date(currentMillis), resultSet.getDate("1"));
 
         resultSet.updateTime("1", new java.sql.Time(1000));
-        Assert.assertEquals(new java.sql.Time(1000), resultSet.getTime("1"));
+        assertEquals(new java.sql.Time(1000), resultSet.getTime("1"));
 
         resultSet.updateTimestamp("1", new java.sql.Timestamp(currentMillis));
-        Assert.assertEquals(new java.sql.Timestamp(currentMillis), resultSet.getTimestamp("1"));
+        assertEquals(new java.sql.Timestamp(currentMillis), resultSet.getTimestamp("1"));
     }
 
+    @Test
     public void test_updateByLabel_error() throws Exception {
         long currentMillis = System.currentTimeMillis();
 
-        Assert.assertTrue(resultSet.next());
+        assertTrue(resultSet.next());
 
         {
             SQLException error = null;
@@ -353,7 +358,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -363,7 +368,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -373,7 +378,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -383,7 +388,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -393,7 +398,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -403,7 +408,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -413,7 +418,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -423,7 +428,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -433,7 +438,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -443,7 +448,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -453,7 +458,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -463,7 +468,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -473,7 +478,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -483,11 +488,12 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
     }
 
+    @Test
     public void test_updateBinaryStream() throws Exception {
         resultSet.next();
 
@@ -501,7 +507,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -511,10 +517,11 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
+    @Test
     public void test_updateBinaryStream_2() throws Exception {
         resultSet.next();
 
@@ -528,7 +535,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -538,10 +545,11 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
+    @Test
     public void test_updateCharacterStream() throws Exception {
         resultSet.next();
 
@@ -555,7 +563,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -565,10 +573,11 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
+    @Test
     public void test_update_blob() throws Exception {
         resultSet.next();
 
@@ -582,7 +591,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -592,10 +601,11 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
+    @Test
     public void test_update_clob() throws Exception {
         resultSet.next();
 
@@ -609,7 +619,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -619,10 +629,11 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
+    @Test
     public void test_update_nclob() throws Exception {
         resultSet.next();
 
@@ -636,7 +647,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -646,10 +657,11 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
+    @Test
     public void test_update_nclob_1() throws Exception {
         resultSet.next();
 
@@ -663,7 +675,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -673,10 +685,11 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
+    @Test
     public void test_update_clob_1() throws Exception {
         resultSet.next();
 
@@ -690,7 +703,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -700,10 +713,11 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
+    @Test
     public void test_update_blob_1() throws Exception {
         resultSet.next();
 
@@ -717,7 +731,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -727,10 +741,11 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
+    @Test
     public void test_updateCharacterStream_1() throws Exception {
         resultSet.next();
 
@@ -744,7 +759,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -754,10 +769,11 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
+    @Test
     public void test_updateAsciiStream_1() throws Exception {
         resultSet.next();
 
@@ -771,7 +787,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -781,10 +797,11 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
+    @Test
     public void test_updateAsciiStream_2() throws Exception {
         resultSet.next();
 
@@ -798,7 +815,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -808,10 +825,11 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
+    @Test
     public void test_updateBinaryStream_1() throws Exception {
         resultSet.next();
 
@@ -825,7 +843,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -835,10 +853,11 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
+    @Test
     public void test_updateAsciiStream() throws Exception {
         resultSet.next();
 
@@ -852,7 +871,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -862,10 +881,11 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
+    @Test
     public void test_updateNCharacterStream() throws Exception {
         resultSet.next();
 
@@ -879,7 +899,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -889,10 +909,11 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
+    @Test
     public void test_updateNCharacterStream_1() throws Exception {
         resultSet.next();
 
@@ -906,7 +927,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -916,10 +937,11 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
+    @Test
     public void test_updateSQLXML() throws Exception {
         resultSet.next();
 
@@ -933,7 +955,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -943,10 +965,11 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
+    @Test
     public void test_get_error() throws Exception {
         {
             SQLException error = null;
@@ -955,7 +978,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -965,7 +988,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -975,7 +998,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -985,7 +1008,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -995,7 +1018,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -1005,7 +1028,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -1015,7 +1038,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -1025,7 +1048,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -1035,7 +1058,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -1045,7 +1068,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -1055,7 +1078,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -1065,7 +1088,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -1075,7 +1098,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -1085,7 +1108,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -1095,7 +1118,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -1105,7 +1128,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -1115,7 +1138,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         // ////////////////
@@ -1127,7 +1150,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -1137,7 +1160,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -1147,7 +1170,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -1157,7 +1180,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -1167,7 +1190,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -1177,7 +1200,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -1187,7 +1210,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -1197,7 +1220,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -1207,7 +1230,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -1217,7 +1240,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -1227,7 +1250,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -1237,7 +1260,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -1247,7 +1270,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -1257,7 +1280,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -1267,7 +1290,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -1277,7 +1300,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -1287,10 +1310,11 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
+    @Test
     public void test_getSQLXML() throws Exception {
         resultSet.next();
 
@@ -1304,7 +1328,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -1314,10 +1338,11 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
+    @Test
     public void test_getNClob() throws Exception {
         resultSet.next();
 
@@ -1331,7 +1356,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -1341,10 +1366,11 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
+    @Test
     public void test_getNString() throws Exception {
         resultSet.next();
 
@@ -1358,7 +1384,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -1368,10 +1394,11 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
+    @Test
     public void test_getNCharacterStream() throws Exception {
         resultSet.next();
 
@@ -1385,7 +1412,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -1395,10 +1422,11 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
+    @Test
     public void test_getCharacterStream() throws Exception {
         resultSet.next();
 
@@ -1412,7 +1440,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -1422,10 +1450,11 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
+    @Test
     public void test_updateCharacterStream_2() throws Exception {
         resultSet.next();
 
@@ -1439,7 +1468,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -1449,10 +1478,11 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
+    @Test
     public void test_getURL() throws Exception {
         resultSet.next();
 
@@ -1466,7 +1496,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -1476,10 +1506,11 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
+    @Test
     public void test_getRowId() throws Exception {
         resultSet.next();
 
@@ -1493,7 +1524,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -1503,10 +1534,11 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
+    @Test
     public void test_getObject_1() throws Exception {
         resultSet.next();
 
@@ -1520,7 +1552,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -1530,10 +1562,11 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
+    @Test
     public void test_getTimestamp() throws Exception {
         resultSet.next();
 
@@ -1547,7 +1580,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -1557,10 +1590,11 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
+    @Test
     public void test_getTime() throws Exception {
         resultSet.next();
 
@@ -1574,7 +1608,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -1584,10 +1618,11 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
+    @Test
     public void test_getDate() throws Exception {
         resultSet.next();
 
@@ -1601,7 +1636,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -1611,10 +1646,11 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
+    @Test
     public void test_getArray() throws Exception {
         resultSet.next();
 
@@ -1628,7 +1664,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -1638,10 +1674,11 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
+    @Test
     public void test_getClob() throws Exception {
         resultSet.next();
 
@@ -1655,7 +1692,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -1665,10 +1702,11 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
+    @Test
     public void test_getBlob() throws Exception {
         resultSet.next();
 
@@ -1682,7 +1720,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -1692,10 +1730,11 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
+    @Test
     public void test_getRef() throws Exception {
         resultSet.next();
 
@@ -1709,7 +1748,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -1719,10 +1758,11 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
+    @Test
     public void test_getObject() throws Exception {
         resultSet.next();
 
@@ -1736,7 +1776,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -1746,10 +1786,11 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
+    @Test
     public void test_updateNClob() throws Exception {
         resultSet.next();
 
@@ -1763,7 +1804,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -1773,10 +1814,11 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
+    @Test
     public void test_updateNString() throws Exception {
         resultSet.next();
 
@@ -1790,7 +1832,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -1800,10 +1842,11 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
+    @Test
     public void test_updateRowId() throws Exception {
         resultSet.next();
 
@@ -1817,7 +1860,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -1827,10 +1870,11 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
+    @Test
     public void test_updateArray() throws Exception {
         resultSet.next();
 
@@ -1844,7 +1888,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -1854,10 +1898,11 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
+    @Test
     public void test_updateClob() throws Exception {
         resultSet.next();
 
@@ -1871,7 +1916,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -1881,10 +1926,11 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
+    @Test
     public void test_updateBlob() throws Exception {
         resultSet.next();
 
@@ -1898,7 +1944,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -1908,10 +1954,11 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
+    @Test
     public void test_updateRef() throws Exception {
         resultSet.next();
 
@@ -1925,7 +1972,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -1935,10 +1982,11 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
+    @Test
     public void test_updateObject() throws Exception {
         resultSet.next();
 
@@ -1952,7 +2000,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -1962,10 +2010,11 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
+    @Test
     public void test_updateObject_1() throws Exception {
         resultSet.next();
 
@@ -1979,7 +2028,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -1989,7 +2038,7 @@ public class ResultSetTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 }

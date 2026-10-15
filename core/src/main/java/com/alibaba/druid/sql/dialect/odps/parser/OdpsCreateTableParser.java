@@ -18,7 +18,6 @@ package com.alibaba.druid.sql.dialect.odps.parser;
 import com.alibaba.druid.sql.ast.ClusteringType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveInputOutputFormat;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsCreateTableStatement;
@@ -376,8 +375,7 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
                 lexer.nextToken();
 
                 if (lexer.token() == Token.LITERAL_INT) {
-                    stmt.setIntoBuckets(
-                            new SQLIntegerExpr(lexer.integerValue().intValue()));
+                    stmt.setBuckets(lexer.integerValue().intValue());
                     lexer.nextToken();
                     acceptIdentifier("BUCKETS");
                 } else {

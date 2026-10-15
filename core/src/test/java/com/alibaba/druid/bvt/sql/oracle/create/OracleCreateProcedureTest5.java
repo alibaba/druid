@@ -23,6 +23,8 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleCreateProcedureTest5 extends OracleTest {
     public void test_0() throws Exception {
         String sql = "CREATE OR REPLACE PROCEDURE proc_helloworld\n" +
@@ -33,7 +35,7 @@ public class OracleCreateProcedureTest5 extends OracleTest {
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         print(statementList);
-System.out.println("statementList==="+statementList);
+System.out.println("statementList===" + statementList);
         assertEquals(1, statementList.size());
 
         SQLStatement stmt = (SQLStatement) statementList.get(0);

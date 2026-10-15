@@ -24,10 +24,7 @@ import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerOutput;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.expr.SQLServerObjectReferenceExpr;
-import com.alibaba.druid.sql.parser.Lexer;
-import com.alibaba.druid.sql.parser.SQLExprParser;
-import com.alibaba.druid.sql.parser.SQLParserFeature;
-import com.alibaba.druid.sql.parser.Token;
+import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.util.FnvHash;
 
 import java.util.Arrays;
@@ -109,6 +106,16 @@ public class SQLServerExprParser extends SQLExprParser {
                 seq.setFunction(SQLSequenceExpr.Function.NextVal);
                 expr = seq;
             }
+        } else if (lexer.identifierEquals(FnvHash.Constants.COLLATE)) {
+            lexer.nextToken();
+            if (lexer.token() != Token.IDENTIFIER && lexer.token() != Token.LITERAL_CHARS) {
+                throw new ParserException("syntax error. " + lexer.info());
+            }
+            String collate = lexer.stringVal();
+            lexer.nextToken();
+            SQLBinaryOpExpr binaryExpr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.COLLATE,
+                    new SQLIdentifierExpr(collate), DbType.sqlserver);
+            expr = binaryExpr;
         }
 
         return super.primaryRest(expr);

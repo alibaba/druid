@@ -15,12 +15,11 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * SQLServerWallTest
@@ -29,40 +28,44 @@ import com.alibaba.druid.wall.spi.MySqlWallProvider;
  * @version 1.0, 2012-3-18
  * @see
  */
-public class MySqlWallTest57 extends TestCase {
+public class MySqlWallTest57 {
+    @Test
     public void test_true() throws Exception {
         WallProvider provider = new MySqlWallProvider();
 
-        Assert.assertTrue(provider.checkValid(//
+        assertTrue(provider.checkValid(//
                 "SELECT @@version"));
 
-        Assert.assertEquals(0, provider.getTableStats().size());
+        assertEquals(0, provider.getTableStats().size());
     }
 
+    @Test
     public void test_true_1() throws Exception {
         WallProvider provider = new MySqlWallProvider();
 
-        Assert.assertTrue(provider.checkValid(//
+        assertTrue(provider.checkValid(//
                 "SELECT @@version FROM DUAL"));
 
-        Assert.assertEquals(1, provider.getTableStats().size());
+        assertEquals(1, provider.getTableStats().size());
     }
 
+    @Test
     public void test_true_2() throws Exception {
         WallProvider provider = new MySqlWallProvider();
 
-        Assert.assertTrue(provider.checkValid(//
+        assertTrue(provider.checkValid(//
                 "SELECT @@version FROM X"));
 
-        Assert.assertEquals(1, provider.getTableStats().size());
+        assertEquals(1, provider.getTableStats().size());
     }
 
+    @Test
     public void test_false() throws Exception {
         WallProvider provider = new MySqlWallProvider();
 
-        Assert.assertFalse(provider.checkValid(//
+        assertFalse(provider.checkValid(//
                 "SELECT * FROM X where id=1 and 1!=1 union select @@version"));
 
-        Assert.assertEquals(1, provider.getTableStats().size());
+        assertEquals(1, provider.getTableStats().size());
     }
 }

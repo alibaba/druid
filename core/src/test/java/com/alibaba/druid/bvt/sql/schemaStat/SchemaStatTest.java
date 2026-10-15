@@ -7,16 +7,17 @@ import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
-public class SchemaStatTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class SchemaStatTest {
+    @Test
     public void test_schemaStat() throws Exception {
         String sql = "select "
                 + " create_time_dd          as  来电日期"
                 + " from alisec_app.adl_tb_wing_rubbish_laidian_new_reason_realname_fdt  "
                 + " order by   来电日期  desc  limit  30;";
-
 
         DbType dbType = JdbcConstants.ODPS;
         SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
@@ -27,6 +28,6 @@ public class SchemaStatTest extends TestCase {
 
         System.out.println(statVisitor.getColumns());
 
-        Assert.assertEquals(1, statVisitor.getColumns().size());
+        assertEquals(1, statVisitor.getColumns().size());
     }
 }

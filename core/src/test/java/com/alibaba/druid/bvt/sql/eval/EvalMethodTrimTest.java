@@ -1,13 +1,14 @@
 package com.alibaba.druid.bvt.sql.eval;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
-public class EvalMethodTrimTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class EvalMethodTrimTest {
+    @Test
     public void test_trim() throws Exception {
-        Assert.assertEquals("bar", SQLEvalVisitorUtils.evalExpr(JdbcConstants.MYSQL, "TRIM('  bar   ')"));
+        assertEquals("bar", SQLEvalVisitorUtils.evalExpr(JdbcConstants.MYSQL, "TRIM('  bar   ')"));
     }
 }

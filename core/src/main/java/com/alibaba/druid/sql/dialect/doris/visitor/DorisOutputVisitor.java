@@ -9,6 +9,7 @@ import com.alibaba.druid.sql.ast.SQLUnpivot;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLTableSampling;
+import com.alibaba.druid.sql.dialect.doris.Doris;
 import com.alibaba.druid.sql.dialect.doris.ast.DorisExprTableSource;
 import com.alibaba.druid.sql.dialect.starrocks.visitor.StarRocksOutputVisitor;
 
@@ -16,18 +17,11 @@ import java.util.List;
 
 public class DorisOutputVisitor extends StarRocksOutputVisitor implements DorisASTVisitor {
     public DorisOutputVisitor(StringBuilder appender) {
-        super(appender);
-        dbType = DbType.doris;
-    }
-
-    public DorisOutputVisitor(StringBuilder appender, DbType dbType) {
-        super(appender, dbType);
-        dbType = DbType.doris;
+        super(appender, DbType.doris, Doris.DIALECT);
     }
 
     public DorisOutputVisitor(StringBuilder appender, boolean parameterized) {
-        super(appender, parameterized);
-        dbType = DbType.doris;
+        super(appender, DbType.doris, Doris.DIALECT, parameterized);
     }
 
     public void printSqlSetQuantifier(SQLSelectQueryBlock x) {

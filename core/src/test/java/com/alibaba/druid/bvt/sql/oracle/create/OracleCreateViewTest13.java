@@ -25,6 +25,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleCreateViewTest13 extends OracleTest {
     public void test_types() throws Exception {
         String sql = //
@@ -55,7 +57,7 @@ public class OracleCreateViewTest13 extends OracleTest {
                         "WHERE rbi.rma_id > ?\n" +
                         "\tAND rsi.e_rprsendid = ?\n" +
                         "\tAND rsi.e_boardid IN (?)\n" +
-                        "FOR UPDATE OF rbi.rma_id",//
+                        "FOR UPDATE OF rbi.rma_id",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

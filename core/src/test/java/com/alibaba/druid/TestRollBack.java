@@ -2,11 +2,10 @@ package com.alibaba.druid;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.nutz.dao.Chain;
 import org.nutz.dao.Cnd;
 import org.nutz.dao.Dao;
@@ -17,6 +16,8 @@ import org.nutz.trans.Trans;
 
 import java.beans.PropertyVetoException;
 import java.sql.SQLException;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /*
  * Copyright 1999-2018 Alibaba Group Holding Ltd.
@@ -39,10 +40,10 @@ public class TestRollBack {
     static Dao dao_c3p0;
     static Dao dao_druid;
 
-//	static String url = "jdbc:oracle:thin:@a.b.c.d:1521:ocnauto";
-//	static String user = "alibaba";
-//	static String password = "ccbuauto";
-//	static String driver = "oracle.jdbc.driver.OracleDriver";
+//    static String url = "jdbc:oracle:thin:@a.b.c.d:1521:ocnauto";
+//    static String user = "alibaba";
+//    static String password = "ccbuauto";
+//    static String driver = "oracle.jdbc.driver.OracleDriver";
 
     static String url = "jdbc:jtds:sqlserver://a.b.c.d:1433/druid_db";
     static String user = "sa";
@@ -53,7 +54,7 @@ public class TestRollBack {
 //  user = "alibaba";
 //  password = "ccbuauto";
 
-    @BeforeClass
+    @BeforeAll
     public static void init() throws PropertyVetoException, SQLException {
         c3p0 = new ComboPooledDataSource();
         //c3p0.setDriverClass("oracle.jdbc.driver.OracleDriver");
@@ -76,13 +77,13 @@ public class TestRollBack {
         }
     }
 
-    @AfterClass
+    @AfterAll
     public static void destroy() {
         c3p0.close();
         druid.close();
     }
 
-    @Before
+    @BeforeEach
     public void before() {
         // 清空所有数据
         dao_c3p0.clear("msg");
@@ -102,7 +103,7 @@ public class TestRollBack {
         } catch (Exception e) {
         }
         // abc也跟着回滚了
-        Assert.assertNull(dao_c3p0.fetch("msg", Cnd.where("message", "=", "abc")));
+        assertNull(dao_c3p0.fetch("msg", Cnd.where("message", "=", "abc")));
     }
 
     @Test
@@ -119,7 +120,6 @@ public class TestRollBack {
             // e.printStackTrace(); // 把这里的异常打印出来
         }
         // abc插了进去,没有回滚
-        Assert.assertNotNull(dao_druid.fetch("msg", Cnd.where("message", "=", "abc")));
+        assertNotNull(dao_druid.fetch("msg", Cnd.where("message", "=", "abc")));
     }
-
 }

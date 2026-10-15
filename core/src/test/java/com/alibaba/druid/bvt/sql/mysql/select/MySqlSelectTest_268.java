@@ -20,6 +20,7 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_268 extends MysqlTest {
     public void test_0() throws Exception {
@@ -44,6 +45,4 @@ public class MySqlSelectTest_268 extends MysqlTest {
                 "\t\tFROM mm\n" +
                 "\t) b;", stmt.toString());
     }
-
-
 }

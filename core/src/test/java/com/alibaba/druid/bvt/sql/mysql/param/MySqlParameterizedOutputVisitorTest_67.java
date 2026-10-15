@@ -1,15 +1,18 @@
 package com.alibaba.druid.bvt.sql.mysql.param;
 
-import com.alibaba.fastjson2.JSON;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import com.alibaba.fastjson2.JSON;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MySqlParameterizedOutputVisitorTest_67 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlParameterizedOutputVisitorTest_67 {
+    @Test
     public void test_for_parameterize() throws Exception {
         String sql = "select dep_id, dep_name, count(1) from t where dep_tpe = 'aa' group by dep_id having count(1) > 10";
 
@@ -31,5 +34,4 @@ public class MySqlParameterizedOutputVisitorTest_67 extends TestCase {
                 "GROUP BY dep_id\n" +
                 "HAVING count(1) > 10", rsql);
     }
-
 }

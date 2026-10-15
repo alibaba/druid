@@ -15,18 +15,18 @@
  */
 package com.alibaba.druid.bvt.sql.oracle.visitor;
 
-import java.util.List;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat.Condition;
+import org.junit.jupiter.api.Test;
 
-import junit.framework.TestCase;
+import java.util.List;
 
-public class OracleSchemaStatVisitorTest5 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OracleSchemaStatVisitorTest5 {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT B.OBJ_ID AS BDZID,B.BDZMC,count(A.*) "
                 + "FROM ("
@@ -56,7 +56,7 @@ public class OracleSchemaStatVisitorTest5 extends TestCase {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         statemen.accept(visitor);
@@ -70,14 +70,12 @@ public class OracleSchemaStatVisitorTest5 extends TestCase {
 
         for (Condition condition : visitor.getConditions()) {
             String table = condition.getColumn().getTable();
-            Assert.assertTrue("table not exists : " + table, visitor.containsTable(table));
+            assertTrue(visitor.containsTable(table), "table not exists : " + table);
         }
 
-        Assert.assertEquals(5, visitor.getTables().size());
-        Assert.assertEquals(true, visitor.containsTable("T_SB_ZNYC_ZFBZ"));
+        assertEquals(5, visitor.getTables().size());
+        assertEquals(true, visitor.containsTable("T_SB_ZNYC_ZFBZ"));
 
-        Assert.assertEquals(13, visitor.getColumns().size());
-
+        assertEquals(13, visitor.getColumns().size());
     }
-
 }

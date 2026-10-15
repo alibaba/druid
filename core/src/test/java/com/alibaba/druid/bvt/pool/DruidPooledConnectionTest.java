@@ -1,17 +1,20 @@
 package com.alibaba.druid.bvt.pool;
 
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.DruidPooledConnection;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.sql.Connection;
 import java.sql.Savepoint;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.*;
 
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.pool.DruidPooledConnection;
-
-public class DruidPooledConnectionTest extends TestCase {
+public class DruidPooledConnectionTest {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
@@ -19,10 +22,12 @@ public class DruidPooledConnectionTest extends TestCase {
         dataSource.setFilters("stat");
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
     }
 
+    @Test
     public void test_rollback() throws Exception {
         Connection conn = dataSource.getConnection();
         conn.rollback();
@@ -33,6 +38,7 @@ public class DruidPooledConnectionTest extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_rollback_1() throws Exception {
         Connection conn = dataSource.getConnection();
         conn.setAutoCommit(false);
@@ -42,24 +48,27 @@ public class DruidPooledConnectionTest extends TestCase {
         conn.rollback(null);
     }
 
+    @Test
     public void test_getOwnerThread() throws Exception {
         DruidPooledConnection conn = (DruidPooledConnection) dataSource.getConnection();
 
-        Assert.assertEquals(Thread.currentThread(), conn.getOwnerThread());
+        assertEquals(Thread.currentThread(), conn.getOwnerThread());
 
         conn.close();
     }
 
+    @Test
     public void test_isDiable() throws Exception {
         DruidPooledConnection conn = (DruidPooledConnection) dataSource.getConnection();
 
-        Assert.assertEquals(false, conn.isDisable());
+        assertEquals(false, conn.isDisable());
 
         conn.close();
 
-        Assert.assertEquals(true, conn.isDisable());
+        assertEquals(true, conn.isDisable());
     }
 
+    @Test
     public void test_dupClose() throws Exception {
         DruidPooledConnection conn = (DruidPooledConnection) dataSource.getConnection();
 
@@ -67,19 +76,20 @@ public class DruidPooledConnectionTest extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_disable() throws Exception {
-        Assert.assertEquals(0, dataSource.getPoolingCount());
-        Assert.assertEquals(0, dataSource.getActiveCount());
+        assertEquals(0, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getActiveCount());
 
         DruidPooledConnection conn = (DruidPooledConnection) dataSource.getConnection();
         conn.disable();
-        Assert.assertEquals(true, conn.isDisable());
+        assertEquals(true, conn.isDisable());
 
-        Assert.assertEquals(1, dataSource.getActiveCount());
+        assertEquals(1, dataSource.getActiveCount());
 
         conn.close();
 
-        Assert.assertEquals(0, dataSource.getPoolingCount());
-        Assert.assertEquals(1, dataSource.getActiveCount());
+        assertEquals(0, dataSource.getPoolingCount());
+        assertEquals(1, dataSource.getActiveCount());
     }
 }

@@ -19,10 +19,11 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlCreateFullTextCharFilterTest extends MysqlTest {
     @Test
@@ -38,7 +39,7 @@ public class MySqlCreateFullTextCharFilterTest extends MysqlTest {
         SQLStatement stmt = stmtList.get(0);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE FULLTEXT CHARFILTER test1(\n" + "\"type\" = 'typename',\n"
+        assertEquals("CREATE FULLTEXT CHARFILTER test1(\n" + "\"type\" = 'typename',\n"
                 + "'key' = 'name','key2' = 'name2'\n" + ")", output);
     }
 
@@ -54,7 +55,7 @@ public class MySqlCreateFullTextCharFilterTest extends MysqlTest {
         SQLStatement stmt = stmtList.get(0);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE FULLTEXT CHARFILTER test1(\n"
+        assertEquals("CREATE FULLTEXT CHARFILTER test1(\n"
                 + "\"type\" = 'typename',\n"
                 + "'key' = 'name'\n"
                 + ")", output);
@@ -69,7 +70,7 @@ public class MySqlCreateFullTextCharFilterTest extends MysqlTest {
         SQLStatement stmt = stmtList.get(0);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("SHOW FULLTEXT CHARFILTERS", output);
+        assertEquals("SHOW FULLTEXT CHARFILTERS", output);
     }
 
     @Test
@@ -81,7 +82,7 @@ public class MySqlCreateFullTextCharFilterTest extends MysqlTest {
         SQLStatement stmt = stmtList.get(0);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("SHOW CREATE FULLTEXT CHARFILTER test1", output);
+        assertEquals("SHOW CREATE FULLTEXT CHARFILTER test1", output);
     }
 
     @Test
@@ -93,7 +94,7 @@ public class MySqlCreateFullTextCharFilterTest extends MysqlTest {
         SQLStatement stmt = stmtList.get(0);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("ALTER FULLTEXT CHARFILTER test1 SET k = 'a';", output);
+        assertEquals("ALTER FULLTEXT CHARFILTER test1 SET k = 'a';", output);
     }
 
     @Test
@@ -105,6 +106,6 @@ public class MySqlCreateFullTextCharFilterTest extends MysqlTest {
         SQLStatement stmt = stmtList.get(0);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("DROP FULLTEXT CHARFILTER test1", output);
+        assertEquals("DROP FULLTEXT CHARFILTER test1", output);
     }
 }

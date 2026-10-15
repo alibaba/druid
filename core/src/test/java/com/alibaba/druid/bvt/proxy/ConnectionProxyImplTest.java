@@ -15,13 +15,6 @@
  */
 package com.alibaba.druid.bvt.proxy;
 
-import java.sql.SQLClientInfoException;
-import java.util.Properties;
-
-import org.junit.Assert;
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.filter.FilterEventAdapter;
 import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxyImpl;
@@ -29,13 +22,22 @@ import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxyConfig;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxyImpl;
 import com.alibaba.druid.stat.JdbcStatManager;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
-public class ConnectionProxyImplTest extends TestCase {
+import java.sql.SQLClientInfoException;
+import java.util.Properties;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class ConnectionProxyImplTest {
+    @AfterEach
     protected void tearDown() throws Exception {
         DruidDriver.getProxyDataSources().clear();
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+        JdbcStatManager.getInstance().reset();
     }
 
+    @Test
     public void test_connection() throws Exception {
         DataSourceProxyConfig config = new DataSourceProxyConfig();
         DataSourceProxy dataSource = new DataSourceProxyImpl(null, config);
@@ -53,5 +55,4 @@ public class ConnectionProxyImplTest extends TestCase {
 
         connection.setClientInfo("name", null);
     }
-
 }

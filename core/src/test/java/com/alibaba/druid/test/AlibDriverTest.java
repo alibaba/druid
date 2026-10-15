@@ -1,12 +1,12 @@
 package com.alibaba.druid.test;
 
-import com.alibaba.druid.pool.DruidDataSource;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 
-public class AlibDriverTest extends TestCase {
+public class AlibDriverTest {
+    @Test
     public void test_for_alib() throws Exception {
         String url = "jdbc:mysql://127.0.0.1:8507";
         Connection conn = DriverManager.getConnection(url, "root", "root");

@@ -21,6 +21,8 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
  * 测试char()  CHAR(N,... [USING charset_name])
  */

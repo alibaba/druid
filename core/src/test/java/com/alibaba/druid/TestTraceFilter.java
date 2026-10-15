@@ -15,18 +15,18 @@
  */
 package com.alibaba.druid;
 
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.stat.JdbcTraceManager;
+import com.alibaba.druid.util.JMXUtils;
+import org.junit.jupiter.api.Test;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-import junit.framework.TestCase;
-
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.stat.JdbcTraceManager;
-import com.alibaba.druid.util.JMXUtils;
-
 @SuppressWarnings("deprecation")
-public class TestTraceFilter extends TestCase {
+public class TestTraceFilter {
+    @Test
     public void test_loop() throws Exception {
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setFilters("stat,trace");

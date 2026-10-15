@@ -1,20 +1,22 @@
 package com.alibaba.druid.bvt.pool;
 
-import java.sql.SQLException;
-import java.util.Properties;
-
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class DruidDataSourceTest7 extends TestCase {
+import java.sql.SQLException;
+import java.util.Properties;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class DruidDataSourceTest7 {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
@@ -27,22 +29,23 @@ public class DruidDataSourceTest7 extends TestCase {
         });
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
     }
 
+    @Test
     public void testInitError() throws Exception {
-        Assert.assertEquals(0, dataSource.getCreateErrorCount());
+        assertEquals(0, dataSource.getCreateErrorCount());
         Throwable error = null;
         try {
             dataSource.init();
         } catch (RuntimeException e) {
             error = e;
         }
-        Assert.assertNotNull(error);
-        Assert.assertTrue(dataSource.getCreateErrorCount() > 0);
+        assertNotNull(error);
+        assertTrue(dataSource.getCreateErrorCount() > 0);
 
         dataSource.getCompositeData();
     }
-
 }

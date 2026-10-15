@@ -20,6 +20,7 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_276 extends MysqlTest {
     public void test_0() throws Exception {
@@ -31,6 +32,4 @@ public class MySqlSelectTest_276 extends MysqlTest {
         assertEquals("SELECT x AS '日期'\n" +
                 "FROM t", stmt.toString());
     }
-
-
 }

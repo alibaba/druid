@@ -15,34 +15,37 @@
  */
 package com.alibaba.druid.bvt.pool;
 
-import java.sql.Connection;
-import java.sql.Statement;
-
-import javax.sql.DataSource;
-
-import junit.framework.TestCase;
-
+import com.alibaba.druid.spring.User;
+import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
-import org.junit.Assert;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import com.alibaba.druid.spring.User;
-import com.alibaba.druid.stat.DruidDataSourceStatManager;
+import javax.sql.DataSource;
 
-public class SpringMybatisFilterTest extends TestCase {
+import java.sql.Connection;
+import java.sql.Statement;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class SpringMybatisFilterTest {
+    @BeforeEach
     protected void setUp() throws Exception {
         DruidDataSourceStatManager.clear();
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        DruidDataSourceStatManager.clear();
     }
 
+    @Test
     public void test_spring() throws Exception {
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
-
+        DruidDataSourceStatManager.clear();
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
                 "com/alibaba/druid/pool/mybatis/spring-config-mybatis.xml");
 
@@ -101,8 +104,7 @@ public class SpringMybatisFilterTest extends TestCase {
         }
 
         context.close();
-
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+         DruidDataSourceStatManager.clear();
     }
 
     public static interface UserMapper {

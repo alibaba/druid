@@ -24,6 +24,8 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_55 extends MysqlTest {
     public void test_date() throws Exception {
         System.out.println(new SimpleDateFormat("yyyyMMdd").parse("19050101").getTime());
@@ -39,7 +41,6 @@ public class MySqlSelectTest_55 extends MysqlTest {
                 "(display_name like '%j%' and v_sort between 1 and 10 )";
 
         System.out.println(sql);
-
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL, true);
         SQLStatement stmt = statementList.get(0);

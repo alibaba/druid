@@ -15,19 +15,19 @@
  */
 package com.alibaba.druid.bvt.sql.mysql;
 
-import java.util.List;
-
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
+import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
-public class XMLFunctionsTest extends TestCase {
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class XMLFunctionsTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SET @xml = '<a><b>X</b><b>Y</b></a>';";
 
@@ -36,9 +36,10 @@ public class XMLFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SET @xml = '<a><b>X</b><b>Y</b></a>';", text);
+        assertEquals("SET @xml = '<a><b>X</b><b>Y</b></a>';", text);
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "SELECT @i, ExtractValue(@xml, '//b[$@i]');";
 
@@ -47,9 +48,10 @@ public class XMLFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT @i, ExtractValue(@xml, '//b[$@i]');", text);
+        assertEquals("SELECT @i, ExtractValue(@xml, '//b[$@i]');", text);
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "SELECT @j, ExtractValue(@xml, '//b[$@j]');";
 
@@ -58,9 +60,10 @@ public class XMLFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT @j, ExtractValue(@xml, '//b[$@j]');", text);
+        assertEquals("SELECT @j, ExtractValue(@xml, '//b[$@j]');", text);
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = "SELECT @k, ExtractValue(@xml, '//b[$@k]');";
 
@@ -69,9 +72,10 @@ public class XMLFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT @k, ExtractValue(@xml, '//b[$@k]');", text);
+        assertEquals("SELECT @k, ExtractValue(@xml, '//b[$@k]');", text);
     }
 
+    @Test
     public void test_4() throws Exception {
         String sql = "SELECT ExtractValue('<a><b/></a>', '/a/b');";
 
@@ -80,9 +84,10 @@ public class XMLFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT ExtractValue('<a><b/></a>', '/a/b');", text);
+        assertEquals("SELECT ExtractValue('<a><b/></a>', '/a/b');", text);
     }
 
+    @Test
     public void test_5() throws Exception {
         String sql = "SELECT UpdateXML('<a><b>ccc</b><d></d></a>', '/a', '<e>fff</e>') AS val1";
 
@@ -91,7 +96,7 @@ public class XMLFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT UpdateXML('<a><b>ccc</b><d></d></a>', '/a', '<e>fff</e>') AS val1", text);
+        assertEquals("SELECT UpdateXML('<a><b>ccc</b><d></d></a>', '/a', '<e>fff</e>') AS val1", text);
     }
 
     private String output(List<SQLStatement> stmtList) {

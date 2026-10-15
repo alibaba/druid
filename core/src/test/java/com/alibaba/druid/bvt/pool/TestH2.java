@@ -15,20 +15,23 @@
  */
 package com.alibaba.druid.bvt.pool;
 
+import com.alibaba.druid.DbType;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.util.JdbcUtils;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-import com.alibaba.druid.DbType;
-import org.junit.Assert;
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.*;
 
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.util.JdbcUtils;
-
-public class TestH2 extends TestCase {
+public class TestH2 {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:h2:mem:");
@@ -38,12 +41,14 @@ public class TestH2 extends TestCase {
         dataSource.init();
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
     }
 
+    @Test
     public void test_h2() throws Exception {
-        Assert.assertSame(JdbcUtils.H2, DbType.of(dataSource.getDbType()));
+        assertSame(JdbcUtils.H2, DbType.of(dataSource.getDbType()));
 
         Connection conn = dataSource.getConnection();
 
@@ -54,7 +59,7 @@ public class TestH2 extends TestCase {
         ResultSet rs = stmt.executeQuery();
 
         rs.next();
-        Assert.assertEquals("xxxx", rs.getString(1));
+        assertEquals("xxxx", rs.getString(1));
 
         rs.close();
 

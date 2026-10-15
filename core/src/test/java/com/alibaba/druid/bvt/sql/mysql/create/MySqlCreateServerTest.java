@@ -20,10 +20,11 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlCreateServerTest extends MysqlTest {
     @Test
@@ -41,6 +42,6 @@ public class MySqlCreateServerTest extends MysqlTest {
         stmt.accept(visitor);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE SERVER s FOREIGN DATA WRAPPER mysql OPTIONS(HOST '192.168.1.106', DATABASE 'test', USER 'Remote');", output);
+        assertEquals("CREATE SERVER s FOREIGN DATA WRAPPER mysql OPTIONS(HOST '192.168.1.106', DATABASE 'test', USER 'Remote');", output);
     }
 }

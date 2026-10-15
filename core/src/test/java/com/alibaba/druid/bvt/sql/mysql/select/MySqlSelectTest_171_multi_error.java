@@ -2,10 +2,10 @@ package com.alibaba.druid.bvt.sql.mysql.select;
 
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.util.JdbcConstants;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_171_multi_error extends MysqlTest {
     public void test_0() throws Exception {

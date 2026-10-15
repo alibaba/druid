@@ -15,12 +15,11 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * SQLServerWallTest
@@ -29,25 +28,25 @@ import com.alibaba.druid.wall.spi.MySqlWallProvider;
  * @version 1.0, 2012-3-18
  * @see
  */
-public class MySqlWallTest66 extends TestCase {
+public class MySqlWallTest66 {
+    @Test
     public void test_true() throws Exception {
         WallProvider provider = new MySqlWallProvider();
         provider.getConfig().setSchemaCheck(true);
 
-        Assert.assertTrue(provider.checkValid(//
-                "SELECT LOGFILE_GROUP_NAME, FILE_NAME, TOTAL_EXTENTS, INITIAL_SIZE, ENGINE, EXTRA " + //
-                        "FROM INFORMATION_SCHEMA.FILES WHERE FILE_TYPE = 'UNDO LOG' AND FILE_NAME IS NOT NULL " + //
-                        "AND LOGFILE_GROUP_NAME IN (" + //
-                        "   SELECT DISTINCT LOGFILE_GROUP_NAME FROM INFORMATION_SCHEMA.FILES " + //
-                        "       WHERE FILE_TYPE = 'DATAFILE' " + //
-                        "           AND TABLESPACE_NAME IN (" + //
-                        "               SELECT DISTINCT TABLESPACE_NAME FROM INFORMATION_SCHEMA.PARTITIONS " + //
-                        "               WHERE TABLE_SCHEMA IN ('stat'))" + //
-                        ") " + //
-                        "GROUP BY LOGFILE_GROUP_NAME, FILE_NAME, ENGINE " + //
+        assertTrue(provider.checkValid(//
+                "SELECT LOGFILE_GROUP_NAME, FILE_NAME, TOTAL_EXTENTS, INITIAL_SIZE, ENGINE, EXTRA " +
+                        "FROM INFORMATION_SCHEMA.FILES WHERE FILE_TYPE = 'UNDO LOG' AND FILE_NAME IS NOT NULL " +
+                        "AND LOGFILE_GROUP_NAME IN (" +
+                        "   SELECT DISTINCT LOGFILE_GROUP_NAME FROM INFORMATION_SCHEMA.FILES " +
+                        "       WHERE FILE_TYPE = 'DATAFILE' " +
+                        "           AND TABLESPACE_NAME IN (" +
+                        "               SELECT DISTINCT TABLESPACE_NAME FROM INFORMATION_SCHEMA.PARTITIONS " +
+                        "               WHERE TABLE_SCHEMA IN ('stat'))" +
+                        ") " +
+                        "GROUP BY LOGFILE_GROUP_NAME, FILE_NAME, ENGINE " +
                         "ORDER BY LOGFILE_GROUP_NAME"));
 
-        Assert.assertEquals(2, provider.getTableStats().size());
+        assertEquals(2, provider.getTableStats().size());
     }
-
 }

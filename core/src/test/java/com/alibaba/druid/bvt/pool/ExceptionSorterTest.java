@@ -1,20 +1,22 @@
 package com.alibaba.druid.bvt.pool;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.vendor.MockExceptionSorter;
 import com.alibaba.druid.util.JdbcUtils;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class ExceptionSorterTest extends TestCase {
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class ExceptionSorterTest {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
@@ -26,13 +28,15 @@ public class ExceptionSorterTest extends TestCase {
         dataSource.init();
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
     }
 
+    @Test
     public void test_exceptionSorter() throws Exception {
-        Assert.assertTrue(dataSource.getExceptionSorterClassName(),
-                dataSource.getExceptionSorter() instanceof MockExceptionSorter);
+        assertTrue(dataSource.getExceptionSorter() instanceof MockExceptionSorter,
+                dataSource.getExceptionSorterClassName());
 
         Connection conn = dataSource.getConnection();
         MockConnection mockConn = conn.unwrap(MockConnection.class);
@@ -49,7 +53,7 @@ public class ExceptionSorterTest extends TestCase {
         } catch (Exception ex) {
             stmtClosedError = ex;
         }
-        Assert.assertNotNull(stmtClosedError);
+        assertNotNull(stmtClosedError);
         conn.close();
     }
 }

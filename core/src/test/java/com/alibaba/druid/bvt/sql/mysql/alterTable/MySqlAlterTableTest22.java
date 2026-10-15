@@ -19,17 +19,19 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
-public class MySqlAlterTableTest22 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlAlterTableTest22 {
+    @Test
     public void test_alter_add_key() throws Exception {
         String sql = "alter table pj_usr_auth add constraint FK_Reference_8 foreign key (usr) references usr (usr) on delete restrict on update restrict;";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("ALTER TABLE pj_usr_auth" //
+        assertEquals("ALTER TABLE pj_usr_auth"
                 + "\n\tADD CONSTRAINT FK_Reference_8 FOREIGN KEY (usr) REFERENCES usr (usr) ON DELETE RESTRICT ON UPDATE RESTRICT;", output);
     }
 }

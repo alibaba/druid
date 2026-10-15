@@ -15,21 +15,22 @@
  */
 package com.alibaba.druid.bvt.sql.oracle;
 
+import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
+import com.alibaba.druid.sql.test.TestUtils;
+import com.alibaba.druid.util.JdbcUtils;
+import com.alibaba.druid.util.Utils;
+import org.junit.jupiter.api.Test;
+
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.List;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.*;
 
-import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
-import com.alibaba.druid.sql.test.TestUtils;
-import com.alibaba.druid.util.Utils;
-import com.alibaba.druid.util.JdbcUtils;
-
-public class OracleSQLParserResourceTest extends TestCase {
+public class OracleSQLParserResourceTest {
+    @Test
     public void test_0() throws Exception {
         // for (int i = 0; i <= 53; ++i) {
         // String resource = "bvt/parser/oracle-" + i + ".txt";
@@ -38,6 +39,7 @@ public class OracleSQLParserResourceTest extends TestCase {
         exec_test("bvt/parser/oracle-55.txt");
     }
 
+    @Test
     public void test_59() throws Exception {
         exec_test("bvt/parser/oracle-59.txt");
     }
@@ -70,7 +72,7 @@ public class OracleSQLParserResourceTest extends TestCase {
 
         System.out.println(text);
         if (expect != null && !expect.isEmpty()) {
-            Assert.assertEquals(expect, text.trim());
+            assertEquals(expect, text.trim());
         }
 
     }

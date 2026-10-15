@@ -16,18 +16,16 @@
 package com.alibaba.druid.sql.parser;
 
 import com.alibaba.druid.DbType;
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitorUtils;
 import com.alibaba.druid.sql.visitor.ParameterizedVisitor;
-import com.alibaba.druid.util.JdbcConstants;
-import com.alibaba.druid.util.JdbcUtils;
+import org.junit.jupiter.api.Test;
 
-public class ExportAndParameterizedVisitorTestCase extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class ExportAndParameterizedVisitorTestCase {
+    @Test
     public void testParameterizedVisitor() {
         // final String sql =
         // "insert  into tab01(a,b,c) values('a1','bXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX1',5)";
@@ -55,7 +53,7 @@ public class ExportAndParameterizedVisitorTestCase extends TestCase {
                 System.out.println("after:" + out);
                 System.out.println("size:" + vistor2.getParameters());
                 final int expectedSize = (Integer) arr[1];
-                Assert.assertEquals(expectedSize, vistor2.getParameters().size());
+                assertEquals(expectedSize, vistor2.getParameters().size());
             }
         }
     }

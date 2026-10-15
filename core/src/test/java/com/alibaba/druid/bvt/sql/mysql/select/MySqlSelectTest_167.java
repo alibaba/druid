@@ -8,6 +8,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_167 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select 1 30days";
@@ -19,5 +21,4 @@ public class MySqlSelectTest_167 extends MysqlTest {
 
         assertEquals("SELECT 1 AS 30days", stmt.toString());
     }
-
 }

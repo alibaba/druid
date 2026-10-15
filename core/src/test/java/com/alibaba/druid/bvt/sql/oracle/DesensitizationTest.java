@@ -2,12 +2,15 @@ package com.alibaba.druid.bvt.sql.oracle;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by wenshao on 19/06/2017.
  */
-public class DesensitizationTest extends TestCase {
+public class DesensitizationTest {
+    @Test
     public void test_for_desensitization() throws Exception {
         String sql = "select id, name from mytable where id = 3";
 
@@ -25,6 +28,7 @@ public class DesensitizationTest extends TestCase {
                 "WHERE id = ?", desens_Sql);
     }
 
+    @Test
     public void test_for_desensitization_1() throws Exception {
         String sql = "select id, name from \"mytable\" where id = 3";
 

@@ -15,19 +15,18 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import org.junit.jupiter.api.Test;
 
-public class MySqlWallTest132 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlWallTest132 {
+    @Test
     public void test_false() throws Exception {
         WallProvider provider = new MySqlWallProvider();
         provider.getConfig().setCommentAllow(true);
 
-        Assert.assertFalse(provider.checkValid("select * from t where id = 1 UNION SELECT GROUP_CONCAT(table_name) FROM information_schema.tables WHERE version=10;"));
+        assertFalse(provider.checkValid("select * from t where id = 1 UNION SELECT GROUP_CONCAT(table_name) FROM information_schema.tables WHERE version=10;"));
     }
-
 }

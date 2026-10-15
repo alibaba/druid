@@ -22,6 +22,8 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlCreateTableTest90 extends MysqlTest {
     public void test_one() throws Exception {
         String sql = "CREATE TABLE `g_platform_payway` (\n" +

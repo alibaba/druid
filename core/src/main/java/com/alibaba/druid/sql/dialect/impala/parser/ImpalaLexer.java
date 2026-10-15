@@ -6,15 +6,20 @@ import com.alibaba.druid.sql.parser.Keywords;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.Token;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class ImpalaLexer extends HiveLexer {
+    static final Keywords IMPALA_KEYWORDS;
+    static {
+        Map<String, Token> map = new HashMap<>(HiveLexer.HIVE_KEYWORDS.getKeywords());
+        map.put("UPSERT", Token.UPSERT);
+        IMPALA_KEYWORDS = new Keywords(map);
+    }
+
     @Override
     protected Keywords loadKeywords() {
-        Keywords keywords = super.loadKeywords();
-        Map<String, Token> map = keywords.getKeywords();
-        map.put("UPSERT", Token.UPSERT);
-        return new Keywords(map);
+        return IMPALA_KEYWORDS;
     }
 
     public ImpalaLexer(String input) {

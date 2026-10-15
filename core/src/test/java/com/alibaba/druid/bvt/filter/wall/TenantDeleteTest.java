@@ -15,37 +15,39 @@
  */
 package com.alibaba.druid.bvt.filter.wall;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.wall.WallCheckResult;
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class TenantDeleteTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class TenantDeleteTest {
     private String sql = "DELETE FROM orders WHERE FID = ?";
 
     private WallConfig config = new WallConfig();
 
+    @BeforeEach
     protected void setUp() throws Exception {
         config.setTenantTablePattern("*");
         config.setTenantColumn("tenant");
     }
 
+    @Test
     public void testMySql() throws Exception {
         WallProvider.setTenantValue(123);
         MySqlWallProvider provider = new MySqlWallProvider(config);
 
         WallProvider.setTenantValue("test");
         WallCheckResult checkResult = provider.check(sql);
-        Assert.assertEquals(0, checkResult.getViolations().size());
+        assertEquals(0, checkResult.getViolations().size());
 
         String resultSql = SQLUtils.toSQLString(checkResult.getStatementList(), JdbcConstants.MYSQL);
-        Assert.assertEquals("DELETE FROM orders" + //
+        assertEquals("DELETE FROM orders" +
                 "\nWHERE FID = ?", resultSql);
     }
 }

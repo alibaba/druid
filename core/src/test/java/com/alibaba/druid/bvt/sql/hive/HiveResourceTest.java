@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.hive;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.bvt.sql.SQLResourceTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class HiveResourceTest extends SQLResourceTest {
     public HiveResourceTest() {
@@ -28,5 +28,4 @@ public class HiveResourceTest extends SQLResourceTest {
     public void hive_parse() throws Exception {
         fileTest(0, 999, i -> "bvt/parser/hive/" + i + ".txt");
     }
-
 }

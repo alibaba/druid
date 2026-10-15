@@ -11,6 +11,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_151 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select !!1, ! ! 1";
@@ -22,10 +24,7 @@ public class MySqlSelectTest_151 extends MysqlTest {
 
         assertEquals("SELECT !1, !1", stmt.toString());
 
-        assertEquals("SELECT !?, !?"
-                , ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, VisitorFeature.OutputParameterizedZeroReplaceNotUseOriginalSql));
-
-
+        assertEquals("SELECT !?, !?",
+                ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, VisitorFeature.OutputParameterizedZeroReplaceNotUseOriginalSql));
     }
-
 }

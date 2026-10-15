@@ -11,9 +11,9 @@ import java.util.Map;
 
 public class DorisLexer
         extends StarRocksLexer {
-    @Override
-    protected Keywords loadKeywords() {
-        Map<String, Token> map = new HashMap<String, Token>();
+    static final Keywords DORIS_KEYWORDS;
+    static {
+        Map<String, Token> map = new HashMap<>();
 
         map.putAll(Keywords.DEFAULT_KEYWORDS.getKeywords());
 
@@ -45,7 +45,12 @@ public class DorisLexer
         map.put("RLIKE", Token.RLIKE);
         map.put("OVERWRITE", Token.OVERWRITE);
 
-        return new Keywords(map);
+        DORIS_KEYWORDS = new Keywords(map);
+    }
+
+    @Override
+    protected Keywords loadKeywords() {
+        return DORIS_KEYWORDS;
     }
 
     public DorisLexer(String input, SQLParserFeature... features) {

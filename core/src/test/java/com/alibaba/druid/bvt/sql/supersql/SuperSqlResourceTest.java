@@ -2,10 +2,9 @@ package com.alibaba.druid.bvt.sql.supersql;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.bvt.sql.SQLResourceTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class SuperSqlResourceTest extends SQLResourceTest {
-
     public SuperSqlResourceTest() {
         super(DbType.supersql);
     }

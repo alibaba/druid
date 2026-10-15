@@ -23,6 +23,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleCreateSynonymTest_2 extends OracleTest {
     public void test_0() throws Exception {
         String sql = //
@@ -43,8 +45,8 @@ public class OracleCreateSynonymTest_2 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        assertEquals("CREATE OR REPLACE SYNONYM CSCLIENT.ECC_CUST_AREA_INFO FOR ECC_CUST.ECC_CUST_AREA_INFO"
-                , SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+        assertEquals("CREATE OR REPLACE SYNONYM CSCLIENT.ECC_CUST_AREA_INFO FOR ECC_CUST.ECC_CUST_AREA_INFO",
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         assertEquals(0, visitor.getTables().size());
 

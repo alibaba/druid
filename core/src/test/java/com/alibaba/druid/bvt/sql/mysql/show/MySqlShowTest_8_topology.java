@@ -21,6 +21,8 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlShowTest_8_topology extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SHOW TOPOLOGY from t";
@@ -36,7 +38,6 @@ public class MySqlShowTest_8_topology extends MysqlTest {
         assertEquals(0, visitor.getTables().size());
         assertEquals(0, visitor.getColumns().size());
         assertEquals(0, visitor.getConditions().size());
-
     }
 
     public void test_1() throws Exception {
@@ -53,6 +54,5 @@ public class MySqlShowTest_8_topology extends MysqlTest {
         assertEquals(0, visitor.getTables().size());
         assertEquals(0, visitor.getColumns().size());
         assertEquals(0, visitor.getConditions().size());
-
     }
 }

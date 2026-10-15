@@ -15,6 +15,10 @@
  */
 package com.alibaba.druid.pool;
 
+import com.alibaba.druid.util.JdbcUtils;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -22,13 +26,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Random;
 
-import junit.framework.TestCase;
-
-import com.alibaba.druid.util.JdbcUtils;
-
-public class TestPoolStatement extends TestCase {
+public class TestPoolStatement {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:oracle:thin:@a.b.c.d:1521:testconn");
@@ -47,6 +48,7 @@ public class TestPoolStatement extends TestCase {
         dataSource.setPassword("alibaba");
     }
 
+    @Test
     public void test_0() throws Exception {
         stat();
         long startMillis = System.currentTimeMillis();
@@ -81,6 +83,7 @@ public class TestPoolStatement extends TestCase {
         stmt.setLong(1, new Random().nextInt(1000 * 100));
         ResultSet rs = stmt.executeQuery();
         while (rs.next()) {
+            // Process result set rows
         }
         rs.close();
         stmt.close();

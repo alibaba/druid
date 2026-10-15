@@ -23,6 +23,8 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleCreateTypeTest1 extends OracleTest {
     public void test_0() throws Exception {
         String sql = //
@@ -32,7 +34,7 @@ public class OracleCreateTypeTest1 extends OracleTest {
                         "  begin\n" +
                         "      cs_ctx := strcat_type( null );\n" +
                         "      return ODCIConst.Success;\n" +
-                        "  end;"; //
+                        "  end;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

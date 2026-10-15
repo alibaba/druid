@@ -3,7 +3,7 @@ package com.alibaba.druid.bvt.sql.starrocks.issues;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.dialect.starrocks.parser.StarRocksStatementParser;
 import com.alibaba.druid.sql.parser.SQLCreateTableParser;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @Author: Ekko
@@ -12,7 +12,6 @@ import org.junit.Test;
  * @see <a href="https://docs.starrocks.io/zh/docs/sql-reference/sql-statements/data-definition/CREATE_TABLE/">CREATE TABLE</a>
  */
 public class Issue6029 {
-
     static final String[] caseList = new String[]{
             // 1.普通建表语句
             "CREATE TABLE IF NOT EXISTS `detailDemo` (\n" +
@@ -211,5 +210,4 @@ public class Issue6029 {
             System.out.println(result);
         }
     }
-
 }

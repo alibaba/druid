@@ -23,6 +23,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class Oracle_pl_for_1 extends OracleTest {
     public void test_0() throws Exception {
         String sql = "DECLARE\n" +
@@ -46,7 +48,7 @@ public class Oracle_pl_for_1 extends OracleTest {
                 "    DBMS_OUTPUT.PUT_LINE\n" +
                 "      ('Name = ' || names(i) || ', salary = ' || sals(i));\n" +
                 "  END LOOP;\n" +
-                "END;"; //
+                "END;";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
         SQLStatement stmt = statementList.get(0);
@@ -66,14 +68,14 @@ public class Oracle_pl_for_1 extends OracleTest {
 
         assertEquals(0, visitor.getTables().size());
 
-//        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
-//        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("emp_name")));
+//        assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
+//        assertTrue(visitor.getTables().containsKey(new TableStat.Name("emp_name")));
 
-//        Assert.assertEquals(7, visitor.getColumns().size());
-//        Assert.assertEquals(3, visitor.getConditions().size());
-//        Assert.assertEquals(1, visitor.getRelationships().size());
+//        assertEquals(7, visitor.getColumns().size());
+//        assertEquals(3, visitor.getConditions().size());
+//        assertEquals(1, visitor.getRelationships().size());
 
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
+        // assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
 
         {
             String output = SQLUtils.toOracleString(stmt);

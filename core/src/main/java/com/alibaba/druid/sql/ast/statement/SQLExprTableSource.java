@@ -35,6 +35,7 @@ public class SQLExprTableSource extends SQLTableSourceImpl implements SQLReplace
     protected SchemaObject schemaObject;
 
     protected List<SQLName> columns;
+    protected boolean lateral;
 
     public SQLExprTableSource() {
     }
@@ -65,6 +66,14 @@ public class SQLExprTableSource extends SQLTableSourceImpl implements SQLReplace
 
     public void setExpr(String name) {
         this.setExpr(new SQLIdentifierExpr(name));
+    }
+
+    public boolean isLateral() {
+        return lateral;
+    }
+
+    public void setLateral(boolean lateral) {
+        this.lateral = lateral;
     }
 
     public SQLTableSampling getSampling() {
@@ -287,6 +296,7 @@ public class SQLExprTableSource extends SQLTableSourceImpl implements SQLReplace
 
     public void cloneTo(SQLExprTableSource x) {
         x.alias = alias;
+        x.lateral = lateral;
 
         if (expr != null) {
             x.setExpr(expr.clone());

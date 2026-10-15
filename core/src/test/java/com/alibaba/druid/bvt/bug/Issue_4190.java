@@ -1,14 +1,13 @@
 package com.alibaba.druid.bvt.bug;
 
-import org.junit.Test;
-
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import org.junit.jupiter.api.Test;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class Issue_4190 extends TestCase {
+public class Issue_4190 {
     @Test
     public void test_1() {
         String sql = "select Ülke, İsim\n"

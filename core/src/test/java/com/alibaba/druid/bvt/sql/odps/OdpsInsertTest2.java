@@ -1,12 +1,15 @@
 package com.alibaba.druid.bvt.sql.odps;
 
 import com.alibaba.druid.sql.SQLUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by wenshao on 2016/11/18.
  */
-public class OdpsInsertTest2 extends TestCase {
+public class OdpsInsertTest2 {
+    @Test
     public void test_for_insert_select_limit() throws Exception {
         String sql = "insert into table a select * from b limit 1";
         assertEquals("INSERT INTO TABLE a\n" +

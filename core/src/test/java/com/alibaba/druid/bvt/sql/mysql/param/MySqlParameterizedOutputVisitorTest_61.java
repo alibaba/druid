@@ -1,17 +1,20 @@
 package com.alibaba.druid.bvt.sql.mysql.param;
 
-import com.alibaba.fastjson2.JSON;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import com.alibaba.fastjson2.JSON;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
  * Created by wenshao on 16/9/23.
  */
-public class MySqlParameterizedOutputVisitorTest_61 extends TestCase {
+public class MySqlParameterizedOutputVisitorTest_61 {
+    @Test
     public void test_for_parameterize() throws Exception {
         String sql = "insert ignore into ktv_ibx_1690 (id, msg_id, cid, openid, gmt_create, gmt_modified, read_status, reach_status, create_at, type, tag, sender_id, extension, domain, at_me) " +
                 "VALUES " +
@@ -46,5 +49,4 @@ public class MySqlParameterizedOutputVisitorTest_61 extends TestCase {
                 "\t\t, now(), 2, 2, 1515032652532, 51\n" +
                 "\t\t, 0, 91605449, '', 'mingguo', 0)", rsql);
     }
-
 }

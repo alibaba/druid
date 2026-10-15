@@ -25,6 +25,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleInsertTest21_encoding_error extends OracleTest {
     public void test_0() throws Exception {
         String sql = "INSERT INTO  x1_use_agent (ID, company_name, company_id, amount, start_time, end_time, is_deleted,attr2) VALUES (seq_fee_use_agent.nextval,'\n" +
@@ -51,7 +53,7 @@ public class OracleInsertTest21_encoding_error extends OracleTest {
                         "\t, to_date((\n" +
                         "\t\tSELECT to_char(SYSDATE + INTERVAL '1' YEAR, 'yyyy-mm-dd HH24:mi:ss')\n" +
                         "\t\tFROM dual\n" +
-                        "\t), 'yyyy-mm-dd HH24:mi:ss'), '0', 'ZB20170831142805148890')",//
+                        "\t), 'yyyy-mm-dd HH24:mi:ss'), '0', 'ZB20170831142805148890')",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
@@ -69,5 +71,4 @@ public class OracleInsertTest21_encoding_error extends OracleTest {
 
         assertTrue(visitor.getColumns().contains(new TableStat.Column("x1_use_agent", "ID")));
     }
-
 }

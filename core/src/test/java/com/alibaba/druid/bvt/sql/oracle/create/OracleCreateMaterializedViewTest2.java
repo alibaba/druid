@@ -25,6 +25,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleCreateMaterializedViewTest2 extends OracleTest {
     public void test_types() throws Exception {
         String sql = //
@@ -58,7 +60,7 @@ public class OracleCreateMaterializedViewTest2 extends OracleTest {
                         "FROM times t, sales s, customers c\n" +
                         "WHERE s.time_id = t.time_id\n" +
                         "\tAND s.cust_id = c.cust_id\n" +
-                        "GROUP BY t.calendar_month_desc, c.cust_state_province;",//
+                        "GROUP BY t.calendar_month_desc, c.cust_state_province;",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

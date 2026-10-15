@@ -7,6 +7,8 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlCreateTableTest153_collate extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "CREATE TABLE `t_file` (\n" +
@@ -41,7 +43,6 @@ public class MySqlCreateTableTest153_collate extends MysqlTest {
         MySqlCreateTableStatement stmt = (MySqlCreateTableStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
-
 
         assertEquals("CREATE TABLE `t_file` (\n" +
                 "\t`id` BIGINT(20) NOT NULL AUTO_INCREMENT,\n" +
@@ -94,8 +95,5 @@ public class MySqlCreateTableTest153_collate extends MysqlTest {
                 ") collate = 'utf8mb4_bin' engine = InnoDB\n" +
                 "dbpartition by hash(`src_file_id`)\n" +
                 "tbpartition by hash(`src_file_id`) tbpartitions 2", stmt.toLowerCaseString());
-
     }
-
-
 }

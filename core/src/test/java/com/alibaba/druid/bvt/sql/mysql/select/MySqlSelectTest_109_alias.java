@@ -25,6 +25,7 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_109_alias extends MysqlTest {
     public void test_0() throws Exception {
@@ -52,5 +53,4 @@ public class MySqlSelectTest_109_alias extends MysqlTest {
         System.out.println("coditions : " + visitor.getConditions());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
     }
-
 }

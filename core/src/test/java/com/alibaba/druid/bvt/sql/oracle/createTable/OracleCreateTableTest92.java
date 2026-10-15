@@ -22,6 +22,8 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleCreateTableTest92 extends OracleTest {
     public void test_0() throws Exception {
         String sql = //
@@ -343,6 +345,5 @@ public class OracleCreateTableTest92 extends OracleTest {
                 "\t\t\tCELL_FLASH_CACHE DEFAULT\n" +
                 "\t\t)\n" +
                 ")", stmt.toString());
-
     }
 }

@@ -15,27 +15,30 @@
  */
 package com.alibaba.druid.bvt.filter.wall;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class WallInsertTest2 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class WallInsertTest2 {
     private String sql = "INSERT INTO T (F1, F2) VALUES (1, 2)";
 
     private WallConfig config = new WallConfig();
 
+    @BeforeEach
     protected void setUp() throws Exception {
         config.setInsertAllow(true);
     }
 
+    @Test
     public void testMySql() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateMySql(sql, config));
+        assertTrue(WallUtils.isValidateMySql(sql, config));
     }
 
+    @Test
     public void testORACLE() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateOracle(sql, config));
+        assertTrue(WallUtils.isValidateOracle(sql, config));
     }
 }

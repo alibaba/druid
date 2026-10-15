@@ -1,3 +1,12 @@
+SELECT sum(ret_amount) AS '应收金额'
+FROM test.test
+GROUP BY a ORDER BY '应收金额' DESC;
+--------------------
+SELECT sum(ret_amount) AS `应收金额`
+FROM test.test
+GROUP BY a
+ORDER BY `应收金额` DESC;
+------------------------------------------------------------------------------------------------------------------------
 select substr(${yesterday},1,4) 
 --------------------
 SELECT substr(${yesterday}, 1, 4)

@@ -3,9 +3,9 @@ package com.alibaba.druid.bvt.sql;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLType;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SQLParserUtilsTest {
     @Test

@@ -25,9 +25,9 @@ import static com.alibaba.druid.sql.parser.CharTypes.isIdentifierChar;
 import static com.alibaba.druid.sql.parser.Token.LITERAL_CHARS;
 
 public class OscarLexer extends Lexer {
-    @Override
-    protected Keywords loadKeywords() {
-        Map<String, Token> map = new HashMap<String, Token>();
+    static final Keywords OSCAR_KEYWORDS;
+    static {
+        Map<String, Token> map = new HashMap<>();
 
         map.putAll(Keywords.DEFAULT_KEYWORDS.getKeywords());
 
@@ -79,7 +79,12 @@ public class OscarLexer extends Lexer {
         map.put("TEMPORARY", Token.TEMPORARY);
         map.put("TEMP", Token.TEMP);
 
-        return new Keywords(map);
+        OSCAR_KEYWORDS = new Keywords(map);
+    }
+
+    @Override
+    protected Keywords loadKeywords() {
+        return OSCAR_KEYWORDS;
     }
 
     public OscarLexer(String input, SQLParserFeature... features) {

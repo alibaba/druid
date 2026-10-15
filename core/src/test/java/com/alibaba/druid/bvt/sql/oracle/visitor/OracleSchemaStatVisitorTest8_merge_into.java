@@ -20,13 +20,16 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class OracleSchemaStatVisitorTest8_merge_into extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OracleSchemaStatVisitorTest8_merge_into {
     private static final DbType dbType = JdbcConstants.ORACLE;
 
+    @Test
     public void test_0() throws Exception {
         String sql = "MERGE INTO (\n" +
                 "SELECT *\n" +
@@ -72,7 +75,5 @@ public class OracleSchemaStatVisitorTest8_merge_into extends TestCase {
         assertTrue(visitor.containsColumn("KPI_M_CW_INCOME_FACT_BAK", "THE_DATE"));
         assertTrue(visitor.containsColumn("KPI_M_CW_INCOME_FACT_BAK", "AREA_LEVEL"));
         assertTrue(visitor.containsColumn("KPI_M_CW_INCOME_FACT_BAK", "TYPE_ID"));
-
     }
-
 }

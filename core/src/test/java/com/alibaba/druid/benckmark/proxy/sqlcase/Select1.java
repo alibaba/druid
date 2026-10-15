@@ -15,14 +15,14 @@
  */
 package com.alibaba.druid.benckmark.proxy.sqlcase;
 
+import com.alibaba.druid.benckmark.proxy.BenchmarkCase;
+import com.alibaba.druid.benckmark.proxy.SQLExecutor;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-import org.junit.Assert;
-
-import com.alibaba.druid.benckmark.proxy.BenchmarkCase;
-import com.alibaba.druid.benckmark.proxy.SQLExecutor;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class Select1 extends BenchmarkCase {
     private String sql;
@@ -49,8 +49,8 @@ public class Select1 extends BenchmarkCase {
             value = rs.getInt(1);
             rowCount++;
         }
-        Assert.assertEquals(1, value);
-        Assert.assertEquals(1, rowCount);
+        assertEquals(1, value);
+        assertEquals(1, rowCount);
         rs.close();
         stmt.close();
     }
@@ -60,5 +60,4 @@ public class Select1 extends BenchmarkCase {
         conn.close();
         conn = null;
     }
-
 }

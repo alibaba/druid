@@ -15,11 +15,10 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallUtils;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * SQLServerWallTest
@@ -28,9 +27,10 @@ import com.alibaba.druid.wall.WallUtils;
  * @version 1.0, 2012-3-18
  * @see
  */
-public class MySqlWallTest_var_autoincrement extends TestCase {
+public class MySqlWallTest_var_autoincrement {
+    @Test
     public void test_true() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateMySql(//
-                "/* mysql-connector-java-5.? ( Revision: bzr.revision-id ) */SELECT @@session.auto_increment_increment")); //
+        assertTrue(WallUtils.isValidateMySql(//
+                "/* mysql-connector-java-5.? ( Revision: bzr.revision-id ) */SELECT @@session.auto_increment_increment"));
     }
 }

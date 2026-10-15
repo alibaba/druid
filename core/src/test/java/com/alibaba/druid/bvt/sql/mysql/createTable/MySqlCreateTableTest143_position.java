@@ -7,6 +7,8 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
  * @version 1.0
  * @ClassName MySqlCreateTableTest143_position
@@ -39,7 +41,6 @@ public class MySqlCreateTableTest143_position extends MysqlTest {
         MySqlCreateTableStatement stmt = (MySqlCreateTableStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
-
 
         assertEquals("CREATE TABLE `resume_position_portrait` (\n" +
                 "\t`resume_id` varchar(36) NOT NULL,\n" +
@@ -80,7 +81,5 @@ public class MySqlCreateTableTest143_position extends MysqlTest {
                 ") engine = InnoDB charset = utf8mb4\n" +
                 "dbpartition by hash(`resume_id`)\n" +
                 "tbpartition by hash(`resume_id`) tbpartitions 4", stmt.toLowerCaseString());
-
-
     }
 }

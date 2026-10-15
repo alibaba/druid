@@ -1,18 +1,19 @@
 package com.alibaba.druid.bvt.sql.eval;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
-public class EvalMethodAtanTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class EvalMethodAtanTest {
+    @Test
     public void test_reverse() throws Exception {
-        Assert.assertEquals(Math.atan(2), SQLEvalVisitorUtils.evalExpr(JdbcConstants.MYSQL, "atan(2)"));
-        Assert.assertEquals(Math.atan(-2), SQLEvalVisitorUtils.evalExpr(JdbcConstants.MYSQL, "atan(-2)"));
+        assertEquals(Math.atan(2), SQLEvalVisitorUtils.evalExpr(JdbcConstants.MYSQL, "atan(2)"));
+        assertEquals(Math.atan(-2), SQLEvalVisitorUtils.evalExpr(JdbcConstants.MYSQL, "atan(-2)"));
     }
 
+    @Test
     public void test_abs_error() throws Exception {
         Exception error = null;
         try {
@@ -20,9 +21,10 @@ public class EvalMethodAtanTest extends TestCase {
         } catch (Exception e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
     }
 
+    @Test
     public void test_abs_error_1() throws Exception {
         Exception error = null;
         try {
@@ -30,6 +32,6 @@ public class EvalMethodAtanTest extends TestCase {
         } catch (Exception e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
     }
 }

@@ -1,8 +1,6 @@
 package com.alibaba.druid.bvt.bug;
 
 import com.alibaba.druid.DbType;
-import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
@@ -11,11 +9,12 @@ import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-import java.util.List;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class Issue1865 extends TestCase {
+public class Issue1865 {
+    @Test
     public void test_for_select() throws Exception {
         final DbType dbType = JdbcConstants.MYSQL;
 
@@ -41,6 +40,7 @@ public class Issue1865 extends TestCase {
                 "WHERE id = 3", stmt.toString());
     }
 
+    @Test
     public void test_for_select_group() throws Exception {
         final DbType dbType = JdbcConstants.MYSQL;
 
@@ -62,6 +62,7 @@ public class Issue1865 extends TestCase {
                 "FROM t", stmt.toString());
     }
 
+    @Test
     public void test_for_delete() throws Exception {
         final DbType dbType = JdbcConstants.MYSQL;
 
@@ -84,6 +85,7 @@ public class Issue1865 extends TestCase {
                 "WHERE id = 3", stmt.toString());
     }
 
+    @Test
     public void test_for_delete_group() throws Exception {
         final DbType dbType = JdbcConstants.MYSQL;
 
@@ -106,6 +108,7 @@ public class Issue1865 extends TestCase {
                 "WHERE id = 3", stmt.toString());
     }
 
+    @Test
     public void test_for_update() throws Exception {
         final DbType dbType = JdbcConstants.MYSQL;
 
@@ -131,6 +134,7 @@ public class Issue1865 extends TestCase {
                 "WHERE id = 3", stmt.toString());
     }
 
+    @Test
     public void test_for_update_group() throws Exception {
         final DbType dbType = JdbcConstants.MYSQL;
 

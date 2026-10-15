@@ -24,6 +24,8 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlRevokeTest_ads_1 extends MysqlTest {
     public void test_doc_0() throws Exception {
         String sql = "REVOKE describe, select ON db_name.table_group_name FROM 'ALIYUN$account_name'@'%';";
@@ -143,7 +145,5 @@ public class MySqlRevokeTest_ads_1 extends MysqlTest {
                 stmt.toString());
         assertEquals("show grants for 'user'@'localhost'", //
                 stmt.toLowerCaseString());
-
     }
-
 }

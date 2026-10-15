@@ -4,13 +4,13 @@ import com.alibaba.druid.sql.repository.Schema;
 import com.alibaba.druid.sql.repository.SchemaObject;
 import com.alibaba.druid.sql.repository.SchemaRepository;
 import com.alibaba.druid.util.JdbcUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class MySqlRepCheckTest {
-    final private SchemaRepository repository = new SchemaRepository(JdbcUtils.MYSQL);
+    private final SchemaRepository repository = new SchemaRepository(JdbcUtils.MYSQL);
 
     @Test
     public void test_check() {

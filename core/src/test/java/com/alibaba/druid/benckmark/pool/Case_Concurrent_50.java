@@ -15,32 +15,31 @@
  */
 package com.alibaba.druid.benckmark.pool;
 
+import com.alibaba.druid.TestUtil;
+import com.alibaba.druid.pool.DruidDataSource;
+import org.apache.commons.dbcp.BasicDataSource;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import javax.sql.DataSource;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.text.NumberFormat;
 import java.util.concurrent.CountDownLatch;
 
-import javax.sql.DataSource;
-
-import junit.framework.TestCase;
-
-import org.apache.commons.dbcp.BasicDataSource;
-
-import com.alibaba.druid.TestUtil;
-import com.alibaba.druid.pool.DruidDataSource;
-
-public class Case_Concurrent_50 extends TestCase {
+public class Case_Concurrent_50 {
     private String jdbcUrl;
     private String user;
     private String password;
     private String driverClass;
-    private int initialSize = 0;
+    private int initialSize;
     private int minIdle = 3;
     private int maxIdle = 5;
     private int maxActive = 10;
     private String validationQuery = "SELECT 1";
-    private boolean testOnBorrow = false;
+    private boolean testOnBorrow;
 
     private long minEvictableIdleTimeMillis = 3000;
     public final int LOOP_COUNT = 5;
@@ -48,6 +47,7 @@ public class Case_Concurrent_50 extends TestCase {
 
     private final int THREAD_COUNT = 50;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
         user = "dragoon25";
@@ -55,6 +55,7 @@ public class Case_Concurrent_50 extends TestCase {
         driverClass = "com.alibaba.druid.mock.MockDriver";
     }
 
+    @Test
     public void test_0() throws Exception {
         final DruidDataSource dataSource = new DruidDataSource();
 
@@ -80,6 +81,7 @@ public class Case_Concurrent_50 extends TestCase {
         System.out.println();
     }
 
+    @Test
     public void test_1() throws Exception {
         final BasicDataSource dataSource = new BasicDataSource();
 

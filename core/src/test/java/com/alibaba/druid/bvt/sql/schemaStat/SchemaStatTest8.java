@@ -7,10 +7,12 @@ import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
-public class SchemaStatTest8 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class SchemaStatTest8 {
+    @Test
     public void test_schemaStat() throws Exception {
         String sql = "SELECT * FROM AQLQCAT " +
                 "JOIN AQLQCATB " +
@@ -30,7 +32,7 @@ public class SchemaStatTest8 extends TestCase {
 //        System.out.println(statVisitor.getGroupByColumns()); // group by
         System.out.println("relationships : " + statVisitor.getRelationships()); // group by
 
-        Assert.assertEquals(8, statVisitor.getColumns().size());
-        Assert.assertEquals(6, statVisitor.getConditions().size());
+        assertEquals(8, statVisitor.getColumns().size());
+        assertEquals(6, statVisitor.getConditions().size());
     }
 }

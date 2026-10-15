@@ -9,6 +9,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_135 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select (~(oct(mediumint_test  ))     )"
@@ -29,6 +31,4 @@ public class MySqlSelectTest_135 extends MysqlTest {
                 "\tAND (date_test)) IN (smallint_test, bigint_test, tinyint_1bit_test, (WEIGHT_STRING(? LEVEL 1 DESC))))\n" +
                 "FROM select_base_two_multi_db_multi_tb", ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL));
     }
-
-
 }

@@ -25,6 +25,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleCreateViewTest10_with_read_only extends OracleTest {
     public void test_types() throws Exception {
         String sql = //
@@ -48,7 +50,7 @@ public class OracleCreateViewTest10_with_read_only extends OracleTest {
                         "AS\n" +
                         "SELECT cust_last_name, nls_language, credit_limit\n" +
                         "FROM customers\n" +
-                        "WITH READ ONLY;",//
+                        "WITH READ ONLY;",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

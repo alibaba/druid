@@ -18,6 +18,8 @@ package com.alibaba.druid.bvt.sql.mysql.create;
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySQLCreateMaterializedViewTest_fail extends OracleTest {
     public void test1() throws Exception {
         String sql = "CREATE MATERIALIZED VIEW mymv (\n" +
@@ -29,7 +31,6 @@ public class MySQLCreateMaterializedViewTest_fail extends OracleTest {
                 "AS SELECT \n";
 
         failed(sql);
-
     }
 
     public void test2() throws Exception {
@@ -44,7 +45,6 @@ public class MySQLCreateMaterializedViewTest_fail extends OracleTest {
                 "AS SELECT id FROM base;";
 
         failed(sql);
-
     }
 
     public void test3() throws Exception {

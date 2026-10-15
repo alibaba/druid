@@ -1,11 +1,5 @@
 package com.alibaba.druid.pvt.support.monitor;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.JdbcSqlStatValue;
 import com.alibaba.druid.support.monitor.MonitorClient;
@@ -13,15 +7,20 @@ import com.alibaba.druid.support.monitor.dao.MonitorDaoJdbcImpl;
 import com.alibaba.druid.support.monitor.dao.MonitorDaoJdbcImpl.BeanInfo;
 import com.alibaba.druid.support.monitor.dao.MonitorDaoJdbcImpl.FieldInfo;
 import com.alibaba.druid.util.JdbcUtils;
-import com.alibaba.druid.wall.WallFunctionStatValue;
-import com.alibaba.druid.wall.WallProviderStatValue;
-import com.alibaba.druid.wall.WallSqlStatValue;
-import com.alibaba.druid.wall.WallTableStatValue;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class MonitorDaoJdbcImplTest extends TestCase {
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MonitorDaoJdbcImplTest {
     private DruidDataSource dataSource;
 
-    @Override
+        @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:h2:mem:test");
@@ -34,11 +33,12 @@ public class MonitorDaoJdbcImplTest extends TestCase {
         dataSource.init();
     }
 
-    @Override
+        @AfterEach
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
     }
 
+    @Test
     public void testBuildSql() throws Exception {
         MonitorDaoJdbcImpl dao = new MonitorDaoJdbcImpl();
         dao.setDataSource(dataSource);
@@ -62,7 +62,7 @@ public class MonitorDaoJdbcImplTest extends TestCase {
             for (JdbcSqlStatValue sqlStatValue : sqlList) {
                 System.out.println(sqlStatValue.getData());
             }
-            // Assert.assertEquals(11, sqlList.size());
+            // assertEquals(11, sqlList.size());
         }
 
         client.collectSql();
@@ -72,7 +72,7 @@ public class MonitorDaoJdbcImplTest extends TestCase {
             for (JdbcSqlStatValue sqlStatValue : sqlList) {
                 System.out.println(sqlStatValue.getData());
             }
-            // Assert.assertEquals(14, sqlList.size());
+            // assertEquals(14, sqlList.size());
         }
     }
 

@@ -19,10 +19,11 @@ import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
-import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleCreateIndexTest21 extends OracleTest {
     public void test_0() throws Exception {
@@ -65,12 +66,11 @@ public class OracleCreateIndexTest21 extends OracleTest {
                         "\tBUFFER_POOL DEFAULT\n" +
                         "\tFLASH_CACHE DEFAULT\n" +
                         "\tCELL_FLASH_CACHE DEFAULT\n" +
-                        ")"
-                , SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                        ")",
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         assertEquals(1, visitor.getTables().size());
 
         assertEquals(2, visitor.getColumns().size());
-
     }
 }

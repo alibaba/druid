@@ -21,6 +21,8 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class HiveCreateTableTest_49_dla
         extends OracleTest {
     public void test_0() throws Exception {
@@ -48,5 +50,4 @@ public class HiveCreateTableTest_49_dla
 
         assertEquals(stmt.toString(), SQLUtils.parseSingleStatement(stmt.toString(), DbType.hive, SQLParserFeature.KeepComments).toString());
     }
-
 }

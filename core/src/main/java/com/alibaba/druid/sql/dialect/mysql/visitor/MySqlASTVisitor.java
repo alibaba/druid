@@ -238,13 +238,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
         return true;
     }
 
-    default void endVisit(MySqlResetStatement x) {
-    }
-
-    default boolean visit(MySqlResetStatement x) {
-        return true;
-    }
-
     default void endVisit(MySqlCreateUserStatement x) {
     }
 

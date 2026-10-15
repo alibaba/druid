@@ -25,6 +25,7 @@ import com.alibaba.druid.wall.WallUtils;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleSelectTest117_bigunion extends MysqlTest {
     public void test_small_10() throws Exception {
@@ -82,7 +83,6 @@ public class OracleSelectTest117_bigunion extends MysqlTest {
                 "\tFROM dual\n" +
                 ") ux_x", stmt.toString());
     }
-
 
     public void test_big_100000() throws Exception {
         StringBuilder buf = new StringBuilder();

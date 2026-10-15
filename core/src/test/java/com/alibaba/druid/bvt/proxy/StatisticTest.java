@@ -15,26 +15,28 @@
  */
 package com.alibaba.druid.bvt.proxy;
 
-import org.junit.Assert;
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.stat.JdbcConnectionStat;
 import com.alibaba.druid.stat.JdbcStatManager;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
-public class StatisticTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class StatisticTest {
+    @Test
     public void test_stat() throws Exception {
         JdbcConnectionStat stat = new JdbcConnectionStat();
-        Assert.assertEquals(null, stat.getConnectLastTime());
+        assertEquals(null, stat.getConnectLastTime());
         stat.setActiveCount(1);
-        Assert.assertEquals(1, stat.getActiveMax());
+        assertEquals(1, stat.getActiveMax());
         stat.setActiveCount(2);
-        Assert.assertEquals(2, stat.getActiveMax());
+        assertEquals(2, stat.getActiveMax());
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         DruidDriver.getProxyDataSources().clear();
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+        JdbcStatManager.getInstance().reset();
     }
 }

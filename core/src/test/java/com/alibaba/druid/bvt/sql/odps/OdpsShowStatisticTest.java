@@ -1,21 +1,21 @@
 package com.alibaba.druid.bvt.sql.odps;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.odps.parser.OdpsStatementParser;
 import com.alibaba.druid.sql.parser.Token;
+import org.junit.jupiter.api.Test;
 
-public class OdpsShowStatisticTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OdpsShowStatisticTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "show statistic secods.xxx";
         OdpsStatementParser parser = new OdpsStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toOdpsString(stmt);
-        Assert.assertEquals("SHOW STATISTIC secods.xxx", output);
+        assertEquals("SHOW STATISTIC secods.xxx", output);
     }
 }

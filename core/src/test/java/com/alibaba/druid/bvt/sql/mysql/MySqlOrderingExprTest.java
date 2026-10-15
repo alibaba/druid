@@ -20,14 +20,15 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectGroupByClause;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
+import org.junit.jupiter.api.Test;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author lizongbo
  */
-public class MySqlOrderingExprTest extends TestCase {
-
+public class MySqlOrderingExprTest {
+    @Test
     public void test_order_column_0() throws Exception {
         String sql = "SELECT task_id, task_name FROM table_task WHERE task_count > 20  AND (task_date = '20230306'   OR task_date = '20230307') GROUP BY task_id ASC";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -39,5 +40,4 @@ public class MySqlOrderingExprTest extends TestCase {
         System.out.println(groupByColumnName);
         assertEquals("task_id ASC", groupByColumnName);
     }
-
 }

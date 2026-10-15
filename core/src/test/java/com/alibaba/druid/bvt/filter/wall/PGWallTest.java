@@ -1,14 +1,14 @@
 package com.alibaba.druid.bvt.filter.wall;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallUtils;
+import org.junit.jupiter.api.Test;
 
-public class PGWallTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class PGWallTest {
+    @Test
     public void test_false() throws Exception {
-        Assert.assertTrue(WallUtils.isValidatePostgres(//
-                "select wm_concat(article_id) over() from t_nds_web_article")); //
+        assertTrue(WallUtils.isValidatePostgres(//
+                "select wm_concat(article_id) over() from t_nds_web_article"));
     }
 }

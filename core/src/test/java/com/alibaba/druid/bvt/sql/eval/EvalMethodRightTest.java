@@ -1,13 +1,14 @@
 package com.alibaba.druid.bvt.sql.eval;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
-public class EvalMethodRightTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class EvalMethodRightTest {
+    @Test
     public void test_ascii() throws Exception {
-        Assert.assertEquals("rbar", SQLEvalVisitorUtils.evalExpr(JdbcConstants.MYSQL, "right('foobarbar', 4)"));
+        assertEquals("rbar", SQLEvalVisitorUtils.evalExpr(JdbcConstants.MYSQL, "right('foobarbar', 4)"));
     }
 }

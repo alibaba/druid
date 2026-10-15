@@ -18,12 +18,13 @@ package com.alibaba.druid.bvt.sql.mysql;
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlExplainStatement;
-import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * See https://dev.mysql.com/doc/refman/5.7/en/explain.html for test cases.
@@ -190,5 +191,4 @@ public class MySqlExplainTest extends MysqlTest {
     private static void assertHasSeenTableColumn(MySqlSchemaStatVisitor visitor, String tableName, String columnName) {
         assertTrue(visitor.getColumns().contains(new TableStat.Column(tableName, columnName)));
     }
-
 }

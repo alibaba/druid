@@ -1,15 +1,5 @@
 package com.alibaba.druid.bvt.filter;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Types;
-
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.mock.MockDriver;
@@ -17,10 +7,23 @@ import com.alibaba.druid.mock.MockStatement;
 import com.alibaba.druid.mock.MockStatementBase;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class FilterChainImplTest3 extends TestCase {
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Types;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class FilterChainImplTest3 {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
 
@@ -47,41 +50,46 @@ public class FilterChainImplTest3 extends TestCase {
         dataSource.init();
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
     }
 
+    @Test
     public void test_executeQuery() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("select ?");
         stmt.setNull(1, Types.VARCHAR);
-        Assert.assertNull(stmt.executeQuery());
+        assertNull(stmt.executeQuery());
         stmt.close();
         conn.close();
     }
 
+    @Test
     public void test_executeQuery_2() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareCall("select ?");
         stmt.setNull(1, Types.VARCHAR);
-        Assert.assertNull(stmt.executeQuery());
+        assertNull(stmt.executeQuery());
         stmt.close();
         conn.close();
     }
 
+    @Test
     public void test_executeQuery_3() throws Exception {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
-        Assert.assertNull(stmt.executeQuery("select 1"));
+        assertNull(stmt.executeQuery("select 1"));
         stmt.close();
         conn.close();
     }
 
+    @Test
     public void test_execute() throws Exception {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
         stmt.execute("select 1");
-        Assert.assertNull(stmt.getResultSet());
+        assertNull(stmt.getResultSet());
         stmt.close();
         conn.close();
     }

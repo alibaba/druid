@@ -19,10 +19,12 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
-public class MySqlAlterTableTest32 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlAlterTableTest32 {
+    @Test
     public void test_alter_add_key() throws Exception {
         String sql = "ALTER TABLE src.`part_tab` DISCARD PARTITION p10 TABLESPACE";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -30,7 +32,7 @@ public class MySqlAlterTableTest32 extends TestCase {
         parser.match(Token.EOF);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("ALTER TABLE src.`part_tab`\n" +
+        assertEquals("ALTER TABLE src.`part_tab`\n" +
                 "\tDISCARD PARTITION p10 TABLESPACE", output);
     }
 }

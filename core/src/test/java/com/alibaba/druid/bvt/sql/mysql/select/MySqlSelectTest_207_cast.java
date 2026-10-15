@@ -22,6 +22,8 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_207_cast extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SELECT  a.key_label as keyLabel,\n" +
@@ -35,7 +37,6 @@ public class MySqlSelectTest_207_cast extends MysqlTest {
                 "    WHERE   a.key_label is not null\n" +
                 "     AND  b.com_id = a.com_id\n" +
                 "     AND  a.key_stats_cd = 'Y'";
-
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -58,8 +59,5 @@ public class MySqlSelectTest_207_cast extends MysqlTest {
         assertEquals(9, visitor.getColumns().size());
         assertEquals(4, visitor.getConditions().size());
         assertEquals(0, visitor.getOrderByColumns().size());
-
-
     }
-
 }

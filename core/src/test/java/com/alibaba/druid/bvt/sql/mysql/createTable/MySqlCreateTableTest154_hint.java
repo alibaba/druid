@@ -7,6 +7,8 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlCreateTableTest154_hint
         extends MysqlTest {
     public void test_0() throws Exception {
@@ -25,7 +27,6 @@ public class MySqlCreateTableTest154_hint
 
         assertEquals(1, statementList.size());
 
-
         assertEquals("CREATE TABLE `ngram_2_t1_1` (\n" +
                 "\t`id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,\n" +
                 "\t`title` varchar(200) DEFAULT NULL,\n" +
@@ -43,8 +44,5 @@ public class MySqlCreateTableTest154_hint
                 "\tfulltext key `ft_content` (`content`),\n" +
                 "\tfulltext key `ft_title` (`title`)\n" +
                 ") engine = InnoDB auto_increment = 3 charset = gb2312", stmt.toLowerCaseString());
-
     }
-
-
 }

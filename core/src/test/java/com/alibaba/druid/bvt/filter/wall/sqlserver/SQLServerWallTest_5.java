@@ -15,12 +15,11 @@
  */
 package com.alibaba.druid.bvt.filter.wall.sqlserver;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.SQLServerWallProvider;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * SQLServerWallTest
@@ -29,17 +28,17 @@ import com.alibaba.druid.wall.spi.SQLServerWallProvider;
  * @version 1.0, 2012-3-18
  * @see
  */
-public class SQLServerWallTest_5 extends TestCase {
+public class SQLServerWallTest_5 {
+    @Test
     public void test_true() throws Exception {
         WallProvider provider = new SQLServerWallProvider();
 
         provider.getConfig().setSelectHavingAlwayTrueCheck(true);
 
-        Assert.assertFalse(provider.checkValid(//
+        assertFalse(provider.checkValid(//
                 "delete t where LEN(HOST_NAME()) > 0"));
 
-        Assert.assertEquals(1, provider.getTableStats().size());
-        Assert.assertTrue(provider.getTableStats().containsKey("t"));
+        assertEquals(1, provider.getTableStats().size());
+        assertTrue(provider.getTableStats().containsKey("t"));
     }
-
 }

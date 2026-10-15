@@ -30,6 +30,15 @@ public class SQLServerExecStatement extends SQLServerStatementImpl implements SQ
     private SQLName returnStatus;
     private SQLName moduleName;
     private List<SQLServerParameter> parameters = new ArrayList<SQLServerParameter>();
+    private boolean recompile;
+
+    public boolean isRecompile() {
+        return recompile;
+    }
+
+    public void setRecompile(boolean recompile) {
+        this.recompile = recompile;
+    }
 
     public SQLName getModuleName() {
         return moduleName;

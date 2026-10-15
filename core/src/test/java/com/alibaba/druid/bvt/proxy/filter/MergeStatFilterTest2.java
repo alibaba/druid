@@ -15,28 +15,32 @@
  */
 package com.alibaba.druid.bvt.proxy.filter;
 
+import com.alibaba.druid.pool.DruidDataSource;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.sql.Connection;
 import java.sql.Statement;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Assert;
-
-import com.alibaba.druid.pool.DruidDataSource;
-
-public class MergeStatFilterTest2 extends TestCase {
+public class MergeStatFilterTest2 {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xx");
         dataSource.setFilters("mergeStat");
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
     }
 
+    @Test
     public void test_merge() throws Exception {
         {
             String sql = "select * from t where id = 3 or id = 5 or id = 7";
@@ -60,8 +64,7 @@ public class MergeStatFilterTest2 extends TestCase {
             conn.close();
         }
 
-        Assert.assertEquals(1, dataSource.getDataSourceStat().getSqlStatMap()
+        assertEquals(1, dataSource.getDataSourceStat().getSqlStatMap()
                 .size());
     }
-
 }

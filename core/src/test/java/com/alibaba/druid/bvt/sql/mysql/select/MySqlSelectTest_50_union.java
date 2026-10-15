@@ -23,6 +23,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_50_union extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select * from (\n" +
@@ -30,7 +32,6 @@ public class MySqlSelectTest_50_union extends MysqlTest {
                 "UNION\n" +
                 "select seller_name from a where id < 100\n" +
                 ") as temp limit 10";
-
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL, true);
         SQLStatement stmt = statementList.get(0);

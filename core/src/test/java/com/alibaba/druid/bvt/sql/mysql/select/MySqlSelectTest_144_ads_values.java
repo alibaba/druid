@@ -9,6 +9,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_144_ads_values extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SELECT * FROM (\n" +
@@ -36,9 +38,7 @@ public class MySqlSelectTest_144_ads_values extends MysqlTest {
                         "\tVALUES (?, ?),\n" +
                         "\t(?, ?),\n" +
                         "\t(?, ?)\n" +
-                        ") AS t (id, name)"
-                , ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, VisitorFeature.OutputParameterizedZeroReplaceNotUseOriginalSql));
+                        ") AS t (id, name)",
+                ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, VisitorFeature.OutputParameterizedZeroReplaceNotUseOriginalSql));
     }
-
-
 }

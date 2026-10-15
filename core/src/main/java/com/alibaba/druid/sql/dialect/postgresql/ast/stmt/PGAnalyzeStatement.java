@@ -65,8 +65,6 @@ public class PGAnalyzeStatement extends SQLStatementImpl implements PGSQLStateme
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor instanceof PGASTVisitor) {
             accept0((PGASTVisitor) visitor);
-        } else {
-            super.accept0(visitor);
         }
     }
 

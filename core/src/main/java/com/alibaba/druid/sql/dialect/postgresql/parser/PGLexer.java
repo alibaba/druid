@@ -18,6 +18,7 @@ package com.alibaba.druid.sql.dialect.postgresql.parser;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.parser.*;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,9 +28,17 @@ import static com.alibaba.druid.sql.parser.DialectFeature.ParserFeature.*;
 import static com.alibaba.druid.sql.parser.Token.LITERAL_CHARS;
 
 public class PGLexer extends Lexer {
-    @Override
-    protected Keywords loadKeywords() {
-        Map<String, Token> map = new HashMap<String, Token>();
+    public static final Keywords PG_KEYWORDS;
+    public static final DialectFeature PG_FEATURE = new DialectFeature(
+            Arrays.asList(
+                    ScanVariableGreaterThan,
+                    SQLDateExpr,
+                    ParseStatementListWhen
+            ),
+            null
+    );
+    static {
+        Map<String, Token> map = new HashMap<>();
 
         map.putAll(Keywords.DEFAULT_KEYWORDS.getKeywords());
 
@@ -74,7 +83,12 @@ public class PGLexer extends Lexer {
         map.put("INTERVAL", Token.INTERVAL);
         map.put("LANGUAGE", Token.LANGUAGE);
 
-        return new Keywords(map);
+        PG_KEYWORDS = new Keywords(map);
+    }
+
+    @Override
+    protected Keywords loadKeywords() {
+        return PG_KEYWORDS;
     }
 
     public PGLexer(String input, SQLParserFeature... features) {
@@ -258,11 +272,6 @@ public class PGLexer extends Lexer {
 
     @Override
     protected void initDialectFeature() {
-        super.initDialectFeature();
-        this.dialectFeature.configFeature(
-                ScanVariableGreaterThan,
-                SQLDateExpr,
-                ParseStatementListWhen
-        );
+        this.dialectFeature = PG_FEATURE;
     }
 }

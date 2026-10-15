@@ -24,6 +24,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleCreateTypeTest11 extends OracleTest {
     public void test_types() throws Exception {
         String sql = "CREATE TYPE BODY rational\n" +
@@ -54,7 +56,6 @@ public class OracleCreateTypeTest11 extends OracleTest {
 
         System.out.println(sql);
 
-
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
@@ -81,7 +82,7 @@ public class OracleCreateTypeTest11 extends OracleTest {
                         "\tBEGIN\n" +
                         "\t\tRETURN r;\n" +
                         "\tEND;\n" +
-                        "END;",//
+                        "END;",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

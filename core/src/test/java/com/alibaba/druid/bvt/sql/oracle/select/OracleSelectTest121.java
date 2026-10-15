@@ -23,6 +23,7 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleSelectTest121 extends MysqlTest {
     public void test_0() throws Exception {
@@ -100,5 +101,4 @@ public class OracleSelectTest121 extends MysqlTest {
                 "PIVOT (MAX(CNT) FOR HOUR IN (? AS \"TIME_0\", ? AS \"TIME_1\", ? AS \"TIME_2\", ? AS \"TIME_3\", ? AS \"TIME_4\", ? AS \"TIME_5\", ? AS \"TIME_6\", ? AS \"TIME_7\", ? AS \"TIME_8\", ? AS \"TIME_9\", ? AS \"TIME_10\", ? AS \"TIME_11\", ? AS \"TIME_12\", ? AS \"TIME_13\", ? AS \"TIME_14\", ? AS \"TIME_15\", ? AS \"TIME_16\", ? AS \"TIME_17\", ? AS \"TIME_18\", ? AS \"TIME_19\", ? AS \"TIME_20\", ? AS \"TIME_21\", ? AS \"TIME_22\", ? AS \"TIME_23\", ? AS \"TIME_ALL\")) T2\n" +
                 "ORDER BY DATE_TYPE", stmt.toString());
     }
-
 }

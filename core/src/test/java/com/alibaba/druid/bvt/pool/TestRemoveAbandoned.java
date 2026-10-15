@@ -15,19 +15,22 @@
  */
 package com.alibaba.druid.bvt.pool;
 
-import java.sql.Connection;
-
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class TestRemoveAbandoned extends TestCase {
+import java.sql.Connection;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class TestRemoveAbandoned {
     private MockDriver driver;
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         driver = new MockDriver();
 
@@ -46,26 +49,27 @@ public class TestRemoveAbandoned extends TestCase {
         dataSource.setTestOnBorrow(false);
         dataSource.setValidationQuery("SELECT 1");
         dataSource.setFilters("stat");
-
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        DruidDataSourceStatManager.clear();
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        DruidDataSourceStatManager.clear();
     }
 
+    @Test
     public void test_removeAbandoned() throws Exception {
         Connection conn = dataSource.getConnection();
-        Assert.assertEquals(1, dataSource.getActiveCount());
-        Assert.assertEquals(0, dataSource.getPoolingCount());
+        assertEquals(1, dataSource.getActiveCount());
+        assertEquals(0, dataSource.getPoolingCount());
 
         // 超时之后，连接自动关闭
         Thread.sleep(100);
-        Assert.assertTrue(conn.isClosed());
+        assertTrue(conn.isClosed());
 
-        Assert.assertEquals(1, dataSource.getRemoveAbandonedCount());
-        Assert.assertEquals(0, dataSource.getActiveCount());
-        Assert.assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(1, dataSource.getRemoveAbandonedCount());
+        assertEquals(0, dataSource.getActiveCount());
+        assertEquals(1, dataSource.getPoolingCount());
     }
 }

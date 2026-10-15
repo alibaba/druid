@@ -21,25 +21,28 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
-public class MySqlAlterTableDropIndex_1 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlAlterTableDropIndex_1 {
+    @Test
     public void test_alter_first() throws Exception {
         String sql = "ALTER TABLE `test`.`tb1` DROP INDEX `ix`, DROP INDEX `ix2` ;";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
 
-        Assert.assertEquals("ALTER TABLE `test`.`tb1`" + //
-                "\n\tDROP INDEX `ix`," + //
+        assertEquals("ALTER TABLE `test`.`tb1`" +
+                "\n\tDROP INDEX `ix`," +
                 "\n\tDROP INDEX `ix2`;", SQLUtils.toMySqlString(stmt));
 
-        Assert.assertEquals("alter table `test`.`tb1`" + //
-                "\n\tdrop index `ix`," + //
+        assertEquals("alter table `test`.`tb1`" +
+                "\n\tdrop index `ix`," +
                 "\n\tdrop index `ix2`;", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "ALTER TABLE customer DROP INDEX account_Index, DROP INDEX index_name , ADD INDEX guid (guid) USING BTREE;";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -61,6 +64,7 @@ public class MySqlAlterTableDropIndex_1 extends TestCase {
         v.getFunctions();
     }
 
+    @Test
     public void test_overflow() throws Exception {
         Long l = Long.MIN_VALUE;
         System.out.println(l);

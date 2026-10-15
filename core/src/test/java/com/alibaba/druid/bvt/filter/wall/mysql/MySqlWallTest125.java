@@ -15,21 +15,20 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import org.junit.jupiter.api.Test;
 
-public class MySqlWallTest125 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlWallTest125 {
+    @Test
     public void test_false() throws Exception {
         WallProvider provider = new MySqlWallProvider();
         provider.getConfig().setCommentAllow(false);
 
         String sql = "SELECT name, '******' password, createTime from user where name like 'admin' AND 5963=CONVERT(INT,(CHAR(58)+CHAR(108)+CHAR(105)+CHAR(112)+CHAR(58)+(SELECT (CASE WHEN (5963=5963) THEN CHAR(49) ELSE CHAR(48) END))+CHAR(58)+CHAR(117)+CHAR(107)+CHAR(114)+CHAR(58))) AND 'bSho' LIKE 'bSho'";
 
-        Assert.assertFalse(provider.checkValid(sql));
+        assertFalse(provider.checkValid(sql));
     }
-
 }

@@ -1,5 +1,20 @@
 package com.alibaba.druid.pvt.pool;
 
+import com.alibaba.druid.filter.FilterAdapter;
+import com.alibaba.druid.filter.FilterChain;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.DruidPooledConnection;
+import com.alibaba.druid.pool.vendor.MockExceptionSorter;
+import com.alibaba.druid.proxy.jdbc.StatementProxy;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.Log4jImpl;
+import com.alibaba.druid.support.logging.NoLoggingImpl;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.lang.management.ManagementFactory;
 import java.lang.reflect.Field;
 import java.sql.Connection;
@@ -10,23 +25,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.junit.Assert;
+import static org.junit.jupiter.api.Assertions.*;
 
-import com.alibaba.druid.filter.FilterAdapter;
-import com.alibaba.druid.filter.FilterChain;
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.pool.DruidPooledConnection;
-import com.alibaba.druid.pool.vendor.MockExceptionSorter;
-import com.alibaba.druid.proxy.jdbc.StatementProxy;
-import com.alibaba.druid.support.logging.Log;
-import com.alibaba.druid.support.logging.Log4jImpl;
-import com.alibaba.druid.support.logging.NoLoggingImpl;
-
-import junit.framework.TestCase;
-
-public class AsyncCloseTest3 extends TestCase {
+public class AsyncCloseTest3 {
     protected DruidDataSource dataSource;
     private ExecutorService connExecutor;
     private ExecutorService closeExecutor;
@@ -40,6 +41,7 @@ public class AsyncCloseTest3 extends TestCase {
 
     long xmx;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         xmx = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getMax() / (1000 * 1000); // m;
 
@@ -77,9 +79,9 @@ public class AsyncCloseTest3 extends TestCase {
 
         connExecutor = Executors.newFixedThreadPool(2);
         closeExecutor = Executors.newFixedThreadPool(2);
-
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
         if (log4jLog != null) {
@@ -89,6 +91,7 @@ public class AsyncCloseTest3 extends TestCase {
         }
     }
 
+    @Test
     public void test_0() throws Exception {
         for (int i = 0; i < 16; ++i) {
             loop();
@@ -127,8 +130,8 @@ public class AsyncCloseTest3 extends TestCase {
 
     protected void loop() throws InterruptedException {
         dataSource.shrink();
-        Assert.assertEquals(0, dataSource.getActiveCount());
-        Assert.assertEquals(0, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getActiveCount());
+        assertEquals(0, dataSource.getPoolingCount());
 
         final int COUNT;
 
@@ -179,6 +182,6 @@ public class AsyncCloseTest3 extends TestCase {
 
         execLatch.await();
         closeLatch.await();
-        Assert.assertEquals(0, dataSource.getActiveCount());
+        assertEquals(0, dataSource.getActiveCount());
     }
 }

@@ -1,20 +1,16 @@
 package com.alibaba.druid.oracle;
 
 import com.alibaba.druid.DbTestCase;
-import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.JdbcUtils;
-import junit.framework.TestCase;
 import oracle.jdbc.driver.OracleConnection;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public class OracleKillSessionTest extends DbTestCase {
     private static final Log LOG = LogFactory.getLog(OracleKillSessionTest.class);
@@ -61,7 +57,6 @@ public class OracleKillSessionTest extends DbTestCase {
             JdbcUtils.close(conn);
         }
     }
-
 
     class Task implements Runnable {
         @Override

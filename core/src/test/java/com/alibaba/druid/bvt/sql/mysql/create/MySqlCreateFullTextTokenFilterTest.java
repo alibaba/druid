@@ -19,10 +19,11 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlCreateFullTextTokenFilterTest extends MysqlTest {
     @Test
@@ -37,7 +38,7 @@ public class MySqlCreateFullTextTokenFilterTest extends MysqlTest {
         SQLStatement stmt = stmtList.get(0);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE FULLTEXT TOKENFILTER test1(\n"
+        assertEquals("CREATE FULLTEXT TOKENFILTER test1(\n"
                 + "\"type\" = 'typename',\n"
                 + "'key' = 'name'\n"
                 + ")", output);
@@ -52,7 +53,7 @@ public class MySqlCreateFullTextTokenFilterTest extends MysqlTest {
         SQLStatement stmt = stmtList.get(0);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("SHOW FULLTEXT TOKENFILTERS", output);
+        assertEquals("SHOW FULLTEXT TOKENFILTERS", output);
     }
 
     @Test
@@ -64,7 +65,7 @@ public class MySqlCreateFullTextTokenFilterTest extends MysqlTest {
         SQLStatement stmt = stmtList.get(0);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("SHOW CREATE FULLTEXT TOKENFILTER test1", output);
+        assertEquals("SHOW CREATE FULLTEXT TOKENFILTER test1", output);
     }
 
     @Test
@@ -76,7 +77,7 @@ public class MySqlCreateFullTextTokenFilterTest extends MysqlTest {
         SQLStatement stmt = stmtList.get(0);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("ALTER FULLTEXT TOKENFILTER test1 SET k = 'a';", output);
+        assertEquals("ALTER FULLTEXT TOKENFILTER test1 SET k = 'a';", output);
     }
 
     @Test
@@ -88,6 +89,6 @@ public class MySqlCreateFullTextTokenFilterTest extends MysqlTest {
         SQLStatement stmt = stmtList.get(0);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("DROP FULLTEXT TOKENFILTER test1", output);
+        assertEquals("DROP FULLTEXT TOKENFILTER test1", output);
     }
 }

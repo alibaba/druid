@@ -15,21 +15,22 @@
  */
 package com.alibaba.druid.bvt.filter.wall;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * 这个场景，检测可疑的Having条件
  *
  * @author wenshao
  */
-public class WallReadOnlyTest extends TestCase {
+public class WallReadOnlyTest {
     private WallConfig config = new WallConfig();
 
+    @BeforeEach
     protected void setUp() throws Exception {
         config.addReadOnlyTable("members");
     }
@@ -39,17 +40,19 @@ public class WallReadOnlyTest extends TestCase {
     private String update_sql = "UPDATE members SET FNAME = ? WHERe FID = ?";
     private String delete_sql = "DELETE members WHERE FID = ?";
 
+    @Test
     public void testMySql() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateMySql(sql, config));
-        Assert.assertFalse(WallUtils.isValidateMySql(insert_sql, config));
-        Assert.assertFalse(WallUtils.isValidateMySql(update_sql, config));
-        Assert.assertFalse(WallUtils.isValidateMySql(delete_sql, config));
+        assertTrue(WallUtils.isValidateMySql(sql, config));
+        assertFalse(WallUtils.isValidateMySql(insert_sql, config));
+        assertFalse(WallUtils.isValidateMySql(update_sql, config));
+        assertFalse(WallUtils.isValidateMySql(delete_sql, config));
     }
 
+    @Test
     public void testORACLE() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateOracle(sql, config));
-        Assert.assertFalse(WallUtils.isValidateOracle(insert_sql, config));
-        Assert.assertFalse(WallUtils.isValidateOracle(update_sql, config));
-        Assert.assertFalse(WallUtils.isValidateOracle(delete_sql, config));
+        assertTrue(WallUtils.isValidateOracle(sql, config));
+        assertFalse(WallUtils.isValidateOracle(insert_sql, config));
+        assertFalse(WallUtils.isValidateOracle(update_sql, config));
+        assertFalse(WallUtils.isValidateOracle(delete_sql, config));
     }
 }

@@ -21,9 +21,10 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import org.junit.Assert;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleSelectTest88_bindvar extends OracleTest {
     public void test_0() throws Exception {
@@ -34,7 +35,7 @@ public class OracleSelectTest88_bindvar extends OracleTest {
                         "    select *\n" +
                         "    from \"rme\" \"rm\" \n" +
                         "    where \"rm\".a-interval:\"sys_b_07\" day(:\"sys_b_08\") to second(:\"sys_b_09\")\n" +
-                        ")"; //
+                        ")";
 
         System.out.println(sql);
 
@@ -43,7 +44,7 @@ public class OracleSelectTest88_bindvar extends OracleTest {
         SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
         System.out.println(stmt.toString());
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

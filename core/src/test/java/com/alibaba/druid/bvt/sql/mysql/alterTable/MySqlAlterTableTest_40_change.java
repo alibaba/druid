@@ -16,7 +16,6 @@
 package com.alibaba.druid.bvt.sql.mysql.alterTable;
 
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableItem;
@@ -26,10 +25,12 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableChangeCo
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.Token;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
-public class MySqlAlterTableTest_40_change extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlAlterTableTest_40_change {
+    @Test
     public void test_alter_constraint() throws Exception {
         String sql = "alter table sdfwef change column a c int";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -44,14 +45,14 @@ public class MySqlAlterTableTest_40_change extends TestCase {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals("ALTER TABLE sdfwef\n" +
+        assertEquals("ALTER TABLE sdfwef\n" +
                 "\tCHANGE COLUMN a c int", SQLUtils.toMySqlString(stmt));
 
-        Assert.assertEquals("alter table sdfwef\n" +
+        assertEquals("alter table sdfwef\n" +
                 "\tchange column a c int", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(1, visitor.getColumns().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getColumns().size());
 
         assertTrue(
                 isRenameColumn((SQLAlterTableStatement) stmt)
@@ -75,5 +76,4 @@ public class MySqlAlterTableTest_40_change extends TestCase {
         }
         return false;
     }
-
 }

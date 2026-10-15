@@ -20,6 +20,7 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_259 extends MysqlTest {
     public void test_0() throws Exception {
@@ -29,6 +30,4 @@ public class MySqlSelectTest_259 extends MysqlTest {
 
         assertEquals("SELECT rank() OVER ( ROWS BETWEEN CURRENT ROW AND 'foo' FOLLOWING)", stmt.toString());
     }
-
-
 }

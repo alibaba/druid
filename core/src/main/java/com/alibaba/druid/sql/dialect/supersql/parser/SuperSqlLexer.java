@@ -10,9 +10,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SuperSqlLexer extends PrestoLexer {
-    @Override
-    protected Keywords loadKeywords() {
-        Map<String, Token> map = new HashMap<String, Token>();
+    static final Keywords SUPERSQL_KEYWORDS;
+    static {
+        Map<String, Token> map = new HashMap<>();
         map.putAll(Keywords.DEFAULT_KEYWORDS.getKeywords());
         map.put("FETCH", Token.FETCH);
         map.put("FIRST", Token.FIRST);
@@ -32,8 +32,14 @@ public class SuperSqlLexer extends PrestoLexer {
         map.put("PARTITIONED", Token.PARTITIONED);
         map.put("RLIKE", Token.RLIKE);
 
-        return new Keywords(map);
+        SUPERSQL_KEYWORDS = new Keywords(map);
     }
+
+    @Override
+    protected Keywords loadKeywords() {
+        return SUPERSQL_KEYWORDS;
+    }
+
     public SuperSqlLexer(String input, SQLParserFeature... features) {
         super(input, features);
         this.dbType = DbType.supersql;

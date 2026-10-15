@@ -6,7 +6,6 @@ import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 import com.mysql.jdbc.Driver;
-import junit.framework.TestCase;
 
 import java.sql.SQLException;
 

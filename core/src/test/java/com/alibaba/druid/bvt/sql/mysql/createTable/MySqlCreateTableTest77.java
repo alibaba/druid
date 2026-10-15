@@ -22,6 +22,8 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat.Column;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlCreateTableTest77 extends MysqlTest {
     public void test_one() throws Exception {
         String sql = "-- table-name-bean-name:some --\n" +

@@ -15,19 +15,19 @@
  */
 package com.alibaba.druid.bvt.sql.mysql;
 
-import java.util.List;
-
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
+import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
-public class ControlFlowFunctionsTest extends TestCase {
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class ControlFlowFunctionsTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT CASE 1 WHEN 1 THEN 'one' WHEN 2 THEN 'two' ELSE 'more' END;";
 
@@ -36,13 +36,14 @@ public class ControlFlowFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT CASE 1\n" +
+        assertEquals("SELECT CASE 1\n" +
                 "\t\tWHEN 1 THEN 'one'\n" +
                 "\t\tWHEN 2 THEN 'two'\n" +
                 "\t\tELSE 'more'\n" +
                 "\tEND;", text);
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "SELECT IF(1>2,2,3);";
 
@@ -51,9 +52,10 @@ public class ControlFlowFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT IF(1 > 2, 2, 3);", text);
+        assertEquals("SELECT IF(1 > 2, 2, 3);", text);
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "SELECT IF(1<2,'yes','no');";
 
@@ -62,9 +64,10 @@ public class ControlFlowFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT IF(1 < 2, 'yes', 'no');", text);
+        assertEquals("SELECT IF(1 < 2, 'yes', 'no');", text);
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = "SELECT IF(STRCMP('test','test1'),'no','yes');";
 
@@ -73,9 +76,10 @@ public class ControlFlowFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT IF(STRCMP('test', 'test1'), 'no', 'yes');", text);
+        assertEquals("SELECT IF(STRCMP('test', 'test1'), 'no', 'yes');", text);
     }
 
+    @Test
     public void test_4() throws Exception {
         String sql = "SELECT IFNULL(1,0);";
 
@@ -84,9 +88,10 @@ public class ControlFlowFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT IFNULL(1, 0);", text);
+        assertEquals("SELECT IFNULL(1, 0);", text);
     }
 
+    @Test
     public void test_5() throws Exception {
         String sql = "SELECT IFNULL(1/0,'yes');";
 
@@ -95,7 +100,7 @@ public class ControlFlowFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT IFNULL(1 / 0, 'yes');", text);
+        assertEquals("SELECT IFNULL(1 / 0, 'yes');", text);
     }
 
     private String output(List<SQLStatement> stmtList) {

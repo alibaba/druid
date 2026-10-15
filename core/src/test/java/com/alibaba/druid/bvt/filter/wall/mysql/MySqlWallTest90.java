@@ -15,12 +15,11 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * SQLServerWallTest
@@ -29,20 +28,20 @@ import com.alibaba.druid.wall.spi.MySqlWallProvider;
  * @version 1.0, 2012-3-18
  * @see
  */
-public class MySqlWallTest90 extends TestCase {
+public class MySqlWallTest90 {
+    @Test
     public void test_true() throws Exception {
         WallProvider provider = new MySqlWallProvider();
 
         provider.getConfig().setSelectHavingAlwayTrueCheck(true);
 
         //FIXME 不知此测试用例的真实意图
-        Assert.assertFalse(provider.checkValid(//
-                "select * from (select t10006_men_xing_jia_ge_fen_lei.bian_hao as \"bian_hao\", " + //
-                        "   t10006_men_xing_jia_ge_fen_lei.ming_cheng as \"ming_cheng\" " + //
+        assertFalse(provider.checkValid(//
+                "select * from (select t10006_men_xing_jia_ge_fen_lei.bian_hao as \"bian_hao\", " +
+                        "   t10006_men_xing_jia_ge_fen_lei.ming_cheng as \"ming_cheng\" " +
                         "from t10006_men_xing_jia_ge_fen_lei where 1=1 ) as tables where 1=1 order by tables.bian_hao"));
 
-        Assert.assertEquals(1, provider.getTableStats().size());
-        Assert.assertTrue(provider.getTableStats().containsKey("t10006_men_xing_jia_ge_fen_lei"));
+        assertEquals(1, provider.getTableStats().size());
+        assertTrue(provider.getTableStats().containsKey("t10006_men_xing_jia_ge_fen_lei"));
     }
-
 }

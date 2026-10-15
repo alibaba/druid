@@ -7,15 +7,18 @@ import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
  * Created by wenshao on 16/8/23.
  */
-public class MySqlParameterizedOutputVisitorTest_45 extends TestCase {
+public class MySqlParameterizedOutputVisitorTest_45 {
+    @Test
     public void test_for_parameterize() throws Exception {
         final DbType dbType = JdbcConstants.MYSQL;
         String sql = "(SELECT `t_like_count`.`id`, `t_like_count`.`target_id`, `t_like_count`.`target_type`, `t_like_count`.`like_type`, `t_like_count`.`like_count` , `t_like_count`.`like_optimalize_count`, `t_like_count`.`create_time`, `t_like_count`.`update_time` FROM `t_like_count0062` `t_like_count` WHERE `t_like_count`.`target_type` = ? AND `t_like_count`.`target_id` IN (?)) UNION ALL (SELECT `t_like_count`.`id`, `t_like_count`.`target_id`, `t_like_count`.`target_type`, `t_like_count`.`like_type`, `t_like_count`.`like_count` , `t_like_count`.`like_optimalize_count`, `t_like_count`.`create_time`, `t_like_count`.`update_time` FROM `t_like_count0057` `t_like_count` WHERE `t_like_count`.`target_type` = ? AND `t_like_count`.`target_id` IN (?)) UNION ALL (SELECT `t_like_count`.`id`, `t_like_count`.`target_id`, `t_like_count`.`target_type`, `t_like_count`.`like_type`, `t_like_count`.`like_count` , `t_like_count`.`like_optimalize_count`, `t_like_count`.`create_time`, `t_like_count`.`update_time` FROM `t_like_count0050` `t_like_count` WHERE `t_like_count`.`target_type` = ? AND `t_like_count`.`target_id` IN (?)) UNION ALL (SELECT `t_like_count`.`id`, `t_like_count`.`target_id`, `t_like_count`.`target_type`, `t_like_count`.`like_type`, `t_like_count`.`like_count` , `t_like_count`.`like_optimalize_count`, `t_like_count`.`create_time`, `t_like_count`.`update_time` FROM `t_like_count0048` `t_like_count` WHERE `t_like_count`.`target_type` = ? AND `t_like_count`.`target_id` IN (?))";

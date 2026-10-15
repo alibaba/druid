@@ -5,10 +5,17 @@ import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectGroupByClause;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLWithSubqueryClause;
 import com.alibaba.druid.sql.dialect.clickhouse.ast.CKSelectQueryBlock;
-import com.alibaba.druid.sql.parser.*;
+import com.alibaba.druid.sql.parser.Lexer;
+import com.alibaba.druid.sql.parser.SQLExprParser;
+import com.alibaba.druid.sql.parser.SQLSelectListCache;
+import com.alibaba.druid.sql.parser.SQLSelectParser;
+import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.FnvHash;
+
+import java.util.List;
 
 public class CKSelectParser
         extends SQLSelectParser {
@@ -85,12 +92,29 @@ public class CKSelectParser
 
     @Override
     public void parseFrom(SQLSelectQueryBlock queryBlock) {
-        super.parseFrom(queryBlock);
-        if (lexer.token() == Token.FINAL) {
-            lexer.nextToken();
-            ((CKSelectQueryBlock) queryBlock).setFinal(true);
+        List<String> comments = null;
+        if (lexer.hasComment() && lexer.isKeepComments()) {
+            comments = lexer.readAndResetComments();
+        }
+
+        if (lexer.nextIf(Token.FROM)) {
+            SQLTableSource from = parseTableSource();
+
+            if (comments != null) {
+                from.addBeforeComment(comments);
+            }
+
+            queryBlock.setFrom(from);
         } else {
-            ((CKSelectQueryBlock) queryBlock).setFinal(false);
+            if (comments != null) {
+                queryBlock.addAfterComment(comments);
+            }
+        }
+
+        if (lexer.nextIf(Token.FINAL)) {
+            if (queryBlock instanceof CKSelectQueryBlock) {
+                ((CKSelectQueryBlock) queryBlock).setFinal(true);
+            }
         }
     }
 

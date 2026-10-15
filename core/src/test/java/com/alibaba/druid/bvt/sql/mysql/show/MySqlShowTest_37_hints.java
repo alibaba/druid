@@ -7,6 +7,8 @@ import com.alibaba.druid.sql.parser.SQLParserFeature;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
  * @author chenmo.cm
  * @date 2018/8/24 上午10:37
@@ -14,7 +16,7 @@ import java.util.List;
 public class MySqlShowTest_37_hints extends MysqlTest {
     private static final SQLParserFeature[] defaultFeatures = {SQLParserFeature.EnableSQLBinaryOpExprGroup,
             SQLParserFeature.UseInsertColumnsCache, SQLParserFeature.OptimizedForParameterized,
-            SQLParserFeature.TDDLHint,};
+            SQLParserFeature.TDDLHint};
 
     public void test_0() throws Exception {
         String sql = "/* +TDDL:scan()*/show columns from drds_shard;";

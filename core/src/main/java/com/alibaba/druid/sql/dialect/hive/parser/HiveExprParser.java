@@ -383,12 +383,9 @@ public class HiveExprParser extends SQLExprParser {
             acceptIdentifier("MONTH");
             intervalUnit = SQLIntervalUnit.YEAR_TO_MONTH;
         }
-        if (intervalUnit == SQLIntervalUnit.YEAR && lexer.nextIf(Token.TO)) {
-            acceptIdentifier(FnvHash.Constants.MONTH);
-            intervalUnit = SQLIntervalUnit.YEAR_TO_MONTH;
-        } else if (intervalUnit == SQLIntervalUnit.DAY && lexer.nextIf(Token.TO)) {
+        if (intervalUnit == SQLIntervalUnit.DAY && lexer.nextIf(Token.TO)) {
             acceptIdentifier(FnvHash.Constants.SECOND);
-            intervalUnit = SQLIntervalUnit.DAY_HOUR;
+            intervalUnit = SQLIntervalUnit.DAY_SECOND;
         } else if (intervalUnit == SQLIntervalUnit.HOUR && lexer.nextIf(Token.TO)) {
             acceptIdentifier(FnvHash.Constants.SECOND);
             intervalUnit = SQLIntervalUnit.HOUR_SECOND;

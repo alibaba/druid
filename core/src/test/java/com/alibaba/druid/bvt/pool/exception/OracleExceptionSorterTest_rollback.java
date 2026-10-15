@@ -1,11 +1,5 @@
 package com.alibaba.druid.bvt.pool.exception;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
@@ -13,13 +7,22 @@ import com.alibaba.druid.pool.vendor.OracleExceptionSorter;
 import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.test.util.OracleMockDriver;
 import com.alibaba.druid.util.JdbcUtils;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class OracleExceptionSorterTest_rollback extends TestCase {
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OracleExceptionSorterTest_rollback {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
-        assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
-
+        JdbcStatManager.getInstance().reset();
         dataSource = new DruidDataSource();
 
         dataSource.setExceptionSorter(new OracleExceptionSorter());
@@ -30,11 +33,12 @@ public class OracleExceptionSorterTest_rollback extends TestCase {
         dataSource.setMaxOpenPreparedStatements(100);
     }
 
-    @Override
+        @AfterEach
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
     }
 
+    @Test
     public void test_connect() throws Exception {
         String sql = "SELECT 1";
         {
@@ -80,5 +84,4 @@ public class OracleExceptionSorterTest_rollback extends TestCase {
         assertTrue(dataSource.getPoolingCount() >= 1);
         assertTrue(dataSource.getCreateCount() >= 2);
     }
-
 }

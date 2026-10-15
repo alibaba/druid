@@ -1,0 +1,42 @@
+
+DROP TABLE db1.t1 ON CLUSTER default
+--------------------
+DROP TABLE db1.t1 ON CLUSTER default
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE db1.t1 ON CLUSTER default
+(
+    id Int32,
+    name String,
+    value Decimal(18, 8),
+    created_time DateTime DEFAULT now()
+)
+    ENGINE = ReplacingMergeTree()
+        ORDER BY (name, id)
+--------------------
+CREATE TABLE db1.t1 ON CLUSTER default (
+	id Int32,
+	name String,
+	value Decimal(18, 8),
+	created_time DateTime DEFAULT now()
+) ENGINE = ReplacingMergeTree()
+ORDER BY (name, id)
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE db2.t2 ON CLUSTER default
+(
+    col1 String,
+    col2 Date32,
+    col3 Decimal(32, 8),
+    col4 Nullable(String)
+)
+    ENGINE = MergeTree
+        ORDER BY (col1, col2)
+        SETTINGS index_granularity = 8192
+--------------------
+CREATE TABLE db2.t2 ON CLUSTER default (
+	col1 String,
+	col2 Date32,
+	col3 Decimal(32, 8),
+	col4 Nullable(String)
+) ENGINE = MergeTree
+ORDER BY (col1, col2)
+SETTINGS index_granularity = 8192

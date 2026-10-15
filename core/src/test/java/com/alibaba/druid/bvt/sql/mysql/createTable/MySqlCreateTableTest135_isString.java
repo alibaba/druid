@@ -8,6 +8,8 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlCreateTableTest135_isString extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "create table t(\n" +
@@ -29,8 +31,5 @@ public class MySqlCreateTableTest135_isString extends MysqlTest {
             assertTrue(item.getDataType().isString());
         }
 
-
     }
-
-
 }

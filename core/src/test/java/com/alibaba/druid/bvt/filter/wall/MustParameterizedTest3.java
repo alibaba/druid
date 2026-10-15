@@ -15,32 +15,33 @@
  */
 package com.alibaba.druid.bvt.filter.wall;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class MustParameterizedTest3 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MustParameterizedTest3 {
     private WallConfig config = new WallConfig();
 
+    @BeforeEach
     protected void setUp() throws Exception {
         config.setMustParameterized(true);
     }
 
+    @Test
     public void testMySql() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateMySql("select * from t where id  = (3 + 5 - 2 - 1)", config));
-        Assert.assertFalse(WallUtils.isValidateMySql("select * from t where id  != id + 3", config));
-        Assert.assertFalse(WallUtils.isValidateMySql("delete from t where id  != id + 3", config));
-        Assert.assertFalse(WallUtils.isValidateMySql("delete from t where id = 'aa' + 'bbb'", config));
-        Assert.assertTrue(WallUtils.isValidateMySql("select * from t where id  = ? ORDER BY 1", config));
-        Assert.assertTrue(WallUtils.isValidateMySql("select 1, 2, 3 from t where id  = ?", config));
-        Assert.assertFalse(WallUtils.isValidateMySql("select 1, 2, 3 from t where id  = 7", config));
-        Assert.assertTrue(WallUtils.isValidateMySql("select 1, 2, 3 from t where id  = ? union select * from t", config));
-        Assert.assertFalse(WallUtils.isValidateMySql("select 1, 2, 3 from t where id  = ? union select 1, 2, 3 --", config));
-        Assert.assertFalse(WallUtils.isValidateMySql("select 1, 2, 3 from t where id  = ? union select * from t fid = fid", config));
-        Assert.assertFalse(WallUtils.isValidateMySql("select 1, 2, 3 from t where id  = ? union select * from t fid > 5", config));
+        assertFalse(WallUtils.isValidateMySql("select * from t where id  = (3 + 5 - 2 - 1)", config));
+        assertFalse(WallUtils.isValidateMySql("select * from t where id  != id + 3", config));
+        assertFalse(WallUtils.isValidateMySql("delete from t where id  != id + 3", config));
+        assertFalse(WallUtils.isValidateMySql("delete from t where id = 'aa' + 'bbb'", config));
+        assertTrue(WallUtils.isValidateMySql("select * from t where id  = ? ORDER BY 1", config));
+        assertTrue(WallUtils.isValidateMySql("select 1, 2, 3 from t where id  = ?", config));
+        assertFalse(WallUtils.isValidateMySql("select 1, 2, 3 from t where id  = 7", config));
+        assertTrue(WallUtils.isValidateMySql("select 1, 2, 3 from t where id  = ? union select * from t", config));
+        assertFalse(WallUtils.isValidateMySql("select 1, 2, 3 from t where id  = ? union select 1, 2, 3 --", config));
+        assertFalse(WallUtils.isValidateMySql("select 1, 2, 3 from t where id  = ? union select * from t fid = fid", config));
+        assertFalse(WallUtils.isValidateMySql("select 1, 2, 3 from t where id  = ? union select * from t fid > 5", config));
     }
-
 }

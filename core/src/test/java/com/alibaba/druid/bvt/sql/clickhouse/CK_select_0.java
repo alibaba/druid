@@ -5,11 +5,14 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2SchemaStatVisitor;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class CK_select_0 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class CK_select_0 {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT date, transactionChannel, tranactionType FROM preComp_3All_20180322 limit 1,10";
 

@@ -15,26 +15,27 @@
  */
 package com.alibaba.druid.bvt.pool.basic;
 
-import java.sql.Connection;
-import java.sql.Statement;
-
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class TestCommit extends TestCase {
+import java.sql.Connection;
+import java.sql.Statement;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class TestCommit {
     private MockDriver driver;
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         DruidDataSourceStatManager.clear();
-
         driver = new MockDriver();
-
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setDriver(driver);
@@ -51,25 +52,27 @@ public class TestCommit extends TestCase {
         dataSource.setRemoveAbandoned(true);
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
-        Assert.assertEquals(true, dataSource.getCreateTimespanNano() > 0);
+        assertEquals(true, dataSource.getCreateTimespanNano() > 0);
         dataSource.close();
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        DruidDataSourceStatManager.clear();
     }
 
+    @Test
     public void test_prepare() throws Exception {
         Connection conn = dataSource.getConnection();
 
         {
             DruidPooledConnection wrap = conn.unwrap(DruidPooledConnection.class);
-            Assert.assertTrue(conn.isWrapperFor(DruidPooledConnection.class));
-            Assert.assertNotNull(wrap);
+            assertTrue(conn.isWrapperFor(DruidPooledConnection.class));
+            assertNotNull(wrap);
         }
 
         {
             Statement wrap = conn.unwrap(Statement.class);
-            Assert.assertTrue(!conn.isWrapperFor(Statement.class));
-            Assert.assertNull(wrap);
+            assertTrue(!conn.isWrapperFor(Statement.class));
+            assertNull(wrap);
         }
 
         conn.setAutoCommit(false);
@@ -77,16 +80,16 @@ public class TestCommit extends TestCase {
         Statement stmt = conn.createStatement();
         stmt.execute("SELECT 1");
         stmt.close();
-        Assert.assertEquals(1, dataSource.getActiveConnectionStackTrace().size());
-        Assert.assertEquals(1, dataSource.getActiveConnections().size());
+        assertEquals(1, dataSource.getActiveConnectionStackTrace().size());
+        assertEquals(1, dataSource.getActiveConnections().size());
         conn.rollback();
         conn.close();
 
-        Assert.assertEquals(1, dataSource.getStartTransactionCount());
-        Assert.assertEquals(0, dataSource.getCommitCount());
-        Assert.assertEquals(1, dataSource.getRollbackCount());
+        assertEquals(1, dataSource.getStartTransactionCount());
+        assertEquals(0, dataSource.getCommitCount());
+        assertEquals(1, dataSource.getRollbackCount());
 
-        Assert.assertEquals(0, dataSource.getActiveConnectionStackTrace().size());
-        Assert.assertEquals(0, dataSource.getActiveConnections().size());
+        assertEquals(0, dataSource.getActiveConnectionStackTrace().size());
+        assertEquals(0, dataSource.getActiveConnections().size());
     }
 }

@@ -1,8 +1,5 @@
 package com.alibaba.druid.bvt.sql.postgresql.issues;
 
-import java.util.List;
-import java.util.Map;
-
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -10,12 +7,13 @@ import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import com.alibaba.druid.wall.WallUtils;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Test;
+import java.util.List;
+import java.util.Map;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * 验证 SQLUtils.parseStatements解析PG和GP时不支持analyze和vacuum #5412
@@ -24,7 +22,6 @@ import static org.junit.Assert.assertTrue;
  * @see <a href="https://github.com/alibaba/druid/issues/5412">修复 #5412</a>
  */
 public class Issue5412 {
-
     @Test
     public void test_analyze_emptytable() throws Exception {
         for (DbType dbType : new DbType[]{DbType.postgresql, DbType.greenplum, DbType.edb}) {
@@ -48,7 +45,6 @@ public class Issue5412 {
     @Test
     public void test_analyze() throws Exception {
         for (DbType dbType : new DbType[]{DbType.postgresql, DbType.greenplum, DbType.edb}) {
-
             for (String sql : new String[]{
                 "analyze WORK.TABLE1;",
                 "analyze WORK.TABLE1,WORK.TABLE2;",
@@ -73,7 +69,6 @@ public class Issue5412 {
     @Test
     public void test_vacuum_empty() throws Exception {
         for (DbType dbType : new DbType[]{DbType.postgresql, DbType.greenplum, DbType.edb}) {
-
             for (String sql : new String[]{
                 "vacuum ",
                 "vacuum   ;vacuum ",

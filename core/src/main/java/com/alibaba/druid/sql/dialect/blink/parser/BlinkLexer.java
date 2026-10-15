@@ -10,9 +10,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class BlinkLexer extends Lexer {
-    @Override
-    protected Keywords loadKeywords() {
-        Map<String, Token> map = new HashMap<String, Token>();
+    static final Keywords BLINK_KEYWORDS;
+    static {
+        Map<String, Token> map = new HashMap<>();
 
         map.putAll(Keywords.DEFAULT_KEYWORDS.getKeywords());
 
@@ -27,7 +27,12 @@ public class BlinkLexer extends Lexer {
         map.put("IF", Token.IF);
         map.put("PERIOD", Token.PERIOD);
 
-        return new Keywords(map);
+        BLINK_KEYWORDS = new Keywords(map);
+    }
+
+    @Override
+    protected Keywords loadKeywords() {
+        return BLINK_KEYWORDS;
     }
 
     public BlinkLexer(String input) {

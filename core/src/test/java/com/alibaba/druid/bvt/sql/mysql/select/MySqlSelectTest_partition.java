@@ -1,12 +1,13 @@
 package com.alibaba.druid.bvt.sql.mysql.select;
 
-import java.util.List;
-
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_partition extends MysqlTest {
     public void test_0() throws Exception {

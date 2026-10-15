@@ -23,6 +23,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_44_with_cte extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "WITH RECURSIVE cte AS\n" +
@@ -32,7 +34,6 @@ public class MySqlSelectTest_44_with_cte extends MysqlTest {
                 "  SELECT n + 1, q * 2, p * 2 FROM cte WHERE n < 5\n" +
                 ")\n" +
                 "SELECT * FROM cte;";
-
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL, true);
         SQLStatement stmt = statementList.get(0);

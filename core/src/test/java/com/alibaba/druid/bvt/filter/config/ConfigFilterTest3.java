@@ -1,30 +1,35 @@
 package com.alibaba.druid.bvt.filter.config;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.util.Properties;
-
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.filter.config.ConfigFilter;
 import com.alibaba.druid.filter.config.ConfigTools;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidDataSourceFactory;
 import com.alibaba.druid.util.JdbcUtils;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class ConfigFilterTest3 extends TestCase {
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.Properties;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class ConfigFilterTest3 {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setFilters("config");
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
     }
 
+    @Test
     public void test_0() throws Exception {
         String password = "abcdefg1234";
         String[] keys = ConfigTools.genKeyPair(1024);
@@ -42,11 +47,12 @@ public class ConfigFilterTest3 extends TestCase {
 
         dataSource.init();
 
-        Assert.assertEquals("jdbc:mock:xx0", dataSource.getUrl());
-        Assert.assertEquals("sa", dataSource.getUsername());
-        Assert.assertEquals(password, dataSource.getPassword());
+        assertEquals("jdbc:mock:xx0", dataSource.getUrl());
+        assertEquals("sa", dataSource.getUsername());
+        assertEquals(password, dataSource.getPassword());
     }
 
+    @Test
     public void test_sys_property() throws Exception {
         String password = "abcdefg1234";
         String[] keys = ConfigTools.genKeyPair(1024);
@@ -65,9 +71,9 @@ public class ConfigFilterTest3 extends TestCase {
         try {
             dataSource.init();
 
-            Assert.assertEquals("jdbc:mock:xx0", dataSource.getUrl());
-            Assert.assertEquals("sa", dataSource.getUsername());
-            Assert.assertEquals(password, dataSource.getPassword());
+            assertEquals("jdbc:mock:xx0", dataSource.getUrl());
+            assertEquals("sa", dataSource.getUsername());
+            assertEquals(password, dataSource.getPassword());
         } finally {
             System.clearProperty(ConfigFilter.SYS_PROP_CONFIG_KEY);
             System.clearProperty(ConfigFilter.SYS_PROP_CONFIG_FILE);

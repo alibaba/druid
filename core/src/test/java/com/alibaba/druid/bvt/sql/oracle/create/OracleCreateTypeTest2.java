@@ -23,6 +23,8 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleCreateTypeTest2 extends OracleTest {
     public void test_0() throws Exception {
         String sql = //
@@ -37,7 +39,7 @@ public class OracleCreateTypeTest2 extends OracleTest {
                         "    , credit_limit       NUMBER(9,2)\n" +
                         "    , cust_email         VARCHAR2(30)\n" +
                         "    , cust_orders        ORDER_LIST_TYP\n" +
-                        "    ) ;"; //
+                        "    ) ;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

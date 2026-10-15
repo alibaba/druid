@@ -1,20 +1,21 @@
 package com.alibaba.druid.bvt.sql.eval;
 
+import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
+import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.*;
 
-import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
-import com.alibaba.druid.util.JdbcConstants;
-
-public class EvalSelectTest extends TestCase {
+public class EvalSelectTest {
+    @Test
     public void test_select() throws Exception {
         List<List<Object>> rows = new ArrayList<List<Object>>();
         List<Object> row = new ArrayList<Object>();
         row.add(1);
         rows.add(row);
-        Assert.assertEquals(rows, SQLEvalVisitorUtils.evalExpr(JdbcConstants.MYSQL, "SELECT 1"));
+        assertEquals(rows, SQLEvalVisitorUtils.evalExpr(JdbcConstants.MYSQL, "SELECT 1"));
     }
 }

@@ -24,6 +24,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleBlockTest20 extends OracleTest {
     public void test_0() throws Exception {
         String sql = "DECLARE\n" +
@@ -49,7 +51,7 @@ public class OracleBlockTest20 extends OracleTest {
                 "   EXECUTE IMMEDIATE 'DELETE FROM dept WHERE deptno = :num'\n" +
                 "      USING dept_id;\n" +
                 "   EXECUTE IMMEDIATE 'ALTER SESSION SET SQL_TRACE TRUE';\n" +
-                "END;"; //
+                "END;";
 
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
         assertEquals(1, stmtList.size());

@@ -1,5 +1,6 @@
 package com.alibaba.druid.sql.dialect.impala.ast;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLPartitionValue;
 
 public class ImpalaSQLPartitionValue extends SQLPartitionValue {
@@ -8,6 +9,9 @@ public class ImpalaSQLPartitionValue extends SQLPartitionValue {
     private Operator leftOperator;
     private Operator rightOperator;
 
+    public ImpalaSQLPartitionValue() {
+        super();
+    }
     public void setOperator(Operator operator) {
         this.operator = operator;
     }
@@ -49,5 +53,21 @@ public class ImpalaSQLPartitionValue extends SQLPartitionValue {
 
     public void setRightOperator(Operator rightOperator) {
         this.rightOperator = rightOperator;
+    }
+
+    @Override
+    public ImpalaSQLPartitionValue clone() {
+        ImpalaSQLPartitionValue x = new ImpalaSQLPartitionValue();
+        x.setOperator(operator);
+        x.setLeftBound(leftBound);
+        x.setRightBound(rightBound);
+        x.setLeftOperator(leftOperator);
+        x.setRightOperator(rightOperator);
+        for (SQLExpr item : items) {
+            SQLExpr item2 = item.clone();
+            item2.setParent(x);
+            x.items.add(item2);
+        }
+        return x;
     }
 }

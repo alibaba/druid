@@ -23,12 +23,14 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleSelectTest_param extends OracleTest {
     private DbType dbType = JdbcConstants.ORACLE;
 
     public void test_0() throws Exception {
         String sql = //
-                "select c1 from t1 t where t.c2=1 and (t.c3=1 or t.c3=5)"; //
+                "select c1 from t1 t where t.c2=1 and (t.c3=1 or t.c3=5)";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, dbType);
         assertEquals(1, statementList.size());

@@ -15,15 +15,15 @@
  */
 package com.alibaba.druid.bvt.sql.oracle;
 
-import java.util.List;
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
+import org.junit.jupiter.api.Test;
 
-public class CallTest extends TestCase {
+import java.util.List;
+
+public class CallTest {
+    @Test
     public void test_select() throws Exception {
         String sql = "call dbms_session.set_identifier('nfs_special_syncview')";
 

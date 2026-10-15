@@ -25,6 +25,7 @@ import com.alibaba.druid.wall.WallUtils;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleSelectTest119_bigand extends MysqlTest {
     public void test_small_10() throws Exception {
@@ -61,7 +62,6 @@ public class OracleSelectTest119_bigand extends MysqlTest {
                 "\tAND GOODS_SID <> :11\n" +
                 "\tAND GOODS_SID <> :12", stmt.toString());
     }
-
 
     public void test_big_100000() throws Exception {
         StringBuilder buf = new StringBuilder();

@@ -15,18 +15,19 @@
  */
 package com.alibaba.druid.bvt.sql.oracle.visitor;
 
-import java.util.List;
-
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat.Column;
+import org.junit.jupiter.api.Test;
 
-public class OracleOutputVisitorTest_orderBy extends TestCase {
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OracleOutputVisitorTest_orderBy {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT salary from employee order by name";
 
@@ -34,22 +35,21 @@ public class OracleOutputVisitorTest_orderBy extends TestCase {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(true, visitor.containsTable("employee"));
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(true, visitor.containsTable("employee"));
 
-        Assert.assertEquals(2, visitor.getColumns().size());
-        Assert.assertEquals(true, visitor.getColumns().contains(new Column("employee", "salary")));
-        Assert.assertEquals(true, visitor.getColumns().contains(new Column("employee", "name")));
+        assertEquals(2, visitor.getColumns().size());
+        assertEquals(true, visitor.getColumns().contains(new Column("employee", "salary")));
+        assertEquals(true, visitor.getColumns().contains(new Column("employee", "name")));
 
         StringBuilder buf = new StringBuilder();
         OracleOutputVisitor outputVisitor = new OracleOutputVisitor(buf);
         stmt.accept(outputVisitor);
-        Assert.assertEquals("SELECT salary\nFROM employee\nORDER BY name", buf.toString());
-
+        assertEquals("SELECT salary\nFROM employee\nORDER BY name", buf.toString());
     }
 }

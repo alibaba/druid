@@ -2,7 +2,7 @@ package com.alibaba.druid.pool.ha.node;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.ha.HighAvailableDataSource;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -14,8 +14,8 @@ import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class FileNodeListenerTest {
     @Test

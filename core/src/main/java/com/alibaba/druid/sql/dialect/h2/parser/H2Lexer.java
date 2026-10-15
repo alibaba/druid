@@ -25,9 +25,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class H2Lexer extends Lexer {
-    @Override
-    protected Keywords loadKeywords() {
-        Map<String, Token> map = new HashMap<String, Token>();
+    static final Keywords H2_KEYWORDS;
+    static {
+        Map<String, Token> map = new HashMap<>();
 
         map.putAll(Keywords.DEFAULT_KEYWORDS.getKeywords());
 
@@ -41,7 +41,12 @@ public class H2Lexer extends Lexer {
         map.put("LIMIT", Token.LIMIT);
         map.put("IF", Token.IF);
 
-        return new Keywords(map);
+        H2_KEYWORDS = new Keywords(map);
+    }
+
+    @Override
+    protected Keywords loadKeywords() {
+        return H2_KEYWORDS;
     }
 
     public H2Lexer(String input) {

@@ -15,15 +15,15 @@
  */
 package com.alibaba.druid.pool;
 
+import com.alibaba.druid.util.JdbcUtils;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-import junit.framework.TestCase;
-
-import com.alibaba.druid.util.JdbcUtils;
-
-public class TestDruidOraclePreparedStatement extends TestCase {
+public class TestDruidOraclePreparedStatement {
     private String jdbcUrl;
     private String user;
     private String password;
@@ -44,10 +44,12 @@ public class TestDruidOraclePreparedStatement extends TestCase {
         dataSource.setPassword(password);
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
     }
 
+    @Test
     public void test_0() throws Exception {
         Class.forName(JdbcUtils.getDriverClassName(jdbcUrl));
 
@@ -86,6 +88,7 @@ public class TestDruidOraclePreparedStatement extends TestCase {
             stmt.setInt(1, 1);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
+                // Process the result set
             }
 
             rs.close();

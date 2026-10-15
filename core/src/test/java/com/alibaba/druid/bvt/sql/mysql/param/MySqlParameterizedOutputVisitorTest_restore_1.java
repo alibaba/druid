@@ -1,12 +1,15 @@
 package com.alibaba.druid.bvt.sql.mysql.param;
 
 import com.alibaba.druid.sql.SQLUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by wenshao on 16/8/23.
  */
-public class MySqlParameterizedOutputVisitorTest_restore_1 extends TestCase {
+public class MySqlParameterizedOutputVisitorTest_restore_1 {
+    @Test
     public void test_for_parameterize() throws Exception {
         String sqlTemplate = "SELECT `buyer_resource`.`RESOURCE_ID`, `buyer_resource`.`RESOURCE_PROVIDER`, `buyer_resource`.`BUYER_ID`, `buyer_resource`.`RESOURCE_TYPE`, `buyer_resource`.`SUB_RESOURCE_TYPE`\n" +
                 "\t, `buyer_resource`.`STATUS`, `buyer_resource`.`START_TIME`, `buyer_resource`.`END_TIME`, `buyer_resource`.`FEATURE`, `buyer_resource`.`GMT_CREATED`\n" +

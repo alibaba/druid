@@ -91,6 +91,8 @@ public enum SQLBinaryOperator {
     RegExp("REGEXP", 110),
     NotRegExp("NOT REGEXP", 110),
     Equality("=", 110),
+    EqEq("==", 110),
+    MemberOf("MEMBER OF", 110), // mysql json: value MEMBER OF (json_array)
 
     BitwiseNot("!", 130),
     Concat("||", 140),
@@ -99,6 +101,7 @@ public enum SQLBinaryOperator {
     BooleanXor("XOR", 150),
     BooleanOr("OR", 160),
     Assignment(":=", 169),
+    Blank("", 170),
 
     PG_And("&&", 140),
     PG_ST_DISTANCE("<->", 20);

@@ -23,11 +23,13 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleCreateTypeTest4 extends OracleTest {
     public void test_0() throws Exception {
         String sql = //
                 "CREATE OR REPLACE TYPE         cms_contract_config_obj_TABLE\n" +
-                        "AS TABLE OF  ECC_CPR.cms_contract_config_obj"; //
+                        "AS TABLE OF  ECC_CPR.cms_contract_config_obj";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

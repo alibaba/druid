@@ -25,6 +25,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleInsertTest22 extends OracleTest {
     public void test_0() throws Exception {
         String sql = "INSERT INTO MKTG_H_EXEC_RESULT_FACT\n" +
@@ -82,7 +84,7 @@ public class OracleInsertTest22 extends OracleTest {
                         ") T2\n" +
                         "WHERE T1.THE_DATE = TRUNC(SYSDATE)\n" +
                         "\tAND T1.SCENE_ID = T2.SCENE_ID\n" +
-                        "GROUP BY T1.AREA_ID, RTRIM(TO_CHAR(T2.PID))",//
+                        "GROUP BY T1.AREA_ID, RTRIM(TO_CHAR(T2.PID))",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
@@ -102,5 +104,4 @@ public class OracleInsertTest22 extends OracleTest {
 
         assertTrue(visitor.getColumns().contains(new TableStat.Column("MKTG_H_EXEC_RESULT_FACT", "THE_DATE")));
     }
-
 }

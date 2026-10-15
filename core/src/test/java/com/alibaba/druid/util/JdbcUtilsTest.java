@@ -16,61 +16,71 @@
 package com.alibaba.druid.util;
 
 import com.alibaba.druid.DbType;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * test for support cobar driver
  *
  * @author zhoujh
  */
-public class JdbcUtilsTest extends TestCase {
+public class JdbcUtilsTest {
     /**
      * Test method for {@link com.alibaba.druid.util.JdbcUtils#getDbType(java.lang.String, java.lang.String)}.
      */
+    @Test
     public void testGetDbType() {
         String jdbcUrl = "jdbc:cobar://localhost:8066/test";
         String dbType = JdbcUtils.getDbType(jdbcUrl, null);
-        assertEquals("not support cobar driver, url like jdbc:cobar:...", DbType.mysql, dbType);
+        assertEquals(DbType.mysql, dbType, "not support cobar driver, url like jdbc:cobar:...");
     }
 
+    @Test
     public void test_log4jdbc_mysql() {
         String jdbcUrl = "jdbc:log4jdbc:mysql://localhost:8066/test";
         String dbType = JdbcUtils.getDbType(jdbcUrl, null);
-        assertEquals("not support log4jdbc mysql, url like jdbc:log4jdbc:mysql:...", DbType.mysql, dbType);
+        assertEquals(DbType.mysql, dbType, "not support log4jdbc mysql, url like jdbc:log4jdbc:mysql:...");
     }
 
+    @Test
     public void testGetDbTypeTiDB() {
         String jdbcUrl = "jdbc:tidb://localhost:4000/test";
         String dbType = JdbcUtils.getDbType(jdbcUrl, null);
-        assertEquals("Does not support TiDB, for url like jdbc:tidb:...", DbType.tidb, dbType);
+        assertEquals(DbType.tidb, dbType, "Does not support TiDB, for url like jdbc:tidb:...");
     }
 
+    @Test
     public void testTiDBIsMySQLDBType() {
-        assertTrue("TiDB suppose to be a MySQL compatible DB", JdbcUtils.isMysqlDbType(DbType.tidb));
-        assertTrue("TiDB suppose to be a MySQL compatible DB", JdbcUtils.isMysqlDbType("tidb"));
-        assertTrue("TiDB suppose to be a MySQL compatible DB", JdbcUtils.isMySqlDriver(JdbcUtils.TIDB_DRIVER));
+        assertTrue(JdbcUtils.isMysqlDbType(DbType.tidb), "TiDB suppose to be a MySQL compatible DB");
+        assertTrue(JdbcUtils.isMysqlDbType("tidb"), "TiDB suppose to be a MySQL compatible DB");
+        assertTrue(JdbcUtils.isMySqlDriver(JdbcUtils.TIDB_DRIVER), "TiDB suppose to be a MySQL compatible DB");
     }
 
+    @Test
     public void testGetTypeOceanBase_mysql() {
         String jdbcUrl = "jdbc:oceanbase://localhost:3306/test";
         String dbType = JdbcUtils.getDbType(jdbcUrl, null);
-        assertEquals("Does not support OceanBase, for url like jdbc:oceanbase:...", DbType.oceanbase, dbType);
+        assertEquals(DbType.oceanbase, dbType, "Does not support OceanBase, for url like jdbc:oceanbase:...");
     }
 
+    @Test
     public void testGetTypeOceanBase_oracle() {
         String jdbcUrl = "jdbc:oceanbase:oracle://localhost:3306/test";
         String dbType = JdbcUtils.getDbType(jdbcUrl, null);
-        assertEquals("Does not support OceanBase, for url like jdbc:oceanbase:oracle:...", DbType.oceanbase_oracle, dbType);
+        assertEquals(DbType.oceanbase_oracle, dbType, "Does not support OceanBase, for url like jdbc:oceanbase:oracle:...");
     }
 
+    @Test
     public void testGetDbTypePolarDBX() {
         String jdbcUrl = "jdbc:polardbx://localhost:3306/test";
         String dbType = JdbcUtils.getDbType(jdbcUrl, null);
-        assertEquals("Does not support PolarDB-X, for url like jdbc:polardbx:...", DbType.polardbx.name(), dbType);
+        assertEquals(DbType.polardbx.name(), dbType, "Does not support PolarDB-X, for url like jdbc:polardbx:...");
     }
 
+    @Test
     public void testPolarDBXIsMySQLDBType() {
-        assertTrue("PolarDB-X suppose to be a MySQL compatible DB", JdbcUtils.isMysqlDbType(DbType.polardbx));
-        assertTrue("PolarDB-X suppose to be a MySQL compatible DB", JdbcUtils.isMysqlDbType("polardbx"));
+        assertTrue(JdbcUtils.isMysqlDbType(DbType.polardbx), "PolarDB-X suppose to be a MySQL compatible DB");
+        assertTrue(JdbcUtils.isMysqlDbType("polardbx"), "PolarDB-X suppose to be a MySQL compatible DB");
     }
 }

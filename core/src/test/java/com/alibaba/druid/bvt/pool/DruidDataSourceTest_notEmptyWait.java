@@ -1,22 +1,25 @@
 package com.alibaba.druid.bvt.pool;
 
+import com.alibaba.druid.pool.DruidDataSource;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.sql.Connection;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
-
-import com.alibaba.druid.pool.DruidDataSource;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * 这个场景测试maxActive < 0
  *
  * @author wenshao [szujobs@hotmail.com]
  */
-public class DruidDataSourceTest_notEmptyWait extends TestCase {
+public class DruidDataSourceTest_notEmptyWait {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
@@ -25,21 +28,23 @@ public class DruidDataSourceTest_notEmptyWait extends TestCase {
         dataSource.setMaxActive(1);
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
     }
 
+    @Test
     public void test_error() throws Exception {
         {
             Connection conn = dataSource.getConnection();
             conn.close();
-            Assert.assertEquals(1, dataSource.getNotEmptyWaitCount());
+            assertEquals(1, dataSource.getNotEmptyWaitCount());
         }
 
         {
             Connection conn = dataSource.getConnection();
             conn.close();
-            Assert.assertEquals(1, dataSource.getNotEmptyWaitCount()); // notEmptyWaitCount没有增长
+            assertEquals(1, dataSource.getNotEmptyWaitCount()); // notEmptyWaitCount没有增长
         }
 
         Connection conn = dataSource.getConnection();
@@ -75,15 +80,15 @@ public class DruidDataSourceTest_notEmptyWait extends TestCase {
             Thread.sleep(10);
         }
 
-        Assert.assertEquals(10, dataSource.getNotEmptyWaitThreadCount());
-        Assert.assertEquals(10, dataSource.getNotEmptyWaitThreadPeak());
+        assertEquals(10, dataSource.getNotEmptyWaitThreadCount());
+        assertEquals(10, dataSource.getNotEmptyWaitThreadPeak());
 
         conn.close();
 
         endLatch.await(100, TimeUnit.MILLISECONDS);
 
         Thread.sleep(10);
-//        Assert.assertEquals(0, dataSource.getNotEmptyWaitThreadCount());
-        Assert.assertEquals(10, dataSource.getNotEmptyWaitThreadPeak());
+//        assertEquals(0, dataSource.getNotEmptyWaitThreadCount());
+        assertEquals(10, dataSource.getNotEmptyWaitThreadPeak());
     }
 }

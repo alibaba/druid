@@ -1,18 +1,18 @@
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import org.junit.jupiter.api.Test;
 
-public class MySqlWallTest145 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlWallTest145 {
+    @Test
     public void test_false() throws Exception {
         WallProvider provider = new MySqlWallProvider();
 
         String sql = "SHOW FULL TABLES WHERE Table_type != 'VIEW'";
-        Assert.assertTrue(
+        assertTrue(
                 provider.checkValid(sql)
         );
     }

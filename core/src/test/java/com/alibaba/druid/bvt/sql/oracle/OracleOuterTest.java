@@ -15,14 +15,15 @@
  */
 package com.alibaba.druid.bvt.sql.oracle;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
+import org.junit.jupiter.api.Test;
 
-public class OracleOuterTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OracleOuterTest {
+    @Test
     public void test_oracle() throws Exception {
         String sql = "SELECT employee_id, manager_id\n" + "FROM employees\n"
                 + "WHERE employees.manager_id(+) = employees.employee_id;";
@@ -35,9 +36,8 @@ public class OracleOuterTest extends TestCase {
 
         String text = TestUtils.outputOracle(stmt);
 
-        Assert.assertEquals(expect, text);
+        assertEquals(expect, text);
 
         System.out.println(text);
     }
-
 }

@@ -29,6 +29,7 @@ public abstract class SQLPartitionBy extends SQLObjectImpl {
     protected List<SQLName> storeIn = new ArrayList<SQLName>();
     protected List<SQLExpr> columns = new ArrayList<SQLExpr>();
     protected Boolean auto;
+    protected Boolean logical;
 
     protected SQLIntegerExpr lifeCycle;
 
@@ -98,6 +99,14 @@ public abstract class SQLPartitionBy extends SQLObjectImpl {
 
     public void setAuto(Boolean auto) {
         this.auto = auto;
+    }
+
+    public Boolean getLogical() {
+        return logical;
+    }
+
+    public void setLogical(Boolean logical) {
+        this.logical = logical;
     }
 
     public void cloneTo(SQLPartitionBy x) {

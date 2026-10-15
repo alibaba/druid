@@ -16,18 +16,21 @@
 package com.alibaba.druid.bvt.sql.odps;
 
 import com.alibaba.druid.sql.SQLUtils;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
-public class OdpsSelectTest4 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OdpsSelectTest4 {
+    @Test
     public void test_distribute_by() throws Exception {
-        String sql = "select total_day_cnt * EXP(-datediff(to_date('20150819', 'yyyymmdd'), last_time, 'dd') / 60) from dual";//
-        Assert.assertEquals("SELECT total_day_cnt * EXP(-datediff(TO_DATE('20150819', 'yyyymmdd'), last_time, 'dd') / 60)\n" +
+        String sql = "select total_day_cnt * EXP(-datediff(to_date('20150819', 'yyyymmdd'), last_time, 'dd') / 60) from dual";
+        assertEquals("SELECT total_day_cnt * EXP(-datediff(TO_DATE('20150819', 'yyyymmdd'), last_time, 'dd') / 60)\n" +
                 "FROM dual", SQLUtils.formatOdps(sql));
     }
 
+    @Test
     public void test_distribute_by_lcase() throws Exception {
-        String sql = "select total_day_cnt * EXP(-datediff(to_date('20150819', 'yyyymmdd'), last_time, 'dd') / 60) from dual";//
+        String sql = "select total_day_cnt * EXP(-datediff(to_date('20150819', 'yyyymmdd'), last_time, 'dd') / 60) from dual";
 
         assertEquals("select total_day_cnt * EXP(-datediff(to_date('20150819', 'yyyymmdd'), last_time, 'dd') / 60)\n" +
                 "from dual", SQLUtils.formatOdps(sql, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));

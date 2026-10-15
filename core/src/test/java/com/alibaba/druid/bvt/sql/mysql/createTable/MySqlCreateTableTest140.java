@@ -7,6 +7,8 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlCreateTableTest140 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "CREATE TABLE foo AS SELECT * FROM t WITH NO DATA";
@@ -16,7 +18,6 @@ public class MySqlCreateTableTest140 extends MysqlTest {
         MySqlCreateTableStatement stmt = (MySqlCreateTableStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
-
 
         assertEquals("CREATE TABLE foo\n" +
                 "AS\n" +
@@ -29,8 +30,5 @@ public class MySqlCreateTableTest140 extends MysqlTest {
                 "select *\n" +
                 "from t\n" +
                 "with no data", stmt.toLowerCaseString());
-
     }
-
-
 }

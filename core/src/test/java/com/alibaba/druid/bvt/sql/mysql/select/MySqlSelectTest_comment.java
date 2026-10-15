@@ -20,6 +20,8 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_comment
         extends MysqlTest {
     public void test_0() throws Exception {
@@ -28,10 +30,7 @@ public class MySqlSelectTest_comment
         SQLStatement stmt = SQLUtils
                 .parseSingleStatement(sql, DbType.mysql);
 
-
         assertEquals("SELECT xxx AS comment, xxx AS comment\n" +
                 "FROM t", stmt.toString());
-
     }
-
 }

@@ -22,19 +22,22 @@ import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class MySqlAlterTableDropIndex_0 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlAlterTableDropIndex_0 {
+    @Test
     public void test_alter_first() throws Exception {
         String sql = "ALTER TABLE `test`.`tb1` DROP INDEX `ix` ;";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
 
-        assertEquals("ALTER TABLE `test`.`tb1`" + //
+        assertEquals("ALTER TABLE `test`.`tb1`" +
                 "\n\tDROP INDEX `ix`;", SQLUtils.toMySqlString(stmt));
 
-        assertEquals("alter table `test`.`tb1`" + //
+        assertEquals("alter table `test`.`tb1`" +
                 "\n\tdrop index `ix`;", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         SchemaStatVisitor visitor = new SQLUtils().createSchemaStatVisitor(JdbcConstants.MYSQL);
@@ -44,5 +47,4 @@ public class MySqlAlterTableDropIndex_0 extends TestCase {
         assertEquals(1, tableStat.getAlterCount());
         assertEquals(1, tableStat.getDropIndexCount());
     }
-
 }

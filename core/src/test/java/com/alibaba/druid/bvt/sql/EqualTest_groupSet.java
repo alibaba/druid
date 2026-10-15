@@ -1,16 +1,16 @@
 package com.alibaba.druid.bvt.sql;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.ast.expr.SQLGroupingSetExpr;
+import org.junit.jupiter.api.Test;
 
-public class EqualTest_groupSet extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class EqualTest_groupSet {
+    @Test
     public void test_eq() throws Exception {
         SQLGroupingSetExpr exprA = new SQLGroupingSetExpr();
         SQLGroupingSetExpr exprB = new SQLGroupingSetExpr();
-        Assert.assertEquals(exprA.hashCode(), exprB.hashCode());
-        Assert.assertEquals(exprA, exprB);
+        assertEquals(exprA.hashCode(), exprB.hashCode());
+        assertEquals(exprA, exprB);
     }
 }

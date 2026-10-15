@@ -1,19 +1,20 @@
 package com.alibaba.druid.support.http;
 
-import junit.framework.TestCase;
 import org.apache.commons.io.FileUtils;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockServletConfig;
 
 import javax.servlet.http.HttpServletRequest;
+
 import java.io.File;
 import java.lang.reflect.Field;
 
-public class ResourceServletSsoTestCase extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
 
-
+public class ResourceServletSsoTestCase {
+    @Test
     public void testSso() throws Exception {
         final File file = new File("target/test-classes/META-INF/services/com.alibaba.druid.support.http.DruidWebSecurityProvider");
         FileUtils.write(file, DruidWebSecurityProviderMockSsoOk.class.getName());
@@ -37,7 +38,7 @@ public class ResourceServletSsoTestCase extends TestCase {
         final MockHttpServletResponse res = new MockHttpServletResponse();
         try {
             servlet.service(req, res);
-            Assert.assertEquals(200, res.getStatus());
+            assertEquals(200, res.getStatus());
         } catch (final Exception ex) {
             ex.printStackTrace();
         }

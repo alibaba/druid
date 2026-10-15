@@ -22,9 +22,10 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleCreateViewTest2 extends OracleTest {
     public void test_types() throws Exception {
@@ -61,9 +62,9 @@ public class OracleCreateViewTest2 extends OracleTest {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
-        Assert.assertEquals("CREATE OR REPLACE VIEW \"RMAN\".\"V_001\" (\n" +
+        assertEquals("CREATE OR REPLACE VIEW \"RMAN\".\"V_001\" (\n" +
                         "\t\"DB_KEY\", \n" +
                         "\t\"DB_ID\", \n" +
                         "\t\"BS_KEY\", \n" +
@@ -94,7 +95,7 @@ public class OracleCreateViewTest2 extends OracleTest {
                         "\t, keep_until\n" +
                         "\t, decode(keep_options, 256, 'LOGS', 512, 'NOLOGS', 1024, 'CONSISTENT', NULL) AS keep_options\n" +
                         "FROM db, bs\n" +
-                        "WHERE db.db_key = bs.db_key",//
+                        "WHERE db.db_key = bs.db_key",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
@@ -106,10 +107,10 @@ public class OracleCreateViewTest2 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(2, visitor.getTables().size());
+        assertEquals(2, visitor.getTables().size());
 
-        Assert.assertEquals(18, visitor.getColumns().size());
+        assertEquals(18, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("db", "db_key")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("db", "db_key")));
     }
 }

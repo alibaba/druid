@@ -1,16 +1,16 @@
 package com.alibaba.druid.bvt.support.odps.udf;
 
-import org.junit.Assert;
-
 import com.alibaba.druid.support.opds.udf.ExportConditions;
+import org.junit.jupiter.api.Test;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class ExportConditionsTest6 extends TestCase {
+public class ExportConditionsTest6 {
     ExportConditions udf = new ExportConditions();
 
+    @Test
     public void test_export_conditions() throws Exception {
         String result = udf.evaluate("select * from t where name = 'a1'", "odps", true);
-        Assert.assertEquals("[[\"t\",\"name\",\"=\",[\"a1\"]]]", result);
+        assertEquals("[[\"t\",\"name\",\"=\",[\"a1\"]]]", result);
     }
 }

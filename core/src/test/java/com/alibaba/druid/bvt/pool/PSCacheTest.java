@@ -15,19 +15,22 @@
  */
 package com.alibaba.druid.bvt.pool;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledPreparedStatement;
 import com.alibaba.druid.util.JdbcUtils;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class PSCacheTest extends TestCase {
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class PSCacheTest {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:x1");
@@ -35,10 +38,12 @@ public class PSCacheTest extends TestCase {
         dataSource.setMaxOpenPreparedStatements(10);
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
     }
 
+    @Test
     public void test_noTxn() throws Exception {
         Connection conn = dataSource.getConnection();
 
@@ -51,13 +56,13 @@ public class PSCacheTest extends TestCase {
         PreparedStatement stmt1 = conn.prepareStatement(sql);
         DruidPooledPreparedStatement pooledStmt1 = (DruidPooledPreparedStatement) stmt1;
 
-        Assert.assertEquals(1, pooledStmt1.getPreparedStatementHolder().getInUseCount());
-        Assert.assertSame(pooledStmt1.getPreparedStatementHolder(), pooledStmt0.getPreparedStatementHolder()); // same
+        assertEquals(1, pooledStmt1.getPreparedStatementHolder().getInUseCount());
+        assertSame(pooledStmt1.getPreparedStatementHolder(), pooledStmt0.getPreparedStatementHolder()); // same
 
         PreparedStatement stmt2 = conn.prepareStatement(sql);
         DruidPooledPreparedStatement pooledStmt2 = (DruidPooledPreparedStatement) stmt2;
 
-        Assert.assertNotSame(pooledStmt1.getPreparedStatementHolder(), pooledStmt2.getPreparedStatementHolder()); // not same
+        assertNotSame(pooledStmt1.getPreparedStatementHolder(), pooledStmt2.getPreparedStatementHolder()); // not same
 
         stmt1.close();
         stmt2.close();
@@ -65,6 +70,7 @@ public class PSCacheTest extends TestCase {
         conn.close();
     }
 
+    @Test
     public void test_txn() throws Exception {
         Connection conn = dataSource.getConnection();
 
@@ -79,13 +85,13 @@ public class PSCacheTest extends TestCase {
         PreparedStatement stmt1 = conn.prepareStatement(sql);
         DruidPooledPreparedStatement pooledStmt1 = (DruidPooledPreparedStatement) stmt1;
 
-        Assert.assertEquals(1, pooledStmt1.getPreparedStatementHolder().getInUseCount());
-        Assert.assertSame(pooledStmt1.getPreparedStatementHolder(), pooledStmt0.getPreparedStatementHolder()); // same
+        assertEquals(1, pooledStmt1.getPreparedStatementHolder().getInUseCount());
+        assertSame(pooledStmt1.getPreparedStatementHolder(), pooledStmt0.getPreparedStatementHolder()); // same
 
         PreparedStatement stmt2 = conn.prepareStatement(sql);
         DruidPooledPreparedStatement pooledStmt2 = (DruidPooledPreparedStatement) stmt2;
 
-        Assert.assertNotSame(pooledStmt1.getPreparedStatementHolder(), pooledStmt2.getPreparedStatementHolder()); // not same
+        assertNotSame(pooledStmt1.getPreparedStatementHolder(), pooledStmt2.getPreparedStatementHolder()); // not same
 
         stmt1.close();
         stmt2.close();

@@ -19,11 +19,14 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.hive.ast.HiveInsertStatement;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class HiveSelectTest_42_cte extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class HiveSelectTest_42_cte {
+    @Test
     public void test_0() throws Exception {
         String sql = "with dycg_perform_startgametaketimelog as(\n" +
                 "select app_id, if(ver is null, '', ver) as ver, if(machine_name is null, '', split(machine_name, '-') [0]) as machine_dc, game_id, current_step, err_code\n" +
@@ -89,6 +92,5 @@ public class HiveSelectTest_42_cte extends TestCase {
                 "FROM dycg_perform_startgametaketimelog\n" +
                 "GROUP BY app_id, ver, machine_dc, game_id\n" +
                 "\tGROUPING SETS ((app_id), (app_id, ver), (app_id, ver, machine_dc), (app_id, ver, game_id), (app_id, machine_dc), (app_id, machine_dc, game_id), (app_id, game_id), (app_id, ver, machine_dc, game_id))", stmt.toString());
-
     }
 }

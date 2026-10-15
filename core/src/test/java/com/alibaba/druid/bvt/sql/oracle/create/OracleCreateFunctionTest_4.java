@@ -24,6 +24,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleCreateFunctionTest_4 extends OracleTest {
     public void test_types() throws Exception {
         String sql = //
@@ -99,7 +101,7 @@ public class OracleCreateFunctionTest_4 extends OracleTest {
                         "\t\tEND IF;\n" +
                         "\tEND IF;\n" +
                         "\tRETURN T_STR;\n" +
-                        "END;",//
+                        "END;",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

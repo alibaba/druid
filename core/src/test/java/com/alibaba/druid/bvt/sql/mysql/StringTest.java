@@ -15,19 +15,19 @@
  */
 package com.alibaba.druid.bvt.sql.mysql;
 
-import java.util.List;
-
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
+import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
-public class StringTest extends TestCase {
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class StringTest {
+    @Test
     public void test_latin() throws Exception {
         String sql = "SELECT _latin1'string' COLLATE latin1_danish_ci;";
 
@@ -36,9 +36,10 @@ public class StringTest extends TestCase {
 
         String text = SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
 
-        Assert.assertEquals("SELECT _latin1 'string' COLLATE latin1_danish_ci;", text);
+        assertEquals("SELECT _latin1 'string' COLLATE latin1_danish_ci;", text);
     }
 
+    @Test
     public void test_utf8() throws Exception {
         String sql = "SELECT _utf8'some text';";
 
@@ -47,6 +48,6 @@ public class StringTest extends TestCase {
 
         String text = SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
 
-        Assert.assertEquals("SELECT _utf8 'some text';", text);
+        assertEquals("SELECT _utf8 'some text';", text);
     }
 }

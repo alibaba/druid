@@ -26,6 +26,8 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlInsertTest_25_time extends MysqlTest {
     public void test_insert() throws Exception {
         String sql = "INSERT INTO DB1.TB2 (col1, col2, col3) VALUES(1, Timestamp '2019-01-01:12:12:21', '3')";
@@ -51,7 +53,5 @@ public class MySqlInsertTest_25_time extends MysqlTest {
 
         assertEquals("INSERT INTO DB1.TB2 (col1, col2, col3)\n" +
                 "VALUES (1, TIMESTAMP '2019-01-01:12:12:21', '3')", SQLUtils.toMySqlString(insertStmt));
-
-
     }
 }

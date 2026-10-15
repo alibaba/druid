@@ -21,6 +21,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_with_20433301 extends MysqlTest {
     public void test_0() throws Exception {
@@ -58,7 +59,6 @@ public class MySqlSelectTest_with_20433301 extends MysqlTest {
                 " where fcst.week_day= 1\n" +
                 " order by detail.scheduleCnt desc";
 
-
         SQLSelectStatement stmt = (SQLSelectStatement) SQLUtils.parseSingleStatement(sql, JdbcConstants.MYSQL);
 
         assertEquals("WITH total AS (\n" +
@@ -95,10 +95,7 @@ public class MySqlSelectTest_with_20433301 extends MysqlTest {
                 "WHERE fcst.week_day = 1\n" +
                 "ORDER BY detail.scheduleCnt DESC", stmt.toString());
 
-
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
     }
-
-
 }

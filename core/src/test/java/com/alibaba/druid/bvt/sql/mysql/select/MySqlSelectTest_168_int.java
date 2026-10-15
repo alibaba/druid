@@ -10,6 +10,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_168_int extends MysqlTest {
     public void test_1() throws Exception {
         String sql = "/*+engine=MPP*/ SELECT  ceil(SMALLINT'123')";
@@ -120,6 +122,4 @@ public class MySqlSelectTest_168_int extends MysqlTest {
 
         assertEquals("/*+engine=MPP*/\n" + "SELECT floor(CAST(NULL AS DECIMAL(25, 5)))", stmt.toString());
     }
-
-
 }

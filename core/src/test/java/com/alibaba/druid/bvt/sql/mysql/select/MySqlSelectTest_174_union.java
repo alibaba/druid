@@ -4,12 +4,13 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.ast.SQLUnionDataType;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_174_union extends MysqlTest {
     public void test_0() throws Exception {
@@ -34,5 +35,4 @@ public class MySqlSelectTest_174_union extends MysqlTest {
         SQLLimit limit = union.getLimit();
         assertNotNull(limit);
     }
-
 }

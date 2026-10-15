@@ -38,7 +38,7 @@ public class MySqlMockExecuteHandlerImpl implements MockExecuteHandler {
     @Override
     public ResultSet executeQuery(MockStatementBase statement, String sql) throws SQLException {
         SQLStatementParser parser = new MySqlStatementParser(sql);
-        List<SQLStatement> stmtList = parser.parseStatementList(); //
+        List<SQLStatement> stmtList = parser.parseStatementList();
 
         if (stmtList.size() > 1) {
             throw new SQLException("not support multi-statment. " + sql);

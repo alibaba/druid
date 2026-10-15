@@ -1,0 +1,58 @@
+SELECT * FROM t1 WHERE EXISTS (SELECT 1 FROM t2 WHERE t1.id = t2.parent_id)
+--------------------
+SELECT *
+FROM t1
+WHERE EXISTS (
+	SELECT 1
+	FROM t2
+	WHERE t1.id = t2.parent_id
+)
+------------------------------------------------------------------------------------------------------------------------
+SELECT REPLACE(name, 'old', 'new') FROM t1
+--------------------
+SELECT REPLACE(name, 'old', 'new')
+FROM t1
+------------------------------------------------------------------------------------------------------------------------
+SELECT SPLIT_PART(email, '@', 2) AS domain FROM users
+--------------------
+SELECT SPLIT_PART(email, '@', 2) AS domain
+FROM users
+------------------------------------------------------------------------------------------------------------------------
+SELECT REGEXP_SUBSTR(description, '[0-9]+') AS first_number FROM t1
+--------------------
+SELECT REGEXP_SUBSTR(description, '[0-9]+') AS first_number
+FROM t1
+------------------------------------------------------------------------------------------------------------------------
+SELECT UPPER(name), LOWER(email), TRIM(address) FROM contacts
+--------------------
+SELECT UPPER(name), LOWER(email)
+	, TRIM(address)
+FROM contacts
+------------------------------------------------------------------------------------------------------------------------
+SELECT CAST(amount AS DECIMAL(10, 2)) FROM transactions
+--------------------
+SELECT CAST(amount AS DECIMAL(10, 2))
+FROM transactions
+------------------------------------------------------------------------------------------------------------------------
+SELECT id, LAG(value, 1) OVER (ORDER BY id) AS prev_value, LEAD(value, 1) OVER (ORDER BY id) AS next_value FROM time_series
+--------------------
+SELECT id, LAG(value, 1) OVER (ORDER BY id) AS prev_value
+	, LEAD(value, 1) OVER (ORDER BY id) AS next_value
+FROM time_series
+------------------------------------------------------------------------------------------------------------------------
+SELECT DECODE(status, 1, 'active', 2, 'inactive', 'unknown') FROM t1
+--------------------
+SELECT DECODE(status, 1, 'active', 2, 'inactive', 'unknown')
+FROM t1
+------------------------------------------------------------------------------------------------------------------------
+SELECT * FROM t1 ORDER BY name NULLS FIRST
+--------------------
+SELECT *
+FROM t1
+ORDER BY name NULLS FIRST
+------------------------------------------------------------------------------------------------------------------------
+SELECT * FROM t1 ORDER BY name ASC NULLS LAST, id DESC
+--------------------
+SELECT *
+FROM t1
+ORDER BY name ASC NULLS LAST, id DESC

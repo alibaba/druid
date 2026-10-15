@@ -16,10 +16,13 @@
 package com.alibaba.druid.sql.dialect.sqlserver.visitor;
 
 import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.SQLDialect;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLSequenceExpr;
 import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement.TriggerType;
+import com.alibaba.druid.sql.dialect.sqlserver.SqlServer;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerOutput;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.expr.SQLServerObjectReferenceExpr;
@@ -33,13 +36,20 @@ import java.util.List;
 
 public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLServerASTVisitor {
     public SQLServerOutputVisitor(StringBuilder appender) {
-        super(appender, DbType.sqlserver);
+        super(appender, DbType.sqlserver, SqlServer.DIALECT);
+    }
+
+    public SQLServerOutputVisitor(StringBuilder appender, DbType dbType, SQLDialect dialect) {
+        super(appender, dbType, dialect);
     }
 
     public SQLServerOutputVisitor(StringBuilder appender, boolean parameterized) {
-        super(appender, DbType.sqlserver, parameterized);
+        super(appender, DbType.sqlserver, SqlServer.DIALECT, parameterized);
     }
 
+    public SQLServerOutputVisitor(StringBuilder appender, DbType dbType, SQLDialect dialect, boolean parameterized) {
+        super(appender, dbType, dialect, parameterized);
+    }
     public boolean visit(SQLServerSelectQueryBlock x) {
         print0(ucase ? "SELECT " : "select ");
 
@@ -199,7 +209,8 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
         boolean parameterized = this.parameterized;
         this.parameterized = false;
 
-        x.getName().accept(this);
+        String columnName = replaceQuota(x.getName().getSimpleName());
+        printName0(columnName);
 
         if (x.getDataType() != null) {
             print(' ');
@@ -252,6 +263,9 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
 
         if (moduleName == null) {
             print(')');
+        }
+        if (x.isRecompile()) {
+            print0(ucase ? " WITH RECOMPILE" : " with recompile");
         }
         return false;
     }
@@ -370,21 +384,24 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
             print0(ucase ? "FOR BROWSE" : "for browse");
         }
 
-        if (x.getForXmlOptionsSize() > 0) {
+        if (x.getForXmlOptionsSize() > 0 || x.getXmlPath() != null) {
             println();
             print0(ucase ? "FOR XML " : "for xml ");
-            for (int i = 0; i < x.getForXmlOptions().size(); ++i) {
-                if (i != 0) {
-                    print0(", ");
-                    print0(x.getForXmlOptions().get(i));
-                }
+            // single FOR XML clause: the mode/path comes first, then comma-separated options
+            // (including the first one). Previously the first option was dropped and the path was
+            // emitted as a second, duplicate "FOR XML" clause (see issue #6564).
+            boolean first = true;
+            if (x.getXmlPath() != null) {
+                x.getXmlPath().accept(this);
+                first = false;
             }
-        }
-
-        if (x.getXmlPath() != null) {
-            println();
-            print0(ucase ? "FOR XML " : "for xml ");
-            x.getXmlPath().accept(this);
+            for (int i = 0; i < x.getForXmlOptions().size(); ++i) {
+                if (!first) {
+                    print0(", ");
+                }
+                print0(x.getForXmlOptions().get(i));
+                first = false;
+            }
         }
 
         if (x.getOffset() != null) {
@@ -529,6 +546,228 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
         boolean odps = isOdps();
         print0(ucase ? "ADD " : "add ");
         printAndAccept(x.getColumns(), ", ");
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLServerTryCatchStatement x) {
+        print0(ucase ? "BEGIN TRY" : "begin try");
+        this.indentCount++;
+        for (SQLStatement stmt : x.getTryStatements()) {
+            println();
+            stmt.accept(this);
+        }
+        this.indentCount--;
+        println();
+        print0(ucase ? "END TRY" : "end try");
+        println();
+        print0(ucase ? "BEGIN CATCH" : "begin catch");
+        this.indentCount++;
+        for (SQLStatement stmt : x.getCatchStatements()) {
+            println();
+            stmt.accept(this);
+        }
+        this.indentCount--;
+        println();
+        print0(ucase ? "END CATCH" : "end catch");
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLServerThrowStatement x) {
+        print0(ucase ? "THROW" : "throw");
+        if (x.getErrorNumber() != null) {
+            print(' ');
+            x.getErrorNumber().accept(this);
+            print0(", ");
+            x.getMessage().accept(this);
+            print0(", ");
+            x.getState().accept(this);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLWhileStatement x) {
+        print0(ucase ? "WHILE " : "while ");
+        x.getCondition().accept(this);
+        println();
+        print0(ucase ? "BEGIN" : "begin");
+        this.indentCount++;
+        for (int i = 0, size = x.getStatements().size(); i < size; ++i) {
+            println();
+            SQLStatement stmt = x.getStatements().get(i);
+            stmt.accept(this);
+        }
+        this.indentCount--;
+        println();
+        print0(ucase ? "END" : "end");
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLCreateProcedureStatement x) {
+        if (x.isCreate()) {
+            if (x.isOrReplace()) {
+                print0(ucase ? "CREATE OR ALTER PROCEDURE " : "create or alter procedure ");
+            } else {
+                print0(ucase ? "CREATE PROCEDURE " : "create procedure ");
+            }
+        } else {
+            print0(ucase ? "ALTER PROCEDURE " : "alter procedure ");
+        }
+
+        x.getName().accept(this);
+
+        int paramSize = x.getParameters().size();
+        if (paramSize > 0) {
+            this.indentCount++;
+            for (int i = 0; i < paramSize; ++i) {
+                println();
+                SQLParameter param = x.getParameters().get(i);
+                param.accept(this);
+                if (i < paramSize - 1) {
+                    print(',');
+                }
+            }
+            this.indentCount--;
+        }
+
+        SQLName authid = x.getAuthid();
+        if (authid != null) {
+            println();
+            print0(ucase ? "WITH EXECUTE AS " : "with execute as ");
+            authid.accept(this);
+        }
+
+        println();
+        print0(ucase ? "AS" : "as");
+        println();
+
+        SQLStatement block = x.getBlock();
+        if (block != null) {
+            block.accept(this);
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLCreateTriggerStatement x) {
+        if (x.isOrReplace()) {
+            print0(ucase ? "CREATE OR ALTER TRIGGER " : "create or alter trigger ");
+        } else {
+            print0(ucase ? "CREATE TRIGGER " : "create trigger ");
+        }
+
+        x.getName().accept(this);
+
+        println();
+        print0(ucase ? "ON " : "on ");
+        x.getOn().accept(this);
+
+        println();
+        TriggerType triggerType = x.getTriggerType();
+        if (TriggerType.INSTEAD_OF.equals(triggerType)) {
+            print0(ucase ? "INSTEAD OF " : "instead of ");
+        } else if (TriggerType.AFTER.equals(triggerType)) {
+            print0(ucase ? "AFTER " : "after ");
+        } else if (triggerType != null) {
+            String name = triggerType.name();
+            print0(ucase ? name : name.toLowerCase());
+            print(' ');
+        }
+
+        boolean first = true;
+        if (x.isInsert()) {
+            print0(ucase ? "INSERT" : "insert");
+            first = false;
+        }
+        if (x.isUpdate()) {
+            if (!first) {
+                print0(", ");
+            }
+            print0(ucase ? "UPDATE" : "update");
+            first = false;
+        }
+        if (x.isDelete()) {
+            if (!first) {
+                print0(", ");
+            }
+            print0(ucase ? "DELETE" : "delete");
+        }
+
+        println();
+        print0(ucase ? "AS" : "as");
+        println();
+
+        if (x.getBody() != null) {
+            x.getBody().accept(this);
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLCreateFunctionStatement x) {
+        boolean create = x.isCreate();
+        if (create) {
+            if (x.isOrReplace()) {
+                print0(ucase ? "CREATE OR ALTER FUNCTION " : "create or alter function ");
+            } else {
+                print0(ucase ? "CREATE FUNCTION " : "create function ");
+            }
+        } else {
+            print0(ucase ? "ALTER FUNCTION " : "alter function ");
+        }
+
+        x.getName().accept(this);
+
+        print0(" (");
+        int paramSize = x.getParameters().size();
+        if (paramSize > 0) {
+            this.indentCount++;
+            for (int i = 0; i < paramSize; ++i) {
+                if (i != 0) {
+                    print(',');
+                }
+                println();
+                SQLParameter param = x.getParameters().get(i);
+                param.accept(this);
+            }
+            this.indentCount--;
+            println();
+        }
+        print(')');
+
+        SQLDataType returnDataType = x.getReturnDataType();
+        if (returnDataType != null) {
+            println();
+            print0(ucase ? "RETURNS " : "returns ");
+            returnDataType.accept(this);
+        }
+
+        List<SQLAssignItem> options = x.getOptions();
+        if (options != null && !options.isEmpty()) {
+            println();
+            print0(ucase ? "WITH " : "with ");
+            for (int i = 0; i < options.size(); i++) {
+                if (i != 0) {
+                    print0(", ");
+                }
+                options.get(i).getTarget().accept(this);
+            }
+        }
+
+        println();
+        print0(ucase ? "AS" : "as");
+        println();
+
+        SQLStatement block = x.getBlock();
+        if (block != null) {
+            block.accept(this);
+        }
+
         return false;
     }
 

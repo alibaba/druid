@@ -1,14 +1,13 @@
 package com.alibaba.druid.bvt.support.ibatis;
 
-import java.util.Properties;
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.ibatis.DruidDataSourceFactory;
+import org.junit.jupiter.api.Test;
 
+import java.util.Properties;
 
-public class DruidDataSourceFactoryTest extends TestCase {
+public class DruidDataSourceFactoryTest {
+    @Test
     public void test_facttory() throws Exception {
         DruidDataSourceFactory factory = new DruidDataSourceFactory();
         Properties properties = new Properties();

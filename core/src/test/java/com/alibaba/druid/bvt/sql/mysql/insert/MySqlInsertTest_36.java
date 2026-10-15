@@ -22,13 +22,15 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
-import com.alibaba.druid.sql.visitor.VisitorFeature;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class MySqlInsertTest_36 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlInsertTest_36 {
+    @Test
     public void test_insert_0() throws Exception {
         String sql = "insert into -- @@@\n" +
                 " tablex(id, value) -- @@@\n" +
@@ -58,7 +60,6 @@ public class MySqlInsertTest_36 extends TestCase {
         assertEquals("INSERT INTO tablex(id, value)\n" +
                 "VALUES (?, ?)", psql);
 
-
 //                System.out.println("Tables : " + visitor.getTables());
 //        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
@@ -68,6 +69,5 @@ public class MySqlInsertTest_36 extends TestCase {
 //        assertEquals(1, visitor.getColumns().size());
 //        assertEquals(0, visitor.getConditions().size());
 //        assertEquals(0, visitor.getOrderByColumns().size());
-
     }
 }

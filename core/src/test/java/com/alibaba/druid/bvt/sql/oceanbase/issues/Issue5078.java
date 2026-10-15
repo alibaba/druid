@@ -1,17 +1,13 @@
 package com.alibaba.druid.bvt.sql.oceanbase.issues;
 
-import java.util.List;
-
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.bvt.sql.mysql.issues.Issue5421;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
-import com.alibaba.druid.util.JdbcUtils;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * 验证 update ant.t1 set name=10 where id >100 limit 1语法
@@ -20,7 +16,6 @@ import static org.junit.Assert.assertEquals;
  * @see <a href="https://github.com/alibaba/druid/issues/5078">Issue来源</a>
  */
 public class Issue5078 {
-
     @Test
     public void test_update_limit() throws Exception {
         for (DbType dbType : new DbType[]{DbType.oceanbase}) {

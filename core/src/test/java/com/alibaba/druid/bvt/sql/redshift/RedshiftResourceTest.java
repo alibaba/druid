@@ -2,7 +2,7 @@ package com.alibaba.druid.bvt.sql.redshift;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.bvt.sql.SQLResourceTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class RedshiftResourceTest extends SQLResourceTest {
         public RedshiftResourceTest() {
@@ -14,4 +14,3 @@ public class RedshiftResourceTest extends SQLResourceTest {
             fileTest(0, 999, i -> "bvt/parser/redshift/" + i + ".txt");
         }
 }
-

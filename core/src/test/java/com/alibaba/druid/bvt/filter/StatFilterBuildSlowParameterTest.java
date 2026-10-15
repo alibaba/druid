@@ -15,6 +15,21 @@
  */
 package com.alibaba.druid.bvt.filter;
 
+import com.alibaba.druid.mock.MockBlob;
+import com.alibaba.druid.mock.MockClob;
+import com.alibaba.druid.mock.MockDriver;
+import com.alibaba.druid.mock.MockNClob;
+import com.alibaba.druid.mock.MockRowId;
+import com.alibaba.druid.mock.MockStatementBase;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.stat.JdbcSqlStat;
+import com.alibaba.druid.support.json.JSONUtils;
+import com.alibaba.druid.util.JdbcUtils;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.nutz.lang.util.ByteInputStream;
+
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -26,25 +41,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Assert;
-import org.nutz.lang.util.ByteInputStream;
-
-import com.alibaba.druid.mock.MockBlob;
-import com.alibaba.druid.mock.MockClob;
-import com.alibaba.druid.mock.MockDriver;
-import com.alibaba.druid.mock.MockNClob;
-import com.alibaba.druid.mock.MockRowId;
-import com.alibaba.druid.mock.MockStatementBase;
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.stat.JdbcSqlStat;
-import com.alibaba.druid.support.json.JSONUtils;
-import com.alibaba.druid.util.JdbcUtils;
-
-public class StatFilterBuildSlowParameterTest extends TestCase {
+public class StatFilterBuildSlowParameterTest {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
 
@@ -69,10 +71,12 @@ public class StatFilterBuildSlowParameterTest extends TestCase {
         dataSource.init();
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
     }
 
+    @Test
     public void test_buildSlowSql() throws Exception {
         long currentMillis = System.currentTimeMillis();
         String sql = "select ?, ?, ?, ?, ?";
@@ -102,19 +106,19 @@ public class StatFilterBuildSlowParameterTest extends TestCase {
             // //////
 
             JdbcSqlStat sqlStat = dataSource.getDataSourceStat().getSqlStat(sql);
-            Assert.assertNotNull(sqlStat);
+            assertNotNull(sqlStat);
 
             String slowParameters = sqlStat.getLastSlowParameters();
-            Assert.assertNotNull(slowParameters);
+            assertNotNull(slowParameters);
 
             List<Object> parameters = (List<Object>) JSONUtils.parse(slowParameters);
-            Assert.assertEquals(5, parameters.size());
+            assertEquals(5, parameters.size());
 
-            Assert.assertEquals(true, parameters.get(0));
-            Assert.assertEquals(123, parameters.get(1));
-            Assert.assertEquals(10001, parameters.get(2));
-            Assert.assertEquals(dateText, parameters.get(3));
-            Assert.assertEquals(dateText, parameters.get(4));
+            assertEquals(true, parameters.get(0));
+            assertEquals(123, parameters.get(1));
+            assertEquals(10001, parameters.get(2));
+            assertEquals(dateText, parameters.get(3));
+            assertEquals(dateText, parameters.get(4));
         }
 
         currentMillis = System.currentTimeMillis();
@@ -141,19 +145,19 @@ public class StatFilterBuildSlowParameterTest extends TestCase {
             // //////
 
             JdbcSqlStat sqlStat = dataSource.getDataSourceStat().getSqlStat(sql);
-            Assert.assertNotNull(sqlStat);
+            assertNotNull(sqlStat);
 
             String slowParameters = sqlStat.getLastSlowParameters();
-            Assert.assertNotNull(slowParameters);
+            assertNotNull(slowParameters);
 
             List<Object> parameters = (List<Object>) JSONUtils.parse(slowParameters);
-            Assert.assertEquals(5, parameters.size());
+            assertEquals(5, parameters.size());
 
-            Assert.assertEquals(false, parameters.get(0));
-            Assert.assertEquals(234, parameters.get(1));
-            Assert.assertEquals(10002, parameters.get(2));
-            Assert.assertEquals(dateText, parameters.get(3));
-            Assert.assertEquals(dateText, parameters.get(4));
+            assertEquals(false, parameters.get(0));
+            assertEquals(234, parameters.get(1));
+            assertEquals(10002, parameters.get(2));
+            assertEquals(dateText, parameters.get(3));
+            assertEquals(dateText, parameters.get(4));
         }
 
         {
@@ -182,19 +186,19 @@ public class StatFilterBuildSlowParameterTest extends TestCase {
             // //////
 
             JdbcSqlStat sqlStat = dataSource.getDataSourceStat().getSqlStat(sql);
-            Assert.assertNotNull(sqlStat);
+            assertNotNull(sqlStat);
 
             String slowParameters = sqlStat.getLastSlowParameters();
-            Assert.assertNotNull(slowParameters);
+            assertNotNull(slowParameters);
 
             List<Object> parameters = (List<Object>) JSONUtils.parse(slowParameters);
-            Assert.assertEquals(5, parameters.size());
+            assertEquals(5, parameters.size());
 
-            Assert.assertEquals(null, parameters.get(0));
-            Assert.assertEquals(buf.substring(0, 97) + "...", parameters.get(1));
-            Assert.assertEquals("<Clob>", parameters.get(2));
-            Assert.assertEquals("<NClob>", parameters.get(3));
-            Assert.assertEquals("<Blob>", parameters.get(4));
+            assertEquals(null, parameters.get(0));
+            assertEquals(buf.substring(0, 97) + "...", parameters.get(1));
+            assertEquals("<Clob>", parameters.get(2));
+            assertEquals("<NClob>", parameters.get(3));
+            assertEquals("<Blob>", parameters.get(4));
         }
         {
             StringBuilder buf = new StringBuilder();
@@ -222,19 +226,19 @@ public class StatFilterBuildSlowParameterTest extends TestCase {
             // //////
 
             JdbcSqlStat sqlStat = dataSource.getDataSourceStat().getSqlStat(sql);
-            Assert.assertNotNull(sqlStat);
+            assertNotNull(sqlStat);
 
             String slowParameters = sqlStat.getLastSlowParameters();
-            Assert.assertNotNull(slowParameters);
+            assertNotNull(slowParameters);
 
             List<Object> parameters = (List<Object>) JSONUtils.parse(slowParameters);
-            Assert.assertEquals(5, parameters.size());
+            assertEquals(5, parameters.size());
 
-            Assert.assertEquals("<InputStream>", parameters.get(0));
-            Assert.assertEquals(buf.substring(0, 97) + "...", parameters.get(1));
-            Assert.assertEquals(dateText, parameters.get(2));
-            Assert.assertEquals(56789.123, parameters.get(3));
-            Assert.assertEquals("<com.alibaba.druid.mock.MockRowId>", parameters.get(4));
+            assertEquals("<InputStream>", parameters.get(0));
+            assertEquals(buf.substring(0, 97) + "...", parameters.get(1));
+            assertEquals(dateText, parameters.get(2));
+            assertEquals(56789.123, parameters.get(3));
+            assertEquals("<com.alibaba.druid.mock.MockRowId>", parameters.get(4));
         }
     }
 }

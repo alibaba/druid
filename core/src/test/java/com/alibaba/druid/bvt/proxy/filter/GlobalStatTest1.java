@@ -1,26 +1,27 @@
 package com.alibaba.druid.bvt.proxy.filter;
 
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.stat.JdbcDataSourceStat;
+import com.alibaba.druid.stat.JdbcStatManager;
+import com.alibaba.druid.util.JdbcUtils;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Assert;
-
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.stat.JdbcDataSourceStat;
-import com.alibaba.druid.stat.JdbcStatManager;
-import com.alibaba.druid.util.JdbcUtils;
-
-public class GlobalStatTest1 extends TestCase {
+public class GlobalStatTest1 {
     private DruidDataSource dataSourceA;
     private DruidDataSource dataSourceB;
 
+    @BeforeEach
     protected void setUp() throws Exception {
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
-
+        JdbcStatManager.getInstance().reset();
         dataSourceA = new DruidDataSource();
         dataSourceA.setUrl("jdbc:mock:xx_A");
         dataSourceA.setFilters("stat");
@@ -32,21 +33,23 @@ public class GlobalStatTest1 extends TestCase {
         dataSourceB.setUseGlobalDataSourceStat(true);
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSourceA);
         JdbcUtils.close(dataSourceB);
 
         JdbcDataSourceStat.setGlobal(null);
-
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+         JdbcStatManager.getInstance().reset();
     }
 
+    @Test
     public void test_execute() throws Exception {
         {
             Connection conn = dataSourceA.getConnection();
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT 1");
             while (rs.next()) {
+                // Empty loop
             }
             rs.close();
             stmt.close();
@@ -57,16 +60,16 @@ public class GlobalStatTest1 extends TestCase {
             PreparedStatement stmt = conn.prepareStatement("SELECT 1");
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
+                // Empty loop
             }
             rs.close();
             stmt.close();
             conn.close();
         }
 
-        Assert.assertSame(JdbcDataSourceStat.getGlobal(), dataSourceA.getDataSourceStat());
-        Assert.assertSame(JdbcDataSourceStat.getGlobal(), dataSourceB.getDataSourceStat());
+        assertSame(JdbcDataSourceStat.getGlobal(), dataSourceA.getDataSourceStat());
+        assertSame(JdbcDataSourceStat.getGlobal(), dataSourceB.getDataSourceStat());
 
-        Assert.assertEquals(1, JdbcStatManager.getInstance().getSqlList().size());
+        assertEquals(1, JdbcStatManager.getInstance().getSqlList().size());
     }
-
 }

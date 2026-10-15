@@ -19,20 +19,21 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
-public class MySqlAlterTableTest3 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlAlterTableTest3 {
+    @Test
     public void test_alter_first() throws Exception {
         String sql = "ALTER TABLE `test`.`tb1` DROP COLUMN `f3` , CHANGE COLUMN `fname` `fname` VARCHAR(45) CHARACTER SET 'latin1' NULL DEFAULT NULL  AFTER `fid`";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("ALTER TABLE `test`.`tb1`" + //
-                        "\n\tDROP COLUMN `f3`," + //
+        assertEquals("ALTER TABLE `test`.`tb1`" +
+                        "\n\tDROP COLUMN `f3`," +
                         "\n\tCHANGE COLUMN `fname` `fname` VARCHAR(45) CHARACTER SET latin1 NULL DEFAULT NULL AFTER `fid`",
                 output);
     }
-
 }

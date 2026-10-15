@@ -1,14 +1,5 @@
 package com.alibaba.druid.bvt.pool.exception;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.concurrent.CountDownLatch;
-
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.vendor.OracleExceptionSorter;
@@ -16,13 +7,22 @@ import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.test.util.OracleMockDriver;
 import com.alibaba.druid.util.JdbcUtils;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class OracleExceptionSorterTest_concurrent extends TestCase {
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.concurrent.CountDownLatch;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OracleExceptionSorterTest_concurrent {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
-
+        JdbcStatManager.getInstance().reset();
         dataSource = new DruidDataSource();
 
         dataSource.setExceptionSorter(new OracleExceptionSorter());
@@ -35,12 +35,13 @@ public class OracleExceptionSorterTest_concurrent extends TestCase {
         dataSource.setMaxWait(1000 * 100);
     }
 
-    @Override
+        @AfterEach
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        DruidDataSourceStatManager.clear();
     }
 
+    @Test
     public void test_connect() throws Exception {
         final CountDownLatch latch_0 = new CountDownLatch(1);
 
@@ -52,7 +53,7 @@ public class OracleExceptionSorterTest_concurrent extends TestCase {
                     latch_0.countDown();
 
                     MockConnection mockConn = conn.unwrap(MockConnection.class);
-                    Assert.assertNotNull(mockConn);
+                    assertNotNull(mockConn);
 
                     SQLException exception = new SQLException("xx", "xxx", 28);
                     mockConn.setError(exception);
@@ -96,7 +97,6 @@ public class OracleExceptionSorterTest_concurrent extends TestCase {
 
         workCompleteLatch.await();
 
-        Assert.assertEquals(2001, dataSource.getConnectCount());
+        assertEquals(2001, dataSource.getConnectCount());
     }
-
 }

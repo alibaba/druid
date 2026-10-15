@@ -1,13 +1,13 @@
 package com.alibaba.druid.bvt.sql;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleCursorExpr;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleExprParser;
+import org.junit.jupiter.api.Test;
 
-public class EqualTest_cursor extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class EqualTest_cursor {
+    @Test
     public void test_exits() throws Exception {
         String sql = "CURSOR(select id from t)";
         String sql_c = "CURSOR(select id from t1)";
@@ -24,13 +24,13 @@ public class EqualTest_cursor extends TestCase {
             OracleExprParser parser = new OracleExprParser(sql_c);
             exprC = (OracleCursorExpr) parser.expr();
         }
-        Assert.assertEquals(exprA, exprB);
-        Assert.assertNotEquals(exprA, exprC);
-        Assert.assertTrue(exprA.equals(exprA));
-        Assert.assertFalse(exprA.equals(new Object()));
-        Assert.assertEquals(exprA.hashCode(), exprB.hashCode());
+        assertEquals(exprA, exprB);
+        assertNotEquals(exprA, exprC);
+        assertTrue(exprA.equals(exprA));
+        assertFalse(exprA.equals(new Object()));
+        assertEquals(exprA.hashCode(), exprB.hashCode());
 
-        Assert.assertEquals(new OracleCursorExpr(), new OracleCursorExpr());
-        Assert.assertEquals(new OracleCursorExpr().hashCode(), new OracleCursorExpr().hashCode());
+        assertEquals(new OracleCursorExpr(), new OracleCursorExpr());
+        assertEquals(new OracleCursorExpr().hashCode(), new OracleCursorExpr().hashCode());
     }
 }

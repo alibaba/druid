@@ -118,3 +118,14 @@ select age, name from person cluster by age
 SELECT age, name
 FROM person
 CLUSTER BY age
+------------------------------------------------------------------------------------------------------------------------
+select * from test
+GROUP BY organization_name, rental_resource -- 商城or人工创建    
+    , deliverytype -- #1新租；2续租；12转租
+    , date_format(rentDate, 'yyyy-MM')，执行成功
+--------------------
+SELECT *
+FROM test
+GROUP BY organization_name, rental_resource -- 商城or人工创建    
+	, deliverytype -- #1新租；2续租；12转租
+	, date_format(rentDate, 'yyyy-MM'), 执行成功

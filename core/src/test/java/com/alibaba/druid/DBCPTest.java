@@ -15,16 +15,15 @@
  */
 package com.alibaba.druid;
 
+import com.alibaba.druid.mock.MockDriver;
+import org.apache.commons.dbcp.BasicDataSource;
+import org.junit.jupiter.api.Test;
+
 import java.sql.Connection;
 import java.util.concurrent.CountDownLatch;
 
-import junit.framework.TestCase;
-
-import org.apache.commons.dbcp.BasicDataSource;
-
-import com.alibaba.druid.mock.MockDriver;
-
-public class DBCPTest extends TestCase {
+public class DBCPTest {
+    @Test
     public void test_max() throws Exception {
         Class.forName("com.alibaba.druid.mock.MockDriver");
 

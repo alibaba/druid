@@ -18,10 +18,12 @@ package com.alibaba.druid.bvt.sql.oracle;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
-public class OracleFlashbackQueryTest4 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OracleFlashbackQueryTest4 {
+    @Test
     public void test_isEmpty() throws Exception {
         String sql = "SELECT * FROM employees\n" +
                 "AS OF TIMESTAMP\n" +
@@ -38,7 +40,7 @@ public class OracleFlashbackQueryTest4 extends TestCase {
 
         String text = TestUtils.outputOracle(stmt);
 
-        Assert.assertEquals(expect, text);
+        assertEquals(expect, text);
 
         System.out.println(text);
     }

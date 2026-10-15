@@ -25,6 +25,7 @@ import com.alibaba.druid.wall.WallUtils;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_145_bigand extends MysqlTest {
     public void test_small_10() throws Exception {
@@ -61,7 +62,6 @@ public class MySqlSelectTest_145_bigand extends MysqlTest {
                 "\tAND GOODS_SID <> ?\n" +
                 "\tAND GOODS_SID <> ?", stmt.toString());
     }
-
 
     public void test_big_100000() throws Exception {
         StringBuilder buf = new StringBuilder();

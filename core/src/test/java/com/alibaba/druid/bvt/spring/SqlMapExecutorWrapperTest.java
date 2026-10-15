@@ -1,29 +1,33 @@
 package com.alibaba.druid.bvt.spring;
 
-import java.sql.Connection;
-
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-
 import com.alibaba.druid.support.ibatis.SqlMapClientWrapper;
 import com.ibatis.sqlmap.engine.impl.SqlMapClientImpl;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-public class SqlMapExecutorWrapperTest extends TestCase {
-    private ClassPathXmlApplicationContext context = null;
+import java.sql.Connection;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+public class SqlMapExecutorWrapperTest {
+    private ClassPathXmlApplicationContext context;
+
+    @BeforeEach
     protected void setUp() throws Exception {
         context = new ClassPathXmlApplicationContext("com/alibaba/druid/pool/ibatis/spring-config-ibatis.xml");
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         context.close();
     }
 
+    @Test
     public void test_wrap() throws Exception {
         SqlMapClientImpl client = (SqlMapClientImpl) context.getBean("master-sqlMapClient");
-        Assert.assertNotNull(client);
+        assertNotNull(client);
 
         SqlMapClientWrapper wrapper = new SqlMapClientWrapper(client);
         wrapper.getClient();
@@ -44,7 +48,7 @@ public class SqlMapExecutorWrapperTest extends TestCase {
         } catch (Exception ex) {
             error = ex;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
         wrapper.startTransaction();
         wrapper.commitTransaction();
 

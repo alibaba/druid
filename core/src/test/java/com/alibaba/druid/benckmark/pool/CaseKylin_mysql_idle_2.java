@@ -15,21 +15,21 @@
  */
 package com.alibaba.druid.benckmark.pool;
 
+import com.alibaba.druid.TestUtil;
+import com.alibaba.druid.mock.MockDriver;
+import com.alibaba.druid.pool.DruidDataSource;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import javax.sql.DataSource;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.text.NumberFormat;
 import java.util.concurrent.CountDownLatch;
 
-import javax.sql.DataSource;
-
-import junit.framework.TestCase;
-
-import com.alibaba.druid.TestUtil;
-import com.alibaba.druid.mock.MockDriver;
-import com.alibaba.druid.pool.DruidDataSource;
-
-public class CaseKylin_mysql_idle_2 extends TestCase {
+public class CaseKylin_mysql_idle_2 {
     private String jdbcUrl;
     private String user;
     private String password;
@@ -39,13 +39,13 @@ public class CaseKylin_mysql_idle_2 extends TestCase {
     private int maxIdle = 20;
     private int maxActive = 20;
     private int maxWait = 60000;
-    private String validationQuery = null;     // "SELECT 1";
+    private String validationQuery;     // "SELECT 1";
     private int threadCount = 15;
     private int TEST_COUNT = 3;
     final int LOOP_COUNT = 10 * 1;
     private boolean testWhileIdle = true;
-    private boolean testOnBorrow = false;
-    private boolean testOnReturn = false;
+    private boolean testOnBorrow;
+    private boolean testOnReturn;
 
     private boolean removeAbandoned = true;
     private int removeAbandonedTimeout = 180;
@@ -53,6 +53,7 @@ public class CaseKylin_mysql_idle_2 extends TestCase {
     private long minEvictableIdleTimeMillis = 1800 * 10;
     private int numTestsPerEvictionRun = 20;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
         user = "dragoon25";
@@ -72,9 +73,9 @@ public class CaseKylin_mysql_idle_2 extends TestCase {
         // driverClass = "oracle.jdbc.driver.OracleDriver";
     }
 
+    @Test
     public void test_perf() throws Exception {
         druid();
-
     }
 
     public void druid() throws Exception {

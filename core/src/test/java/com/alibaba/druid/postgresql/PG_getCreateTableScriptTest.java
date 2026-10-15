@@ -1,7 +1,6 @@
 package com.alibaba.druid.postgresql;
 
 import com.alibaba.druid.DbTestCase;
-import com.alibaba.druid.benckmark.proxy.BenchmarkExecutor;
 import com.alibaba.druid.pool.vendor.PGValidConnectionChecker;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.JdbcUtils;
@@ -9,7 +8,6 @@ import com.alibaba.druid.util.JdbcUtils;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -32,7 +30,7 @@ public class PG_getCreateTableScriptTest extends DbTestCase {
         //System.out.println(createTableScript);
 
         Statement stmt = conn.createStatement();
-        ;
+
         ResultSet rs = stmt.executeQuery("SELECT * FROM pg_catalog.pg_tables " +
                 "where schemaname not in ('pg_catalog', 'information_schema', 'sys')");
         JdbcUtils.printResultSet(rs);

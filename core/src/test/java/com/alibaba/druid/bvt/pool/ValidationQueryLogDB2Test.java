@@ -1,16 +1,15 @@
 package com.alibaba.druid.bvt.pool;
 
-import java.lang.reflect.Field;
-import java.sql.Connection;
-
 import com.alibaba.druid.PoolTestCase;
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.util.JdbcConstants;
+
+import java.lang.reflect.Field;
+import java.sql.Connection;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ValidationQueryLogDB2Test extends PoolTestCase {
     private DruidDataSource dataSource;
@@ -45,7 +44,6 @@ public class ValidationQueryLogDB2Test extends PoolTestCase {
 
         conn.close();
 
-
-        Assert.assertEquals(1, log.getErrorCount());
+        assertEquals(1, log.getErrorCount());
     }
 }

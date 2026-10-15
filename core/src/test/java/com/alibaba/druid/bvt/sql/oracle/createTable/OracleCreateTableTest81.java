@@ -22,6 +22,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleCreateTableTest81 extends OracleTest {
     public void test_types() throws Exception {
         String sql = //
@@ -41,7 +43,7 @@ public class OracleCreateTableTest81 extends OracleTest {
                         "\tMACHINE VARCHAR(50),\n" +
                         "\tCOMMENTS VARCHAR(100),\n" +
                         "\tSCHEMA VARCHAR(20)\n" +
-                        ")",//
+                        ")",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 //
 //        SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ORACLE);

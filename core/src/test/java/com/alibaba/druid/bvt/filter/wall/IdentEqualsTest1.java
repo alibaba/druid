@@ -15,26 +15,29 @@
  */
 package com.alibaba.druid.bvt.filter.wall;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class IdentEqualsTest1 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class IdentEqualsTest1 {
     private String sql = "select * from t where FID = 1 OR not (id != id)";
 
     private WallConfig config = new WallConfig();
 
+    @BeforeEach
     protected void setUp() throws Exception {
     }
 
+    @Test
     public void testMySql() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateMySql(sql, config));
+        assertFalse(WallUtils.isValidateMySql(sql, config));
     }
 
+    @Test
     public void testORACLE() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateOracle(sql, config));
+        assertFalse(WallUtils.isValidateOracle(sql, config));
     }
 }

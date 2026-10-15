@@ -1,24 +1,27 @@
 package com.alibaba.druid.bvt.filter;
 
-import java.io.ByteArrayInputStream;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.proxy.jdbc.ResultSetProxy;
 import com.alibaba.druid.stat.JdbcSqlStat;
 import com.alibaba.druid.util.JdbcUtils;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class StatFilterOpenInputStreamCountTest extends TestCase {
+import java.io.ByteArrayInputStream;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class StatFilterOpenInputStreamCountTest {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
 
@@ -41,10 +44,12 @@ public class StatFilterOpenInputStreamCountTest extends TestCase {
         dataSource.init();
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
     }
 
+    @Test
     public void test_stat() throws Exception {
         Connection conn = dataSource.getConnection();
 
@@ -53,7 +58,7 @@ public class StatFilterOpenInputStreamCountTest extends TestCase {
 
         JdbcSqlStat sqlStat = dataSource.getDataSourceStat().getSqlStat(sql);
 
-        Assert.assertEquals(0, sqlStat.getInputStreamOpenCount());
+        assertEquals(0, sqlStat.getInputStreamOpenCount());
 
         ResultSet rs = stmt.executeQuery();
         rs.next();
@@ -64,12 +69,13 @@ public class StatFilterOpenInputStreamCountTest extends TestCase {
 
         conn.close();
 
-        Assert.assertEquals(2, sqlStat.getInputStreamOpenCount());
+        assertEquals(2, sqlStat.getInputStreamOpenCount());
 
         sqlStat.reset();
-        Assert.assertEquals(0, sqlStat.getInputStreamOpenCount());
+        assertEquals(0, sqlStat.getInputStreamOpenCount());
     }
 
+    @Test
     public void test_stat_1() throws Exception {
         Connection conn = dataSource.getConnection();
 
@@ -78,7 +84,7 @@ public class StatFilterOpenInputStreamCountTest extends TestCase {
 
         JdbcSqlStat sqlStat = dataSource.getDataSourceStat().getSqlStat(sql);
 
-        Assert.assertEquals(0, sqlStat.getInputStreamOpenCount());
+        assertEquals(0, sqlStat.getInputStreamOpenCount());
 
         ResultSet rs = stmt.executeQuery();
         rs.next();
@@ -90,9 +96,9 @@ public class StatFilterOpenInputStreamCountTest extends TestCase {
 
         conn.close();
 
-        Assert.assertEquals(3, sqlStat.getInputStreamOpenCount());
+        assertEquals(3, sqlStat.getInputStreamOpenCount());
 
         sqlStat.reset();
-        Assert.assertEquals(0, sqlStat.getInputStreamOpenCount());
+        assertEquals(0, sqlStat.getInputStreamOpenCount());
     }
 }

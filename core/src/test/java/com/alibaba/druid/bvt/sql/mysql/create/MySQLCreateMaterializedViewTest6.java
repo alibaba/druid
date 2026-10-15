@@ -20,6 +20,8 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySQLCreateMaterializedViewTest6 extends MysqlTest {
     public void test1() throws Exception {
         String sql = "CREATE MATERIALIZED VIEW mymv (\n" +
@@ -39,7 +41,6 @@ public class MySQLCreateMaterializedViewTest6 extends MysqlTest {
                 "AS\n" +
                 "SELECT id\n" +
                 "FROM base;");
-
     }
 
     public void test2() throws Exception {
@@ -63,7 +64,6 @@ public class MySQLCreateMaterializedViewTest6 extends MysqlTest {
                 "AS\n" +
                 "SELECT id\n" +
                 "FROM base;");
-
     }
 
     public void test3() throws Exception {

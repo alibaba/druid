@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.dialect.postgresql.visitor;
 
 import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.SQLDialect;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
@@ -27,6 +28,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.*;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleFunctionDataType;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleProcedureDataType;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
+import com.alibaba.druid.sql.dialect.postgresql.PG;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.*;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.*;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.FetchClause;
@@ -43,9 +45,16 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     public PGOutputVisitor(StringBuilder appender) {
         super(appender, DbType.postgresql);
     }
+    public PGOutputVisitor(StringBuilder appender, DbType dbType, SQLDialect dialect) {
+        super(appender, dbType, dialect);
+    }
 
     public PGOutputVisitor(StringBuilder appender, boolean parameterized) {
-        super(appender, DbType.postgresql, parameterized);
+    super(appender, DbType.postgresql, PG.DIALECT, parameterized);
+    }
+
+    public PGOutputVisitor(StringBuilder appender, DbType dbType, SQLDialect dialect, boolean parameterized) {
+        super(appender, dbType, dialect, parameterized);
     }
 
     @Override
@@ -68,13 +77,17 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             print0(ucase ? "UPDATE" : "update");
         } else if (ForClause.Option.SHARE.equals(x.getOption())) {
             print0(ucase ? "SHARE" : "share");
+        } else if (ForClause.Option.KEY_SHARE.equals(x.getOption())) {
+            print0(ucase ? "KEY SHARE" : "key share");
+        } else if (ForClause.Option.NO_KEY_UPDATE.equals(x.getOption())) {
+            print0(ucase ? "NO KEY UPDATE" : "no key update");
         }
 
         if (x.getOf().size() > 0) {
-            print(' ');
+            print0(ucase ? " OF " : " of ");
             for (int i = 0; i < x.getOf().size(); ++i) {
                 if (i != 0) {
-                    println(", ");
+                    print0(", ");
                 }
                 x.getOf().get(i).accept(this);
             }
@@ -141,6 +154,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
 
         printFrom(x);
         printWhere(x);
+        printHierarchical(x);
         printGroupBy(x);
         printWindow(x);
         printOrderBy(x);
@@ -225,9 +239,15 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             this.indentCount--;
         }
 
-        if (x.isReturning()) {
+        SQLExpr returning = x.getReturning();
+        if (returning != null) {
             println();
-            print0(ucase ? "RETURNING *" : "returning *");
+            print0(ucase ? "RETURNING " : "returning ");
+            if (returning instanceof SQLListExpr) {
+                printAndAccept(((SQLListExpr) returning).getItems(), ", ");
+            } else {
+                returning.accept(this);
+            }
         }
 
         return false;
@@ -429,6 +449,20 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         }
         print0("::");
         dataType.accept(this);
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLCharacterDataType x) {
+        super.visit(x);
+        // PostgreSQL stores the COLLATE clause on the character data type (e.g. text COLLATE "x"
+        // produced by a cast like (a)::text COLLATE "x", or a column definition); the generic
+        // data type output drops it, so render it here (see issue #6573).
+        String collate = x.getCollate();
+        if (collate != null) {
+            print0(ucase ? " COLLATE " : " collate ");
+            print0(collate);
+        }
         return false;
     }
 
@@ -715,6 +749,80 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         if (x.isAuthorization()) {
             printUcase("AUTHORIZATION ");
             x.getUserName().accept(this);
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean visit(PGCreateExtensionStatement x) {
+        print0(ucase ? "CREATE EXTENSION " : "create extension ");
+
+        if (x.isIfNotExists()) {
+            print0(ucase ? "IF NOT EXISTS " : "if not exists ");
+        }
+
+        x.getName().accept(this);
+
+        if (x.getSchema() != null) {
+            print0(ucase ? " SCHEMA " : " schema ");
+            x.getSchema().accept(this);
+        }
+
+        if (x.getVersion() != null) {
+            print0(ucase ? " VERSION " : " version ");
+            print0("'");
+            print0(x.getVersion());
+            print0("'");
+        }
+
+        if (x.isCascade()) {
+            print0(ucase ? " CASCADE" : " cascade");
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean visit(PGCopyStatement x) {
+        print0(ucase ? "COPY " : "copy ");
+
+        if (x.getQuery() != null) {
+            print('(');
+            x.getQuery().accept(this);
+            print(')');
+        } else if (x.getTable() != null) {
+            x.getTable().accept(this);
+            if (!x.getColumns().isEmpty()) {
+                print('(');
+                printAndAccept(x.getColumns(), ", ");
+                print(')');
+            }
+        }
+
+        if (x.isDirectionTo()) {
+            print0(ucase ? " TO " : " to ");
+        } else {
+            print0(ucase ? " FROM " : " from ");
+        }
+
+        if (x.isProgram()) {
+            print0(ucase ? "PROGRAM " : "program ");
+        }
+
+        if (x.getTarget() != null) {
+            x.getTarget().accept(this);
+        }
+
+        if (!x.getOptions().isEmpty()) {
+            print0(ucase ? " WITH (" : " with (");
+            printAndAccept(x.getOptions(), ", ");
+            print(')');
+        }
+
+        if (x.getWhere() != null) {
+            print0(ucase ? " WHERE " : " where ");
+            x.getWhere().accept(this);
         }
 
         return false;
@@ -2773,7 +2881,10 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     }
 
     public boolean visit(SQLArrayDataType x) {
-        x.getComponentType().accept(this);
+        SQLDataType componentType = x.getComponentType();
+        if (componentType != null) {
+            componentType.accept(this);
+        }
         print('[');
         printAndAccept(x.getArguments(), ", ");
         print(']');
@@ -2781,6 +2892,9 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     }
 
     public boolean visit(SQLCharExpr x, boolean parameterized) {
+        if (x.hasBeforeComment()) {
+            printlnComments(x.getBeforeCommentsDirect());
+        }
         if (parameterized) {
             print('?');
             incrementReplaceCunt();
@@ -2813,7 +2927,9 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         } else {
             printChars(x.getText());
         }
-
+        if (x.hasAfterComment()) {
+            printAfterComments(x.getAfterCommentsDirect());
+        }
         return false;
     }
 
@@ -2951,7 +3067,11 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         Integer seed = x.getSeed();
         if (seed != null) {
             print0(ucase ? " (INCREMENT BY " : " (increment by ");
-            print(x.getIncrement());
+            if (x.getIncrement() != null) {
+                print(x.getIncrement());
+            } else {
+                print('1');
+            }
             print0(ucase ? " START WITH  " : " start with  ");
             print(seed);
             print(')');

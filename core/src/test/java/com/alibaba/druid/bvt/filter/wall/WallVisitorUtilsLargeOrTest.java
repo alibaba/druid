@@ -1,12 +1,13 @@
 package com.alibaba.druid.bvt.filter.wall;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.wall.spi.WallVisitorUtils;
+import org.junit.jupiter.api.Test;
 
-public class WallVisitorUtilsLargeOrTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class WallVisitorUtilsLargeOrTest {
+    @Test
     public void test_largeOr() throws Exception {
         StringBuilder buf = new StringBuilder();
         buf.append("ID = 1");
@@ -14,6 +15,6 @@ public class WallVisitorUtilsLargeOrTest extends TestCase {
             buf.append(" OR ID = " + i);
         }
 
-        Assert.assertEquals(null, WallVisitorUtils.getValue(SQLUtils.toSQLExpr(buf.toString())));
+        assertEquals(null, WallVisitorUtils.getValue(SQLUtils.toSQLExpr(buf.toString())));
     }
 }

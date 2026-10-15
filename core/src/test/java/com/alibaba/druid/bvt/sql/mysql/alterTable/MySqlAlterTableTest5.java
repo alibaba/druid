@@ -21,10 +21,12 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.stat.TableStat.Column;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
-public class MySqlAlterTableTest5 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlAlterTableTest5 {
+    @Test
     public void test_alter_first() throws Exception {
         String sql = "ALTER TABLE table_name   change COLUMN column_name column_newname char(50)";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -40,12 +42,11 @@ public class MySqlAlterTableTest5 extends TestCase {
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("ALTER TABLE table_name" + //
+        assertEquals("ALTER TABLE table_name" +
                 "\n\tCHANGE COLUMN column_name column_newname char(50)", output);
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(1, visitor.getColumns().size());
-        Assert.assertTrue(visitor.getColumns().contains(new Column("table_name", "column_name")));
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getColumns().size());
+        assertTrue(visitor.getColumns().contains(new Column("table_name", "column_name")));
     }
-
 }

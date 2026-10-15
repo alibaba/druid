@@ -15,18 +15,18 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import org.junit.jupiter.api.Test;
 
-public class MySqlWallTest144 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlWallTest144 {
+    @Test
     public void test_false() throws Exception {
         WallProvider provider = new MySqlWallProvider();
 
         String sql = "select min(id) from wx_interact where activityid=1008 group by true_name,mobile having rand()<1";
-        Assert.assertTrue(provider.checkValid(sql));
+        assertTrue(provider.checkValid(sql));
     }
 }

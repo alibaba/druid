@@ -15,38 +15,40 @@
  */
 package com.alibaba.druid.bvt.bug;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
+import org.junit.jupiter.api.Test;
 
-public class Issue_728 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class Issue_728 {
+    @Test
     public void test1() throws Exception {
         String sql = "select * from city_list where city_id = 3-1";
 
         WallConfig config = new WallConfig();
         config.setConstArithmeticAllow(false);
 
-        Assert.assertFalse(WallUtils.isValidateMySql(sql, config));
+        assertFalse(WallUtils.isValidateMySql(sql, config));
     }
 
+    @Test
     public void test2() throws Exception {
         String sql = "SELECT * from city_list where 2 = case when 2=1 then 1 else 2 END";
 
         WallConfig config = new WallConfig();
         config.setCaseConditionConstAllow(false);
 
-        Assert.assertFalse(WallUtils.isValidateMySql(sql, config));
+        assertFalse(WallUtils.isValidateMySql(sql, config));
     }
 
+    @Test
     public void test3() throws Exception {
         String sql = "SELECT * from city_list where city_id = 1 & 2";
 
         WallConfig config = new WallConfig();
         config.setConditionOpBitwiseAllow(false);
 
-        Assert.assertFalse(WallUtils.isValidateMySql(sql, config));
+        assertFalse(WallUtils.isValidateMySql(sql, config));
     }
 }

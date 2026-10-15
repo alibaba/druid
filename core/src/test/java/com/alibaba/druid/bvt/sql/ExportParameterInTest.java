@@ -6,17 +6,20 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.fastjson2.JSON;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
  * Created by wenshao on 23/11/2016.
  */
-public class ExportParameterInTest extends TestCase {
+public class ExportParameterInTest {
     DbType dbType = JdbcConstants.MYSQL;
 
+    @Test
     public void test_exportParameter() throws Exception {
         String sql = "select * from t_user where oid = '102' and uid in (1, 2, 3)";
 

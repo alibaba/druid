@@ -15,28 +15,28 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
+import org.junit.jupiter.api.Test;
 
-public class MySqlWallPermitTableTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlWallPermitTableTest {
+    @Test
     public void test_default_true() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateMySql("select * from t union select benchmark( 500000, sha1( 'test' ) ) FROM X"));
+        assertTrue(WallUtils.isValidateMySql("select * from t union select benchmark( 500000, sha1( 'test' ) ) FROM X"));
     }
 
+    @Test
     public void test_default_false() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateMySql("select * from t where fid = 1 union select benchmark( 500000, sha1( 'test' ) ) FROM X"));
+        assertFalse(WallUtils.isValidateMySql("select * from t where fid = 1 union select benchmark( 500000, sha1( 'test' ) ) FROM X"));
     }
 
-
+    @Test
     public void test_allow() throws Exception {
         WallConfig config = new WallConfig();
         config.setTableCheck(false);
 
-        Assert.assertTrue(WallUtils.isValidateMySql("select benchmark( 500000, sha1( 'test' ) ) FROM X", config));
+        assertTrue(WallUtils.isValidateMySql("select benchmark( 500000, sha1( 'test' ) ) FROM X", config));
     }
-
 }

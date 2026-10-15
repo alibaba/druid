@@ -18,8 +18,9 @@ package com.alibaba.druid.bvt.filter.wall.mysql;
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * SQLServerWallTest
@@ -28,16 +29,17 @@ import org.junit.Assert;
  * @version 1.0, 2012-3-18
  * @see
  */
-public class MySqlWallTest65 extends TestCase {
+public class MySqlWallTest65 {
+    @Test
     public void test_false() throws Exception {
         WallProvider provider = new MySqlWallProvider();
         WallConfig config = provider.getConfig();
         config.setSchemaCheck(true);
-        Assert.assertFalse(provider.checkValid(//
+        assertFalse(provider.checkValid(//
                 "SELECT email, passwd, login_id, full_name" +
                         " FROM test1.members" +
                         " WHERE member_id = 3 OR 0<(SELECT COUNT(*) FROM tabname);"));
 
-        Assert.assertEquals(2, provider.getTableStats().size());
+        assertEquals(2, provider.getTableStats().size());
     }
 }

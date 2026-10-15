@@ -66,4 +66,11 @@ public interface BigQueryVisitor extends SQLASTVisitor {
 
     default void endVisit(BigQueryTableExpr x) {
     }
+
+    default boolean visit(BigQueryExportDataStatement x) {
+        return true;
+    }
+
+    default void endVisit(BigQueryExportDataStatement x) {
+    }
 }

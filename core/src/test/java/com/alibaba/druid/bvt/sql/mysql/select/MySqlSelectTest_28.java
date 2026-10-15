@@ -23,6 +23,8 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_28 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "/* 0a7d0d8614637128401131809d4d9d/9// */"
@@ -30,7 +32,6 @@ public class MySqlSelectTest_28 extends MysqlTest {
                 + "FROM `t_0248` AS `i_trash` "
                 + "WHERE `gmt_create` < DATE_ADD(NOW(), INTERVAL (- 7) DAY) "
                 + "LIMIT 0, 1000";
-
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -71,6 +72,4 @@ public class MySqlSelectTest_28 extends MysqlTest {
                     output);
         }
     }
-
-
 }

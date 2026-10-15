@@ -8,6 +8,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_179 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SELECT zip(ARRAY[1, 2], ARRAY['1b', null, '3b'])";
@@ -18,8 +20,6 @@ public class MySqlSelectTest_179 extends MysqlTest {
         assertEquals(1, statementList.size());
 
         assertEquals("SELECT zip(ARRAY[1, 2], ARRAY['1b', NULL, '3b'])", stmt.toString());
-
-
     }
 
     public void test_1() throws Exception {
@@ -31,8 +31,6 @@ public class MySqlSelectTest_179 extends MysqlTest {
         assertEquals(1, statementList.size());
 
         assertEquals("SELECT transform(ARRAY[], x -> x + 1);", stmt.toString());
-
-
     }
 
     public void test_2() throws Exception {
@@ -43,8 +41,5 @@ public class MySqlSelectTest_179 extends MysqlTest {
         System.out.println(stmt.toString());
         assertEquals(1, statementList.size());
         assertEquals("SELECT reduce(ARRAY[5, 20, NULL, 50], 0, (s, x) -> IF(x IS NULL, s, s + x), s -> s);", stmt.toString());
-
-
     }
-
 }

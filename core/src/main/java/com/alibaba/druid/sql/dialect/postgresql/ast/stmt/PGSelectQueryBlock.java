@@ -136,7 +136,7 @@ public class PGSelectQueryBlock extends SQLSelectQueryBlock implements PGSQLObje
 
     public static class ForClause extends PGSQLObjectImpl {
         public static enum Option {
-            UPDATE, SHARE
+            UPDATE, SHARE, KEY_SHARE, NO_KEY_UPDATE
         }
 
         private List<SQLExpr> of = new ArrayList<SQLExpr>(2);

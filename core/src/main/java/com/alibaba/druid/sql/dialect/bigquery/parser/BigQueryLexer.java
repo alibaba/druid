@@ -3,6 +3,7 @@ package com.alibaba.druid.sql.dialect.bigquery.parser;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.parser.*;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,8 +11,16 @@ import static com.alibaba.druid.sql.parser.DialectFeature.ParserFeature.*;
 import static com.alibaba.druid.sql.parser.Token.LITERAL_CHARS;
 
 public class BigQueryLexer extends Lexer {
-    @Override
-    protected Keywords loadKeywords() {
+    static final Keywords BIGQUERY_KEYWORDS;
+    static final DialectFeature BIGQUERY_FEATURE = new DialectFeature(
+            Arrays.asList(
+                    SQLDateExpr,
+                    GroupByAll,
+                    InRestSpecificOperation
+            ),
+            null
+    );
+    static {
         Map<String, Token> map = new HashMap<String, Token>();
 
         //        map.putAll(Keywords.DEFAULT_KEYWORDS.getKeywords());
@@ -112,8 +121,16 @@ public class BigQueryLexer extends Lexer {
         map.put("EXCEPTION", Token.EXCEPTION);
         map.put("RAISE", Token.RAISE);
         map.put("ELSEIF", Token.ELSEIF);
+        map.put("SCHEMA", Token.SCHEMA);
+        map.put("PROCEDURE", Token.PROCEDURE);
+        map.put("DATABASE", Token.DATABASE);
 
-        return new Keywords(map);
+        BIGQUERY_KEYWORDS = new Keywords(map);
+    }
+
+    @Override
+    protected Keywords loadKeywords() {
+        return BIGQUERY_KEYWORDS;
     }
 
     public BigQueryLexer(String input, SQLParserFeature... features) {
@@ -299,8 +316,7 @@ public class BigQueryLexer extends Lexer {
 
     @Override
     protected void initDialectFeature() {
-        super.initDialectFeature();
-        this.dialectFeature.configFeature(SQLDateExpr, GroupByAll, InRestSpecificOperation);
+        this.dialectFeature = BIGQUERY_FEATURE;
     }
 
     @Override

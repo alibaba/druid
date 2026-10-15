@@ -15,15 +15,15 @@
  */
 package com.alibaba.druid.bvt.sql;
 
-import java.util.List;
-
 import com.alibaba.druid.DbType;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import org.junit.jupiter.api.Test;
 
-public class BigOrTest extends TestCase {
+import java.util.List;
+
+public class BigOrTest {
+    @Test
     public void testBigOr() throws Exception {
         StringBuilder buf = new StringBuilder();
         buf.append("SELECT * FROM T WHERE FID = ?");

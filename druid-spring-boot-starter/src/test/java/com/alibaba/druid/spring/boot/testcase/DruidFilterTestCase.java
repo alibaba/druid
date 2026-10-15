@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.test.context.ActiveProfiles;
 
 import javax.annotation.Resource;
+
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -50,12 +51,12 @@ public class DruidFilterTestCase {
             private static Logger logger = LoggerFactory.getLogger(SomeCustomFilter.class);
 
             @Override
-            public void init(DataSourceProxy dataSourceProxy){
+            public void init(DataSourceProxy dataSourceProxy) {
                 if (!(dataSourceProxy instanceof DruidDataSource)) {
                     logger.error("ConfigLoader only support DruidDataSource");
                 }
                 DruidDataSource dataSource = (DruidDataSource) dataSourceProxy;
-                logger.info("db configuration: url="+ dataSource.getUrl());
+                logger.info("db configuration: url=" + dataSource.getUrl());
             }
         }
     }

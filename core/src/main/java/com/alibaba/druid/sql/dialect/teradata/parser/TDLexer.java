@@ -10,9 +10,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TDLexer extends Lexer {
-    @Override
-    protected Keywords loadKeywords() {
-        Map<String, Token> map = new HashMap<String, Token>();
+    static final Keywords TERADATA_KEYWORDS;
+    static {
+        Map<String, Token> map = new HashMap<>();
 
         map.putAll(Keywords.DEFAULT_KEYWORDS.getKeywords());
 
@@ -20,7 +20,12 @@ public class TDLexer extends Lexer {
         map.put("TOP", Token.TOP);
         map.put("QUALIFY", Token.QUALIFY);
 
-        return new Keywords(map);
+        TERADATA_KEYWORDS = new Keywords(map);
+    }
+
+    @Override
+    protected Keywords loadKeywords() {
+        return TERADATA_KEYWORDS;
     }
 
     public TDLexer(String input, SQLParserFeature... features) {

@@ -18,16 +18,18 @@ package com.alibaba.druid.bvt.sql.mysql.visitor;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class MySqlSchemaStatVisitorTest7 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlSchemaStatVisitorTest7 {
+    @Test
     public void test_0() throws Exception {
         String sql = "select * from t1 where b in (select b from t2) and a = 1";
 
-//		sql = "select columnName from table1 where id in (select id from table3 where name = ?)";
+        // sql = "select columnName from table1 where id in (select id from table3 where name = ?)";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
@@ -52,13 +54,13 @@ public class MySqlSchemaStatVisitorTest7 extends TestCase {
         assertEquals(true, visitor.containsColumn("t1", "a"));
         // assertEquals(true, visitor.getFields().contains(new
         // Column("users", "name")));
-
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "select id,name from bi.aaa where stat_date <= cast(current_date as varchar(10))";
 
-//		sql = "select columnName from table1 where id in (select id from table3 where name = ?)";
+        // sql = "select columnName from table1 where id in (select id from table3 where name = ?)";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
@@ -77,15 +79,14 @@ public class MySqlSchemaStatVisitorTest7 extends TestCase {
         assertEquals("CURRENT_DATE", visitor.getConditions().get(0).getValues().get(0));
 
         assertEquals(1, visitor.getTables().size());
-//		assertEquals(true, visitor.containsTable("t1"));
-//		assertEquals(true, visitor.containsTable("t2"));
-//
-//		assertEquals(4, visitor.getColumns().size());
-//		assertEquals(true, visitor.containsColumn("t1", "b"));
-//		assertEquals(true, visitor.containsColumn("t2", "b"));
-//		assertEquals(true, visitor.containsColumn("t1", "a"));
+        // assertEquals(true, visitor.containsTable("t1"));
+        // assertEquals(true, visitor.containsTable("t2"));
+        //
+        // assertEquals(4, visitor.getColumns().size());
+        // assertEquals(true, visitor.containsColumn("t1", "b"));
+        // assertEquals(true, visitor.containsColumn("t2", "b"));
+        // assertEquals(true, visitor.containsColumn("t1", "a"));
         // assertEquals(true, visitor.getFields().contains(new
         // Column("users", "name")));
-
     }
 }

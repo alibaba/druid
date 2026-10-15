@@ -4,9 +4,10 @@ import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import org.junit.Assert;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleXmlelementTest extends OracleTest {
     public void testOracleXmlelement() {
@@ -17,13 +18,13 @@ public class OracleXmlelementTest extends OracleTest {
         SQLStatement statement = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         statement.accept(visitor);
 
-        Assert.assertEquals(0, visitor.getTables().size());
-        Assert.assertEquals(0, visitor.getColumns().size());
+        assertEquals(0, visitor.getTables().size());
+        assertEquals(0, visitor.getColumns().size());
     }
 
     public void testOracleXmlelement_WithoutNameKeyword() {
@@ -34,12 +35,12 @@ public class OracleXmlelementTest extends OracleTest {
         SQLStatement statement = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         statement.accept(visitor);
 
-        Assert.assertEquals(0, visitor.getTables().size());
-        Assert.assertEquals(0, visitor.getColumns().size());
+        assertEquals(0, visitor.getTables().size());
+        assertEquals(0, visitor.getColumns().size());
     }
 }

@@ -15,20 +15,22 @@
  */
 package com.alibaba.druid.bvt.pool.basic;
 
+import com.alibaba.druid.mock.MockStatement;
+import com.alibaba.druid.pool.DruidPooledStatement;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Assert;
-
-import com.alibaba.druid.mock.MockStatement;
-import com.alibaba.druid.pool.DruidPooledStatement;
-
-public class PoolableStatementTest extends TestCase {
+public class PoolableStatementTest {
     protected Statement raw;
     protected DruidPooledStatement stmt;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         raw = new MockStatement(null);
         stmt = new DruidPooledStatement(null, raw) {
@@ -42,15 +44,16 @@ public class PoolableStatementTest extends TestCase {
         };
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
     }
 
+    @Test
     public void test_basic() throws Exception {
-        Assert.assertEquals(raw, stmt.getStatement());
-        Assert.assertEquals(null, stmt.getPoolableConnection());
-        Assert.assertEquals(null, stmt.getConnection());
-        Assert.assertEquals(false, stmt.isPoolable());
+        assertEquals(raw, stmt.getStatement());
+        assertEquals(null, stmt.getPoolableConnection());
+        assertEquals(null, stmt.getConnection());
+        assertEquals(false, stmt.isPoolable());
         stmt.toString();
     }
-
 }

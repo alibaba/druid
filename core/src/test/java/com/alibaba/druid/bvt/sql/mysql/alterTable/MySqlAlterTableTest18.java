@@ -19,34 +19,38 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
-public class MySqlAlterTableTest18 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlAlterTableTest18 {
+    @Test
     public void test_alter_charset() throws Exception {
         String sql = "ALTER TABLE `test`.`tb1` ADD COLUMN `f2` VARCHAR(45) CHARACTER SET gbk NULL  FIRST ;";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("ALTER TABLE `test`.`tb1`\n\tADD COLUMN `f2` VARCHAR(45) CHARACTER SET gbk NULL FIRST;", output);
+        assertEquals("ALTER TABLE `test`.`tb1`\n\tADD COLUMN `f2` VARCHAR(45) CHARACTER SET gbk NULL FIRST;", output);
     }
 
+    @Test
     public void test_alter_collate() throws Exception {
         String sql = "ALTER TABLE `test`.`tb1` ADD COLUMN `f2` VARCHAR(45) COLLATE utf8_bin NULL  FIRST ;";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("ALTER TABLE `test`.`tb1`\n\tADD COLUMN `f2` VARCHAR(45) COLLATE utf8_bin NULL FIRST;", output);
+        assertEquals("ALTER TABLE `test`.`tb1`\n\tADD COLUMN `f2` VARCHAR(45) COLLATE utf8_bin NULL FIRST;", output);
     }
 
+    @Test
     public void test_alter_charset_collate() throws Exception {
         String sql = "ALTER TABLE `test`.`tb1` ADD COLUMN `f2` VARCHAR(45) CHARACTER SET utf8 COLLATE utf8_bin  NULL  FIRST ;";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("ALTER TABLE `test`.`tb1`\n\tADD COLUMN `f2` VARCHAR(45) CHARACTER SET utf8 COLLATE utf8_bin NULL FIRST;", output);
+        assertEquals("ALTER TABLE `test`.`tb1`\n\tADD COLUMN `f2` VARCHAR(45) CHARACTER SET utf8 COLLATE utf8_bin NULL FIRST;", output);
     }
 }

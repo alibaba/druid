@@ -15,14 +15,15 @@
  */
 package com.alibaba.druid.bvt.sql.oracle;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
+import org.junit.jupiter.api.Test;
 
-public class OracleNumberLiteralTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OracleNumberLiteralTest {
+    @Test
     public void test_number_literal() throws Exception {
         String sql = "SELECT 7, +255, 0.5, +6.34,25e-03, +6.34F, 0.5d, -1D FROM DUAL";
 
@@ -31,11 +32,12 @@ public class OracleNumberLiteralTest extends TestCase {
 
         String text = TestUtils.outputOracle(stmt);
 
-        Assert.assertEquals("SELECT 7, 255, 0.5, 6.34, 25e-03\n\t, 6.34F, 0.5D, -1.0D\nFROM DUAL", text);
+        assertEquals("SELECT 7, 255, 0.5, 6.34, 25e-03\n\t, 6.34F, 0.5D, -1.0D\nFROM DUAL", text);
 
         System.out.println(text);
     }
 
+    @Test
     public void test_number_literal_2() throws Exception {
         String sql = "SELECT BINARY_FLOAT_INFINITY FROM DUAL";
 
@@ -44,7 +46,7 @@ public class OracleNumberLiteralTest extends TestCase {
 
         String text = TestUtils.outputOracle(stmt);
 
-        Assert.assertEquals("SELECT BINARY_FLOAT_INFINITY\nFROM DUAL", text);
+        assertEquals("SELECT BINARY_FLOAT_INFINITY\nFROM DUAL", text);
 
         System.out.println(text);
     }

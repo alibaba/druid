@@ -23,6 +23,7 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleSelectTest122 extends MysqlTest {
     public void test_0() throws Exception {
@@ -61,5 +62,4 @@ public class OracleSelectTest122 extends MysqlTest {
                 "\t\t\tAND org.SWJG_DM = org_model.jg_dm\n" +
                 "\t) B ON A.gnmk_dm = B.gnmk_dm ", stmt.toString());
     }
-
 }

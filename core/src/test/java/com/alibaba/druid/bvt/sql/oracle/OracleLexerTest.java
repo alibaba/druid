@@ -15,12 +15,12 @@
  */
 package com.alibaba.druid.bvt.sql.oracle;
 
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleLexer;
 import com.alibaba.druid.sql.parser.Token;
+import org.junit.jupiter.api.Test;
 
-public class OracleLexerTest extends TestCase {
+public class OracleLexerTest {
+    @Test
     public void test_hint() throws Exception {
         String sql = "SELECT /*+FIRST_ROWS*/ * FROM T WHERE F1 = ? ORDER BY F2";
         OracleLexer lexer = new OracleLexer(sql);

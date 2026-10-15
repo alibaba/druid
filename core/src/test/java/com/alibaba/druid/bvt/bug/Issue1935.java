@@ -3,17 +3,17 @@ package com.alibaba.druid.bvt.bug;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.ast.statement.SQLCreateViewStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-public class Issue1935 extends TestCase {
+public class Issue1935 {
+    @Test
     public void test_for_issue() throws Exception {
         DbType DBTYPE = JdbcConstants.MYSQL;
         //String sql = "select name, course ,scole from student inner join scole on student.id = scole.sd_id where course = '数学' limit 10;";
@@ -45,6 +45,7 @@ public class Issue1935 extends TestCase {
             Collection<TableStat.Column> cc = visitor.getColumns();
             //column 存储了表名，列名，以及列是出现的位置，where，select，groupby ，order
             for (TableStat.Column column : cc) {
+                // Intentionally left empty
             }
             System.out.println("conditions : " + visitor.getConditions());
             List<TableStat.Condition> conditions = visitor.getConditions();

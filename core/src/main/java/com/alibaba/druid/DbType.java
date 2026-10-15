@@ -45,7 +45,10 @@ public enum DbType {
     antspark(1 << 30),
 
     spark(1 << 30),
-    oceanbase_oracle(1 << 31),
+    oceanbase_oracle(1L << 31),
+    /**
+     * Alibaba Cloud PolarDB-Oracle 1.0
+     */
     polardb(1L << 32),
 
     ali_oracle(1L << 33),
@@ -93,6 +96,12 @@ public enum DbType {
     supersql(1L << 54),
     databricks(1L << 55),
     adb_mysql(1L << 56),
+    /**
+     * Alibaba Cloud PolarDB-Oracle 2.0
+     */
+    polardb2(1L << 57),
+    synapse(1L << 58),
+    duckdb(1L << 59),
 
     ingres(0),
     cloudscape(0),

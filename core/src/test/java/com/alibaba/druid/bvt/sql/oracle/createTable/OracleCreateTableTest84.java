@@ -23,6 +23,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleCreateTableTest84 extends OracleTest {
     public void test_types() throws Exception {
         String sql = //
@@ -151,7 +153,7 @@ public class OracleCreateTableTest84 extends OracleTest {
                         "\tBUFFER_POOL DEFAULT\n" +
                         "\tFLASH_CACHE DEFAULT\n" +
                         "\tCELL_FLASH_CACHE DEFAULT\n" +
-                        ")",//
+                        ")",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         stmt.renameColumn("ID", "FID");
@@ -226,7 +228,7 @@ public class OracleCreateTableTest84 extends OracleTest {
                         "\tBUFFER_POOL DEFAULT\n" +
                         "\tFLASH_CACHE DEFAULT\n" +
                         "\tCELL_FLASH_CACHE DEFAULT\n" +
-                        ")",//
+                        ")",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 //
 //        SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ORACLE);

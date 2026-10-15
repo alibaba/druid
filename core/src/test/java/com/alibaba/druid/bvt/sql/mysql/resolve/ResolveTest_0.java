@@ -5,14 +5,20 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
-import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.repository.SchemaRepository;
 import com.alibaba.druid.sql.visitor.SQLASTVisitorAdapter;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class ResolveTest_0 extends TestCase {
+public class ResolveTest_0 {
     private SchemaRepository repository = new SchemaRepository(DbType.mysql);
 
+    @BeforeEach
     protected void setUp() throws Exception {
         repository.setSchemaLoader(new SchemaRepository.SchemaLoader() {
             @Override
@@ -33,6 +39,7 @@ public class ResolveTest_0 extends TestCase {
         });
     }
 
+    @Test
     public void test_0() throws Exception {
         String sql = "with x as (select * from t_order o where o.fid = 3) select * from x inner join t_user u on x.fid = u.fid";
         SQLSelectStatement stmt = (SQLSelectStatement) SQLUtils.parseStatements(sql, DbType.mysql).get(0);
@@ -48,6 +55,7 @@ public class ResolveTest_0 extends TestCase {
         System.out.println(queryBlock.toString());
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "with x as (select * from t_order o where o.fid = 3) select * from x inner join t_user u on x.fid = u.fid";
         SQLSelectStatement stmt = (SQLSelectStatement) SQLUtils.parseStatements(sql, DbType.mysql).get(0);
@@ -58,6 +66,7 @@ public class ResolveTest_0 extends TestCase {
         System.out.println(stmt.toString());
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "select t_order.fid from t_order";
         SQLSelectStatement stmt = (SQLSelectStatement) SQLUtils.parseStatements(sql, DbType.mysql).get(0);
@@ -68,6 +77,7 @@ public class ResolveTest_0 extends TestCase {
         System.out.println(stmt.toString());
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = "select s1.t_order.fid from s1.t_order";
         SQLSelectStatement stmt = (SQLSelectStatement) SQLUtils.parseStatements(sql, DbType.mysql).get(0);
@@ -78,6 +88,7 @@ public class ResolveTest_0 extends TestCase {
         System.out.println(stmt.toString());
     }
 
+    @Test
     public void test_4() throws Exception {
         String sql = "with temp_table as\n" +
                 "(\n" +

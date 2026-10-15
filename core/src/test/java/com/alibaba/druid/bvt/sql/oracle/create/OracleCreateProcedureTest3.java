@@ -20,9 +20,10 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import org.junit.Assert;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleCreateProcedureTest3 extends OracleTest {
     public void test_0() throws Exception {
@@ -37,13 +38,13 @@ public class OracleCreateProcedureTest3 extends OracleTest {
                 "       AND TRUNC(T.SENDREALTIME) = TRUNC(SYSDATE);\n" +
                 "    COMMIT;\n" +
                 "  END IF;\n" +
-                "END PRC_DEALSMS;"; //
+                "END PRC_DEALSMS;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         for (SQLStatement statement : statementList) {
@@ -56,15 +57,15 @@ public class OracleCreateProcedureTest3 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("CRMSMS_MT_SEND")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("CRMSMS_MT_SEND")));
 
-        Assert.assertEquals(3, visitor.getColumns().size());
-        Assert.assertEquals(2, visitor.getConditions().size());
-        Assert.assertEquals(0, visitor.getRelationships().size());
+        assertEquals(3, visitor.getColumns().size());
+        assertEquals(2, visitor.getConditions().size());
+        assertEquals(0, visitor.getRelationships().size());
 
-        Assert.assertTrue(visitor.containsColumn("CRMSMS_MT_SEND", "SENDFLAG"));
-        Assert.assertTrue(visitor.containsColumn("CRMSMS_MT_SEND", "FLAGID"));
+        assertTrue(visitor.containsColumn("CRMSMS_MT_SEND", "SENDFLAG"));
+        assertTrue(visitor.containsColumn("CRMSMS_MT_SEND", "FLAGID"));
     }
 }

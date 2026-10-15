@@ -17,43 +17,44 @@ package com.alibaba.druid.bvt.filter.wall;
 
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * 这个场景，被攻击者用于测试当前SQL拥有多少字段
  *
  * @author wenshao
  */
-public class WallUnionTest4 extends TestCase {
-
+public class WallUnionTest4 {
     public static final String UNION_SQL1 = "SELECT id, product FROM T1 t where id=1 UNION (SELECT * FROM (SELECT 1,'x') X)";
     public static final String UNION_SQL2 = "SELECT id, product FROM T1 t where id=1 UNION (SELECT * FROM (SELECT 1,'x') X) -- ";
 
+    @Test
     public void testMySql() throws Exception {
         final WallConfig config = new WallConfig();
         config.setSelectUnionCheck(true);
-        Assert.assertFalse(WallUtils.isValidateMySql(UNION_SQL1, config));
-        Assert.assertFalse(WallUtils.isValidateMySql(UNION_SQL2, config));
+        assertFalse(WallUtils.isValidateMySql(UNION_SQL1, config));
+        assertFalse(WallUtils.isValidateMySql(UNION_SQL2, config));
 
         config.setSelectUnionCheck(false);
         config.setSelectWhereAlwayTrueCheck(false);
         config.setCommentAllow(true);
-        Assert.assertTrue(WallUtils.isValidateMySql(UNION_SQL1, config));
-        Assert.assertTrue(WallUtils.isValidateMySql(UNION_SQL2, config));
-
+        assertTrue(WallUtils.isValidateMySql(UNION_SQL1, config));
+        assertTrue(WallUtils.isValidateMySql(UNION_SQL2, config));
     }
 
+    @Test
     public void testORACLE() throws Exception {
         final WallConfig config = new WallConfig();
         config.setSelectUnionCheck(true);
-        Assert.assertFalse(WallUtils.isValidateOracle(UNION_SQL1, config));
-        Assert.assertFalse(WallUtils.isValidateOracle(UNION_SQL2, config));
+        assertFalse(WallUtils.isValidateOracle(UNION_SQL1, config));
+        assertFalse(WallUtils.isValidateOracle(UNION_SQL2, config));
 
         config.setSelectUnionCheck(false);
         config.setSelectWhereAlwayTrueCheck(false);
         config.setCommentAllow(true);
-        Assert.assertTrue(WallUtils.isValidateOracle(UNION_SQL1, config));
-        Assert.assertTrue(WallUtils.isValidateOracle(UNION_SQL2, config));
+        assertTrue(WallUtils.isValidateOracle(UNION_SQL1, config));
+        assertTrue(WallUtils.isValidateOracle(UNION_SQL2, config));
     }
 }

@@ -161,7 +161,7 @@ public class FilterManager {
     private static boolean existsFilter(List<Filter> filterList, String filterClassName) {
         for (Filter filter : filterList) {
             String itemFilterClassName = filter.getClass().getName();
-            if (itemFilterClassName.equalsIgnoreCase(filterClassName)) {
+            if (itemFilterClassName.equals(filterClassName)) {
                 return true;
             }
         }

@@ -15,22 +15,22 @@
  */
 package com.alibaba.druid.sql.parser;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.util.List;
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
-import com.alibaba.druid.util.Utils;
 import com.alibaba.druid.util.JdbcUtils;
+import com.alibaba.druid.util.Utils;
+import org.junit.jupiter.api.Test;
 
-public class PerfTest extends TestCase {
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.List;
+
+public class PerfTest {
+    @Test
     public void test_perf() throws Exception {
         for (int i = 0; i < 10; ++i) {
             // perf("SELECT * FROM my_table WHERE TRUNC(SYSDATE) = DATE '2002-10-03';");

@@ -2,9 +2,10 @@ package com.alibaba.druid.demo.sql;
 
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleLexer;
 import com.alibaba.druid.sql.parser.Token;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class OracleCompatibleTest extends TestCase {
+public class OracleCompatibleTest {
+    @Test
     public void test_compatibleTest() throws Exception {
         String sql = "select * from t where rownum < 10"; //oracle ppas
         OracleLexer lexer = new OracleLexer(sql);

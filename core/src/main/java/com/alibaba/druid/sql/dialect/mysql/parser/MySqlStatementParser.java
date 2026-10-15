@@ -1043,33 +1043,6 @@ public class MySqlStatementParser extends SQLStatementParser {
         return stmt;
     }
 
-    public SQLStatement parseReset() {
-        acceptIdentifier(RESET);
-
-        MySqlResetStatement stmt = new MySqlResetStatement();
-
-        for (; ; ) {
-            if (lexer.token() == Token.IDENTIFIER) {
-                if (lexer.identifierEquals("QUERY")) {
-                    lexer.nextToken();
-                    accept(Token.CACHE);
-                    stmt.getOptions().add("QUERY CACHE");
-                } else {
-                    stmt.getOptions().add(lexer.stringVal());
-                    lexer.nextToken();
-                }
-
-                if (lexer.token() == Token.COMMA) {
-                    lexer.nextToken();
-                    continue;
-                }
-            }
-            break;
-        }
-
-        return stmt;
-    }
-
     public boolean parseStatementListDialect(List<SQLStatement> statementList) {
         if (lexer.identifierEquals("PREPARE")) {
             MySqlPrepareStatement stmt = parsePrepare();
@@ -1163,6 +1136,20 @@ public class MySqlStatementParser extends SQLStatementParser {
 
             if (lexer.token() != EOF && lexer.token() != SEMI) {
                 SQLExpr xid = exprParser.expr();
+                // xid has at most three comma-separated parts: gtrid[, bqual[, formatID]] (#4979)
+                if (lexer.token() == Token.COMMA) {
+                    SQLListExpr list = new SQLListExpr();
+                    list.addItem(xid);
+                    while (lexer.token() == Token.COMMA) {
+                        if (list.getItems().size() >= 3) {
+                            throw new ParserException(
+                                    "XA xid has at most 3 parts (gtrid, bqual, formatID). " + lexer.info());
+                        }
+                        lexer.nextToken();
+                        list.addItem(exprParser.expr());
+                    }
+                    xid = list;
+                }
                 stmt.setId(xid);
             }
 
@@ -1511,7 +1498,6 @@ public class MySqlStatementParser extends SQLStatementParser {
                 } else if (lexer.identifierEquals(FnvHash.Constants.LOW_PRIORITY)) {
                     lexer.nextToken();
                     acceptIdentifier(WRITE);
-                    lexer.nextToken();
                     item.setLockType(LockType.LOW_PRIORITY_WRITE);
                 } else {
                     throw new ParserException(
@@ -6224,7 +6210,8 @@ public class MySqlStatementParser extends SQLStatementParser {
                         alterIndex.getIndexDefinition().getOptions().setInvisible(lexer.identifierEquals("INVISIBLE"));
                         lexer.nextToken();
                         stmt.addItem(alterIndex);
-                        break;
+                        // 该子句已成功解析,需返回 true 让外层 alterTableAfterName 的逗号循环继续解析后续子句
+                        return true;
                     }
 
                     MySqlAlterTableAlterFullTextIndex alterIndex = new MySqlAlterTableAlterFullTextIndex();
@@ -7600,7 +7587,18 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         SQLAlterTableAddColumn item = new SQLAlterTableAddColumn();
         for (; ; ) {
+            // MySQL/MariaDB: ADD COLUMN IF NOT EXISTS col ... (scoped to ADD COLUMN; issue #6067)
+            boolean ifNotExists = false;
+            if (lexer.token() == Token.IF) {
+                lexer.nextToken();
+                accept(Token.NOT);
+                accept(Token.EXISTS);
+                ifNotExists = true;
+            }
             SQLColumnDefinition columnDef = this.exprParser.parseColumn();
+            if (ifNotExists) {
+                columnDef.setIfNotExists(true);
+            }
             item.addColumn(columnDef);
             if (lexer.identifierEquals("AFTER")) {
                 lexer.nextToken();

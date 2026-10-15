@@ -7,6 +7,7 @@ import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
+import com.alibaba.druid.sql.parser.SQLSelectParser;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.FnvHash;
 
@@ -103,6 +104,11 @@ public class StarRocksExprParser extends SQLExprParser {
         }
 
         return super.parseColumnRest(column);
+    }
+
+    @Override
+    public SQLSelectParser createSelectParser() {
+        return new StarRocksSelectParser(this, null);
     }
 
     @Override

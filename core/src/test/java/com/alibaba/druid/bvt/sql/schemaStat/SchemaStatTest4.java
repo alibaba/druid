@@ -5,12 +5,14 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class SchemaStatTest4 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class SchemaStatTest4 {
+    @Test
     public void test_schemaStat() throws Exception {
         String sql = "select name, age from t_user where id = 1";
 
@@ -25,6 +27,6 @@ public class SchemaStatTest4 extends TestCase {
         System.out.println(statVisitor.getTables());
         System.out.println(statVisitor.getConditions());
 
-        Assert.assertEquals(3, statVisitor.getColumns().size());
+        assertEquals(3, statVisitor.getColumns().size());
     }
 }

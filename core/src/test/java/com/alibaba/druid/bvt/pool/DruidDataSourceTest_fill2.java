@@ -1,21 +1,23 @@
 package com.alibaba.druid.bvt.pool;
 
+import com.alibaba.druid.pool.DruidDataSource;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.sql.Connection;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Assert;
-
-import com.alibaba.druid.pool.DruidDataSource;
-
-public class DruidDataSourceTest_fill2 extends TestCase {
+public class DruidDataSourceTest_fill2 {
     private DruidDataSource dataSource;
 
     private int maxActive = 100;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
@@ -23,10 +25,12 @@ public class DruidDataSourceTest_fill2 extends TestCase {
         dataSource.setTestOnBorrow(false);
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
     }
 
+    @Test
     public void test_fill() throws Exception {
         final AtomicLong errorCount = new AtomicLong();
 
@@ -73,7 +77,7 @@ public class DruidDataSourceTest_fill2 extends TestCase {
 
         fillLatch.await(1000, TimeUnit.MILLISECONDS);
 
-        Assert.assertEquals(0, fillErrorCount.get());
+        assertEquals(0, fillErrorCount.get());
 
         for (int i = 0; i < 100; ++i) {
             endLatch.await(100, TimeUnit.MILLISECONDS);
@@ -81,8 +85,7 @@ public class DruidDataSourceTest_fill2 extends TestCase {
                 break;
             }
         }
-        Assert.assertTrue("not full", dataSource.isFull());
-//        Assert.assertTrue("fillCount zero", fillCount.get() > 0);
-
+        assertTrue(dataSource.isFull(), "not full");
+//        assertTrue(fillCount.get() > 0, "fillCount zero");
     }
 }

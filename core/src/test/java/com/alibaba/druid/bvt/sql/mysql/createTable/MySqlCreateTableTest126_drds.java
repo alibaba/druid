@@ -7,6 +7,8 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlCreateTableTest126_drds extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "CREATE TABLE xx\n" +
@@ -24,7 +26,6 @@ public class MySqlCreateTableTest126_drds extends MysqlTest {
 
         assertEquals(1, statementList.size());
 
-
         assertEquals("CREATE TABLE xx\n" +
                 "DBPARTITION BY hash(name1)\n" +
                 "TBPARTITION BY hash(name2) TBPARTITIONS 4\n" +
@@ -33,8 +34,5 @@ public class MySqlCreateTableTest126_drds extends MysqlTest {
                 "\tDBPARTITION yyy BY KEY('def') TBPARTITION yyy BY KEY('def'), \n" +
                 "\tDBPARTITION yyy BY KEY('gpk')\n" +
                 ")", stmt.toString());
-
     }
-
-
 }

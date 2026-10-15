@@ -26,6 +26,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_81_hints extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select * from t /*! where col = somefunc(col2) order by sortcol */;";

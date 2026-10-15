@@ -10,6 +10,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_138_ads_minus extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SELECT DISTINCT o_orderkey\n" +
@@ -55,11 +57,8 @@ public class MySqlSelectTest_138_ads_minus extends MysqlTest {
         SQLUnionQuery q2 = (SQLUnionQuery) q1.getLeft();
         assertTrue(q2.getRight() instanceof SQLSelectQueryBlock);
 
-
         SQLUnionQuery q3 = (SQLUnionQuery) q2.getLeft();
         assertTrue(q3.getRight() instanceof SQLSelectQueryBlock);
         assertTrue(q3.getLeft() instanceof SQLSelectQueryBlock);
     }
-
-
 }

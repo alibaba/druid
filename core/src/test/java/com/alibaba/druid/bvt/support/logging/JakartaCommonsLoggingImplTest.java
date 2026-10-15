@@ -1,13 +1,13 @@
 package com.alibaba.druid.bvt.support.logging;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.logging.JakartaCommonsLoggingImpl;
+import org.junit.jupiter.api.Test;
 
-public class JakartaCommonsLoggingImplTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class JakartaCommonsLoggingImplTest {
+    @Test
     public void test_0() throws Exception {
         JakartaCommonsLoggingImpl impl = new JakartaCommonsLoggingImpl(DruidDataSource.class.getName());
 
@@ -21,9 +21,9 @@ public class JakartaCommonsLoggingImplTest extends TestCase {
         impl.warn("", new Exception());
         impl.error("");
         impl.error("", new Exception());
-        Assert.assertEquals(1, impl.getInfoCount());
-        Assert.assertEquals(2, impl.getErrorCount());
-        Assert.assertEquals(2, impl.getWarnCount());
-        Assert.assertEquals(1, impl.getInfoCount());
+        assertEquals(1, impl.getInfoCount());
+        assertEquals(2, impl.getErrorCount());
+        assertEquals(2, impl.getWarnCount());
+        assertEquals(1, impl.getInfoCount());
     }
 }

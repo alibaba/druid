@@ -22,8 +22,9 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
-public class MySqlCreateProcedureTest16 extends MysqlTest {
+import static org.junit.jupiter.api.Assertions.*;
 
+public class MySqlCreateProcedureTest16 extends MysqlTest {
     public void test_0() {
         String sql = "CREATE PROCEDURE drop_tab_index (IN db varchar(50),IN tb_name varchar(512),IN idx_type varchar(50),IN idx_name varchar(512))\n" +
                 "BEGIN\n" +

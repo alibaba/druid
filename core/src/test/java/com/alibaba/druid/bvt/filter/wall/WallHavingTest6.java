@@ -15,40 +15,39 @@
  */
 package com.alibaba.druid.bvt.filter.wall;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author wenshao
  */
-public class WallHavingTest6 extends TestCase {
+public class WallHavingTest6 {
     private String sql = "SELECT region, SUM(population), SUM(area) FROM bbc GROUP BY region HAVING SUM(area)>1000000 or 1 = 1 --";
 
     private String sql1 = "SELECT region, SUM(population), SUM(area) FROM bbc GROUP BY region HAVING SUM(area)>1000000 or 1 = 1 #and c=1";
 
+    @Test
     public void test_check_true() throws Exception {
         WallConfig config = new WallConfig();
         config.setSelectHavingAlwayTrueCheck(true);
         config.setConditionAndAlwayTrueAllow(true);
         config.setCommentAllow(true);
 
-        Assert.assertFalse(WallUtils.isValidateMySql(sql, config));
-        Assert.assertFalse(WallUtils.isValidateMySql(sql1, config));
+        assertFalse(WallUtils.isValidateMySql(sql, config));
+        assertFalse(WallUtils.isValidateMySql(sql1, config));
     }
 
+    @Test
     public void test_check_false() throws Exception {
         WallConfig config = new WallConfig();
         config.setSelectHavingAlwayTrueCheck(false);
         config.setConditionAndAlwayTrueAllow(true);
         config.setCommentAllow(true);
 
-        Assert.assertTrue(WallUtils.isValidateMySql(sql, config));
-        Assert.assertTrue(WallUtils.isValidateMySql(sql1, config));
+        assertTrue(WallUtils.isValidateMySql(sql, config));
+        assertTrue(WallUtils.isValidateMySql(sql1, config));
     }
-
-
 }

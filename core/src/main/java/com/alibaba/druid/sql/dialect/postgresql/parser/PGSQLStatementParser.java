@@ -486,8 +486,20 @@ public class PGSQLStatementParser extends SQLStatementParser {
 
         if (lexer.token() == Token.RETURNING) {
             lexer.nextToken();
-            accept(Token.STAR);
-            deleteStatement.setReturning(true);
+            if (lexer.token() == Token.STAR) {
+                lexer.nextToken();
+                deleteStatement.setReturning(new SQLAllColumnExpr());
+            } else {
+                SQLExpr returning = this.exprParser.expr();
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                    SQLListExpr list = new SQLListExpr();
+                    list.addItem(returning);
+                    this.exprParser.exprList(list.getItems(), list);
+                    returning = list;
+                }
+                deleteStatement.setReturning(returning);
+            }
         }
 
         return deleteStatement;
@@ -534,7 +546,173 @@ public class PGSQLStatementParser extends SQLStatementParser {
             statementList.add(stmt);
             return true;
         }
+        if ("COPY".equalsIgnoreCase(strVal)) {
+            statementList.add(parseCopy());
+            return true;
+        }
+
         return false;
+    }
+
+    @Override
+    public SQLStatement parseCreate() {
+        Lexer.SavePoint mark = lexer.mark();
+        lexer.nextToken(); // skip CREATE
+
+        if (lexer.identifierEquals("EXTENSION")) {
+            return parseCreateExtension();
+        }
+
+        lexer.reset(mark);
+        return super.parseCreate();
+    }
+
+    protected PGCreateExtensionStatement parseCreateExtension() {
+        lexer.nextToken(); // skip EXTENSION
+
+        PGCreateExtensionStatement stmt = new PGCreateExtensionStatement();
+
+        if (lexer.token() == Token.IF) {
+            lexer.nextToken();
+            accept(Token.NOT);
+            accept(Token.EXISTS);
+            stmt.setIfNotExists(true);
+        }
+
+        stmt.setName(this.exprParser.name());
+
+        if (lexer.token() == Token.WITH) {
+            lexer.nextToken();
+        }
+
+        for (;;) {
+            if (lexer.token() == Token.SCHEMA || lexer.identifierEquals("SCHEMA")) {
+                lexer.nextToken();
+                stmt.setSchema(this.exprParser.name());
+            } else if (lexer.identifierEquals("VERSION")) {
+                lexer.nextToken();
+                stmt.setVersion(lexer.stringVal());
+                lexer.nextToken();
+            } else if (lexer.token() == Token.CASCADE) {
+                lexer.nextToken();
+                stmt.setCascade(true);
+            } else {
+                break;
+            }
+        }
+
+        return stmt;
+    }
+
+    public SQLStatement parseCopy() {
+        lexer.nextToken(); // skip COPY
+
+        PGCopyStatement stmt = new PGCopyStatement();
+
+        // COPY (query) TO ...
+        if (lexer.token() == Token.LPAREN) {
+            lexer.nextToken();
+            SQLSelect query = createSQLSelectParser().select();
+            accept(Token.RPAREN);
+            stmt.setQuery(query);
+        } else {
+            SQLName tableName = this.exprParser.name();
+            stmt.setTable(new SQLExprTableSource(tableName));
+
+            if (lexer.token() == Token.LPAREN) {
+                lexer.nextToken();
+                this.exprParser.names(stmt.getColumns(), stmt);
+                accept(Token.RPAREN);
+            }
+        }
+
+        // FROM or TO
+        if (lexer.token() == Token.FROM) {
+            lexer.nextToken();
+            parseCopyTarget(stmt);
+        } else if (lexer.token() == Token.TO) {
+            lexer.nextToken();
+            stmt.setDirectionTo(true);
+            parseCopyTarget(stmt);
+        }
+
+        // WITH ( options )
+        if (lexer.token() == Token.WITH) {
+            lexer.nextToken();
+            if (lexer.token() == Token.LPAREN) {
+                lexer.nextToken();
+                for (;;) {
+                    SQLAssignItem item = parseCopyOption();
+                    stmt.getOptions().add(item);
+                    if (lexer.token() == Token.COMMA) {
+                        lexer.nextToken();
+                        continue;
+                    }
+                    break;
+                }
+                accept(Token.RPAREN);
+            }
+        }
+
+        // Legacy options (without WITH)
+        while (lexer.token() == Token.IDENTIFIER) {
+            String optName = lexer.stringVal();
+            if ("DELIMITER".equalsIgnoreCase(optName)
+                || "NULL".equalsIgnoreCase(optName)
+                || "CSV".equalsIgnoreCase(optName)
+                || "HEADER".equalsIgnoreCase(optName)
+                || "QUOTE".equalsIgnoreCase(optName)
+                || "ESCAPE".equalsIgnoreCase(optName)
+                || "ENCODING".equalsIgnoreCase(optName)) {
+                SQLAssignItem item = parseCopyOption();
+                stmt.getOptions().add(item);
+            } else {
+                break;
+            }
+        }
+
+        // WHERE (COPY FROM only, PG 12+)
+        if (lexer.token() == Token.WHERE) {
+            lexer.nextToken();
+            stmt.setWhere(this.exprParser.expr());
+        }
+
+        return stmt;
+    }
+
+    private void parseCopyTarget(PGCopyStatement stmt) {
+        if (lexer.identifierEquals("STDIN")) {
+            stmt.setTarget(new SQLIdentifierExpr("STDIN"));
+            lexer.nextToken();
+        } else if (lexer.identifierEquals("STDOUT")) {
+            stmt.setTarget(new SQLIdentifierExpr("STDOUT"));
+            lexer.nextToken();
+        } else if (lexer.identifierEquals("PROGRAM")) {
+            lexer.nextToken();
+            stmt.setProgram(true);
+            stmt.setTarget(this.exprParser.expr());
+        } else {
+            stmt.setTarget(this.exprParser.expr());
+        }
+    }
+
+    private SQLAssignItem parseCopyOption() {
+        SQLAssignItem item = new SQLAssignItem();
+        // Handle reserved keywords that can appear as COPY option names (e.g., NULL, DEFAULT)
+        if (lexer.token() == Token.NULL) {
+            item.setTarget(new SQLIdentifierExpr("NULL"));
+            lexer.nextToken();
+        } else if (lexer.token() == Token.DEFAULT) {
+            item.setTarget(new SQLIdentifierExpr("DEFAULT"));
+            lexer.nextToken();
+        } else {
+            item.setTarget(this.exprParser.name());
+        }
+        // Value is optional (e.g., some options are flags)
+        if (lexer.token() != Token.COMMA && lexer.token() != Token.RPAREN && lexer.token() != Token.EOF) {
+            item.setValue(this.exprParser.expr());
+        }
+        return item;
     }
 
     public PGDoStatement parseDo() {
@@ -787,11 +965,24 @@ public class PGSQLStatementParser extends SQLStatementParser {
                     lexer.nextToken();
                     accept(Token.NULL);
                     alterColumn.setSetNotNull(true);
+                } else if (lexer.identifierEquals("DATA")) {
+                    // ALTER COLUMN col SET DATA TYPE <type>
+                    lexer.nextToken();
+                    if (lexer.token() == Token.TYPE) {
+                        lexer.nextToken();
+                    } else {
+                        acceptIdentifier("TYPE");
+                    }
+                    alterColumn.setDataType(this.exprParser.parseDataType());
                 } else {
                     accept(Token.DEFAULT);
                     SQLExpr defaultValue = this.exprParser.expr();
                     alterColumn.setSetDefault(defaultValue);
                 }
+            } else if (lexer.token() == Token.TYPE || lexer.identifierEquals(FnvHash.Constants.TYPE)) {
+                // ALTER COLUMN col TYPE <type>
+                lexer.nextToken();
+                alterColumn.setDataType(this.exprParser.parseDataType());
             } else if (lexer.token() == Token.DROP) {
                 lexer.nextToken();
                 if (lexer.token() == Token.NOT) {
@@ -804,6 +995,15 @@ public class PGSQLStatementParser extends SQLStatementParser {
                 }
             }
         }
+
+        // PostgreSQL: ALTER COLUMN col [SET DATA] TYPE <type> USING <expr>.
+        // parseColumn may already have consumed "TYPE <type>" into the column definition, so this
+        // check is outside the block above (issue #6064).
+        if (lexer.token() == Token.USING || lexer.identifierEquals("USING")) {
+            lexer.nextToken();
+            alterColumn.setUsing(this.exprParser.expr());
+        }
+
         return alterColumn;
     }
 
@@ -1029,6 +1229,13 @@ public class PGSQLStatementParser extends SQLStatementParser {
         Lexer.SavePoint mark = lexer.mark();
         String strVal = lexer.stringVal();
         for (; ; ) {
+            if (Token.SEMI.equals(lexer.token())) {
+                stmt.setAfterSemi(true);
+                return stmt;
+            }
+            if (Token.EOF.equals(lexer.token())) {
+                return stmt;
+            }
             if (strVal.equalsIgnoreCase("VERBOSE")) {
                 stmt.setVerbose(true);
                 lexer.nextToken();
@@ -1067,8 +1274,7 @@ public class PGSQLStatementParser extends SQLStatementParser {
                 stmt.setAfterSemi(true);
                 return stmt;
             }
-            if (lexer.isEOF()) {
-                lexer.nextToken();
+            if (Token.EOF.equals(lexer.token())) {
                 return stmt;
             }
             if (strVal.equalsIgnoreCase("FULL")) {

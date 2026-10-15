@@ -24,6 +24,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleCreateFunctionTest_1 extends OracleTest {
     public void test_types() throws Exception {
         String sql = //
@@ -44,7 +46,7 @@ public class OracleCreateFunctionTest_1 extends OracleTest {
                         "RETURN varchar2\n" +
                         "PARALLEL_ENABLE\n" +
                         "AGGREGATE\n" +
-                        "USING strcat_type;",//
+                        "USING strcat_type;",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

@@ -50,7 +50,8 @@ public class SymbolTable {
 
         Entry entry = entries[bucket];
         if (entry != null) {
-            if (hash == entry.hash) {
+            if (hash == entry.hash && len == entry.len
+                    && buffer.regionMatches(offset, entry.value, 0, len)) {
                 return entry.value;
             }
 
@@ -94,7 +95,8 @@ public class SymbolTable {
 
         Entry entry = entries[bucket];
         if (entry != null) {
-            if (hash == entry.hash) {
+            if (hash == entry.hash && symbol.length() == entry.len
+                    && symbol.equals(entry.value)) {
                 return entry.value;
             }
 

@@ -19,11 +19,14 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class OdpsSelectTest36 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OdpsSelectTest36 {
+    @Test
     public void test_select() throws Exception {
         // 1095288847322
         String sql = "select *\n" +
@@ -31,7 +34,7 @@ public class OdpsSelectTest36 extends TestCase {
                 "\tselect 1\n" +
                 ") \n" +
                 "union all\n" +
-                "select 2;";//
+                "select 2;";
         assertEquals("SELECT *\n" +
                 "FROM (\n" +
                 "\tSELECT 1\n" +
@@ -67,5 +70,4 @@ public class OdpsSelectTest36 extends TestCase {
 
 //        assertTrue(visitor.getColumns().contains(new Column("abc", "name")));
     }
-
 }

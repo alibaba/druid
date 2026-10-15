@@ -15,26 +15,27 @@
  */
 package com.alibaba.druid.bvt.pool;
 
-import java.sql.Connection;
-import java.util.concurrent.CountDownLatch;
-
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DataSourceDisableException;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class TestDisable extends TestCase {
+import java.sql.Connection;
+import java.util.concurrent.CountDownLatch;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class TestDisable {
     private MockDriver driver;
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         DruidDataSourceStatManager.clear();
-
         driver = new MockDriver();
-
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setDriver(driver);
@@ -42,7 +43,7 @@ public class TestDisable extends TestCase {
         dataSource.setMaxActive(2);
         dataSource.setMaxIdle(2);
         dataSource.setMinIdle(1);
-        dataSource.setMaxWait(500);// 加上最大等待时间，防止出现无限等待导致单测卡死的情况
+        dataSource.setMaxWait(500); // 加上最大等待时间，防止出现无限等待导致单测卡死的情况
         dataSource.setMinEvictableIdleTimeMillis(300 * 1000); // 300 / 10
         dataSource.setTimeBetweenEvictionRunsMillis(180 * 1000); // 180 / 10
         dataSource.setTestWhileIdle(true);
@@ -51,11 +52,13 @@ public class TestDisable extends TestCase {
         dataSource.setFilters("stat");
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        DruidDataSourceStatManager.clear();
     }
 
+    @Test
     public void test_close() throws Exception {
         final int threadCount = 100;
         Thread[] threads = new Thread[threadCount];

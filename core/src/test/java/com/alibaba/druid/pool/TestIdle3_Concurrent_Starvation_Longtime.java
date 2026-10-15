@@ -15,23 +15,26 @@
  */
 package com.alibaba.druid.pool;
 
+import com.alibaba.druid.mock.MockDriver;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import javax.management.ObjectName;
+
 import java.lang.management.ManagementFactory;
 import java.sql.Connection;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.management.ObjectName;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
-
-import com.alibaba.druid.mock.MockDriver;
-
-public class TestIdle3_Concurrent_Starvation_Longtime extends TestCase {
+public class TestIdle3_Concurrent_Starvation_Longtime {
     private MockDriver driver;
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         driver = new MockDriver();
 
@@ -53,27 +56,29 @@ public class TestIdle3_Concurrent_Starvation_Longtime extends TestCase {
                 new ObjectName("com.alibaba:type=DataSource"));
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         ManagementFactory.getPlatformMBeanServer().unregisterMBean(new ObjectName("com.alibaba:type=DataSource"));
     }
 
+    @Test
     public void test_idle2() throws Exception {
         // 第一次创建连接
         {
-            Assert.assertEquals(0, dataSource.getCreateCount());
-            Assert.assertEquals(0, dataSource.getActiveCount());
+            assertEquals(0, dataSource.getCreateCount());
+            assertEquals(0, dataSource.getActiveCount());
 
             Connection conn = dataSource.getConnection();
 
-            Assert.assertEquals(dataSource.getInitialSize(), dataSource.getCreateCount());
-            Assert.assertEquals(dataSource.getInitialSize(), driver.getConnections().size());
-            Assert.assertEquals(1, dataSource.getActiveCount());
+            assertEquals(dataSource.getInitialSize(), dataSource.getCreateCount());
+            assertEquals(dataSource.getInitialSize(), driver.getConnections().size());
+            assertEquals(1, dataSource.getActiveCount());
 
             conn.close();
-            Assert.assertEquals(0, dataSource.getDestroyCount());
-            Assert.assertEquals(1, driver.getConnections().size());
-            Assert.assertEquals(1, dataSource.getCreateCount());
-            Assert.assertEquals(0, dataSource.getActiveCount());
+            assertEquals(0, dataSource.getDestroyCount());
+            assertEquals(1, driver.getConnections().size());
+            assertEquals(1, dataSource.getCreateCount());
+            assertEquals(0, dataSource.getActiveCount());
         }
 
         for (int i = 0; i < 1; ++i) {
@@ -83,13 +88,13 @@ public class TestIdle3_Concurrent_Starvation_Longtime extends TestCase {
 
         // 连续打开关闭单个连接
         for (int i = 0; i < 1000; ++i) {
-            Assert.assertEquals(0, dataSource.getActiveCount());
+            assertEquals(0, dataSource.getActiveCount());
             Connection conn = dataSource.getConnection();
 
-            Assert.assertEquals(1, dataSource.getActiveCount());
+            assertEquals(1, dataSource.getActiveCount());
             conn.close();
         }
-        // Assert.assertEquals(2, dataSource.getPoolingCount());
+        // assertEquals(2, dataSource.getPoolingCount());
 
         dataSource.close();
     }
@@ -103,10 +108,10 @@ public class TestIdle3_Concurrent_Starvation_Longtime extends TestCase {
 
         final CyclicBarrier closedBarrier = new CyclicBarrier(threadCount, new Runnable() {
             public void run() {
-                Assert.assertEquals(threadCount, dataSource.getPoolingCount());
+                assertEquals(threadCount, dataSource.getPoolingCount());
                 dataSource.shrink(false);
-                Assert.assertEquals(0, dataSource.getActiveCount());
-                Assert.assertEquals(dataSource.getMinIdle(), dataSource.getPoolingCount());
+                assertEquals(0, dataSource.getActiveCount());
+                assertEquals(dataSource.getMinIdle(), dataSource.getPoolingCount());
                 if (pass.getAndIncrement() % 100 == 0) {
                     System.out.println("pass : " + pass.get());
                 }
@@ -114,7 +119,7 @@ public class TestIdle3_Concurrent_Starvation_Longtime extends TestCase {
         });
         final CyclicBarrier closeBarrier = new CyclicBarrier(threadCount, new Runnable() {
             public void run() {
-                Assert.assertEquals(threadCount, dataSource.getActiveCount());
+                assertEquals(threadCount, dataSource.getActiveCount());
             }
         });
 
@@ -147,6 +152,6 @@ public class TestIdle3_Concurrent_Starvation_Longtime extends TestCase {
         endLatch.await();
 
         // int max = count > dataSource.getMaxActive() ? dataSource.getMaxActive() : count;
-        // Assert.assertEquals(max, driver.getConnections().size());
+        // assertEquals(max, driver.getConnections().size());
     }
 }

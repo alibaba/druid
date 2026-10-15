@@ -3,6 +3,7 @@ package com.alibaba.druid.benckmark.pool;
 import com.alibaba.druid.pool.DruidDataSource;
 
 import javax.sql.DataSource;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -31,6 +32,7 @@ public class AsyncClose {
 
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
+                // Intentionally empty loop
             }
 
             rs.close();

@@ -1,36 +1,13 @@
 package com.alibaba.druid.test.util;
 
+import com.alibaba.druid.mock.MockResultSet;
+import oracle.jdbc.OracleDataFactory;
+import oracle.jdbc.OracleResultSet;
+import oracle.sql.*;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-
-import oracle.jdbc.OracleDataFactory;
-import oracle.jdbc.OracleResultSet;
-import oracle.sql.ARRAY;
-import oracle.sql.BFILE;
-import oracle.sql.BLOB;
-import oracle.sql.CHAR;
-import oracle.sql.CLOB;
-import oracle.sql.CustomDatum;
-import oracle.sql.CustomDatumFactory;
-import oracle.sql.DATE;
-import oracle.sql.Datum;
-import oracle.sql.INTERVALDS;
-import oracle.sql.INTERVALYM;
-import oracle.sql.NUMBER;
-import oracle.sql.OPAQUE;
-import oracle.sql.ORAData;
-import oracle.sql.ORADataFactory;
-import oracle.sql.RAW;
-import oracle.sql.REF;
-import oracle.sql.ROWID;
-import oracle.sql.STRUCT;
-import oracle.sql.TIMESTAMP;
-import oracle.sql.TIMESTAMPLTZ;
-import oracle.sql.TIMESTAMPTZ;
-
-import com.alibaba.druid.mock.MockResultSet;
-
 
 public class OracleMockResultSet extends MockResultSet implements OracleResultSet {
     public OracleMockResultSet(Statement statement) {
@@ -577,5 +554,4 @@ public class OracleMockResultSet extends MockResultSet implements OracleResultSe
         // TODO Auto-generated method stub
 
     }
-
 }

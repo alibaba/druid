@@ -7,6 +7,8 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
  * @version 1.0
  * @ClassName MySqlCreateTableTest144_three_backtick
@@ -36,7 +38,6 @@ public class MySqlCreateTableTest144_three_backtick extends MysqlTest {
 
         assertEquals(1, statementList.size());
 
-
         assertEquals("CREATE TABLE `dbn_product_album_info` (\n" +
                 "\t`id` bigint(20) NOT NULL AUTO_INCREMENT,\n" +
                 "\t`position` int(11) DEFAULT '9999',\n" +
@@ -64,8 +65,5 @@ public class MySqlCreateTableTest144_three_backtick extends MysqlTest {
                 "\tconstraint `FKDECFEBD949942C0` foreign key (`album_id`) references `dbn_product_album` (`id`),\n" +
                 "\tconstraint `FKDECFEBDE7B82325` foreign key (`product_id`) references `dbn_products` (`id`)\n" +
                 ") engine = InnoDB auto_increment = 317607 charset = utf8 collate = utf8_bin", stmt.toLowerCaseString());
-
-
     }
-
 }

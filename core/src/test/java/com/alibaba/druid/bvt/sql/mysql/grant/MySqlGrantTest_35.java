@@ -24,6 +24,8 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlGrantTest_35 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "GRANT CREATE ON . TO hello@'%'; ";
@@ -174,5 +176,4 @@ public class MySqlGrantTest_35 extends MysqlTest {
         assertEquals(0, visitor.getColumns().size());
         assertEquals(0, visitor.getConditions().size());
     }
-
 }

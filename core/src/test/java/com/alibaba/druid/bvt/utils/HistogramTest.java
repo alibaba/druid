@@ -1,15 +1,16 @@
 package com.alibaba.druid.bvt.utils;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.util.Histogram;
+import org.junit.jupiter.api.Test;
 
-public class HistogramTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class HistogramTest {
+    @Test
     public void test_histo() throws Exception {
         Histogram histo = Histogram.makeHistogram(4);
 
-        Assert.assertEquals(4, histo.getRanges().length);
+        assertEquals(4, histo.getRanges().length);
 
         histo.record(0);
 
@@ -33,11 +34,11 @@ public class HistogramTest extends TestCase {
 
         histo.record(10001);
 
-        Assert.assertEquals(1, histo.get(0));
-        Assert.assertEquals(2, histo.get(1));
-        Assert.assertEquals(3, histo.get(2));
-        Assert.assertEquals(4, histo.get(3));
-        Assert.assertEquals(6, histo.get(4));
+        assertEquals(1, histo.get(0));
+        assertEquals(2, histo.get(1));
+        assertEquals(3, histo.get(2));
+        assertEquals(4, histo.get(3));
+        assertEquals(6, histo.get(4));
 
         histo.toString();
     }

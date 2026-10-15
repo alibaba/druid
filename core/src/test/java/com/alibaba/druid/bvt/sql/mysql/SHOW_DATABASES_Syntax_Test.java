@@ -15,19 +15,19 @@
  */
 package com.alibaba.druid.bvt.sql.mysql;
 
-import java.util.List;
-
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
+import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
-public class SHOW_DATABASES_Syntax_Test extends TestCase {
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class SHOW_DATABASES_Syntax_Test {
+    @Test
     public void test_0() throws Exception {
         String sql = "SHOW DATABASES;";
 
@@ -36,6 +36,6 @@ public class SHOW_DATABASES_Syntax_Test extends TestCase {
 
         String text = SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
 
-        Assert.assertEquals("SHOW DATABASES;", text);
+        assertEquals("SHOW DATABASES;", text);
     }
 }

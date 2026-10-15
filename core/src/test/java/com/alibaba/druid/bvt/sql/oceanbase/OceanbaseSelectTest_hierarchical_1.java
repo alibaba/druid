@@ -24,6 +24,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OceanbaseSelectTest_hierarchical_1 extends MysqlTest {
     protected final DbType dbType = JdbcConstants.MYSQL;
 
@@ -32,7 +34,7 @@ public class OceanbaseSelectTest_hierarchical_1 extends MysqlTest {
                 "      FROM employees\n" +
                 "      START WITH employee_id = 100\n" +
                 "      CONNECT BY PRIOR employee_id = manager_id\n" +
-                "      ORDER SIBLINGS BY last_name;"; //
+                "      ORDER SIBLINGS BY last_name;";
 
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, dbType);
         SQLStatement stmt = stmtList.get(0);
@@ -69,6 +71,5 @@ public class OceanbaseSelectTest_hierarchical_1 extends MysqlTest {
         assertEquals(2, visitor.getConditions().size());
 
         // assertTrue(visitor.getTables().containsKey(new TableStat.Name("t_basic_store")));
-
     }
 }

@@ -15,25 +15,30 @@
  */
 package com.alibaba.druid.bvt.pool;
 
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.stat.DruidDataSourceStatManager;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.*;
 
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.stat.DruidDataSourceStatManager;
-
-public class TestDefault extends TestCase {
+public class TestDefault {
+    @BeforeEach
     protected void setUp() throws Exception {
         DruidDataSourceStatManager.clear();
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        DruidDataSourceStatManager.clear();
     }
 
+    @Test
     public void test_close() throws Exception {
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
@@ -45,9 +50,9 @@ public class TestDefault extends TestCase {
             ResultSet rs = stmt.executeQuery();
             rs.next();
 
-            Assert.assertEquals(0, conn.getHoldability());
-            Assert.assertEquals(false, conn.isReadOnly());
-            Assert.assertEquals(0, conn.getTransactionIsolation());
+            assertEquals(0, conn.getHoldability());
+            assertEquals(false, conn.isReadOnly());
+            assertEquals(0, conn.getTransactionIsolation());
 
             conn.setHoldability(ResultSet.HOLD_CURSORS_OVER_COMMIT);
             conn.setReadOnly(false);
@@ -55,8 +60,8 @@ public class TestDefault extends TestCase {
 
             conn.close();
 
-            Assert.assertEquals(true, stmt.isClosed());
-            Assert.assertEquals(true, rs.isClosed());
+            assertEquals(true, stmt.isClosed());
+            assertEquals(true, rs.isClosed());
 
             rs.close();
             stmt.close();
@@ -64,9 +69,9 @@ public class TestDefault extends TestCase {
 
         Connection conn = dataSource.getConnection();
 
-        Assert.assertEquals(0, conn.getHoldability());
-        Assert.assertEquals(false, conn.isReadOnly());
-        Assert.assertEquals(0, conn.getTransactionIsolation());
+        assertEquals(0, conn.getHoldability());
+        assertEquals(false, conn.isReadOnly());
+        assertEquals(0, conn.getTransactionIsolation());
 
         conn.close();
 

@@ -20,10 +20,12 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.Token;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
-public class MySqlAlterTableTest17 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlAlterTableTest17 {
+    @Test
     public void test_alter_first() throws Exception {
         String sql = "alter table rms.rms_Person_Event drop foreign key FKA382487726D72F65";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -39,11 +41,10 @@ public class MySqlAlterTableTest17 extends TestCase {
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("ALTER TABLE rms.rms_Person_Event\n" + //
+        assertEquals("ALTER TABLE rms.rms_Person_Event\n" +
                 "\tDROP FOREIGN KEY FKA382487726D72F65", output);
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(0, visitor.getColumns().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(0, visitor.getColumns().size());
     }
-
 }

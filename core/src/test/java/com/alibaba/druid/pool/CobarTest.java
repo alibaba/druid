@@ -15,21 +15,22 @@
  */
 package com.alibaba.druid.pool;
 
-import java.sql.Connection;
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.pool.vendor.MySqlExceptionSorter;
 import com.alibaba.druid.util.JdbcUtils;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
+import java.sql.Connection;
 
-public class CobarTest extends TestCase {
+public class CobarTest {
     private String jdbcUrl;
     private String user;
     private String password;
     private String driverClass;
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         jdbcUrl = "jdbc:mysql://a.b.c.d:8066/pt_dragoon_masterdb_test?useUnicode=true&characterEncoding=UTF-8";
         user = "pt_dragoon_test";
@@ -37,10 +38,12 @@ public class CobarTest extends TestCase {
         driverClass = "com.mysql.jdbc.Driver";
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
     }
 
+    @Test
     public void test_0() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setDriverClassName(driverClass);

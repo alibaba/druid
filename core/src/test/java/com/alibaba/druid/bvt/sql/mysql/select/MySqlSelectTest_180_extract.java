@@ -8,6 +8,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_180_extract extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SELECT extract(day_of_week FROM '2001-08-22 03:04:05.321');";

@@ -20,8 +20,9 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlCreateDatabaseTest extends MysqlTest {
     @Test
@@ -35,7 +36,7 @@ public class MySqlCreateDatabaseTest extends MysqlTest {
         stmt.accept(visitor);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE DATABASE IF NOT EXISTS a", output);
+        assertEquals("CREATE DATABASE IF NOT EXISTS a", output);
     }
 
     // for ads
@@ -47,7 +48,7 @@ public class MySqlCreateDatabaseTest extends MysqlTest {
         SQLStatement stmt = parser.parseStatement();
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE DATABASE test_cascade FOR 'ALIYUN$test@aliyun.com' OPTIONS (ecu_type=c1 ecu_count=2 resourceType=ecu )", output);
+        assertEquals("CREATE DATABASE test_cascade FOR 'ALIYUN$test@aliyun.com' OPTIONS (ecu_type=c1 ecu_count=2 resourceType=ecu )", output);
     }
 
     // for ads
@@ -61,7 +62,7 @@ public class MySqlCreateDatabaseTest extends MysqlTest {
         SQLStatement stmt = parser.parseStatement();
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE EXTERNAL TABLE IF NOT EXISTS ots_0.ots_table_0 (\n"
+        assertEquals("CREATE EXTERNAL TABLE IF NOT EXISTS ots_0.ots_table_0 (\n"
                 + "\tpk VARCHAR,\n"
                 + "\ta BIGINT,\n"
                 + "\tb BIGINT\n"
@@ -81,7 +82,7 @@ public class MySqlCreateDatabaseTest extends MysqlTest {
         stmt.accept(visitor);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE DATABASE IF NOT EXISTS test4 CHARACTER SET utf8;", output);
+        assertEquals("CREATE DATABASE IF NOT EXISTS test4 CHARACTER SET utf8;", output);
     }
 
     @Test
@@ -95,7 +96,7 @@ public class MySqlCreateDatabaseTest extends MysqlTest {
         stmt.accept(visitor);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE DATABASE IF NOT EXISTS test5 CHARACTER SET utf8 COLLATE utf8_general_ci;", output);
+        assertEquals("CREATE DATABASE IF NOT EXISTS test5 CHARACTER SET utf8 COLLATE utf8_general_ci;", output);
     }
 
     @Test
@@ -109,6 +110,6 @@ public class MySqlCreateDatabaseTest extends MysqlTest {
         stmt.accept(visitor);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE DATABASE IF NOT EXISTS test6 CHARACTER SET utf8 COLLATE utf8_general_ci;", output);
+        assertEquals("CREATE DATABASE IF NOT EXISTS test6 CHARACTER SET utf8 COLLATE utf8_general_ci;", output);
     }
 }

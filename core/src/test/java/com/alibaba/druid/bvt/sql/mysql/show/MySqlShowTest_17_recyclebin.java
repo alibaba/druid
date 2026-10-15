@@ -22,6 +22,8 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlShowTest_17_recyclebin extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SHOW recyclebin";
@@ -42,6 +44,5 @@ public class MySqlShowTest_17_recyclebin extends MysqlTest {
 
         assertEquals("SHOW RECYCLEBIN", stmt.toString());
         assertEquals("show recyclebin", stmt.toLowerCaseString());
-
     }
 }

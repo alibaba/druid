@@ -15,19 +15,19 @@
  */
 package com.alibaba.druid.bvt.sql.mysql;
 
-import java.util.List;
-
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
+import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
-public class MiscellaneousFunctionsTest extends TestCase {
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MiscellaneousFunctionsTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "UPDATE t SET i = DEFAULT(i)+1 WHERE id < 100;";
 
@@ -36,9 +36,10 @@ public class MiscellaneousFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("UPDATE t\nSET i = DEFAULT(i) + 1\nWHERE id < 100;", text);
+        assertEquals("UPDATE t\nSET i = DEFAULT(i) + 1\nWHERE id < 100;", text);
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "SELECT GET_LOCK('lock1',10);";
 
@@ -47,9 +48,10 @@ public class MiscellaneousFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT GET_LOCK('lock1', 10);", text);
+        assertEquals("SELECT GET_LOCK('lock1', 10);", text);
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "SELECT INET_ATON('209.207.224.40');";
 
@@ -58,9 +60,10 @@ public class MiscellaneousFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT INET_ATON('209.207.224.40');", text);
+        assertEquals("SELECT INET_ATON('209.207.224.40');", text);
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = "SELECT UUID();";
 
@@ -69,7 +72,7 @@ public class MiscellaneousFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT UUID();", text);
+        assertEquals("SELECT UUID();", text);
     }
 
     private String output(List<SQLStatement> stmtList) {

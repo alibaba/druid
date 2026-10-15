@@ -19,18 +19,21 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class OdpsSelectTest29 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OdpsSelectTest29 {
+    @Test
     public void test_select() throws Exception {
         // 1095288847322
         String sql = "--aaaaa\n" +
                 "SELECT *\n" +
                 "--hhhhh\n" +
                 "FROM emp e\n" +
-                "LEFT OUTER JOIN emp_datahub";//
+                "LEFT OUTER JOIN emp_datahub";
         assertEquals("-- aaaaa\n" +
                 "SELECT * -- hhhhh\n" +
                 "FROM emp e\n" +
@@ -62,5 +65,4 @@ public class OdpsSelectTest29 extends TestCase {
 
 //        assertTrue(visitor.getColumns().contains(new Column("abc", "name")));
     }
-
 }

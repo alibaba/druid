@@ -1,16 +1,15 @@
 package com.alibaba.druid.bvt.sql.odps;
 
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.SQLUtils;
+import org.junit.jupiter.api.Test;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class OdpsFormatCommentTest12 extends TestCase {
+public class OdpsFormatCommentTest12 {
+    @Test
     public void test_column_comment() throws Exception {
         String sql = "select * from t --abc";
-        Assert.assertEquals("SELECT *" //
+        assertEquals("SELECT *"
                 + "\nFROM t -- abc", SQLUtils.formatOdps(sql));
     }
-
 }

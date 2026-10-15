@@ -19,14 +19,17 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class OdpsSelectTest23 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OdpsSelectTest23 {
+    @Test
     public void test_select() throws Exception {
         // 1095288847322
-        String sql = "select * FROM dual where 1 = 1 and (2 = 2 or ( 3 = 3 and 4 = 4));";//
+        String sql = "select * FROM dual where 1 = 1 and (2 = 2 or ( 3 = 3 and 4 = 4));";
         assertEquals("SELECT *\n" +
                 "FROM dual\n" +
                 "WHERE 1 = 1\n" +
@@ -62,5 +65,4 @@ public class OdpsSelectTest23 extends TestCase {
 
 //        assertTrue(visitor.getColumns().contains(new Column("abc", "name")));
     }
-
 }

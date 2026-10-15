@@ -1,14 +1,14 @@
 package com.alibaba.druid.bvt.sql.eval;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
-public class EvalMethodTest_lpad extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class EvalMethodTest_lpad {
+    @Test
     public void test_method() throws Exception {
-        Assert.assertEquals("??hi", SQLEvalVisitorUtils.evalExpr(JdbcConstants.MYSQL, "LPAD('hi',4,'??')"));
+        assertEquals("??hi", SQLEvalVisitorUtils.evalExpr(JdbcConstants.MYSQL, "LPAD('hi',4,'??')"));
     }
 }

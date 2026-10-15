@@ -8,12 +8,14 @@ import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
 import java.util.Set;
 
-public class SchemaStatTest10 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class SchemaStatTest10 {
+    @Test
     public void test_schemaStat() throws Exception {
         String sql = "select a.id, b.name from table1 a inner join table2 b on a.id = b.id";
 
@@ -34,8 +36,8 @@ public class SchemaStatTest10 extends TestCase {
         System.out.println("relationships : " + statVisitor.getRelationships()); // group by
 //        System.out.println(statVisitor.getConditions());
 
-        Assert.assertEquals(3, statVisitor.getColumns().size());
-        Assert.assertEquals(2, statVisitor.getConditions().size());
+        assertEquals(3, statVisitor.getColumns().size());
+        assertEquals(2, statVisitor.getConditions().size());
         assertEquals(0, statVisitor.getFunctions().size());
     }
 }

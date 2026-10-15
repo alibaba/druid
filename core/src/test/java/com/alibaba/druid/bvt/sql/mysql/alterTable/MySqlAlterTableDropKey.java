@@ -22,20 +22,22 @@ import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
-public class MySqlAlterTableDropKey extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlAlterTableDropKey {
+    @Test
     public void test_alter_first() throws Exception {
         String sql = "alter table t6 drop key v";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
 
-        Assert.assertEquals("ALTER TABLE t6" + //
+        assertEquals("ALTER TABLE t6" +
                 "\n\tDROP KEY v", SQLUtils.toMySqlString(stmt));
 
-        Assert.assertEquals("alter table t6" + //
+        assertEquals("alter table t6" +
                 "\n\tdrop key v", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         SchemaStatVisitor visitor = new SQLUtils().createSchemaStatVisitor(JdbcConstants.MYSQL);
@@ -46,16 +48,17 @@ public class MySqlAlterTableDropKey extends TestCase {
         assertEquals(1, tableStat.getDropIndexCount());
     }
 
+    @Test
     public void test_alter_2() throws Exception {
         String sql = "alter table t6 drop clustered key v";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
 
-        Assert.assertEquals("ALTER TABLE t6\n" +
+        assertEquals("ALTER TABLE t6\n" +
                 "\tDROP CLUSTERED KEY v", SQLUtils.toMySqlString(stmt));
 
-        Assert.assertEquals("alter table t6\n" +
+        assertEquals("alter table t6\n" +
                 "\tdrop clustered key v", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         SchemaStatVisitor visitor = new SQLUtils().createSchemaStatVisitor(JdbcConstants.MYSQL);
@@ -65,5 +68,4 @@ public class MySqlAlterTableDropKey extends TestCase {
         assertEquals(1, tableStat.getAlterCount());
         assertEquals(0, tableStat.getDropIndexCount());
     }
-
 }

@@ -24,6 +24,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleCreateTypeTest10 extends OracleTest {
     public void test_types() throws Exception {
         String sql = "CREATE OR REPLACE type body connstrBycomma is\n" +
@@ -61,7 +63,6 @@ public class OracleCreateTypeTest10 extends OracleTest {
                 "      end;";
 
         System.out.println(sql);
-
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -105,7 +106,7 @@ public class OracleCreateTypeTest10 extends OracleTest {
                         "\t\tEND IF;\n" +
                         "\t\tRETURN ODCIConst.Success;\n" +
                         "\tEND;\n" +
-                        "END",//
+                        "END",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

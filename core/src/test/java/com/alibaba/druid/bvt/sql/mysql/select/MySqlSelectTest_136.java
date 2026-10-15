@@ -9,6 +9,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_136 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SELECT `tinyint_test` / `tinyint_1bit_test` = `mediumint_test` = `decimal_test` / `double_test`\n" +
@@ -25,6 +27,4 @@ public class MySqlSelectTest_136 extends MysqlTest {
         assertEquals("SELECT `tinyint_test` / `tinyint_1bit_test` = `mediumint_test` = `decimal_test` / `double_test`\n" +
                 "FROM `corona_one_db_one_tb`", ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL));
     }
-
-
 }

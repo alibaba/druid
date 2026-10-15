@@ -1,22 +1,24 @@
 package com.alibaba.druid.bvt.pool;
 
-import java.util.Properties;
-
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidDataSourceFactory;
 import com.alibaba.druid.util.JdbcUtils;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
-public class DruidDataSourceFactoryTest2 extends TestCase {
+import java.util.Properties;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class DruidDataSourceFactoryTest2 {
     private DruidDataSource dataSource;
 
+    @AfterEach
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
     }
 
+    @Test
     public void test_factory() throws Exception {
         Properties properties = new Properties();
         properties.put(DruidDataSourceFactory.PROP_POOLPREPAREDSTATEMENTS, "false");
@@ -24,6 +26,6 @@ public class DruidDataSourceFactoryTest2 extends TestCase {
 
         dataSource = (DruidDataSource) DruidDataSourceFactory.createDataSource(properties);
 
-        Assert.assertFalse(dataSource.isPoolPreparedStatements());
+        assertFalse(dataSource.isPoolPreparedStatements());
     }
 }

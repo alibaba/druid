@@ -16,16 +16,18 @@
 package com.alibaba.druid.bvt.sql.mysql.select;
 
 import com.alibaba.druid.DbType;
-import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class MySqlSelectTest_110 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlSelectTest_110 {
+    @Test
     public void test_0() throws Exception {
         String sql = "/*+engine=MPP*/select id \n" +
                 "  from ads_service_buyer_task\n" +
@@ -67,6 +69,4 @@ public class MySqlSelectTest_110 extends TestCase {
                 "\t)\n" +
                 "LIMIT 0, 1;", stmt.toString());
     }
-
-
 }

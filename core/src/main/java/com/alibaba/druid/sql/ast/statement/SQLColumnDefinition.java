@@ -603,6 +603,7 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
 
         x.stored = stored;
         x.virtual = virtual;
+        x.ifNotExists = ifNotExists;
 
         if (identity != null) {
             x.setIdentity(identity.clone());

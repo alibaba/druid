@@ -15,20 +15,22 @@
  */
 package com.alibaba.druid.bvt.proxy.filter;
 
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.util.Utils;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.Statement;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Assert;
-
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.util.Utils;
-
-public class MergeStatFilterTest3 extends TestCase {
+public class MergeStatFilterTest3 {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xx");
@@ -36,10 +38,12 @@ public class MergeStatFilterTest3 extends TestCase {
         dataSource.setDbType("postgresql");
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
     }
 
+    @Test
     public void test_merge() throws Exception {
         String sqllist = Utils.read(new InputStreamReader(this.getClass().getResourceAsStream("/bvt/parser/postgresql/16.txt")));
         String[] ss = sqllist.split("--------------------");
@@ -51,11 +55,8 @@ public class MergeStatFilterTest3 extends TestCase {
             conn.close();
         }
 
-
-        Assert.assertEquals(1, dataSource.getDataSourceStat().getSqlStatMap()
+        assertEquals(1, dataSource.getDataSourceStat().getSqlStatMap()
                 .size());
         System.out.println(dataSource.getDataSourceStat().getSqlStatMap().keySet().iterator().next());
-
     }
-
 }

@@ -18,12 +18,12 @@ package com.alibaba.druid.sql;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
-import junit.framework.TestCase;
-import org.junit.Assert;
 
 import java.util.List;
 
-public class MysqlTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MysqlTest {
     protected String output(List<SQLStatement> stmtList) {
         StringBuilder out = new StringBuilder();
         MySqlOutputVisitor visitor = new MySqlOutputVisitor(out);
@@ -44,10 +44,9 @@ public class MysqlTest extends TestCase {
         System.out.println(text);
     }
 
-
     protected void parseTrue(String sql, String except) {
         SQLStatement statement = SQLUtils.parseSingleMysqlStatement(sql);
-        Assert.assertEquals(except, SQLUtils.toMySqlString(statement));
+        assertEquals(except, SQLUtils.toMySqlString(statement));
     }
 
     protected SQLStatement parse(String sql) {
@@ -58,5 +57,4 @@ public class MysqlTest extends TestCase {
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         return parser.parseStatementList();
     }
-
 }

@@ -4,25 +4,24 @@ import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.config.ConfigFilter;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
 import com.alibaba.druid.stat.JdbcDataSourceStat;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Driver;
 import java.util.List;
 import java.util.Properties;
 
+import static org.junit.jupiter.api.Assertions.*;
 
-public class ConfigFilterTest6 extends TestCase {
+public class ConfigFilterTest6 {
+    @Test
     public void testInitFastFail() {
         ConfigFilter filter = new ConfigFilter();
         IllegalArgumentException exception =
-                Assert.assertThrows(IllegalArgumentException.class, () -> filter.init(new DataSourceProxyImpl()));
-        Assert.assertEquals("ConfigLoader only support DruidDataSource", exception.getMessage());
+                assertThrows(IllegalArgumentException.class, () -> filter.init(new DataSourceProxyImpl()));
+        assertEquals("ConfigLoader only support DruidDataSource", exception.getMessage());
     }
 
-
     static class DataSourceProxyImpl implements DataSourceProxy {
-
         @Override
         public JdbcDataSourceStat getDataSourceStat() {
             return null;

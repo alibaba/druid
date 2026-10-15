@@ -2,14 +2,14 @@ package com.alibaba.druid.bvt.sql.mysql.select;
 
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
-import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_175_hints extends MysqlTest {
     public void test_0() throws Exception {
@@ -36,7 +36,6 @@ public class MySqlSelectTest_175_hints extends MysqlTest {
                 "\t\twhere id = 1\n" +
                 "\t", stmt.toLowerCaseString());
 
-
         assertEquals("SELECT /*TDDL:t1.id=1 and t2.id=1*/ *\n" +
                 "FROM t1\n" +
                 "\tINNER JOIN \n" +
@@ -45,5 +44,4 @@ public class MySqlSelectTest_175_hints extends MysqlTest {
                 "\t\tWHERE id = ?\n" +
                 "\t", stmt.toParameterizedString());
     }
-
 }

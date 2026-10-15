@@ -1,16 +1,16 @@
 package com.alibaba.druid.bvt.sql;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import org.junit.jupiter.api.Test;
 
-public class EqualTest_SQLSelectQueryBlock extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class EqualTest_SQLSelectQueryBlock {
+    @Test
     public void test_eq() throws Exception {
         SQLSelectQueryBlock exprA = new SQLSelectQueryBlock();
         SQLSelectQueryBlock exprB = new SQLSelectQueryBlock();
-        Assert.assertEquals(exprA.hashCode(), exprB.hashCode());
-        Assert.assertEquals(exprA, exprB);
+        assertEquals(exprA.hashCode(), exprB.hashCode());
+        assertEquals(exprA, exprB);
     }
 }

@@ -15,11 +15,10 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallUtils;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * SQLServerWallTest
@@ -28,11 +27,12 @@ import com.alibaba.druid.wall.WallUtils;
  * @version 1.0, 2012-3-18
  * @see
  */
-public class MySqlWallTest12 extends TestCase {
+public class MySqlWallTest12 {
+    @Test
     public void test_true() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateMySql(//
-                "SELECT a.* FROM lhwbbs_threads a  " + //
-                        "WHERE 1 AND a.disabled=0 AND a.ifupload&1=1  " + //
-                        "ORDER BY a.created_time DESC  LIMIT 0,100")); //
+        assertTrue(WallUtils.isValidateMySql(//
+                "SELECT a.* FROM lhwbbs_threads a  " +
+                        "WHERE 1 AND a.disabled=0 AND a.ifupload&1=1  " +
+                        "ORDER BY a.created_time DESC  LIMIT 0,100"));
     }
 }

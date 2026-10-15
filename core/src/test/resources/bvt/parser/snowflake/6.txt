@@ -1,0 +1,49 @@
+CREATE OR REPLACE VIEW my_view AS SELECT id, name FROM my_table WHERE active = true
+--------------------
+CREATE OR REPLACE VIEW my_view
+AS
+SELECT id, name
+FROM my_table
+WHERE active = true
+------------------------------------------------------------------------------------------------------------------------
+CREATE VIEW IF NOT EXISTS my_view AS SELECT * FROM my_table
+--------------------
+CREATE VIEW IF NOT EXISTS my_view
+AS
+SELECT *
+FROM my_table
+------------------------------------------------------------------------------------------------------------------------
+DROP VIEW IF EXISTS my_view
+--------------------
+DROP VIEW IF EXISTS my_view
+------------------------------------------------------------------------------------------------------------------------
+SELECT a.id, b.name FROM t1 a INNER JOIN t2 b ON a.id = b.id
+--------------------
+SELECT a.id, b.name
+FROM t1 a
+	INNER JOIN t2 b ON a.id = b.id
+------------------------------------------------------------------------------------------------------------------------
+SELECT a.id, b.name FROM t1 a LEFT OUTER JOIN t2 b ON a.id = b.id
+--------------------
+SELECT a.id, b.name
+FROM t1 a
+	LEFT JOIN t2 b ON a.id = b.id
+------------------------------------------------------------------------------------------------------------------------
+SELECT * FROM (SELECT id, name FROM t1 WHERE status = 'active') sub WHERE sub.id > 10
+--------------------
+SELECT *
+FROM (
+	SELECT id, name
+	FROM t1
+	WHERE status = 'active'
+) sub
+WHERE sub.id > 10
+------------------------------------------------------------------------------------------------------------------------
+SELECT CASE WHEN status = 1 THEN 'active' WHEN status = 2 THEN 'inactive' ELSE 'unknown' END AS status_text FROM t1
+--------------------
+SELECT CASE
+		WHEN status = 1 THEN 'active'
+		WHEN status = 2 THEN 'inactive'
+		ELSE 'unknown'
+	END AS status_text
+FROM t1

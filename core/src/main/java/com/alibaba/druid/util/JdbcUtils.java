@@ -490,6 +490,8 @@ public final class JdbcUtils implements JdbcConstants {
             return "ca.edbc.jdbc.EdbcDriver";
         } else if (rawUrl.startsWith("jdbc:mimer:multi1:")) {
             return "com.mimer.jdbc.Driver";
+        } else if (rawUrl.startsWith("jdbc:yasdb:")) {
+            return "com.yashandb.jdbc.Driver";
         } else if (rawUrl.startsWith("jdbc:dm:")) {
             return JdbcConstants.DM_DRIVER;
         } else if (rawUrl.startsWith("jdbc:kingbase:")) {
@@ -528,7 +530,9 @@ public final class JdbcUtils implements JdbcConstants {
         } else if (rawUrl.startsWith("jdbc:inspur:")) {
             return JdbcConstants.KDB_DRIVER;
         } else if (rawUrl.startsWith("jdbc:polardb")) {
-            if (rawUrl.startsWith("jdbc:polardbx:")) {
+            if (rawUrl.startsWith("jdbc:polardb2:")) {
+                return JdbcConstants.POLARDB2_DRIVER;
+            } else if (rawUrl.startsWith("jdbc:polardbx:")) {
                 return JdbcConstants.POLARDBX_DRIVER;
             }
             return JdbcConstants.POLARDB_DRIVER;
@@ -548,6 +552,8 @@ public final class JdbcUtils implements JdbcConstants {
             return JdbcConstants.GBASE8S_DRIVER;
         } else if (rawUrl.startsWith("jdbc:sundb:")) {
             return JdbcConstants.SUNDB_DRIVER;
+        } else if (rawUrl.startsWith("jdbc:gaussdb:")) {
+            return "com.huawei.gaussdb.jdbc.Driver";
         } else {
             throw new SQLException("unknown jdbc driver : " + rawUrl);
         }
@@ -570,6 +576,8 @@ public final class JdbcUtils implements JdbcConstants {
         } else if (rawUrl.startsWith("jdbc:tidb:")) {
             return DbType.tidb;
         } else if (rawUrl.startsWith("jdbc:oracle:") || rawUrl.startsWith("jdbc:log4jdbc:oracle:")) {
+            return DbType.oracle;
+        } else if (rawUrl.startsWith("jdbc:yasdb:")) {
             return DbType.oracle;
         } else if (rawUrl.startsWith("jdbc:alibaba:oracle:")) {
             return DbType.ali_oracle;
@@ -660,7 +668,9 @@ public final class JdbcUtils implements JdbcConstants {
         } else if (rawUrl.startsWith("jdbc:inspur:")) {
             return DbType.kdb;
         } else if (rawUrl.startsWith("jdbc:polardb")) {
-            if (rawUrl.startsWith("jdbc:polardbx:")) {
+            if (rawUrl.startsWith("jdbc:polardb2:")) {
+                return DbType.polardb2;
+            } else if (rawUrl.startsWith("jdbc:polardbx:")) {
                 return DbType.polardbx;
             }
             return DbType.polardb;
@@ -876,7 +886,7 @@ public final class JdbcUtils implements JdbcConstants {
         StringBuilder sql = new StringBuilder() //
                 .append("insert into ") //
                 .append(tableName) //
-                .append("("); //
+                .append("(");
 
         int nameCount = 0;
         for (String name : names) {
@@ -936,7 +946,7 @@ public final class JdbcUtils implements JdbcConstants {
             return OracleUtils.showTables(conn);
         }
 
-        if (dbType == DbType.postgresql) {
+        if (dbType == DbType.postgresql || dbType == DbType.polardb2) {
             return PGUtils.showTables(conn);
         }
         throw new SQLException("show tables dbType not support for " + dbType);

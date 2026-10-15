@@ -21,6 +21,8 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlShowTest_12_node extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SHOW NODE";
@@ -36,6 +38,5 @@ public class MySqlShowTest_12_node extends MysqlTest {
         assertEquals(0, visitor.getTables().size());
         assertEquals(0, visitor.getColumns().size());
         assertEquals(0, visitor.getConditions().size());
-
     }
 }

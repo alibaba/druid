@@ -19,7 +19,8 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlParameterizedOutputVisitorTest_7 extends com.alibaba.druid.bvt.sql.mysql.param.MySQLParameterizedTest {
     public void test_hints() throws Exception {
@@ -29,10 +30,10 @@ public class MySqlParameterizedOutputVisitorTest_7 extends com.alibaba.druid.bvt
 
         String psql = ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL);
 
-        String expected = "SELECT id" //
+        String expected = "SELECT id"
                 + "\nFROM t"//
                 + "\nWHERE id = ?/*!30000union all select 2*/";
-        Assert.assertEquals(expected, psql);
+        assertEquals(expected, psql);
 
         paramaterizeAST(sql, expected);
     }

@@ -4,14 +4,17 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by wenshao on 18/07/2017.
  */
-public class CreateCompareTest_cycle extends TestCase {
+public class CreateCompareTest_cycle {
+    @Test
     public void test_0() throws Exception {
         String sql = "CREATE TABLE t0 (\n" +
                 "\tint bigint\n" +
@@ -73,7 +76,6 @@ public class CreateCompareTest_cycle extends TestCase {
 
         List stmtList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
 
-
         SQLCreateTableStatement.sort(stmtList);
 
         String sortedSql = SQLUtils.toSQLString(stmtList, JdbcConstants.ORACLE);
@@ -93,7 +95,5 @@ public class CreateCompareTest_cycle extends TestCase {
         assertEquals("t4", ((SQLAlterTableStatement) stmtList.get(10)).getName().getSimpleName());
 
         assertEquals(11, stmtList.size());
-
-
     }
 }

@@ -19,12 +19,14 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class DeleteSyntaxTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class DeleteSyntaxTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "DELETE FROM somelog WHERE user = 'jcole' ORDER BY timestamp_column LIMIT 1;";
 
@@ -36,6 +38,7 @@ public class DeleteSyntaxTest extends TestCase {
         assertEquals("DELETE FROM somelog\nWHERE user = 'jcole'\nORDER BY timestamp_column\nLIMIT 1;", SQLUtils.toMySqlString(stmt));
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "DELETE t1 FROM t1 LEFT JOIN t2 ON t1.id=t2.id WHERE t2.id IS NULL;";
 
@@ -44,12 +47,13 @@ public class DeleteSyntaxTest extends TestCase {
 
         SQLStatement stmt = stmtList.get(0);
 
-        assertEquals("DELETE t1" + //
-                "\nFROM t1" + //
-                "\n\tLEFT JOIN t2 ON t1.id = t2.id" + //
+        assertEquals("DELETE t1" +
+                "\nFROM t1" +
+                "\n\tLEFT JOIN t2 ON t1.id = t2.id" +
                 "\nWHERE t2.id IS NULL;", SQLUtils.toMySqlString(stmt));
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "DELETE a1, a2 FROM t1 AS a1 INNER JOIN t2 AS a2 WHERE a1.id=a2.id";
 
@@ -58,11 +62,12 @@ public class DeleteSyntaxTest extends TestCase {
 
         SQLStatement stmt = stmtList.get(0);
 
-        assertEquals("DELETE a1, a2\nFROM t1 a1" + //
-                "\n\tINNER JOIN t2 a2" + //
+        assertEquals("DELETE a1, a2\nFROM t1 a1" +
+                "\n\tINNER JOIN t2 a2" +
                 "\nWHERE a1.id = a2.id", SQLUtils.toMySqlString(stmt));
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = "DELETE FROM a1, a2 USING t1 AS a1 INNER JOIN t2 AS a2 WHERE a1.id=a2.id";
 
@@ -71,16 +76,17 @@ public class DeleteSyntaxTest extends TestCase {
 
         SQLStatement stmt = stmtList.get(0);
 
-        Assert.assertEquals("DELETE FROM a1, a2\n" +
+        assertEquals("DELETE FROM a1, a2\n" +
                 "USING t1 a1\n" +
                 "\tINNER JOIN t2 a2\n" +
                 "WHERE a1.id = a2.id", SQLUtils.toMySqlString(stmt));
-        Assert.assertEquals("delete from a1, a2\n" +
+        assertEquals("delete from a1, a2\n" +
                 "using t1 a1\n" +
                 "\tinner join t2 a2\n" +
                 "where a1.id = a2.id", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 
+    @Test
     public void test_4() throws Exception {
         String sql = "DELETE LOW_PRIORITY QUICK IGNORE FROM T";
 
@@ -89,8 +95,7 @@ public class DeleteSyntaxTest extends TestCase {
 
         SQLStatement stmt = stmtList.get(0);
 
-        Assert.assertEquals("DELETE LOW_PRIORITY QUICK IGNORE FROM T", SQLUtils.toMySqlString(stmt));
-        Assert.assertEquals("delete low_priority quick ignore from T", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+        assertEquals("DELETE LOW_PRIORITY QUICK IGNORE FROM T", SQLUtils.toMySqlString(stmt));
+        assertEquals("delete low_priority quick ignore from T", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
-
 }

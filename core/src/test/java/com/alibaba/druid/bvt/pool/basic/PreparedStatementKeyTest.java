@@ -15,10 +15,6 @@
  */
 package com.alibaba.druid.bvt.pool.basic;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.mock.MockPreparedStatement;
 import com.alibaba.druid.pool.DruidConnectionHolder;
@@ -27,60 +23,68 @@ import com.alibaba.druid.pool.DruidPooledPreparedStatement.PreparedStatementKey;
 import com.alibaba.druid.pool.PreparedStatementHolder;
 import com.alibaba.druid.pool.PreparedStatementPool;
 import com.alibaba.druid.pool.PreparedStatementPool.MethodType;
+import org.junit.jupiter.api.Test;
 
-public class PreparedStatementKeyTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class PreparedStatementKeyTest {
+    @Test
     public void test_equals_0() throws Exception {
         PreparedStatementKey k1 = new PreparedStatementKey("x1", "c1", MethodType.M1);
         PreparedStatementKey k2 = new PreparedStatementKey("x1", "c2", MethodType.M1);
         PreparedStatementKey k3 = new PreparedStatementKey("x1", "c3", MethodType.M1);
 
-        Assert.assertFalse(k1.equals(k2));
-        Assert.assertFalse(k1.equals(k3));
-        Assert.assertFalse(k2.equals(k1));
-        Assert.assertFalse(k2.equals(k3));
-        Assert.assertFalse(k3.equals(k2));
-        Assert.assertFalse(k3.equals(k1));
+        assertFalse(k1.equals(k2));
+        assertFalse(k1.equals(k3));
+        assertFalse(k2.equals(k1));
+        assertFalse(k2.equals(k3));
+        assertFalse(k3.equals(k2));
+        assertFalse(k3.equals(k1));
     }
 
+    @Test
     public void test_equals_2() throws Exception {
         PreparedStatementKey k1 = new PreparedStatementKey("x1", "c1", MethodType.M1);
         PreparedStatementKey k2 = new PreparedStatementKey("x2", "c1", MethodType.M1);
         PreparedStatementKey k3 = new PreparedStatementKey("x3", "c1", MethodType.M1);
 
-        Assert.assertFalse(k1.equals(k2));
-        Assert.assertFalse(k1.equals(k3));
-        Assert.assertFalse(k2.equals(k1));
-        Assert.assertFalse(k2.equals(k3));
-        Assert.assertFalse(k3.equals(k2));
-        Assert.assertFalse(k3.equals(k1));
+        assertFalse(k1.equals(k2));
+        assertFalse(k1.equals(k3));
+        assertFalse(k2.equals(k1));
+        assertFalse(k2.equals(k3));
+        assertFalse(k3.equals(k2));
+        assertFalse(k3.equals(k1));
     }
 
+    @Test
     public void test_equals_3() throws Exception {
         PreparedStatementKey k1 = new PreparedStatementKey("x1", "c1", MethodType.M1);
         PreparedStatementKey k2 = new PreparedStatementKey("x1", "c1", MethodType.M2);
         PreparedStatementKey k3 = new PreparedStatementKey("x1", "c1", MethodType.M3);
 
-        Assert.assertFalse(k1.equals(k2));
-        Assert.assertFalse(k1.equals(k3));
-        Assert.assertFalse(k2.equals(k1));
-        Assert.assertFalse(k2.equals(k3));
-        Assert.assertFalse(k3.equals(k2));
-        Assert.assertFalse(k3.equals(k1));
+        assertFalse(k1.equals(k2));
+        assertFalse(k1.equals(k3));
+        assertFalse(k2.equals(k1));
+        assertFalse(k2.equals(k3));
+        assertFalse(k3.equals(k2));
+        assertFalse(k3.equals(k1));
     }
 
+    @Test
     public void test_equals_4() throws Exception {
         PreparedStatementKey k1 = new PreparedStatementKey("x1", "c1", MethodType.M1);
         PreparedStatementKey k2 = new PreparedStatementKey("x1", "c2", MethodType.M1);
         PreparedStatementKey k3 = new PreparedStatementKey("x1", null, MethodType.M1);
 
-        Assert.assertFalse(k1.equals(k2));
-        Assert.assertFalse(k1.equals(k3));
-        Assert.assertFalse(k2.equals(k1));
-        Assert.assertFalse(k2.equals(k3));
-        Assert.assertFalse(k3.equals(k2));
-        Assert.assertFalse(k3.equals(k1));
+        assertFalse(k1.equals(k2));
+        assertFalse(k1.equals(k3));
+        assertFalse(k2.equals(k1));
+        assertFalse(k2.equals(k3));
+        assertFalse(k3.equals(k2));
+        assertFalse(k3.equals(k1));
     }
 
+    @Test
     public void test_equals_5() throws Exception {
         PreparedStatementKey k1 = new PreparedStatementKey("x1", null, MethodType.M1);
         PreparedStatementKey k2 = new PreparedStatementKey("x1", null, MethodType.M2);
@@ -88,14 +92,15 @@ public class PreparedStatementKeyTest extends TestCase {
 
         k1.hashCode();
 
-        Assert.assertFalse(k1.equals(k2));
-        Assert.assertFalse(k1.equals(k3));
-        Assert.assertFalse(k2.equals(k1));
-        Assert.assertFalse(k2.equals(k3));
-        Assert.assertFalse(k3.equals(k2));
-        Assert.assertFalse(k3.equals(k1));
+        assertFalse(k1.equals(k2));
+        assertFalse(k1.equals(k3));
+        assertFalse(k2.equals(k1));
+        assertFalse(k2.equals(k3));
+        assertFalse(k3.equals(k2));
+        assertFalse(k3.equals(k1));
     }
 
+    @Test
     public void test_equals_6() throws Exception {
         PreparedStatementKey k1 = new PreparedStatementKey("x1", null, MethodType.M1);
         PreparedStatementKey k2 = new PreparedStatementKey("x2", null, MethodType.M1);
@@ -103,14 +108,15 @@ public class PreparedStatementKeyTest extends TestCase {
 
         k1.hashCode();
 
-        Assert.assertFalse(k1.equals(k2));
-        Assert.assertFalse(k1.equals(k3));
-        Assert.assertFalse(k2.equals(k1));
-        Assert.assertFalse(k2.equals(k3));
-        Assert.assertFalse(k3.equals(k2));
-        Assert.assertFalse(k3.equals(k1));
+        assertFalse(k1.equals(k2));
+        assertFalse(k1.equals(k3));
+        assertFalse(k2.equals(k1));
+        assertFalse(k2.equals(k3));
+        assertFalse(k3.equals(k2));
+        assertFalse(k3.equals(k1));
     }
 
+    @Test
     public void test_equals_7() throws Exception {
         PreparedStatementKey k1 = new PreparedStatementKey("x1", null, MethodType.M1, 0, 0);
         PreparedStatementKey k2 = new PreparedStatementKey("x1", null, MethodType.M1, 1, 0);
@@ -118,14 +124,15 @@ public class PreparedStatementKeyTest extends TestCase {
 
         k1.hashCode();
 
-        Assert.assertFalse(k1.equals(k2));
-        Assert.assertFalse(k1.equals(k3));
-        Assert.assertFalse(k2.equals(k1));
-        Assert.assertFalse(k2.equals(k3));
-        Assert.assertFalse(k3.equals(k2));
-        Assert.assertFalse(k3.equals(k1));
+        assertFalse(k1.equals(k2));
+        assertFalse(k1.equals(k3));
+        assertFalse(k2.equals(k1));
+        assertFalse(k2.equals(k3));
+        assertFalse(k3.equals(k2));
+        assertFalse(k3.equals(k1));
     }
 
+    @Test
     public void test_equals_8() throws Exception {
         PreparedStatementKey k1 = new PreparedStatementKey("x1", null, MethodType.M1, 0, 0, 0);
         PreparedStatementKey k2 = new PreparedStatementKey("x1", null, MethodType.M1, 0, 0, 1);
@@ -133,14 +140,15 @@ public class PreparedStatementKeyTest extends TestCase {
 
         k1.hashCode();
 
-        Assert.assertFalse(k1.equals(k2));
-        Assert.assertFalse(k1.equals(k3));
-        Assert.assertFalse(k2.equals(k1));
-        Assert.assertFalse(k2.equals(k3));
-        Assert.assertFalse(k3.equals(k2));
-        Assert.assertFalse(k3.equals(k1));
+        assertFalse(k1.equals(k2));
+        assertFalse(k1.equals(k3));
+        assertFalse(k2.equals(k1));
+        assertFalse(k2.equals(k3));
+        assertFalse(k3.equals(k2));
+        assertFalse(k3.equals(k1));
     }
 
+    @Test
     public void test_equals_9() throws Exception {
         PreparedStatementKey k1 = new PreparedStatementKey("x1", null, MethodType.M1, 2);
         PreparedStatementKey k2 = new PreparedStatementKey("x1", null, MethodType.M1, new int[]{});
@@ -148,14 +156,15 @@ public class PreparedStatementKeyTest extends TestCase {
 
         k1.hashCode();
 
-        Assert.assertFalse(k1.equals(k2));
-        Assert.assertFalse(k1.equals(k3));
-        Assert.assertFalse(k2.equals(k1));
-        Assert.assertFalse(k2.equals(k3));
-        Assert.assertFalse(k3.equals(k2));
-        Assert.assertFalse(k3.equals(k1));
+        assertFalse(k1.equals(k2));
+        assertFalse(k1.equals(k3));
+        assertFalse(k2.equals(k1));
+        assertFalse(k2.equals(k3));
+        assertFalse(k3.equals(k2));
+        assertFalse(k3.equals(k1));
     }
 
+    @Test
     public void test_contains() throws Exception {
         DruidDataSource dataSource = new DruidDataSource();
         MockConnection conn = new MockConnection();
@@ -165,7 +174,7 @@ public class PreparedStatementKeyTest extends TestCase {
         MockPreparedStatement raw = new MockPreparedStatement(null, null);
         pool.put(new PreparedStatementHolder(k1, raw));
 
-        Assert.assertTrue(pool.get(k1) != null);
-        Assert.assertTrue(pool.get(k1) != null);
+        assertTrue(pool.get(k1) != null);
+        assertTrue(pool.get(k1) != null);
     }
 }

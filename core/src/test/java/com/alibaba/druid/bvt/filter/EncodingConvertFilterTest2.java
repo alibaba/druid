@@ -15,20 +15,6 @@
  */
 package com.alibaba.druid.bvt.filter;
 
-import java.io.Reader;
-import java.io.StringReader;
-import java.sql.CallableStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Types;
-import java.util.Collections;
-
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.filter.encoding.EncodingConvertFilter;
 import com.alibaba.druid.mock.MockCallableStatement;
 import com.alibaba.druid.mock.MockDriver;
@@ -39,11 +25,26 @@ import com.alibaba.druid.mock.MockStatementBase;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
-import com.alibaba.druid.util.Utils;
 import com.alibaba.druid.util.JdbcUtils;
+import com.alibaba.druid.util.Utils;
 import com.alibaba.druid.util.jdbc.ResultSetMetaDataBase.ColumnMetaData;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class EncodingConvertFilterTest2 extends TestCase {
+import java.io.Reader;
+import java.io.StringReader;
+import java.sql.CallableStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Types;
+import java.util.Collections;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class EncodingConvertFilterTest2 {
     private DruidDataSource dataSource;
 
     private static String CLIENT_ENCODING = "UTF-8";
@@ -51,6 +52,7 @@ public class EncodingConvertFilterTest2 extends TestCase {
 
     private static String text = "中华人民共和国";
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
 
@@ -73,12 +75,14 @@ public class EncodingConvertFilterTest2 extends TestCase {
         dataSource.init();
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
     }
 
+    @Test
     public void test_stat() throws Exception {
-        Assert.assertTrue(dataSource.isInited());
+        assertTrue(dataSource.isInited());
 
         EncodingConvertFilter filter = (EncodingConvertFilter) dataSource.getProxyFilters().get(0);
 
@@ -94,8 +98,8 @@ public class EncodingConvertFilterTest2 extends TestCase {
         String param1 = (String) raw.getParameters().get(0);
 
         String C_TEXT = new String(param1.getBytes(SERVER_ENCODING), CLIENT_ENCODING);
-        Assert.assertEquals(PARAM_VALUE, C_TEXT);
-        Assert.assertFalse(param1.equals(PARAM_VALUE));
+        assertEquals(PARAM_VALUE, C_TEXT);
+        assertFalse(param1.equals(PARAM_VALUE));
 
         MyResultSet rawRs = new MyResultSet(raw);
 
@@ -107,136 +111,134 @@ public class EncodingConvertFilterTest2 extends TestCase {
 
         rs.next();
 
-        Assert.assertEquals(text, rs.getString(1));
-        Assert.assertEquals(text, rs.getString("1"));
-        Assert.assertEquals(text, rs.getObject(1));
-        Assert.assertEquals(text, rs.getObject("1"));
-        Assert.assertEquals(text, rs.getObject(1, Collections.<String, Class<?>>emptyMap()));
-        Assert.assertEquals(text, rs.getObject("1", Collections.<String, Class<?>>emptyMap()));
+        assertEquals(text, rs.getString(1));
+        assertEquals(text, rs.getString("1"));
+        assertEquals(text, rs.getObject(1));
+        assertEquals(text, rs.getObject("1"));
+        assertEquals(text, rs.getObject(1, Collections.<String, Class<?>>emptyMap()));
+        assertEquals(text, rs.getObject("1", Collections.<String, Class<?>>emptyMap()));
 
-        Assert.assertEquals(text, rs.getString(2));
-        Assert.assertEquals(text, rs.getString("2"));
-        Assert.assertEquals(text, rs.getObject(2));
-        Assert.assertEquals(text, rs.getObject("2"));
-        Assert.assertEquals(text, rs.getObject(2, Collections.<String, Class<?>>emptyMap()));
-        Assert.assertEquals(text, rs.getObject("2", Collections.<String, Class<?>>emptyMap()));
+        assertEquals(text, rs.getString(2));
+        assertEquals(text, rs.getString("2"));
+        assertEquals(text, rs.getObject(2));
+        assertEquals(text, rs.getObject("2"));
+        assertEquals(text, rs.getObject(2, Collections.<String, Class<?>>emptyMap()));
+        assertEquals(text, rs.getObject("2", Collections.<String, Class<?>>emptyMap()));
 
-        Assert.assertEquals(text, rs.getString(3));
-        Assert.assertEquals(text, rs.getString("3"));
-        Assert.assertEquals(text, rs.getObject(3));
-        Assert.assertEquals(text, rs.getObject("3"));
-        Assert.assertEquals(text, rs.getObject(3, Collections.<String, Class<?>>emptyMap()));
-        Assert.assertEquals(text, rs.getObject("3", Collections.<String, Class<?>>emptyMap()));
+        assertEquals(text, rs.getString(3));
+        assertEquals(text, rs.getString("3"));
+        assertEquals(text, rs.getObject(3));
+        assertEquals(text, rs.getObject("3"));
+        assertEquals(text, rs.getObject(3, Collections.<String, Class<?>>emptyMap()));
+        assertEquals(text, rs.getObject("3", Collections.<String, Class<?>>emptyMap()));
 
-        Assert.assertEquals(text, rs.getString(4));
-        Assert.assertEquals(text, rs.getString("4"));
-        Assert.assertEquals(text, rs.getObject(4));
-        Assert.assertEquals(text, rs.getObject("4"));
-        Assert.assertEquals(text, rs.getObject(4, Collections.<String, Class<?>>emptyMap()));
-        Assert.assertEquals(text, rs.getObject("4", Collections.<String, Class<?>>emptyMap()));
+        assertEquals(text, rs.getString(4));
+        assertEquals(text, rs.getString("4"));
+        assertEquals(text, rs.getObject(4));
+        assertEquals(text, rs.getObject("4"));
+        assertEquals(text, rs.getObject(4, Collections.<String, Class<?>>emptyMap()));
+        assertEquals(text, rs.getObject("4", Collections.<String, Class<?>>emptyMap()));
 
         stmt.registerOutParameter(2, Types.VARCHAR);
         stmt.registerOutParameter(3, Types.CLOB);
         raw.getOutParameters().add(param1);
         raw.getOutParameters().add(param1);
 
+        assertEquals(C_TEXT, stmt.getString(4));
+        assertEquals(C_TEXT, stmt.getString("4"));
+        assertEquals(C_TEXT, stmt.getObject(4));
+        assertEquals(C_TEXT, stmt.getObject("4"));
+        assertEquals(C_TEXT, stmt.getObject(4, Collections.<String, Class<?>>emptyMap()));
+        assertEquals(C_TEXT, stmt.getObject("4", Collections.<String, Class<?>>emptyMap()));
 
-        Assert.assertEquals(C_TEXT, stmt.getString(4));
-        Assert.assertEquals(C_TEXT, stmt.getString("4"));
-        Assert.assertEquals(C_TEXT, stmt.getObject(4));
-        Assert.assertEquals(C_TEXT, stmt.getObject("4"));
-        Assert.assertEquals(C_TEXT, stmt.getObject(4, Collections.<String, Class<?>>emptyMap()));
-        Assert.assertEquals(C_TEXT, stmt.getObject("4", Collections.<String, Class<?>>emptyMap()));
-
-        Assert.assertEquals(C_TEXT, stmt.getString(5));
-        Assert.assertEquals(C_TEXT, stmt.getString("5"));
-        Assert.assertEquals(C_TEXT, stmt.getObject(5));
-        Assert.assertEquals(C_TEXT, stmt.getObject("5"));
-        Assert.assertEquals(C_TEXT, stmt.getObject(5, Collections.<String, Class<?>>emptyMap()));
-        Assert.assertEquals(C_TEXT, stmt.getObject("5", Collections.<String, Class<?>>emptyMap()));
+        assertEquals(C_TEXT, stmt.getString(5));
+        assertEquals(C_TEXT, stmt.getString("5"));
+        assertEquals(C_TEXT, stmt.getObject(5));
+        assertEquals(C_TEXT, stmt.getObject("5"));
+        assertEquals(C_TEXT, stmt.getObject(5, Collections.<String, Class<?>>emptyMap()));
+        assertEquals(C_TEXT, stmt.getObject("5", Collections.<String, Class<?>>emptyMap()));
 
         stmt.setObject(1, C_TEXT);
-        Assert.assertEquals(param1, raw.getParameters().get(0));
+        assertEquals(param1, raw.getParameters().get(0));
 
         stmt.setObject(2, new StringReader(C_TEXT));
-        Assert.assertEquals(param1, Utils.read((Reader) raw.getParameters().get(1)));
+        assertEquals(param1, Utils.read((Reader) raw.getParameters().get(1)));
 
         stmt.setCharacterStream(3, new StringReader(C_TEXT));
-        Assert.assertEquals(param1, Utils.read((Reader) raw.getParameters().get(2)));
+        assertEquals(param1, Utils.read((Reader) raw.getParameters().get(2)));
 
         stmt.setCharacterStream(4, new StringReader(C_TEXT), C_TEXT.length());
-        Assert.assertEquals(param1, Utils.read((Reader) raw.getParameters().get(3)));
+        assertEquals(param1, Utils.read((Reader) raw.getParameters().get(3)));
 
         stmt.setCharacterStream(5, new StringReader(C_TEXT), (long) C_TEXT.length());
-        Assert.assertEquals(param1, Utils.read((Reader) raw.getParameters().get(4)));
+        assertEquals(param1, Utils.read((Reader) raw.getParameters().get(4)));
 
         stmt.setObject(6, C_TEXT, Types.VARCHAR);
-        Assert.assertEquals(param1, raw.getParameters().get(5));
+        assertEquals(param1, raw.getParameters().get(5));
         stmt.setObject(7, new StringReader(C_TEXT), Types.VARCHAR);
-        Assert.assertEquals(param1, Utils.read((Reader) raw.getParameters().get(6)));
+        assertEquals(param1, Utils.read((Reader) raw.getParameters().get(6)));
 
         stmt.setObject(8, C_TEXT, Types.VARCHAR, 0);
-        Assert.assertEquals(param1, raw.getParameters().get(7));
+        assertEquals(param1, raw.getParameters().get(7));
         stmt.setObject(9, new StringReader(C_TEXT), Types.VARCHAR, 0);
-        Assert.assertEquals(param1, Utils.read((Reader) raw.getParameters().get(8)));
+        assertEquals(param1, Utils.read((Reader) raw.getParameters().get(8)));
 
         stmt.setObject(10, 1, Types.INTEGER);
-        Assert.assertEquals(1, raw.getParameters().get(9));
+        assertEquals(1, raw.getParameters().get(9));
 
         stmt.setObject(11, 2, Types.INTEGER, 0);
-        Assert.assertEquals(2, raw.getParameters().get(10));
+        assertEquals(2, raw.getParameters().get(10));
 
         stmt.setObject(12, 3);
-        Assert.assertEquals(3, raw.getParameters().get(11));
+        assertEquals(3, raw.getParameters().get(11));
 
         stmt.setObject("13", C_TEXT, Types.VARCHAR);
-        Assert.assertEquals(param1, raw.getParameters().get(12));
+        assertEquals(param1, raw.getParameters().get(12));
         stmt.setObject("14", new StringReader(C_TEXT), Types.VARCHAR);
-        Assert.assertEquals(param1, Utils.read((Reader) raw.getParameters().get(13)));
+        assertEquals(param1, Utils.read((Reader) raw.getParameters().get(13)));
 
         stmt.setObject("15", C_TEXT, Types.VARCHAR, 0);
-        Assert.assertEquals(param1, raw.getParameters().get(14));
+        assertEquals(param1, raw.getParameters().get(14));
         stmt.setObject("16", new StringReader(C_TEXT), Types.VARCHAR, 0);
-        Assert.assertEquals(param1, Utils.read((Reader) raw.getParameters().get(15)));
+        assertEquals(param1, Utils.read((Reader) raw.getParameters().get(15)));
 
         stmt.setObject("17", 1, Types.INTEGER);
-        Assert.assertEquals(1, raw.getParameters().get(16));
+        assertEquals(1, raw.getParameters().get(16));
 
         stmt.setObject("18", 2, Types.INTEGER, 0);
-        Assert.assertEquals(2, raw.getParameters().get(17));
+        assertEquals(2, raw.getParameters().get(17));
 
         stmt.setObject("19", 3);
-        Assert.assertEquals(3, raw.getParameters().get(18));
+        assertEquals(3, raw.getParameters().get(18));
 
         stmt.setCharacterStream("20", new StringReader(C_TEXT));
-        Assert.assertEquals(param1, Utils.read((Reader) raw.getParameters().get(19)));
+        assertEquals(param1, Utils.read((Reader) raw.getParameters().get(19)));
 
         stmt.setCharacterStream("21", new StringReader(C_TEXT), C_TEXT.length());
-        Assert.assertEquals(param1, Utils.read((Reader) raw.getParameters().get(20)));
+        assertEquals(param1, Utils.read((Reader) raw.getParameters().get(20)));
 
         stmt.setCharacterStream("22", new StringReader(C_TEXT), (long) C_TEXT.length());
-        Assert.assertEquals(param1, Utils.read((Reader) raw.getParameters().get(21)));
+        assertEquals(param1, Utils.read((Reader) raw.getParameters().get(21)));
 
         stmt.setObject("23", C_TEXT);
-        Assert.assertEquals(param1, raw.getParameters().get(22));
+        assertEquals(param1, raw.getParameters().get(22));
 
         stmt.setObject("24", new StringReader(C_TEXT));
-        Assert.assertEquals(param1, Utils.read((Reader) raw.getParameters().get(23)));
+        assertEquals(param1, Utils.read((Reader) raw.getParameters().get(23)));
 
         stmt.setObject("25", 1, Types.INTEGER);
-        Assert.assertEquals(1, raw.getParameters().get(24));
+        assertEquals(1, raw.getParameters().get(24));
 
         stmt.setObject("26", 2, Types.INTEGER, 0);
-        Assert.assertEquals(2, raw.getParameters().get(25));
+        assertEquals(2, raw.getParameters().get(25));
 
         stmt.setObject("27", 3);
-        Assert.assertEquals(3, raw.getParameters().get(26));
+        assertEquals(3, raw.getParameters().get(26));
 
         rs.close();
         stmt.close();
 
         conn.close();
-
     }
 
     public static class MyResultSet extends MockResultSet {

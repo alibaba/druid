@@ -1,23 +1,22 @@
 package com.alibaba.druid.bvt.pool;
 
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.ValidConnectionCheckerAdapter;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import junit.framework.TestCase;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import com.alibaba.druid.pool.DataSourceClosedException;
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.pool.ValidConnectionCheckerAdapter;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class DruidDataSourceTest5 extends TestCase {
+public class DruidDataSourceTest5 {
     private DruidDataSource dataSource;
 
     private final AtomicBoolean validate = new AtomicBoolean(true);
 
-
+    @BeforeEach
     protected void setUp() throws Exception {
         validate.set(true);
 
@@ -34,11 +33,11 @@ public class DruidDataSourceTest5 extends TestCase {
         });
     }
 
-
     public void tearDown() throws Exception {
         dataSource.close();
     }
 
+    @Test
     public void testValidate() throws Exception {
         validate.set(false);
 
@@ -48,7 +47,7 @@ public class DruidDataSourceTest5 extends TestCase {
         } catch (SQLException e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
         validate.set(true);
 
@@ -56,6 +55,7 @@ public class DruidDataSourceTest5 extends TestCase {
         conn.close();
     }
 
+    @Test
     public void testValidate_1() throws Exception {
         validate.set(false);
 
@@ -65,7 +65,7 @@ public class DruidDataSourceTest5 extends TestCase {
         } catch (SQLException e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
         validate.set(true);
 
@@ -73,6 +73,7 @@ public class DruidDataSourceTest5 extends TestCase {
         conn.close();
     }
 
+    @Test
     public void testValidate_3() throws Exception {
         validate.set(false);
 
@@ -82,12 +83,11 @@ public class DruidDataSourceTest5 extends TestCase {
         } catch (SQLException e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
         validate.set(true);
 
         Connection conn = dataSource.getConnection();
         conn.close();
     }
-
 }

@@ -129,6 +129,10 @@ public class PGSelectParser extends SQLSelectParser {
 
         parseWhere(queryBlock);
 
+        // openGauss (registered as the postgresql dialect) supports Oracle-style hierarchical
+        // queries: CONNECT BY ... START WITH ... (see issue #6637)
+        parseHierachical(queryBlock);
+
         parseGroupBy(queryBlock);
 
         if (lexer.token() == Token.WINDOW) {
@@ -205,11 +209,23 @@ public class PGSelectParser extends SQLSelectParser {
             } else if (lexer.token() == Token.SHARE) {
                 forClause.setOption(PGSelectQueryBlock.ForClause.Option.SHARE);
                 lexer.nextToken();
+            } else if (lexer.token() == Token.KEY) {
+                // FOR KEY SHARE
+                lexer.nextToken();
+                accept(Token.SHARE);
+                forClause.setOption(PGSelectQueryBlock.ForClause.Option.KEY_SHARE);
+            } else if (lexer.identifierEquals("NO")) {
+                // FOR NO KEY UPDATE
+                lexer.nextToken();
+                accept(Token.KEY);
+                accept(Token.UPDATE);
+                forClause.setOption(PGSelectQueryBlock.ForClause.Option.NO_KEY_UPDATE);
             } else {
-                throw new ParserException("expect 'FIRST' or 'NEXT'. " + lexer.info());
+                throw new ParserException("expect UPDATE, SHARE, KEY SHARE or NO KEY UPDATE. " + lexer.info());
             }
 
             if (lexer.token() == Token.OF) {
+                lexer.nextToken();
                 for (; ; ) {
                     SQLExpr expr = this.createExprParser().expr();
                     forClause.getOf().add(expr);
@@ -244,6 +260,35 @@ public class PGSelectParser extends SQLSelectParser {
             queryBlock.setLimit(limit);
         }
         return limit;
+    }
+
+    @Override
+    public SQLTableSource parseTableSource(boolean forFrom) {
+        if (lexer.token() == Token.LATERAL || lexer.identifierEquals(FnvHash.Constants.LATERAL)) {
+            lexer.nextToken();
+            SQLTableSource lateralSource = parseLateralTableSource();
+            return parseTableSourceRest(lateralSource);
+        }
+        return super.parseTableSource(forFrom);
+    }
+
+    @Override
+    protected SQLTableSource parseLateralView(SQLTableSource tableSource) {
+        if (tableSource != null && "LATERAL".equalsIgnoreCase(tableSource.getAlias())) {
+            tableSource.setAlias(null);
+        }
+
+        if (lexer.token() == Token.VIEW) {
+            return super.parseLateralView(tableSource);
+        }
+
+        SQLTableSource lateralSource = parseLateralTableSource();
+
+        SQLJoinTableSource join = new SQLJoinTableSource();
+        join.setLeft(tableSource);
+        join.setRight(lateralSource);
+        join.setJoinType(SQLJoinTableSource.JoinType.COMMA);
+        return parseTableSourceRest(join);
     }
 
     public SQLTableSource parseTableSourceRest(SQLTableSource tableSource) {

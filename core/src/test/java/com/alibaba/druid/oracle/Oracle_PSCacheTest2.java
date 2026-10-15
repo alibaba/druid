@@ -1,11 +1,15 @@
 package com.alibaba.druid.oracle;
 
 import com.alibaba.druid.DbTestCase;
-import com.alibaba.druid.benckmark.proxy.BenchmarkExecutor;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.OracleUtils;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  * Created by wenshao on 23/07/2017.
@@ -47,7 +51,6 @@ public class Oracle_PSCacheTest2 extends DbTestCase {
         dropColumn();
 
         JdbcUtils.close(conn);
-
     }
 
     private void executeQuery(PreparedStatement pstmt) throws SQLException {

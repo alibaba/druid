@@ -49,6 +49,8 @@ public class SQLServerInsertStatement extends SQLInsertStatement implements SQLS
     public void accept0(SQLASTVisitor v) {
         if (v instanceof SQLServerASTVisitor) {
             accept0((SQLServerASTVisitor) v);
+        } else {
+            super.accept0(v);
         }
     }
 

@@ -8,6 +8,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_173 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "/*+engine=MPP*/\n" +
@@ -133,8 +135,5 @@ public class MySqlSelectTest_173 extends MysqlTest {
             + "\tEND))\n"
             + "ORDER BY t_s_secyear.customer_id ASC, t_s_secyear.customer_first_name ASC, t_s_secyear.customer_last_name ASC, t_s_secyear.customer_preferred_cust_flag ASC\n"
             + "LIMIT 100", stmt.toString());
-
-
     }
-
 }

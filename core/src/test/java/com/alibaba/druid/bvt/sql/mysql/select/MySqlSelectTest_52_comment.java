@@ -23,6 +23,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_52_comment extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SELECT comment.id,user.id AS user_id,user.username,user.avatar,comment.created_at,\n" +
@@ -42,7 +44,6 @@ public class MySqlSelectTest_52_comment extends MysqlTest {
                 "                AND getDistance('31.860968', '117.252579', user.latitude, user.longitude)<=10000\n" +
                 "                ORDER BY created_at DESC\n" +
                 "                LIMIT 10, 10";
-
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL, true);
         SQLStatement stmt = statementList.get(0);

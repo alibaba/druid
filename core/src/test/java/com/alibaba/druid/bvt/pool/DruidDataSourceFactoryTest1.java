@@ -1,16 +1,17 @@
 package com.alibaba.druid.bvt.pool;
 
-import java.sql.Connection;
-import java.util.Properties;
-
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidDataSourceFactory;
 import com.alibaba.druid.util.JdbcUtils;
+import org.junit.jupiter.api.Test;
 
-public class DruidDataSourceFactoryTest1 extends TestCase {
+import java.sql.Connection;
+import java.util.Properties;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class DruidDataSourceFactoryTest1 {
+    @Test
     public void test_NONE() throws Exception {
         Properties properties = new Properties();
         properties.put(DruidDataSourceFactory.PROP_URL, "jdbc:mock:xxx");
@@ -21,14 +22,15 @@ public class DruidDataSourceFactoryTest1 extends TestCase {
         try {
             dataSource = (DruidDataSource) DruidDataSourceFactory.createDataSource(properties);
 
-            Assert.assertEquals("jdbc:mock:xxx", dataSource.getUrl());
-            Assert.assertEquals(Connection.TRANSACTION_NONE, dataSource.getDefaultTransactionIsolation().intValue());
+            assertEquals("jdbc:mock:xxx", dataSource.getUrl());
+            assertEquals(Connection.TRANSACTION_NONE, dataSource.getDefaultTransactionIsolation().intValue());
 
         } finally {
             JdbcUtils.close(dataSource);
         }
     }
 
+    @Test
     public void test_READ_COMMITTED() throws Exception {
         Properties properties = new Properties();
         properties.put(DruidDataSourceFactory.PROP_URL, "jdbc:mock:xxx");
@@ -39,8 +41,8 @@ public class DruidDataSourceFactoryTest1 extends TestCase {
         try {
             dataSource = (DruidDataSource) DruidDataSourceFactory.createDataSource(properties);
 
-            Assert.assertEquals("jdbc:mock:xxx", dataSource.getUrl());
-            Assert.assertEquals(Connection.TRANSACTION_READ_COMMITTED,
+            assertEquals("jdbc:mock:xxx", dataSource.getUrl());
+            assertEquals(Connection.TRANSACTION_READ_COMMITTED,
                     dataSource.getDefaultTransactionIsolation().intValue());
 
         } finally {
@@ -48,6 +50,7 @@ public class DruidDataSourceFactoryTest1 extends TestCase {
         }
     }
 
+    @Test
     public void test_READ_UNCOMMITTED() throws Exception {
         Properties properties = new Properties();
         properties.put(DruidDataSourceFactory.PROP_URL, "jdbc:mock:xxx");
@@ -58,8 +61,8 @@ public class DruidDataSourceFactoryTest1 extends TestCase {
         try {
             dataSource = (DruidDataSource) DruidDataSourceFactory.createDataSource(properties);
 
-            Assert.assertEquals("jdbc:mock:xxx", dataSource.getUrl());
-            Assert.assertEquals(Connection.TRANSACTION_READ_UNCOMMITTED,
+            assertEquals("jdbc:mock:xxx", dataSource.getUrl());
+            assertEquals(Connection.TRANSACTION_READ_UNCOMMITTED,
                     dataSource.getDefaultTransactionIsolation().intValue());
 
         } finally {
@@ -67,6 +70,7 @@ public class DruidDataSourceFactoryTest1 extends TestCase {
         }
     }
 
+    @Test
     public void test_REPEATABLE_READ() throws Exception {
         Properties properties = new Properties();
         properties.put(DruidDataSourceFactory.PROP_URL, "jdbc:mock:xxx");
@@ -77,8 +81,8 @@ public class DruidDataSourceFactoryTest1 extends TestCase {
         try {
             dataSource = (DruidDataSource) DruidDataSourceFactory.createDataSource(properties);
 
-            Assert.assertEquals("jdbc:mock:xxx", dataSource.getUrl());
-            Assert.assertEquals(Connection.TRANSACTION_REPEATABLE_READ,
+            assertEquals("jdbc:mock:xxx", dataSource.getUrl());
+            assertEquals(Connection.TRANSACTION_REPEATABLE_READ,
                     dataSource.getDefaultTransactionIsolation().intValue());
 
         } finally {
@@ -86,6 +90,7 @@ public class DruidDataSourceFactoryTest1 extends TestCase {
         }
     }
 
+    @Test
     public void test_SERIALIZABLE() throws Exception {
         Properties properties = new Properties();
         properties.put(DruidDataSourceFactory.PROP_URL, "jdbc:mock:xxx");
@@ -96,8 +101,8 @@ public class DruidDataSourceFactoryTest1 extends TestCase {
         try {
             dataSource = (DruidDataSource) DruidDataSourceFactory.createDataSource(properties);
 
-            Assert.assertEquals("jdbc:mock:xxx", dataSource.getUrl());
-            Assert.assertEquals(Connection.TRANSACTION_SERIALIZABLE,
+            assertEquals("jdbc:mock:xxx", dataSource.getUrl());
+            assertEquals(Connection.TRANSACTION_SERIALIZABLE,
                     dataSource.getDefaultTransactionIsolation().intValue());
 
         } finally {
@@ -105,6 +110,7 @@ public class DruidDataSourceFactoryTest1 extends TestCase {
         }
     }
 
+    @Test
     public void test_other() throws Exception {
         Properties properties = new Properties();
         properties.put(DruidDataSourceFactory.PROP_URL, "jdbc:mock:xxx");
@@ -115,14 +121,15 @@ public class DruidDataSourceFactoryTest1 extends TestCase {
         try {
             dataSource = (DruidDataSource) DruidDataSourceFactory.createDataSource(properties);
 
-            Assert.assertEquals("jdbc:mock:xxx", dataSource.getUrl());
-            Assert.assertEquals(-1, dataSource.getDefaultTransactionIsolation().intValue());
+            assertEquals("jdbc:mock:xxx", dataSource.getUrl());
+            assertEquals(-1, dataSource.getDefaultTransactionIsolation().intValue());
 
         } finally {
             JdbcUtils.close(dataSource);
         }
     }
 
+    @Test
     public void test_integer() throws Exception {
         Properties properties = new Properties();
         properties.put(DruidDataSourceFactory.PROP_URL, "jdbc:mock:xxx");
@@ -134,8 +141,8 @@ public class DruidDataSourceFactoryTest1 extends TestCase {
         try {
             dataSource = (DruidDataSource) DruidDataSourceFactory.createDataSource(properties);
 
-            Assert.assertEquals("jdbc:mock:xxx", dataSource.getUrl());
-            Assert.assertEquals(Connection.TRANSACTION_SERIALIZABLE,
+            assertEquals("jdbc:mock:xxx", dataSource.getUrl());
+            assertEquals(Connection.TRANSACTION_SERIALIZABLE,
                     dataSource.getDefaultTransactionIsolation().intValue());
 
         } finally {
@@ -143,6 +150,7 @@ public class DruidDataSourceFactoryTest1 extends TestCase {
         }
     }
 
+    @Test
     public void test_init() throws Exception {
         Properties properties = new Properties();
         properties.put(DruidDataSourceFactory.PROP_URL, "jdbc:mock:xxx");
@@ -153,18 +161,20 @@ public class DruidDataSourceFactoryTest1 extends TestCase {
         try {
             dataSource = (DruidDataSource) DruidDataSourceFactory.createDataSource(properties);
 
-            Assert.assertEquals("jdbc:mock:xxx", dataSource.getUrl());
-            Assert.assertTrue(dataSource.isInited());
+            assertEquals("jdbc:mock:xxx", dataSource.getUrl());
+            assertTrue(dataSource.isInited());
         } finally {
             JdbcUtils.close(dataSource);
         }
     }
 
+    @Test
     public void test_getObjectInstance() throws Exception {
-        Assert.assertNull(new DruidDataSourceFactory().getObjectInstance(null, null, null, null));
+        assertNull(new DruidDataSourceFactory().getObjectInstance(null, null, null, null));
     }
 
+    @Test
     public void test_getObjectInstance_1() throws Exception {
-        Assert.assertNull(new DruidDataSourceFactory().getObjectInstance(new Object(), null, null, null));
+        assertNull(new DruidDataSourceFactory().getObjectInstance(new Object(), null, null, null));
     }
 }

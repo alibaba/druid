@@ -19,9 +19,12 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class MySqlAlterTableTest33 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlAlterTableTest33 {
+    @Test
     public void test_exchange_0() throws Exception {
         String sql = "ALTER TABLE src.`part_tab` EXCHANGE PARTITION p9 WITH TABLE test_create_table without validation";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -32,6 +35,7 @@ public class MySqlAlterTableTest33 extends TestCase {
                 "\tEXCHANGE PARTITION p9 WITH TABLE test_create_table WITHOUT VALIDATION", SQLUtils.toMySqlString(stmt));
     }
 
+    @Test
     public void test_exchange_1() throws Exception {
         String sql = "ALTER TABLE e EXCHANGE PARTITION p0 WITH TABLE e2 WITHOUT VALIDATION;";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -42,6 +46,7 @@ public class MySqlAlterTableTest33 extends TestCase {
                 "\tEXCHANGE PARTITION p0 WITH TABLE e2 WITHOUT VALIDATION;", SQLUtils.toMySqlString(stmt));
     }
 
+    @Test
     public void test_exchange_2() throws Exception {
         String sql = "ALTER TABLE e EXCHANGE PARTITION p0 WITH TABLE e2 WITH VALIDATION;";
         MySqlStatementParser parser = new MySqlStatementParser(sql);

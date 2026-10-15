@@ -15,22 +15,25 @@
  */
 package com.alibaba.druid.bvt.pool;
 
+import com.alibaba.druid.mock.MockDriver;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.stat.DruidDataSourceStatManager;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.*;
 
-import com.alibaba.druid.mock.MockDriver;
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.stat.DruidDataSourceStatManager;
-
-public class TestConnectError extends TestCase {
+public class TestConnectError {
     private DruidDataSource dataSource;
     private MockDriver driver;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         driver = new MockDriver() {
             private AtomicInteger count = new AtomicInteger();
@@ -50,8 +53,7 @@ public class TestConnectError extends TestCase {
                 return super.connect(url, info);
             }
         };
-
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        DruidDataSourceStatManager.clear();
 
         dataSource = new DruidDataSource();
         dataSource.setDriver(driver);
@@ -62,16 +64,17 @@ public class TestConnectError extends TestCase {
         dataSource.setMinEvictableIdleTimeMillis(300 * 1000);
         dataSource.setMaxActive(20);
         dataSource.setUrl("jdbc:mock:TestConnectError");
-
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        DruidDataSourceStatManager.clear();
     }
 
+    @Test
     public void test_connect_error() throws Exception {
-        Assert.assertEquals(0, dataSource.getCreateErrorCount());
+        assertEquals(0, dataSource.getCreateErrorCount());
 
         int count = 10;
         Connection[] connections = new Connection[count];
@@ -83,6 +86,6 @@ public class TestConnectError extends TestCase {
             connections[i].close();
         }
 
-        Assert.assertEquals(10, dataSource.getCreateErrorCount());
+        assertEquals(10, dataSource.getCreateErrorCount());
     }
 }

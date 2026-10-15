@@ -15,22 +15,24 @@
  */
 package com.alibaba.druid;
 
+import com.alibaba.druid.pool.DruidDataSource;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.*;
 
-import com.alibaba.druid.pool.DruidDataSource;
-
-public class TestOracle extends TestCase {
+public class TestOracle {
     private String jdbcUrl;
     private String user;
     private String password;
     private String driverClass;
     private String SQL;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         // jdbcUrl = "jdbc:oracle:thin:@10.20.149.85:1521:ocnauto";
         // user = "alibaba";
@@ -45,6 +47,7 @@ public class TestOracle extends TestCase {
         driverClass = "oracle.jdbc.driver.OracleDriver";
     }
 
+    @Test
     public void test_o() throws Exception {
         DruidDataSource dataSource = new DruidDataSource();
 
@@ -69,7 +72,7 @@ public class TestOracle extends TestCase {
             while (rs.next()) {
                 rowCount++;
             }
-            Assert.assertEquals(true, rowCount > 0);
+            assertEquals(true, rowCount > 0);
             // Assert.isTrue(!rs.isClosed());
             rs.close();
             // Assert.isTrue(!stmt.isClosed());

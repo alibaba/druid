@@ -1,18 +1,18 @@
 package com.alibaba.druid.bvt.sql.repository;
 
-import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableStatement;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.repository.SchemaRepository;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 /**
  * Created by wenshao on 03/08/2017.
  */
-public class OracleJoinResolveTest_1_fk extends TestCase {
+public class OracleJoinResolveTest_1_fk {
     protected SchemaRepository repository = new SchemaRepository(JdbcConstants.ORACLE);
 
+    @Test
     public void test_for_issue() throws Exception {
         String sql_1 = "   CREATE TABLE \"ECC_CPR\".\"ECC_CPR_HC_CON_HEAHERS\"     \n" +
                 "   (  \n" +
@@ -156,7 +156,6 @@ public class OracleJoinResolveTest_1_fk extends TestCase {
                 ");";
 
         repository.console(sql_1);
-
 
         OracleCreateTableStatement stmt = (OracleCreateTableStatement) SQLParserUtils.createSQLStatementParser(sql_2, JdbcConstants.ORACLE).parseStatement();
 

@@ -8,6 +8,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_129_ads extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "/*+ engine= mpp*/     \n" +
@@ -66,6 +68,4 @@ public class MySqlSelectTest_129_ads extends MysqlTest {
                 "\tLEFT JOIN avg_table USING (minute_id)\n" +
                 "ORDER BY history_table.hour_id", stmt.toString());
     }
-
-
 }

@@ -1,19 +1,20 @@
 package com.alibaba.druid.bvt.sql.eval;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
-public class EvalMethodTanTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class EvalMethodTanTest {
+    @Test
     public void test_reverse() throws Exception {
-        Assert.assertEquals(Math.tan(1), SQLEvalVisitorUtils.evalExpr(JdbcConstants.MYSQL, "tan(1)"));
-        Assert.assertEquals(Math.tan(1.001), SQLEvalVisitorUtils.evalExpr(JdbcConstants.MYSQL, "tan(1.001)"));
-        Assert.assertEquals(Math.tan(0), SQLEvalVisitorUtils.evalExpr(JdbcConstants.MYSQL, "tan(0)"));
+        assertEquals(Math.tan(1), SQLEvalVisitorUtils.evalExpr(JdbcConstants.MYSQL, "tan(1)"));
+        assertEquals(Math.tan(1.001), SQLEvalVisitorUtils.evalExpr(JdbcConstants.MYSQL, "tan(1.001)"));
+        assertEquals(Math.tan(0), SQLEvalVisitorUtils.evalExpr(JdbcConstants.MYSQL, "tan(0)"));
     }
 
+    @Test
     public void test_error() throws Exception {
         Exception error = null;
         try {
@@ -21,9 +22,10 @@ public class EvalMethodTanTest extends TestCase {
         } catch (Exception e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
     }
 
+    @Test
     public void test_error_1() throws Exception {
         Exception error = null;
         try {
@@ -31,6 +33,6 @@ public class EvalMethodTanTest extends TestCase {
         } catch (Exception e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
     }
 }

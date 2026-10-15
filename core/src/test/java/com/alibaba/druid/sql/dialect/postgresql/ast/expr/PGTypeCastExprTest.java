@@ -4,14 +4,13 @@ import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLDataTypeImpl;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class PGTypeCastExprTest {
-
     @Test
     public void testDefaultConstructor() {
         PGTypeCastExpr pgTypeCastExpr = new PGTypeCastExpr();
@@ -30,12 +29,12 @@ public class PGTypeCastExprTest {
         assertNotNull(pgTypeCastExpr);
         assertEquals(sqlCharExpr, pgTypeCastExpr.getExpr());
         assertEquals(sqlDataType, pgTypeCastExpr.getDataType());
-        
+
         // Test parent relationship
         assertEquals(pgTypeCastExpr, sqlCharExpr.getParent());
         assertEquals(pgTypeCastExpr, sqlDataType.getParent());
     }
-    
+
     @Test
     public void testClone() {
         // '100'::INT

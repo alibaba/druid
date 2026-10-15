@@ -15,21 +15,24 @@
  */
 package com.alibaba.druid.bvt.pool;
 
+import com.alibaba.druid.mock.MockResultSet;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.DruidPooledResultSet;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLFeatureNotSupportedException;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.*;
 
-import com.alibaba.druid.mock.MockResultSet;
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.pool.DruidPooledResultSet;
-
-public class DruidPooledResultSetTest extends TestCase {
+public class DruidPooledResultSetTest {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
@@ -37,10 +40,12 @@ public class DruidPooledResultSetTest extends TestCase {
         dataSource.setFilters("stat");
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
     }
 
+    @Test
     public void testWrap() throws Exception {
         String sql = "select ?";
         Connection conn = dataSource.getConnection();
@@ -51,13 +56,14 @@ public class DruidPooledResultSetTest extends TestCase {
 
         ResultSet raw = rs.unwrap(ResultSet.class);
 
-        Assert.assertTrue(raw instanceof MockResultSet);
+        assertTrue(raw instanceof MockResultSet);
 
         rs.close();
 
         conn.close();
     }
 
+    @Test
     public void test_notSupport() throws Exception {
         String sql = "select ?";
         Connection conn = dataSource.getConnection();
@@ -72,13 +78,14 @@ public class DruidPooledResultSetTest extends TestCase {
         } catch (SQLFeatureNotSupportedException e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
         rs.close();
 
         conn.close();
     }
 
+    @Test
     public void test_notSupport_1() throws Exception {
         String sql = "select ?";
         Connection conn = dataSource.getConnection();
@@ -93,13 +100,14 @@ public class DruidPooledResultSetTest extends TestCase {
         } catch (SQLFeatureNotSupportedException e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
         rs.close();
 
         conn.close();
     }
 
+    @Test
     public void test_rowCount() throws Exception {
         String sql = "select ?";
         Connection conn = dataSource.getConnection();
@@ -108,22 +116,22 @@ public class DruidPooledResultSetTest extends TestCase {
         stmt.setString(1, "xxx");
         DruidPooledResultSet rs = (DruidPooledResultSet) stmt.executeQuery();
 
-        Assert.assertEquals(true, rs.next());
-        Assert.assertEquals(false, rs.next());
+        assertEquals(true, rs.next());
+        assertEquals(false, rs.next());
 
-        Assert.assertEquals(1, rs.getFetchRowCount());
+        assertEquals(1, rs.getFetchRowCount());
 
-        Assert.assertEquals(true, rs.previous());
-        Assert.assertEquals(false, rs.previous());
+        assertEquals(true, rs.previous());
+        assertEquals(false, rs.previous());
 
-        Assert.assertEquals(1, rs.getFetchRowCount());
+        assertEquals(1, rs.getFetchRowCount());
 
-        Assert.assertEquals(true, rs.next());
-        Assert.assertEquals(false, rs.next());
+        assertEquals(true, rs.next());
+        assertEquals(false, rs.next());
 
-        Assert.assertEquals(1, rs.getFetchRowCount());
+        assertEquals(1, rs.getFetchRowCount());
 
-        Assert.assertFalse(rs.rowUpdated());
+        assertFalse(rs.rowUpdated());
 
         rs.close();
 

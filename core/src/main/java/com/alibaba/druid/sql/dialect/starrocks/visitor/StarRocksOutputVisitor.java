@@ -1,9 +1,11 @@
 package com.alibaba.druid.sql.dialect.starrocks.visitor;
 
 import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.SQLDialect;
 import com.alibaba.druid.sql.ast.DistributedByType;
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLHint;
 import com.alibaba.druid.sql.ast.SQLPartition;
 import com.alibaba.druid.sql.ast.expr.SQLArrayExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
@@ -12,9 +14,12 @@ import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLColumnConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLExprHint;
+import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLNotNullConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLNullConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLPrimaryKeyImpl;
+import com.alibaba.druid.sql.dialect.starrocks.StarRocks;
 import com.alibaba.druid.sql.dialect.starrocks.ast.StarRocksAggregateKey;
 import com.alibaba.druid.sql.dialect.starrocks.ast.StarRocksDuplicateKey;
 import com.alibaba.druid.sql.dialect.starrocks.ast.StarRocksIndexDefinition;
@@ -30,19 +35,40 @@ import java.util.Locale;
 public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarRocksASTVisitor {
     {
         this.shardingSupport = true;
-        this.quote = '`';
     }
 
     public StarRocksOutputVisitor(StringBuilder appender) {
-        super(appender, DbType.starrocks);
+        super(appender, DbType.starrocks, StarRocks.DIALECT);
     }
 
-    public StarRocksOutputVisitor(StringBuilder appender, DbType dbType) {
-        super(appender, dbType);
+    public StarRocksOutputVisitor(StringBuilder appender, DbType dbType, SQLDialect dialect) {
+        super(appender, dbType, dialect);
     }
 
     public StarRocksOutputVisitor(StringBuilder appender, boolean parameterized) {
-        super(appender, DbType.starrocks, parameterized);
+        super(appender, DbType.starrocks, StarRocks.DIALECT, parameterized);
+    }
+
+    public StarRocksOutputVisitor(StringBuilder appender, DbType dbType, SQLDialect dialect, boolean parameterized) {
+        super(appender, dbType, dialect, parameterized);
+    }
+
+    /**
+     * Print StarRocks Join Hint in bracket syntax: [BROADCAST], [SHUFFLE], [BUCKET], [COLOCATE].
+     *
+     * @see <a href="https://docs.starrocks.io/zh/docs/3.3/administration/Query_planning/">StarRocks Query Hint</a>
+     */
+    @Override
+    protected void printJoinHint(SQLJoinTableSource x) {
+        if (x.getHintsSize() > 0) {
+            for (SQLHint hint : x.getHints()) {
+                if (hint instanceof SQLExprHint) {
+                    print0(" [");
+                    ((SQLExprHint) hint).getExpr().accept(this);
+                    print0("]");
+                }
+            }
+        }
     }
 
     @Override
@@ -57,6 +83,11 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
     }
 
     public boolean visit(StarRocksCreateTableStatement x) {
+        return visit((SQLCreateTableStatement) x);
+    }
+
+    @Override
+    public boolean visit(SQLCreateTableStatement x) {
         printCreateTable(x, false);
         printEngine(x);
         printUniqueKey(x);
@@ -67,15 +98,6 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
         printTableOptions(x);
         printSelectAs(x, true);
         return false;
-    }
-
-    @Override
-    public boolean visit(SQLCreateTableStatement x) {
-        if (x instanceof StarRocksCreateTableStatement) {
-            return visit((StarRocksCreateTableStatement) x);
-        } else {
-            return super.visit(x);
-        }
     }
 
     protected void printCreateTable(SQLCreateTableStatement x, boolean printSelect) {
@@ -129,7 +151,9 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
                     print0(ucase ? "HASH (" : "hash (");
                     printAndAccept(createTable.getDistributedBy(), ", ");
                     print0(")");
-                    if (createTable.getBuckets() > 0) {
+                    if (createTable.isAutoBucket()) {
+                        print0(ucase ? " BUCKETS AUTO" : " buckets auto");
+                    } else if (createTable.getBuckets() > 0) {
                         print0(ucase ? " BUCKETS " : " buckets ");
                         print0(String.valueOf(createTable.getBuckets()));
                     }
@@ -227,7 +251,12 @@ public class StarRocksOutputVisitor extends SQLASTOutputVisitor implements StarR
     }
 
     public boolean visit(SQLColumnDefinition x) {
-        x.getName().accept(this);
+        if (x.isIfNotExists()) {
+            print0(ucase ? "IF NOT EXISTS " : "if not exists ");
+        }
+        String columnName = replaceQuota(x.getName().getSimpleName());
+        printName0(columnName);
+
         final SQLDataType dataType = x.getDataType();
 
         if (dataType != null) {

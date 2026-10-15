@@ -19,15 +19,18 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class OdpsSelectTest28 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OdpsSelectTest28 {
+    @Test
     public void test_select() throws Exception {
         // 1095288847322
         String sql = "-- 注释\n" +
-                "read bigdata_xy.dual 10;";//
+                "read bigdata_xy.dual 10;";
         assertEquals("-- 注释\n" +
                 "READ bigdata_xy.dual 10;", SQLUtils.formatOdps(sql));
 
@@ -55,5 +58,4 @@ public class OdpsSelectTest28 extends TestCase {
 
 //        assertTrue(visitor.getColumns().contains(new Column("abc", "name")));
     }
-
 }

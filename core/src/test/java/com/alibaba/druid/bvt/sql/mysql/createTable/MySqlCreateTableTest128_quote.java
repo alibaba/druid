@@ -7,6 +7,8 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlCreateTableTest128_quote extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "CREATE TABLE \"linxi_test\".\"linxi_subpart11\" (\n" +
@@ -29,7 +31,6 @@ public class MySqlCreateTableTest128_quote extends MysqlTest {
 
         assertEquals(1, statementList.size());
 
-
         assertEquals("CREATE TABLE \"linxi_test\".\"linxi_subpart11\" (\n" +
                 "\t\"id\" BIGINT NOT NULL COMMENT '',\n" +
                 "\t\"int_test\" BIGINT NOT NULL COMMENT '',\n" +
@@ -41,8 +42,5 @@ public class MySqlCreateTableTest128_quote extends MysqlTest {
                 "SUBPARTITION BY LIST (\"subcol\" BIGINT)\n" +
                 "SUBPARTITION OPTIONS (available_Partition_Num = 100)\n" +
                 "TABLEGROUP group2", stmt.toString());
-
     }
-
-
 }

@@ -22,6 +22,8 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_mtr
         extends MysqlTest {
     public void test_0() throws Exception {
@@ -503,7 +505,7 @@ public class MySqlSelectTest_mtr
             + "SELECT *\n"
             + "FROM parser_t1_58\n"
             + "\tLEFT JOIN parser_t2_59 ON parser_t1_58.a1 = parser_t2_59.a3\n"
-            + "WHERE parser_t1_58.a2 > 10;\n"+
+            + "WHERE parser_t1_58.a2 > 10;\n" +
                 "\n", builder.toString());
     }
 }

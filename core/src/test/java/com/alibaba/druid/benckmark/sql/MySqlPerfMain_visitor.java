@@ -15,14 +15,14 @@
  */
 package com.alibaba.druid.benckmark.sql;
 
-import java.lang.management.ManagementFactory;
-import java.util.List;
-
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.test.TestUtils;
+
+import java.lang.management.ManagementFactory;
+import java.util.List;
 
 public class MySqlPerfMain_visitor {
     public static void main(String[] args) throws Exception {

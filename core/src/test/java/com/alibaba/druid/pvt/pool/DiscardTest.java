@@ -1,5 +1,14 @@
 package com.alibaba.druid.pvt.pool;
 
+import com.alibaba.druid.mock.MockDriver;
+import com.alibaba.druid.mock.MockStatementBase;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.vendor.MySqlExceptionSorter;
+import com.alibaba.druid.util.JdbcUtils;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -7,22 +16,16 @@ import java.sql.Statement;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.*;
 
-import com.alibaba.druid.mock.MockDriver;
-import com.alibaba.druid.mock.MockStatementBase;
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.pool.vendor.MySqlExceptionSorter;
-import com.alibaba.druid.util.JdbcUtils;
-
-public class DiscardTest extends TestCase {
+public class DiscardTest {
     private DruidDataSource dataSource;
 
     private MockDriver driver;
 
-    private volatile boolean failed = false;
+    private volatile boolean failed;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         driver = new MockDriver() {
             public ResultSet executeQuery(MockStatementBase stmt, String sql) throws SQLException {
@@ -56,10 +59,12 @@ public class DiscardTest extends TestCase {
         dataSource.setExceptionSorter(new MySqlExceptionSorter());
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
     }
 
+    @Test
     public void test_db_fail() throws Exception {
         exec();
 
@@ -98,7 +103,7 @@ public class DiscardTest extends TestCase {
             stmt.close();
             conn.close();
 
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         this.failed = false;

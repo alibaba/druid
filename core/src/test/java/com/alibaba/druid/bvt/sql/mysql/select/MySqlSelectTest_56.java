@@ -23,6 +23,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_56 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select * from (\n" +
@@ -32,7 +34,6 @@ public class MySqlSelectTest_56 extends MysqlTest {
                 ") as temp limit 10";
 
         System.out.println(sql);
-
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL, true);
         SQLStatement stmt = statementList.get(0);

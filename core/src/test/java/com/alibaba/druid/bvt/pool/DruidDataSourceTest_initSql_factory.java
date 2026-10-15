@@ -1,19 +1,21 @@
 package com.alibaba.druid.bvt.pool;
 
-import java.sql.Connection;
-import java.util.Properties;
-
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidDataSourceFactory;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class DruidDataSourceTest_initSql_factory extends TestCase {
+import java.sql.Connection;
+import java.util.Properties;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class DruidDataSourceTest_initSql_factory {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         Properties properties = new Properties();
         properties.put(DruidDataSourceFactory.PROP_URL, "jdbc:mock:xxx");
@@ -21,18 +23,19 @@ public class DruidDataSourceTest_initSql_factory extends TestCase {
         dataSource = (DruidDataSource) DruidDataSourceFactory.createDataSource(properties);
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
     }
 
+    @Test
     public void testDefault() throws Exception {
         Connection conn = dataSource.getConnection();
 
         MockConnection mockConn = conn.unwrap(MockConnection.class);
 
-        Assert.assertEquals("select 123", mockConn.getLastSql());
+        assertEquals("select 123", mockConn.getLastSql());
 
         conn.close();
     }
-
 }

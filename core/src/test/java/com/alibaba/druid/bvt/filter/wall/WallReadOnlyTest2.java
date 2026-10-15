@@ -15,22 +15,23 @@
  */
 package com.alibaba.druid.bvt.filter.wall;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
 import com.alibaba.druid.wall.spi.OracleWallProvider;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * 这个场景，检测可疑的Having条件
  *
  * @author wenshao
  */
-public class WallReadOnlyTest2 extends TestCase {
+public class WallReadOnlyTest2 {
     private WallConfig config = new WallConfig();
 
+    @BeforeEach
     protected void setUp() throws Exception {
         config.addReadOnlyTable("members");
     }
@@ -40,23 +41,23 @@ public class WallReadOnlyTest2 extends TestCase {
     private String update_sql = "UPDATE members SET FNAME = ? WHERe FID = ?";
     private String delete_sql = "DELETE members WHERE FID = ?";
 
+    @Test
     public void testMySql() throws Exception {
         MySqlWallProvider provider = new MySqlWallProvider(config);
-        Assert.assertTrue(provider.checkValid(sql));
+        assertTrue(provider.checkValid(sql));
 
-        Assert.assertFalse(provider.checkValid(insert_sql));
-        Assert.assertFalse(provider.checkValid(update_sql));
-        Assert.assertFalse(provider.checkValid(delete_sql));
-
+        assertFalse(provider.checkValid(insert_sql));
+        assertFalse(provider.checkValid(update_sql));
+        assertFalse(provider.checkValid(delete_sql));
     }
 
+    @Test
     public void testORACLE() throws Exception {
         OracleWallProvider provider = new OracleWallProvider(config);
-        Assert.assertTrue(provider.checkValid(sql));
+        assertTrue(provider.checkValid(sql));
 
-        Assert.assertFalse(provider.checkValid(insert_sql));
-        Assert.assertFalse(provider.checkValid(update_sql));
-        Assert.assertFalse(provider.checkValid(delete_sql));
-
+        assertFalse(provider.checkValid(insert_sql));
+        assertFalse(provider.checkValid(update_sql));
+        assertFalse(provider.checkValid(delete_sql));
     }
 }

@@ -1,15 +1,15 @@
 package com.alibaba.druid.bvt.sql.odps;
 
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.SQLUtils;
+import org.junit.jupiter.api.Test;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class OdpsFormatCommentTest10 extends TestCase {
+public class OdpsFormatCommentTest10 {
+    @Test
     public void test_column_comment() throws Exception {
         String sql = "insert overwrite table ttt partition (ds='20150710',hh='07') select tt_split(content, 60) as (f0, f1, f2, f3,f4,f5,f6) from xxx;";
-        Assert.assertEquals("INSERT OVERWRITE TABLE ttt PARTITION (ds='20150710', hh='07')"
+        assertEquals("INSERT OVERWRITE TABLE ttt PARTITION (ds='20150710', hh='07')"
                 + "\nSELECT tt_split(content, 60)"
                 + "\n\tAS ("
                 + "\n\t\tf0,"
@@ -22,5 +22,4 @@ public class OdpsFormatCommentTest10 extends TestCase {
                 + "\n\t)"
                 + "\nFROM xxx;", SQLUtils.formatOdps(sql));
     }
-
 }

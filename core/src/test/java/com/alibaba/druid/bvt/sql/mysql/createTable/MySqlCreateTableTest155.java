@@ -2,10 +2,9 @@ package com.alibaba.druid.bvt.sql.mysql.createTable;
 
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
-import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlCreateTableTest155
         extends MysqlTest {

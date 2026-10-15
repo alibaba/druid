@@ -25,6 +25,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleCreateViewTest17_dblink extends OracleTest {
     public void test_types() throws Exception {
         String sql = //
@@ -81,7 +83,7 @@ public class OracleCreateViewTest17_dblink extends OracleTest {
                         "\tAND C.Hetonglx = B.SELECTVALUE\n" +
                         "\tAND C.SHENQINGRIQI >= '2017-10-01'\n" +
                         "\tAND C.SHENQINGRIQI <= '2017-12-31'\n" +
-                        "GROUP BY B.SELECTNAME",//
+                        "GROUP BY B.SELECTNAME",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

@@ -39,6 +39,7 @@ import static com.alibaba.druid.sql.parser.Token.*;
  * @author wenshao [szujobs@hotmail.com]
  */
 public class Lexer {
+    protected static final DialectFeature FEATURE = new DialectFeature();
     protected static SymbolTable symbols_l2 = new SymbolTable(512);
 
     protected int features; //SQLParserFeature.of(SQLParserFeature.EnableSQLBinaryOpExprGroup);
@@ -105,9 +106,7 @@ public class Lexer {
         this.commentHandler = commentHandler;
         this.dbType = dbType;
 
-        if (DbType.sqlite == dbType) {
-            this.keywords = Keywords.SQLITE_KEYWORDS;
-        } else if (DbType.dm == dbType) {
+        if (DbType.dm == dbType) {
             this.keywords = Keywords.DM_KEYWORDS;
         }
     }
@@ -265,7 +264,7 @@ public class Lexer {
     }
 
     protected void initDialectFeature() {
-        this.dialectFeature = new DialectFeature();
+        this.dialectFeature = FEATURE;
     }
 
     public Lexer(char[] input, int inputLength, boolean skipComment) {
@@ -465,8 +464,9 @@ public class Lexer {
             } else if (ch == '>') {
                 scanChar();
                 token = EQGT;
+            } else {
+                token = EQ;
             }
-            token = EQ;
             return;
         }
 
@@ -1427,7 +1427,7 @@ public class Lexer {
                     token = Token.SEMI;
                     return;
                 case '`':
-                    throw new ParserException("TODO. " + info()); // TODO
+                    throw new ParserException("backtick quote is not supported for current dialect. " + info());
                 case '@':
                     scanVariable_at();
                     return;
@@ -1740,7 +1740,7 @@ public class Lexer {
                 }
                 break;
             default:
-                throw new ParserException("TODO. " + info());
+                throw new ParserException("unexpected character '" + ch + "'. " + info());
         }
     }
 
@@ -1860,64 +1860,7 @@ public class Lexer {
                     hasSpecial = true;
                 }
 
-                switch (ch) {
-                    case '0':
-                        putChar('\0');
-                        break;
-                    case '\'':
-                        putChar('\'');
-                        break;
-                    case '"':
-                        putChar('"');
-                        break;
-                    case 'b':
-                        putChar('\b');
-                        break;
-                    case 'n':
-                        putChar('\n');
-                        break;
-                    case 'r':
-                        putChar('\r');
-                        break;
-                    case 't':
-                        putChar('\t');
-                        break;
-                    case '\\':
-                        putChar('\\');
-                        break;
-                    case 'Z':
-                        putChar((char) 0x1A); // ctrl + Z
-                        break;
-                    case '%':
-                        if (dialectFeatureEnabled(ScanString2PutDoubleBackslash)) {
-                            putChar('\\');
-                        }
-                        putChar('%');
-                        break;
-                    case '_':
-                        if (dialectFeatureEnabled(ScanString2PutDoubleBackslash)) {
-                            putChar('\\');
-                        }
-                        putChar('_');
-                        break;
-                    case 'u':
-                        if ((features & SQLParserFeature.SupportUnicodeCodePoint.mask) != 0) {
-                            char c1 = charAt(++pos);
-                            char c2 = charAt(++pos);
-                            char c3 = charAt(++pos);
-                            char c4 = charAt(++pos);
-
-                            int intVal = Integer.parseInt(new String(new char[]{c1, c2, c3, c4}), 16);
-
-                            putChar((char) intVal);
-                        } else {
-                            putChar(ch);
-                        }
-                        break;
-                    default:
-                        putChar(ch);
-                        break;
-                }
+                scanString2PutEscapedChar(ch, true);
 
                 continue;
             }
@@ -2038,50 +1981,7 @@ public class Lexer {
                     hasSpecial = true;
                 }
 
-                switch (ch) {
-                    case '0':
-                        putChar('\0');
-                        break;
-                    case '\'':
-                        putChar('\'');
-                        break;
-                    case '"':
-                        putChar('"');
-                        break;
-                    case 'b':
-                        putChar('\b');
-                        break;
-                    case 'n':
-                        putChar('\n');
-                        break;
-                    case 'r':
-                        putChar('\r');
-                        break;
-                    case 't':
-                        putChar('\t');
-                        break;
-                    case '\\':
-                        putChar('\\');
-                        break;
-                    case 'Z':
-                        putChar((char) 0x1A); // ctrl + Z
-                        break;
-                    case '%':
-                        if (dialectFeatureEnabled(ScanString2PutDoubleBackslash)) {
-                            putChar('\\');
-                        }
-                        putChar('%');
-                        break;
-                    case '_':
-                        if (dialectFeatureEnabled(ScanString2PutDoubleBackslash)) {
-                            putChar('\\');
-                        }
-                        putChar('_');
-                        break;
-                    default:
-                        putChar(ch);
-                        break;
-                }
+                scanString2PutEscapedChar(ch, false);
 
                 continue;
             }
@@ -2120,6 +2020,69 @@ public class Lexer {
             stringVal = subString(mark + 1, bufPos);
         } else {
             stringVal = new String(buf, 0, bufPos);
+        }
+    }
+
+    private void scanString2PutEscapedChar(char escaped, boolean supportUnicodeCodePoint) {
+        switch (escaped) {
+            case '0':
+                putChar('\0');
+                return;
+            case '\'':
+                putChar('\'');
+                return;
+            case '"':
+                putChar('"');
+                return;
+            case 'b':
+                putChar('\b');
+                return;
+            case 'n':
+                putChar('\n');
+                return;
+            case 'r':
+                putChar('\r');
+                return;
+            case 't':
+                putChar('\t');
+                return;
+            case '\\':
+                putChar('\\');
+                return;
+            case 'Z':
+                putChar((char) 0x1A); // ctrl + Z
+                return;
+            case '%':
+                if (dialectFeatureEnabled(ScanStringDoubleBackslash)) {
+                    putChar('\\');
+                }
+                putChar('%');
+                return;
+            case '_':
+                if (dialectFeatureEnabled(ScanStringDoubleBackslash)) {
+                    putChar('\\');
+                }
+                putChar('_');
+                return;
+            case 'u':
+                if (supportUnicodeCodePoint
+                        && (features & SQLParserFeature.SupportUnicodeCodePoint.mask) != 0) {
+                    char c1 = charAt(++pos);
+                    char c2 = charAt(++pos);
+                    char c3 = charAt(++pos);
+                    char c4 = charAt(++pos);
+                    if (!CharTypes.isHex(c1) || !CharTypes.isHex(c2) || !CharTypes.isHex(c3) || !CharTypes.isHex(c4)) {
+                        throw new ParserException("invalid unicode escape sequence '\\u"
+                                + c1 + c2 + c3 + c4 + "', expected 4 hex digits. " + info());
+                    }
+                    int intVal = Integer.parseInt(new String(new char[]{c1, c2, c3, c4}), 16);
+                    putChar((char) intVal);
+                    return;
+                }
+                putChar(escaped);
+                return;
+            default:
+                putChar(escaped);
         }
     }
 
@@ -2224,14 +2187,20 @@ public class Lexer {
                         break;
                     case 'u':
                         if (dialectFeatureEnabled(ScanAliasU)) {
-                            char c1 = charAt(++pos);
-                            char c2 = charAt(++pos);
-                            char c3 = charAt(++pos);
-                            char c4 = charAt(++pos);
-
-                            int intVal = Integer.parseInt(new String(new char[]{c1, c2, c3, c4}), 16);
-
-                            putChar((char) intVal);
+                            if (pos + 4 < text.length()) {
+                                char c1 = charAt(++pos);
+                                char c2 = charAt(++pos);
+                                char c3 = charAt(++pos);
+                                char c4 = charAt(++pos);
+                                if (!CharTypes.isHex(c1) || !CharTypes.isHex(c2) || !CharTypes.isHex(c3) || !CharTypes.isHex(c4)) {
+                                    throw new ParserException("invalid unicode escape sequence '\\u"
+                                            + c1 + c2 + c3 + c4 + "', expected 4 hex digits. " + info());
+                                }
+                                int intVal = Integer.parseInt(new String(new char[]{c1, c2, c3, c4}), 16);
+                                putChar((char) intVal);
+                            } else {
+                                throw new ParserException("unclosed unicode escape sequence. " + info());
+                            }
                         } else {
                             putChar(ch);
                         }
@@ -2278,7 +2247,6 @@ public class Lexer {
         if (ch != ':' && ch != '#' && ch != '$' && !(ch == '@' && dialectFeatureEnabled(ScanVariableAt))) {
             throw new ParserException("illegal variable. " + info());
         }
-
         mark = pos;
         bufPos = 1;
         char ch;
@@ -2323,7 +2291,7 @@ public class Lexer {
                     if (isWhitespace(ch)) {
                         pos--;
                         break;
-                    } else if (ch == ',' || ch == ')' || ch == '(' || ch == ';') {
+                    } else if (ch == ',' || ch == ')' || ch == '(') {
                         pos--;
                         break;
                     }
@@ -2518,17 +2486,25 @@ public class Lexer {
             if (ch == '/' && charAt(pos + 1) == '*') {
                 scanChar();
                 scanChar();
-                if (ch == '!' || ch == '+') {
-                    scanChar();
-                    ++depth;
-                }
+                ++depth;
             }
 
             if (ch == '*' && charAt(pos + 1) == '/') {
-                scanChar();
-                scanChar();
-                if (0 == --depth) {
-                    break;
+                int curPos = pos;
+                boolean terminated = true;
+                // If '*/' has leading '--' in the same line, just skip it. For example '-- xxxx */'.
+                while (curPos > 0 && charAt(curPos) != '\n') {
+                    if (charAt(curPos) == '-' && (curPos + 1) < text.length() && charAt(curPos + 1) == '-') {
+                        terminated = false;
+                    }
+                    curPos--;
+                }
+                if (terminated) {
+                    scanChar();
+                    scanChar();
+                    if (0 == --depth) {
+                        break;
+                    }
                 }
             }
 
@@ -3361,9 +3337,16 @@ public class Lexer {
                 || comment.indexOf("update") != -1 //
                 || comment.indexOf("into") != -1 //
                 || comment.indexOf("where") != -1 //
-                || comment.indexOf("or") != -1 //
-                || comment.indexOf("and") != -1 //
+                || containsWord(comment, "or") //
+                || containsWord(comment, "and") //
                 || comment.indexOf("union") != -1 //
+                || comment.indexOf("drop") != -1 //
+                || comment.indexOf("alter") != -1 //
+                || comment.indexOf("create") != -1 //
+                || comment.indexOf("truncate") != -1 //
+                || comment.indexOf("exec") != -1 //
+                || comment.indexOf("grant") != -1 //
+                || comment.indexOf("revoke") != -1 //
                 || comment.indexOf('\'') != -1 //
                 || comment.indexOf('=') != -1 //
                 || comment.indexOf('>') != -1 //
@@ -3371,10 +3354,25 @@ public class Lexer {
                 || comment.indexOf('&') != -1 //
                 || comment.indexOf('|') != -1 //
                 || comment.indexOf('^') != -1 //
+                || comment.indexOf(';') != -1 //
         ) {
             return false;
         }
         return true;
+    }
+
+    private static boolean containsWord(String text, String word) {
+        int index = 0;
+        while ((index = text.indexOf(word, index)) != -1) {
+            boolean startBound = (index == 0 || !Character.isLetterOrDigit(text.charAt(index - 1)));
+            boolean endBound = (index + word.length() >= text.length()
+                    || !Character.isLetterOrDigit(text.charAt(index + word.length())));
+            if (startBound && endBound) {
+                return true;
+            }
+            index += word.length();
+        }
+        return false;
     }
 
     protected void addComment(String comment) {

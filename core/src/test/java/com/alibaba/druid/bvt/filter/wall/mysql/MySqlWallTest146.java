@@ -2,10 +2,12 @@ package com.alibaba.druid.bvt.filter.wall.mysql;
 
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
-public class MySqlWallTest146 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlWallTest146 {
+    @Test
     public void test_false() throws Exception {
         WallProvider provider = new MySqlWallProvider();
 
@@ -18,7 +20,7 @@ public class MySqlWallTest146 extends TestCase {
                 "        ADD COLUMN variation_value_3 DECIMAL(30, 20) NULL DEFAULT NULL,\n" +
                 "        ADD COLUMN variation_value_4 DECIMAL(30, 20) NULL DEFAULT NULL,\n" +
                 "        ADD COLUMN variation_value_5 DECIMAL(30, 20) NULL DEFAULT NULL";
-        Assert.assertTrue(
+        assertTrue(
                 provider.checkValid(sql)
         );
     }

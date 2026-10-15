@@ -6,7 +6,9 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 public class SQLTableLike extends SQLObjectImpl implements SQLTableElement {
     private SQLExprTableSource table;
     private boolean includeProperties;
+    private boolean includeDistribution;
     private boolean excludeProperties;
+    private boolean excludeDistribution;
 
     @Override
     protected void accept0(SQLASTVisitor v) {
@@ -50,5 +52,21 @@ public class SQLTableLike extends SQLObjectImpl implements SQLTableElement {
 
     public void setExcludeProperties(boolean excludeProperties) {
         this.excludeProperties = excludeProperties;
+    }
+
+    public boolean isIncludeDistribution() {
+        return includeDistribution;
+    }
+
+    public void setIncludeDistribution(boolean includeDistribution) {
+        this.includeDistribution = includeDistribution;
+    }
+
+    public boolean isExcludeDistribution() {
+        return excludeDistribution;
+    }
+
+    public void setExcludeDistribution(boolean excludeDistribution) {
+        this.excludeDistribution = excludeDistribution;
     }
 }

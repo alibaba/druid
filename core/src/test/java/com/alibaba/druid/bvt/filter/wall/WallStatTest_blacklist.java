@@ -1,46 +1,48 @@
 package com.alibaba.druid.bvt.filter.wall;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallContext;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.WallTableStat;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class WallStatTest_blacklist extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class WallStatTest_blacklist {
     private String sql = "select * from t where id = ? and 1 = 1";
 
+    @BeforeEach
     protected void setUp() throws Exception {
         WallContext.clearContext();
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         WallContext.clearContext();
     }
 
+    @Test
     public void testMySql() throws Exception {
         WallProvider provider = new MySqlWallProvider();
         for (int i = 0; i < 10; ++i) {
-            Assert.assertTrue(provider.checkValid(sql));
+            assertTrue(provider.checkValid(sql));
         }
 
         WallTableStat tableStat = provider.getTableStat("t");
-        Assert.assertEquals(10, tableStat.getSelectCount());
-        Assert.assertEquals(9, provider.getWhiteListHitCount());
-        Assert.assertEquals(0, provider.getBlackListHitCount());
+        assertEquals(10, tableStat.getSelectCount());
+        assertEquals(9, provider.getWhiteListHitCount());
+        assertEquals(0, provider.getBlackListHitCount());
 
-        provider.reset();;
+        provider.reset();
         provider.getConfig().setConditionAndAlwayTrueAllow(false);
         for (int i = 0; i < 10; ++i) {
-            Assert.assertFalse(provider.checkValid(sql));
+            assertFalse(provider.checkValid(sql));
         }
         tableStat = provider.getTableStat("t");
-        Assert.assertEquals(10, tableStat.getSelectCount());
-        Assert.assertEquals(0, provider.getWhiteListHitCount());
-        Assert.assertEquals(9, provider.getBlackListHitCount());
-
+        assertEquals(10, tableStat.getSelectCount());
+        assertEquals(0, provider.getWhiteListHitCount());
+        assertEquals(9, provider.getBlackListHitCount());
     }
-
 }

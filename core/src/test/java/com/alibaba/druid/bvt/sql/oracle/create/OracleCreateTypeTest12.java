@@ -24,6 +24,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleCreateTypeTest12 extends OracleTest {
     public void test_types() throws Exception {
         String sql = "CREATE OR REPLACE\n" +
@@ -52,7 +54,6 @@ public class OracleCreateTypeTest12 extends OracleTest {
                 "W757xtr4B5ICysO43qOCpqYu0laZ;";
 
         System.out.println(sql);
-
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -83,7 +84,7 @@ public class OracleCreateTypeTest12 extends OracleTest {
                         "c4 ae\n" +
                         "4YeykduDwWpKI7JeaWrDQ5SWiVgwg5n0dLhcWvou/6GX6rh0K6W/m8Ayy8xQjwlppZmB8L8z\n" +
                         "vbLLUrKeK2fhZ1JJscqkTZ4s6sZ86o5CkZQ1+fmoCEHRnn2mVV986ixuyTCSREZA25hXQFfU\n" +
-                        "W757xtr4B5ICysO43qOCpqYu0laZ;",//
+                        "W757xtr4B5ICysO43qOCpqYu0laZ;",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

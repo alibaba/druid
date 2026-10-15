@@ -15,24 +15,27 @@
  */
 package com.alibaba.druid.bvt.filter;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.mock.MockPreparedStatement;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.JdbcSqlStat;
 import com.alibaba.druid.util.JdbcUtils;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class StatFilterExecuteFirstResultSetTest extends TestCase {
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class StatFilterExecuteFirstResultSetTest {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
 
@@ -51,19 +54,21 @@ public class StatFilterExecuteFirstResultSetTest extends TestCase {
         dataSource.init();
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
     }
 
+    @Test
     public void test_stat() throws Exception {
-        Assert.assertTrue(dataSource.isInited());
+        assertTrue(dataSource.isInited());
         final String sql = "select 1";
 
         Connection conn = dataSource.getConnection();
 
         PreparedStatement stmt = conn.prepareStatement(sql);
         boolean firstResult = stmt.execute();
-        Assert.assertTrue(firstResult);
+        assertTrue(firstResult);
 
         ResultSet rs = stmt.getResultSet();
         rs.next();
@@ -75,10 +80,9 @@ public class StatFilterExecuteFirstResultSetTest extends TestCase {
 
         JdbcSqlStat sqlStat = dataSource.getDataSourceStat().getSqlStat(sql);
 
-        Assert.assertEquals(1, sqlStat.getHistogramSum());
+        assertEquals(1, sqlStat.getHistogramSum());
 
-
-        Assert.assertEquals(1, sqlStat.getExecuteAndResultHoldTimeHistogramSum());
+        assertEquals(1, sqlStat.getExecuteAndResultHoldTimeHistogramSum());
     }
 
     static class MyMockPreparedStatement extends MockPreparedStatement {

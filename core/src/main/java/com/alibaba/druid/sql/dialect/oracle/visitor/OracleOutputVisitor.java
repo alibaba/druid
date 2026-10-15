@@ -21,6 +21,7 @@ import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
+import com.alibaba.druid.sql.dialect.oracle.Oracle;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalDay;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalYear;
 import com.alibaba.druid.sql.dialect.oracle.ast.OraclePartitionSingle;
@@ -54,7 +55,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     public OracleOutputVisitor(StringBuilder appender, boolean printPostSemi) {
-        super(appender, DbType.oracle);
+        super(appender, DbType.oracle, Oracle.DIALECT);
         this.printPostSemi = printPostSemi;
     }
 
@@ -422,7 +423,14 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         }
         println();
         print0(ucase ? "INTO " : "into ");
-        into.accept(this);
+        // multiple INTO targets are stored as a SQLListExpr; PL/SQL writes them comma-separated
+        // without surrounding parentheses (see issue #6435).
+        SQLExpr expr = into.getExpr();
+        if (expr instanceof SQLListExpr && into.getAlias() == null) {
+            printAndAccept(((SQLListExpr) expr).getItems(), ", ");
+        } else {
+            into.accept(this);
+        }
     }
 
     private void printModel(OracleSelectQueryBlock x) {
@@ -1985,6 +1993,11 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         if (x.isPurgeSnapshotLog()) {
             print0(ucase ? " PURGE SNAPSHOT LOG" : " purge snapshot log");
         }
+        if (x.isDropStorage()) {
+            print0(ucase ? " DROP STORAGE" : " drop storage");
+        } else if (x.isReuseStorage()) {
+            print0(ucase ? " REUSE STORAGE" : " reuse storage");
+        }
         return false;
     }
 
@@ -2990,7 +3003,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         }
         SQLExpr where = x.getWhere();
         if (where != null) {
-            print0(ucase ? " WHERE " : " where");
+            print0(ucase ? " WHERE " : " where ");
             printExpr(where, parameterized);
         }
         return false;

@@ -15,38 +15,42 @@
  */
 package com.alibaba.druid.bvt.pool;
 
-import java.sql.Connection;
-
-import javax.management.openmbean.TabularData;
-
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DataSourceMonitorable;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.util.JdbcUtils;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class TestIdle extends TestCase {
+import javax.management.openmbean.TabularData;
+
+import java.sql.Connection;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class TestIdle {
     private DruidDataSource dataSource;
 
+    @AfterEach
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
         DruidDataSourceStatManager.clear();
     }
 
+    @BeforeEach
     protected void setUp() throws Exception {
         TabularData dataSourceList = DruidDataSourceStatManager.getInstance().getDataSourceList();
         if (dataSourceList.size() > 0) {
             DataSourceMonitorable first = DruidDataSourceStatManager.getInstance().getDruidDataSourceInstances().iterator().next();
             System.out.println(first.getInitStackTrace());
         }
-        Assert.assertEquals(0, dataSourceList.size());
+        assertEquals(0, dataSourceList.size());
     }
 
+    @Test
     public void test_idle() throws Exception {
         MockDriver driver = new MockDriver();
 
@@ -64,19 +68,19 @@ public class TestIdle extends TestCase {
         dataSource.setValidationQuery("SELECT 1");
 
         {
-            Assert.assertEquals(0, dataSource.getCreateCount());
-            Assert.assertEquals(0, dataSource.getActiveCount());
+            assertEquals(0, dataSource.getCreateCount());
+            assertEquals(0, dataSource.getActiveCount());
 
             Connection conn = dataSource.getConnection();
 
-            Assert.assertEquals(dataSource.getInitialSize(), dataSource.getCreateCount());
-            Assert.assertEquals(dataSource.getInitialSize(), driver.getConnections().size());
-            Assert.assertEquals(1, dataSource.getActiveCount());
+            assertEquals(dataSource.getInitialSize(), dataSource.getCreateCount());
+            assertEquals(dataSource.getInitialSize(), driver.getConnections().size());
+            assertEquals(1, dataSource.getActiveCount());
 
             conn.close();
-            Assert.assertEquals(0, dataSource.getDestroyCount());
-            Assert.assertEquals(dataSource.getInitialSize(), driver.getConnections().size());
-            Assert.assertEquals(0, dataSource.getActiveCount());
+            assertEquals(0, dataSource.getDestroyCount());
+            assertEquals(dataSource.getInitialSize(), driver.getConnections().size());
+            assertEquals(0, dataSource.getActiveCount());
         }
 
         {
@@ -84,20 +88,20 @@ public class TestIdle extends TestCase {
             Connection[] connections = new Connection[4];
             for (int i = 0; i < count; ++i) {
                 connections[i] = dataSource.getConnection();
-                Assert.assertEquals(i + 1, dataSource.getActiveCount());
+                assertEquals(i + 1, dataSource.getActiveCount());
             }
-            Assert.assertEquals(dataSource.getMaxActive(), dataSource.getCreateCount());
-            Assert.assertEquals(4, driver.getConnections().size());
+            assertEquals(dataSource.getMaxActive(), dataSource.getCreateCount());
+            assertEquals(4, driver.getConnections().size());
             for (int i = 0; i < count; ++i) {
                 connections[i].close();
-                Assert.assertEquals(count - i - 1, dataSource.getActiveCount());
+                assertEquals(count - i - 1, dataSource.getActiveCount());
             }
-            Assert.assertEquals(dataSource.getMaxActive(), dataSource.getCreateCount());
-            Assert.assertEquals(0, dataSource.getActiveCount());
-            Assert.assertEquals(4, driver.getConnections().size());
+            assertEquals(dataSource.getMaxActive(), dataSource.getCreateCount());
+            assertEquals(0, dataSource.getActiveCount());
+            assertEquals(4, driver.getConnections().size());
 
             Thread.sleep(dataSource.getMinEvictableIdleTimeMillis() * 2);
-            Assert.assertEquals(dataSource.getMinIdle(), driver.getConnections().size());
+            assertEquals(dataSource.getMinIdle(), driver.getConnections().size());
         }
 
         System.out.println("----------raw close all connection");
@@ -106,15 +110,15 @@ public class TestIdle extends TestCase {
         }
 
         Thread.sleep(dataSource.getMinEvictableIdleTimeMillis() * 2);
-        Assert.assertEquals(0, driver.getConnections().size());
-        Assert.assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(0, driver.getConnections().size());
+        assertEquals(1, dataSource.getPoolingCount());
         {
             Connection conn = dataSource.getConnection();
-            Assert.assertEquals(1, dataSource.getActiveCount());
-            Assert.assertEquals(dataSource.getMinIdle(), driver.getConnections().size());
+            assertEquals(1, dataSource.getActiveCount());
+            assertEquals(dataSource.getMinIdle(), driver.getConnections().size());
             conn.close();
-            Assert.assertEquals(dataSource.getMinIdle(), driver.getConnections().size());
-            Assert.assertEquals(0, dataSource.getActiveCount());
+            assertEquals(dataSource.getMinIdle(), driver.getConnections().size());
+            assertEquals(0, dataSource.getActiveCount());
         }
 
         {
@@ -122,19 +126,19 @@ public class TestIdle extends TestCase {
             Connection[] connections = new Connection[4];
             for (int i = 0; i < count; ++i) {
                 connections[i] = dataSource.getConnection();
-                Assert.assertEquals(i + 1, dataSource.getActiveCount());
+                assertEquals(i + 1, dataSource.getActiveCount());
             }
-            Assert.assertEquals(4, driver.getConnections().size());
+            assertEquals(4, driver.getConnections().size());
             for (int i = 0; i < count; ++i) {
                 connections[i].close();
-                Assert.assertEquals(count - i - 1, dataSource.getActiveCount());
+                assertEquals(count - i - 1, dataSource.getActiveCount());
             }
-            Assert.assertEquals(4, driver.getConnections().size());
-            Assert.assertEquals("activeCount not zero", 0, dataSource.getActiveCount());
+            assertEquals(4, driver.getConnections().size());
+            assertEquals(0, dataSource.getActiveCount(), "activeCount not zero");
 
             dataSource.shrink();
-            Assert.assertEquals("activeCount not zero", 0, dataSource.getActiveCount());
-            Assert.assertEquals("minIdle not equal physical", dataSource.getMinIdle(), driver.getConnections().size());
+            assertEquals(0, dataSource.getActiveCount(), "activeCount not zero");
+            assertEquals(dataSource.getMinIdle(), driver.getConnections().size(), "minIdle not equal physical");
         }
 
     }

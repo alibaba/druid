@@ -7,6 +7,8 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlCreateTableTest134 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "create table xuhan3(\n" +
@@ -20,7 +22,6 @@ public class MySqlCreateTableTest134 extends MysqlTest {
         MySqlCreateTableStatement stmt = (MySqlCreateTableStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
-
 
         assertEquals("CREATE TABLE xuhan3 (\n" +
                 "\tid int NOT NULL PRIMARY KEY AUTO_INCREMENT,\n" +
@@ -37,8 +38,5 @@ public class MySqlCreateTableTest134 extends MysqlTest {
                 "\tSimpleDate_dayofweek tinyint(4) generated always as (dayofweek(SimpleDate)) virtual,\n" +
                 "\tkey SimpleDate_dayofweek (SimpleDate_dayofweek)\n" +
                 ");", stmt.toLowerCaseString());
-
     }
-
-
 }

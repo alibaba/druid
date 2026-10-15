@@ -1,19 +1,21 @@
 package com.alibaba.druid.bvt.pool;
 
-import java.sql.SQLException;
-import java.util.Properties;
-
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.ExceptionSorter;
 import com.alibaba.druid.pool.vendor.MySqlValidConnectionChecker;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class DruidDataSourceTest4 extends TestCase {
+import java.sql.SQLException;
+import java.util.Properties;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class DruidDataSourceTest4 {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
@@ -21,41 +23,48 @@ public class DruidDataSourceTest4 extends TestCase {
         dataSource.setInitialSize(1);
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
     }
 
+    @Test
     public void test_getTransactionThresholdMillis() {
-        Assert.assertEquals(0, dataSource.getTransactionThresholdMillis());
+        assertEquals(0, dataSource.getTransactionThresholdMillis());
 
         dataSource.setTransactionThresholdMillis(100);
 
-        Assert.assertEquals(100, dataSource.getTransactionThresholdMillis());
+        assertEquals(100, dataSource.getTransactionThresholdMillis());
     }
 
+    @Test
     public void test_getTransactionHistogramRanges() {
-        Assert.assertNotNull(dataSource.getTransactionHistogramRanges());
+        assertNotNull(dataSource.getTransactionHistogramRanges());
     }
 
+    @Test
     public void test_getTransactionHistogramRanges_1() {
-        Assert.assertEquals(6, dataSource.getTransactionHistogramRanges().length);
+        assertEquals(6, dataSource.getTransactionHistogramRanges().length);
     }
 
+    @Test
     public void test_setValidConnectionCheckerClassName() throws Exception {
-        Assert.assertNull(dataSource.getValidConnectionChecker());
+        assertNull(dataSource.getValidConnectionChecker());
         dataSource.setValidConnectionCheckerClassName(MySqlValidConnectionChecker.class.getName());
-        Assert.assertNotNull(dataSource.getValidConnectionChecker());
+        assertNotNull(dataSource.getValidConnectionChecker());
     }
 
+    @Test
     public void test_setMinIdle() throws Exception {
-        Assert.assertEquals(0, dataSource.getMinIdle());
+        assertEquals(0, dataSource.getMinIdle());
         dataSource.init();
         dataSource.setMinIdle(1);
-        Assert.assertEquals(1, dataSource.getMinIdle());
+        assertEquals(1, dataSource.getMinIdle());
     }
 
+    @Test
     public void test_setMinIdle_error() throws Exception {
-        Assert.assertEquals(0, dataSource.getMinIdle());
+        assertEquals(0, dataSource.getMinIdle());
         dataSource.init();
         Exception error = null;
         try {
@@ -63,14 +72,16 @@ public class DruidDataSourceTest4 extends TestCase {
         } catch (Exception e) {
             error = e;
         }
-        Assert.assertNotNull(error);
-        Assert.assertEquals(0, dataSource.getMinIdle());
+        assertNotNull(error);
+        assertEquals(0, dataSource.getMinIdle());
     }
 
+    @Test
     public void test_setExceptionSorter_error() throws Exception {
         dataSource.setExceptionSorter("xx");
     }
 
+    @Test
     public void test_setExceptionSorter_error2() throws Exception {
         Exception error = null;
         try {
@@ -78,9 +89,10 @@ public class DruidDataSourceTest4 extends TestCase {
         } catch (Exception e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
     }
 
+    @Test
     public void test_getParentLogger() throws Exception {
         Exception error = null;
         try {
@@ -88,7 +100,7 @@ public class DruidDataSourceTest4 extends TestCase {
         } catch (Exception e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
     }
 
     private class MyExceptionSorter implements ExceptionSorter {

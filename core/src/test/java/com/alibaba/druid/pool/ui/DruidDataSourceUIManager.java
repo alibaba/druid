@@ -15,6 +15,12 @@
  */
 package com.alibaba.druid.pool.ui;
 
+import com.alibaba.druid.TestUtil;
+import com.alibaba.druid.pool.DruidDataSource;
+
+import javax.management.ObjectName;
+import javax.swing.*;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.EventQueue;
@@ -32,18 +38,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import javax.management.ObjectName;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.SpringLayout;
-
-import com.alibaba.druid.TestUtil;
-import com.alibaba.druid.pool.DruidDataSource;
 
 public class DruidDataSourceUIManager extends JFrame {
     private static final long serialVersionUID = 1L;
@@ -649,6 +643,5 @@ public class DruidDataSourceUIManager extends JFrame {
                 manager.setVisible(true);
             }
         });
-
     }
 }

@@ -1,17 +1,18 @@
 package com.alibaba.druid.bvt.sql.eval;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
-public class EvalMethodAsinTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class EvalMethodAsinTest {
+    @Test
     public void test_reverse() throws Exception {
-        Assert.assertEquals(Math.asin(0.2), SQLEvalVisitorUtils.evalExpr(JdbcConstants.MYSQL, "asin(0.2)"));
+        assertEquals(Math.asin(0.2), SQLEvalVisitorUtils.evalExpr(JdbcConstants.MYSQL, "asin(0.2)"));
     }
 
+    @Test
     public void test_abs_error() throws Exception {
         Exception error = null;
         try {
@@ -19,9 +20,10 @@ public class EvalMethodAsinTest extends TestCase {
         } catch (Exception e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
     }
 
+    @Test
     public void test_abs_error_1() throws Exception {
         Exception error = null;
         try {
@@ -29,6 +31,6 @@ public class EvalMethodAsinTest extends TestCase {
         } catch (Exception e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
     }
 }

@@ -64,5 +64,4 @@ public class DirectSQLExecutor extends SQLExecutor {
     public Connection getConnection() throws SQLException {
         return DriverManager.getConnection(jdbcUrl, user, password);
     }
-
 }

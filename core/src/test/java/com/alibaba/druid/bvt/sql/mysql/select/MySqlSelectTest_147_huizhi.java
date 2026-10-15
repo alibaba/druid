@@ -12,6 +12,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_147_huizhi extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "INSERT INTO hz_dev_hb.tb_tmp_cda_opera_281c (target, appeartimes, source_id) SELECT\n" +
@@ -43,12 +45,11 @@ public class MySqlSelectTest_147_huizhi extends MysqlTest {
                         "WHERE 1 = 1\n" +
                         "\tAND VARCHAR20 IS NOT NULL\n" +
                         "\tAND MISSIONID = ?\n" +
-                        "GROUP BY VARCHAR20"
-                , ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, VisitorFeature.OutputParameterizedZeroReplaceNotUseOriginalSql));
+                        "GROUP BY VARCHAR20",
+                ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, VisitorFeature.OutputParameterizedZeroReplaceNotUseOriginalSql));
 
         SQLSelectQueryBlock queryBlock = stmt.getQuery().getQueryBlock();
         assertEquals(3, queryBlock.getSelectList().size());
         assertEquals(SQLCharExpr.class, queryBlock.getSelectList().get(2).getExpr().getClass());
     }
-
 }

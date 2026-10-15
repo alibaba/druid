@@ -15,7 +15,7 @@ public class InitConfigurer{
     private UserDao userDao;
 
     @PostConstruct
-    public  void  init(){
+    public void init() {
         for (int i = 1; i <= 100; i++) {
             userDao.save(new User("TEST-NAME-" + i));
         }

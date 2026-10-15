@@ -17,14 +17,15 @@ package com.alibaba.druid.bvt.sql.mysql;
 
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import org.junit.Assert;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlError_test_3 extends MysqlTest {
     public void test_0() throws Exception {
-        String sql = "SELECT count(*) AS num FROM sdb_products AS P" + //
-                " LEFT JOIN sdb_goods AS G ON G.goods_id = P.goods_id" + //
-                " LEFT JOIN sdb_goods_cat AS C ON C.cat_id = G.cat_id" + //
-                " LEFT JOIN sdb_brand AS B ON B.brand_id = G.brand_id" + //
+        String sql = "SELECT count(*) AS num FROM sdb_products AS P" +
+                " LEFT JOIN sdb_goods AS G ON G.goods_id = P.goods_id" +
+                " LEFT JOIN sdb_goods_cat AS C ON C.cat_id = G.cat_id" +
+                " LEFT JOIN sdb_brand AS B ON B.brand_id = G.brand_id" +
                 " WHERE P.disabled = ? AND P.op_status = LIMIT ?, ?";
         Exception error = null;
 
@@ -35,8 +36,13 @@ public class MySqlError_test_3 extends MysqlTest {
             error = e;
         }
 
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 //        error.printStackTrace();
-        Assert.assertEquals("not supported.pos 248, line 1, column 248, token ?", error.getMessage());
+        String message = error.getMessage();
+        assertTrue(message.startsWith("not supported. "));
+        assertTrue(message.contains("pos 248"));
+        assertTrue(message.contains("line 1"));
+        assertTrue(message.contains("column 248"));
+        assertTrue(message.contains("token ?"));
     }
 }

@@ -11,6 +11,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_152 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select (3,4) in ((1,2),(3,4)) from dual";
@@ -24,10 +26,8 @@ public class MySqlSelectTest_152 extends MysqlTest {
                 "FROM dual", stmt.toString());
 
         assertEquals("SELECT (?, ?) IN (?)\n" +
-                        "FROM dual"
-                , ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, VisitorFeature.OutputParameterizedZeroReplaceNotUseOriginalSql));
-
-
+                        "FROM dual",
+                ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, VisitorFeature.OutputParameterizedZeroReplaceNotUseOriginalSql));
     }
 
     public void test_1() throws Exception {
@@ -42,9 +42,7 @@ public class MySqlSelectTest_152 extends MysqlTest {
                 "FROM dual", stmt.toString());
 
         assertEquals("SELECT (?, ?) IN ((?, ?), (?, ?))\n" +
-                        "FROM dual"
-                , ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, VisitorFeature.OutputParameterizedQuesUnMergeInList));
-
-
+                        "FROM dual",
+                ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, VisitorFeature.OutputParameterizedQuesUnMergeInList));
     }
 }

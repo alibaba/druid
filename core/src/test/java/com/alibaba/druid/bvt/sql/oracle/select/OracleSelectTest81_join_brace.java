@@ -20,9 +20,10 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import org.junit.Assert;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleSelectTest81_join_brace extends OracleTest {
     public void test_0() throws Exception {
@@ -41,7 +42,7 @@ public class OracleSelectTest81_join_brace extends OracleTest {
                         "   AND c1.enabled_flag = 'Y'\n" +
                         "   AND c1.contract_header_id = :headerid\n" +
                         "   AND sites.contract_header_id = :headerid\n" +
-                        "   AND c1.partition_date = :partiondate;"; //
+                        "   AND c1.partition_date = :partiondate;";
 
         System.out.println(sql);
 
@@ -50,8 +51,7 @@ public class OracleSelectTest81_join_brace extends OracleTest {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
@@ -86,9 +86,8 @@ public class OracleSelectTest81_join_brace extends OracleTest {
         assertEquals(4, visitor.getRelationships().size());
         assertEquals(0, visitor.getOrderByColumns().size());
 
-
-        Assert.assertTrue(visitor.containsColumn("tcp_cpr.con_config", "contract_config_id"));
-        Assert.assertTrue(visitor.containsColumn("tcp_cpr.con_osg3a_headers", "parent_id"));
+        assertTrue(visitor.containsColumn("tcp_cpr.con_config", "contract_config_id"));
+        assertTrue(visitor.containsColumn("tcp_cpr.con_osg3a_headers", "parent_id"));
 //
     }
 }

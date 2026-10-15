@@ -19,14 +19,17 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class OdpsSelectTest31 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OdpsSelectTest31 {
+    @Test
     public void test_select() throws Exception {
         // 1095288847322
-        String sql = " select a, b, c from tdl_${bizdate} where 1=1;";//
+        String sql = " select a, b, c from tdl_${bizdate} where 1=1;";
         assertEquals("SELECT a, b, c\n" +
                 "FROM tdl_${bizdate}\n" +
                 "WHERE 1 = 1;", SQLUtils.formatOdps(sql));
@@ -56,5 +59,4 @@ public class OdpsSelectTest31 extends TestCase {
 
 //        assertTrue(visitor.getColumns().contains(new Column("abc", "name")));
     }
-
 }

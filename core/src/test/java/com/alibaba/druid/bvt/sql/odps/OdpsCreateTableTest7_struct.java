@@ -19,14 +19,17 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class OdpsCreateTableTest7_struct extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OdpsCreateTableTest7_struct {
+    @Test
     public void test_select() throws Exception {
         // 1095288847322
-        String sql = "CREATE TABLE DEST3(k STRUCT<col1:STRING, col2:STRING>, v BIGINT) STORED AS TEXTFILE;";//
+        String sql = "CREATE TABLE DEST3(k STRUCT<col1:STRING, col2:STRING>, v BIGINT) STORED AS TEXTFILE;";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ODPS);
         SQLStatement stmt = statementList.get(0);
@@ -61,5 +64,4 @@ public class OdpsCreateTableTest7_struct extends TestCase {
 
 //        assertTrue(visitor.getColumns().contains(new Column("abc", "name")));
     }
-
 }

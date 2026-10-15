@@ -21,6 +21,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_260 extends MysqlTest {
     public void test_0() throws Exception {
@@ -37,6 +38,4 @@ public class MySqlSelectTest_260 extends MysqlTest {
                 ") AS x (c)\n" +
                 "ORDER BY x1.c", stmt.toString());
     }
-
-
 }

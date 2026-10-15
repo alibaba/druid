@@ -15,22 +15,22 @@
  */
 package com.alibaba.druid.benckmark.wall;
 
-import java.util.Random;
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import org.junit.jupiter.api.Test;
 
-public class WallBenchmarkTest1 extends TestCase {
+import java.util.Random;
+
+public class WallBenchmarkTest1 {
     static Random r = new Random();
     WallProvider provider = new MySqlWallProvider();
 
     public static final int COUNT = 1000 * 1000;
 
+    @Test
     public void test_0() throws Exception {
-        String sql = "SELECT t1.department_id, t2.*\n" + //
-                "FROM hr_info t1, x2 t2\n" + //
+        String sql = "SELECT t1.department_id, t2.*\n" +
+                "FROM hr_info t1, x2 t2\n" +
                 "WHERE t2.department_id = t1.department_id";
         for (int i = 0; i < 10; ++i) {
             provider.clearCache();
@@ -63,6 +63,4 @@ public class WallBenchmarkTest1 extends TestCase {
         sb.append(" from sqlinject");
         return sb.toString();
     }
-
-
 }

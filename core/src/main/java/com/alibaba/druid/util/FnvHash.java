@@ -1179,5 +1179,7 @@ public final class FnvHash {
         long INDEX = fnv1a_64_lower("INDEX");
         long SETPROJECT = fnv1a_64_lower("SETPROJECT");
         long NAMED_STRUCT = fnv1a_64_lower("NAMED_STRUCT");
+        long SHUFFLE = fnv1a_64_lower("SHUFFLE");
+        long COLOCATE = fnv1a_64_lower("COLOCATE");
     }
 }

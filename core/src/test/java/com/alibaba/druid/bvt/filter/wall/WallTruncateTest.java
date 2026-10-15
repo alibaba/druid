@@ -15,40 +15,44 @@
  */
 package com.alibaba.druid.bvt.filter.wall;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class WallTruncateTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class WallTruncateTest {
     private String sql = "TRUNCATE TABLE T1";
 
-
+    @BeforeEach
     protected void setUp() throws Exception {
         //config.setTruncateAllow(true);
     }
 
+    @Test
     public void testMySql() throws Exception {
         WallConfig config = new WallConfig();
-        Assert.assertTrue(WallUtils.isValidateMySql(sql, config));
+        assertTrue(WallUtils.isValidateMySql(sql, config));
     }
 
+    @Test
     public void testORACLE() throws Exception {
         WallConfig config = new WallConfig();
-        Assert.assertTrue(WallUtils.isValidateOracle(sql, config));
+        assertTrue(WallUtils.isValidateOracle(sql, config));
     }
 
+    @Test
     public void testMySql_false() throws Exception {
         WallConfig config = new WallConfig();
         config.setTruncateAllow(false);
-        Assert.assertFalse(WallUtils.isValidateMySql(sql, config));
+        assertFalse(WallUtils.isValidateMySql(sql, config));
     }
 
+    @Test
     public void testORACLE_false() throws Exception {
         WallConfig config = new WallConfig();
         config.setTruncateAllow(false);
-        Assert.assertFalse(WallUtils.isValidateOracle(sql, config));
+        assertFalse(WallUtils.isValidateOracle(sql, config));
     }
 }

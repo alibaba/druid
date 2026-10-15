@@ -20,10 +20,12 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.Token;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
-public class MySqlAlterTableTest_drop_constraint extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlAlterTableTest_drop_constraint {
+    @Test
     public void test_alter_constraint() throws Exception {
         String sql = "alter table TUSER drop constraint UK_084c17821a8f47e8b31fbb126b6";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -38,14 +40,13 @@ public class MySqlAlterTableTest_drop_constraint extends TestCase {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals("ALTER TABLE TUSER" + //
+        assertEquals("ALTER TABLE TUSER" +
                 "\n\tDROP CONSTRAINT UK_084c17821a8f47e8b31fbb126b6", SQLUtils.toMySqlString(stmt));
 
-        Assert.assertEquals("alter table TUSER" + //
+        assertEquals("alter table TUSER" +
                 "\n\tdrop constraint UK_084c17821a8f47e8b31fbb126b6", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(0, visitor.getColumns().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(0, visitor.getColumns().size());
     }
-
 }

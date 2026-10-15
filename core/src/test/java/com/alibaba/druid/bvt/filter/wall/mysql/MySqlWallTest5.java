@@ -15,11 +15,10 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallUtils;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * SQLServerWallTest
@@ -28,9 +27,10 @@ import com.alibaba.druid.wall.WallUtils;
  * @version 1.0, 2012-3-18
  * @see
  */
-public class MySqlWallTest5 extends TestCase {
+public class MySqlWallTest5 {
+    @Test
     public void test_stuff() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateMySql(//
+        assertFalse(WallUtils.isValidateMySql(//
                 "select * from tbl_product WHERE delFlag=0 AND cateId = 40 OR EXTRACTVALUE(1,CONCAT(0x7c,database(),0x7c)) order by sort desc, productId desc limit 20,20"));
     }
 }

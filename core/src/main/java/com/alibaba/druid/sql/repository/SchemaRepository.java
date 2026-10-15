@@ -1177,10 +1177,12 @@ public class SchemaRepository {
 
         Schema schema = findSchema(schemaName, true);
         SchemaObject object = schema.findTable(x.nameHashCode64());
+        schema.getTables(x.getTableSource());
         if (object != null) {
             SQLCreateTableStatement stmt = (SQLCreateTableStatement) object.getStatement();
             if (stmt != null) {
                 stmt.apply(x);
+                x.getTableSource().setSchemaObject(object);
                 return true;
             }
         }

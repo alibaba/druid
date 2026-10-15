@@ -1,19 +1,21 @@
 package com.alibaba.druid.bvt.pool;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.pool.DruidDataSource;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * 这个场景测试defaultAutoCommit
  *
  * @author wenshao [szujobs@hotmail.com]
  */
-public class DruidDataSourceTest_wrapDriverFilters extends TestCase {
+public class DruidDataSourceTest_wrapDriverFilters {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         System.setProperty("druid.filters", "stat,log4j");
 
@@ -23,14 +25,16 @@ public class DruidDataSourceTest_wrapDriverFilters extends TestCase {
         dataSource.setFilters("stat");
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
         System.clearProperty("druid.filters");
     }
 
+    @Test
     public void test_autoCommit() throws Exception {
         dataSource.init();
 
-        Assert.assertEquals(2, dataSource.getProxyFilters().size());
+        assertEquals(2, dataSource.getProxyFilters().size());
     }
 }

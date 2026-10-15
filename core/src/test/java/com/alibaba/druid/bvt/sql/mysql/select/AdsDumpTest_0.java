@@ -4,10 +4,11 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDumpStatement;
-import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class AdsDumpTest_0 extends MysqlTest {
     public void test_0() throws Exception {
@@ -33,6 +34,4 @@ public class AdsDumpTest_0 extends MysqlTest {
                 "\tAND (amp.buyer_add_cart_info.show_price >= 13300))\n" +
                 "LIMIT 144800", stmt.toString());
     }
-
-
 }

@@ -2,18 +2,53 @@ package com.alibaba.druid.sql.ast;
 
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
+import java.util.Objects;
+
 public class SQLJSONValueExpr extends SQLExprImpl {
     private SQLExpr json;
     private SQLExpr path;
 
+    public SQLExpr getJson() {
+        return json;
+    }
+
+    public void setJson(SQLExpr json) {
+        if (json != null) {
+            json.setParent(this);
+        }
+        this.json = json;
+    }
+
+    public SQLExpr getPath() {
+        return path;
+    }
+
+    public void setPath(SQLExpr path) {
+        if (path != null) {
+            path.setParent(this);
+        }
+        this.path = path;
+    }
+
     @Override
     public boolean equals(Object o) {
-        return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        SQLJSONValueExpr that = (SQLJSONValueExpr) o;
+        return Objects.equals(json, that.json) && Objects.equals(path, that.path);
     }
 
     @Override
     public int hashCode() {
-        return 0;
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((json == null) ? 0 : json.hashCode());
+        result = prime * result + ((path == null) ? 0 : path.hashCode());
+        return result;
     }
 
     @Override

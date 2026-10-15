@@ -15,13 +15,12 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.support.json.JSONUtils;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * SQLServerWallTest
@@ -30,14 +29,15 @@ import com.alibaba.druid.wall.spi.MySqlWallProvider;
  * @version 1.0, 2012-3-18
  * @see
  */
-public class MySqlWallTest37 extends TestCase {
+public class MySqlWallTest37 {
+    @Test
     public void test_true() throws Exception {
         WallProvider provider = new MySqlWallProvider();
 
-        Assert.assertTrue(provider.checkValid(//
-                "call partnerAttribute(3061975048797781,105385028,5,@ret)")); //
+        assertTrue(provider.checkValid(//
+                "call partnerAttribute(3061975048797781,105385028,5,@ret)"));
 
-        Assert.assertEquals(0, provider.getTableStats().size());
+        assertEquals(0, provider.getTableStats().size());
         System.out.println(JSONUtils.toJSONString(provider.getStatsMap()));
     }
 }

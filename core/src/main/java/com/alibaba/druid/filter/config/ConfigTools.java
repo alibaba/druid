@@ -40,11 +40,26 @@ public class ConfigTools {
     public static final String DEFAULT_PUBLIC_KEY_STRING = "MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAKHGwq7q2RmwuRgKxBypQHw0mYu4BQZ3eMsTrdK8E6igRcxsobUC7uT0SoxIjl1WveWniCASejoQtn/BY6hVKWsCAwEAAQ==";
 
     public static void main(String[] args) throws Exception {
+        int status = run(args);
+        if (status != 0) {
+            System.exit(status);
+        }
+    }
+
+    /**
+     * @return 0 when the keys were generated, 1 when the required password argument is missing
+     */
+    public static int run(String[] args) throws Exception {
+        if (args.length == 0) {
+            System.err.println("Usage: ConfigTools <password>");
+            return 1;
+        }
         String password = args[0];
         String[] arr = genKeyPair(512);
         System.out.println("privateKey:" + arr[0]);
         System.out.println("publicKey:" + arr[1]);
         System.out.println("password:" + encrypt(arr[0], password));
+        return 0;
     }
 
     public static String decrypt(String cipherText) throws Exception {

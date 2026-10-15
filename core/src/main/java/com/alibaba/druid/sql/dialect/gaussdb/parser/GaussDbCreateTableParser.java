@@ -54,6 +54,24 @@ public class GaussDbCreateTableParser extends PGCreateTableParser {
 
     protected void parseCreateTableRest(SQLCreateTableStatement stmt) {
         GaussDbCreateTableStatement gdStmt = (GaussDbCreateTableStatement) stmt;
+        if (lexer.identifierEquals(FnvHash.Constants.SERVER)) {
+            acceptIdentifier(FnvHash.Constants.SERVER);
+            gdStmt.setServer(exprParser.expr());
+            acceptIdentifier(FnvHash.Constants.OPTIONS);
+            accept(Token.LPAREN);
+            parseAssignItems(stmt.getTableOptions(), stmt, false);
+            accept(Token.RPAREN);
+            if (lexer.nextIfIdentifier("write")) {
+                accept(Token.ONLY);
+                gdStmt.setForeignTableMode(GaussDbCreateTableStatement.ForeignTableMode.WRITE_ONLY);
+            } else if (lexer.identifierEquals("read")) {
+                if (lexer.nextIf(Token.ONLY)) {
+                    gdStmt.setForeignTableMode(GaussDbCreateTableStatement.ForeignTableMode.READ_ONLY);
+                } else if (lexer.identifierEquals("write")) {
+                    gdStmt.setForeignTableMode(GaussDbCreateTableStatement.ForeignTableMode.READ_WRITE);
+                }
+            }
+        }
         if (lexer.token() == Token.WITH) {
             lexer.nextToken();
             accept(Token.LPAREN);
@@ -176,10 +194,12 @@ public class GaussDbCreateTableParser extends PGCreateTableParser {
         accept(Token.RPAREN);
         accept(Token.LPAREN);
         for (; ; ) {
-            listPartition.addPartition(this.getExprParser().parsePartition());
-            if (lexer.token() == Token.COMMA) {
-                lexer.nextToken();
-                continue;
+            if (lexer.token() == Token.PARTITION) {
+                listPartition.addPartition(this.getExprParser().parsePartition());
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                    continue;
+                }
             }
             break;
         }
@@ -201,6 +221,8 @@ public class GaussDbCreateTableParser extends PGCreateTableParser {
             createTable.config(SQLCreateTableStatement.Feature.Temporary);
         } else if (lexer.nextIf(Token.LOCAL)) {
             createTable.config(SQLCreateTableStatement.Feature.Local);
+        } else if (lexer.nextIf(Token.FOREIGN)) {
+            createTable.config(SQLCreateTableStatement.Feature.External);
         }
     }
 

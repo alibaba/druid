@@ -15,14 +15,12 @@
  */
 package com.alibaba.druid.sql;
 
-import java.util.List;
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
 
-public class OracleTest extends TestCase {
+import java.util.List;
+
+public class OracleTest {
     protected String output(List<SQLStatement> stmtList) {
         StringBuilder out = new StringBuilder();
         OracleOutputVisitor visitor = new OracleOutputVisitor(out);
@@ -42,6 +40,4 @@ public class OracleTest extends TestCase {
         }
         System.out.println(text);
     }
-
-
 }

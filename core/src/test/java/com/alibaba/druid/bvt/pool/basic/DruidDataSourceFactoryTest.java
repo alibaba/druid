@@ -15,25 +15,25 @@
  */
 package com.alibaba.druid.bvt.pool.basic;
 
-import java.util.Hashtable;
-import java.util.Properties;
+import com.alibaba.druid.pool.DruidDataSourceFactory;
+import org.junit.jupiter.api.Test;
 
 import javax.naming.RefAddr;
 import javax.naming.Reference;
 
-import junit.framework.TestCase;
+import java.util.Hashtable;
+import java.util.Properties;
 
-import org.junit.Assert;
+import static org.junit.jupiter.api.Assertions.*;
 
-import com.alibaba.druid.pool.DruidDataSourceFactory;
-
-public class DruidDataSourceFactoryTest extends TestCase {
+public class DruidDataSourceFactoryTest {
     @SuppressWarnings("serial")
+    @Test
     public void test_factory() throws Exception {
         DruidDataSourceFactory factory = new DruidDataSourceFactory();
 
-        Assert.assertNull(factory.getObjectInstance(null, null, null, null));
-        Assert.assertNull(factory.getObjectInstance(new Reference("javax.sql.Date"), null, null, null));
+        assertNull(factory.getObjectInstance(null, null, null, null));
+        assertNull(factory.getObjectInstance(new Reference("javax.sql.Date"), null, null, null));
 
         Reference ref = new Reference("javax.sql.DataSource");
         ref.add(new RefAddr("user") {
@@ -54,6 +54,7 @@ public class DruidDataSourceFactoryTest extends TestCase {
         factory.getObjectInstance(ref, null, null, new Hashtable<Object, Object>());
     }
 
+    @Test
     public void test_createDataSource() throws Exception {
         Properties properties = new Properties();
         properties.setProperty("defaultAutoCommit", "true");

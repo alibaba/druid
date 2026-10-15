@@ -19,21 +19,22 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
-public class MySqlAlterTableAlterColumnDropDefaultTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlAlterTableAlterColumnDropDefaultTest {
+    @Test
     public void test_alter_first() throws Exception {
         String sql = "alter table tabelname alter column operateVersion drop default";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
 
-        Assert.assertEquals("ALTER TABLE tabelname" + //
+        assertEquals("ALTER TABLE tabelname" +
                 "\n\tALTER COLUMN operateVersion DROP DEFAULT", SQLUtils.toMySqlString(stmt));
 
-        Assert.assertEquals("alter table tabelname" + //
+        assertEquals("alter table tabelname" +
                 "\n\talter column operateVersion drop default", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
-
 }

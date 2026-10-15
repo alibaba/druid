@@ -2,20 +2,17 @@ package com.alibaba.druid.test;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
-import com.alibaba.druid.util.JdbcUtils;
-import junit.framework.TestCase;
-import org.junit.Assert;
-
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Created by wenshao on 10/12/2016.
  */
-public class RaspberryPiMySqlTest extends TestCase {
+public class RaspberryPiMySqlTest {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mysql://raspberrypi_mysql:3306/druid_test_db?allowMultiQueries=true");
@@ -28,10 +25,12 @@ public class RaspberryPiMySqlTest extends TestCase {
         dataSource.setInitGlobalVariants(true);
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
     }
 
+    @Test
     public void test_mysql() throws Exception {
         DruidPooledConnection connection = dataSource.getConnection();
 

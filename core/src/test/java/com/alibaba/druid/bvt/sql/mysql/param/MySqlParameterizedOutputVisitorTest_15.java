@@ -4,6 +4,8 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
  * Created by wenshao on 16/8/23.
  */
@@ -38,6 +40,5 @@ public class MySqlParameterizedOutputVisitorTest_15 extends com.alibaba.druid.bv
                 "\t, ?, ?, ?, ?, ?\n" +
                 "\t, ?, ?, NULL, NULL, NULL\n" +
                 "\t, ?, ?)");
-
     }
 }

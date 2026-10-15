@@ -15,19 +15,19 @@
  */
 package com.alibaba.druid.benckmark.wall;
 
-import junit.framework.TestCase;
-
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.OracleWallProvider;
+import org.junit.jupiter.api.Test;
 
-public class WallBenchmarkTest extends TestCase {
+public class WallBenchmarkTest {
     WallProvider provider = new OracleWallProvider();
 
     public static final int COUNT = 1000 * 1000;
 
+    @Test
     public void test_0() throws Exception {
-        String sql = "SELECT t1.department_id, t2.*\n" + //
-                "FROM hr_info t1, TABLE(t1.people) t2\n" + //
+        String sql = "SELECT t1.department_id, t2.*\n" +
+                "FROM hr_info t1, TABLE(t1.people) t2\n" +
                 "WHERE t2.department_id = t1.department_id;";
         for (int i = 0; i < 10; ++i) {
             provider.clearCache();

@@ -20,6 +20,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_242 extends MysqlTest {
     public void test_0() throws Exception {
@@ -28,7 +29,6 @@ public class MySqlSelectTest_242 extends MysqlTest {
                 "WHERE connect.siteId = 2844001\n" +
                 "  AND connect.cnId = ip.cnId;";
 
-
         SQLSelectStatement stmt = (SQLSelectStatement) SQLUtils.parseSingleMysqlStatement(sql);
 
         assertEquals("SELECT ip.*\n" +
@@ -36,10 +36,7 @@ public class MySqlSelectTest_242 extends MysqlTest {
                 "WHERE connect.siteId = 2844001\n" +
                 "\tAND connect.cnId = ip.cnId;", stmt.toString());
 
-
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
     }
-
-
 }

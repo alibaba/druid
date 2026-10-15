@@ -1,13 +1,13 @@
 package com.alibaba.druid.bvt.sql;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.ast.expr.SQLAnyExpr;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleExprParser;
+import org.junit.jupiter.api.Test;
 
-public class EqualTest_any extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class EqualTest_any {
+    @Test
     public void test_exits() throws Exception {
         String sql = "any(select id from t)";
         String sql_c = "any(select id from t1)";
@@ -24,13 +24,13 @@ public class EqualTest_any extends TestCase {
             OracleExprParser parser = new OracleExprParser(sql_c);
             exprC = (SQLAnyExpr) parser.expr();
         }
-        Assert.assertEquals(exprA, exprB);
-        Assert.assertNotEquals(exprA, exprC);
-        Assert.assertTrue(exprA.equals(exprA));
-        Assert.assertFalse(exprA.equals(new Object()));
-        Assert.assertEquals(exprA.hashCode(), exprB.hashCode());
+        assertEquals(exprA, exprB);
+        assertNotEquals(exprA, exprC);
+        assertTrue(exprA.equals(exprA));
+        assertFalse(exprA.equals(new Object()));
+        assertEquals(exprA.hashCode(), exprB.hashCode());
 
-        Assert.assertEquals(new SQLAnyExpr(), new SQLAnyExpr());
-        Assert.assertEquals(new SQLAnyExpr().hashCode(), new SQLAnyExpr().hashCode());
+        assertEquals(new SQLAnyExpr(), new SQLAnyExpr());
+        assertEquals(new SQLAnyExpr().hashCode(), new SQLAnyExpr().hashCode());
     }
 }

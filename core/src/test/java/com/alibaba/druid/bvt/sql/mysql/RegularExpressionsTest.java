@@ -15,17 +15,18 @@
  */
 package com.alibaba.druid.bvt.sql.mysql;
 
-import java.util.List;
-
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
+import org.junit.jupiter.api.Test;
 
-public class RegularExpressionsTest extends TestCase {
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class RegularExpressionsTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT 'Monty!' REGEXP '.*'";
 
@@ -34,9 +35,10 @@ public class RegularExpressionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT 'Monty!' REGEXP '.*';", text);
+        assertEquals("SELECT 'Monty!' REGEXP '.*';", text);
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "SELECT 'new*\n*line' REGEXP 'new\\\\*.\\\\*line'";
 
@@ -47,9 +49,10 @@ public class RegularExpressionsTest extends TestCase {
 
         String e = "SELECT 'new*\n*line' REGEXP 'new\\*.\\*line';";
 
-        Assert.assertEquals("SELECT 'new*\n*line' REGEXP 'new\\\\*.\\\\*line';", text);
+        assertEquals("SELECT 'new*\n*line' REGEXP 'new\\\\*.\\\\*line';", text);
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "SELECT 'a' REGEXP 'A', 'a' REGEXP BINARY 'A'";
 
@@ -58,9 +61,10 @@ public class RegularExpressionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT 'a' REGEXP 'A', 'a' REGEXP BINARY 'A';", text);
+        assertEquals("SELECT 'a' REGEXP 'A', 'a' REGEXP BINARY 'A';", text);
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = "SELECT 'a' REGEXP '^[a-d]'";
 
@@ -69,9 +73,10 @@ public class RegularExpressionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT 'a' REGEXP '^[a-d]';", text);
+        assertEquals("SELECT 'a' REGEXP '^[a-d]';", text);
     }
 
+    @Test
     public void test_4() throws Exception {
         String sql = "SELECT 'fo\nfo' REGEXP '^fo$'";
 
@@ -80,9 +85,10 @@ public class RegularExpressionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT 'fo\nfo' REGEXP '^fo$';", text);
+        assertEquals("SELECT 'fo\nfo' REGEXP '^fo$';", text);
     }
 
+    @Test
     public void test_5() throws Exception {
         String sql = "SELECT 'fofo' REGEXP '^fo'";
 
@@ -91,9 +97,10 @@ public class RegularExpressionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT 'fofo' REGEXP '^fo';", text);
+        assertEquals("SELECT 'fofo' REGEXP '^fo';", text);
     }
 
+    @Test
     public void test_6() throws Exception {
         String sql = "SELECT '~' REGEXP '[[.tilde.]]'";
 
@@ -102,7 +109,7 @@ public class RegularExpressionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT '~' REGEXP '[[.tilde.]]';", text);
+        assertEquals("SELECT '~' REGEXP '[[.tilde.]]';", text);
     }
 
     private String output(List<SQLStatement> stmtList) {

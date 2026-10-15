@@ -7,6 +7,8 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlCreateTableTest122_ads extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "CREATE TABLE cache_table_1 OPTIONS(cache=true) AS /*+ engine=MPP */ SELECT * FROM test_realtime1 LIMIT 200;";
@@ -17,7 +19,6 @@ public class MySqlCreateTableTest122_ads extends MysqlTest {
 
         assertEquals(1, statementList.size());
 
-
         assertEquals("CREATE TABLE cache_table_1\n" +
                 "OPTIONS (cache = true)\n" +
                 "AS\n" +
@@ -25,8 +26,5 @@ public class MySqlCreateTableTest122_ads extends MysqlTest {
                 "SELECT *\n" +
                 "FROM test_realtime1\n" +
                 "LIMIT 200;", stmt.toString());
-
     }
-
-
 }

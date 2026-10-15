@@ -88,3 +88,45 @@ CREATE TEMPORARY TABLE t1 (
 	col1 INT,
 	col2 INT
 )
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE dim_product (
+    sku_id integer ENCODE az64,
+    sku_code varchar(255) DISTKEY,
+    sku_name varchar(255),
+    spu_category_id_first integer ENCODE az64
+)
+SORTKEY (spu_category_id_first)
+--------------------
+CREATE TABLE dim_product (
+	sku_id integer ENCODE az64,
+	sku_code varchar(255) DISTKEY,
+	sku_name varchar(255),
+	spu_category_id_first integer ENCODE az64
+)
+SORTKEY(spu_category_id_first)
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE multi_sortkey_test (
+    col1 INT,
+    col2 VARCHAR(100),
+    col3 DATE
+)
+SORTKEY (col1, col2)
+--------------------
+CREATE TABLE multi_sortkey_test (
+	col1 INT,
+	col2 VARCHAR(100),
+	col3 DATE
+)
+SORTKEY(col1, col2)
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE sortkey_auto_test (
+    col1 INT,
+    col2 VARCHAR(100)
+)
+SORTKEY AUTO
+--------------------
+CREATE TABLE sortkey_auto_test (
+	col1 INT,
+	col2 VARCHAR(100)
+)
+SORTKEY AUTO

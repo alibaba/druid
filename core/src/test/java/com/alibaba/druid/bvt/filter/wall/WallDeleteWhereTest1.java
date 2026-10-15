@@ -15,40 +15,43 @@
  */
 package com.alibaba.druid.bvt.filter.wall;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * 这个场景，检测可疑的Having条件
  *
  * @author wenshao
  */
-public class WallDeleteWhereTest1 extends TestCase {
+public class WallDeleteWhereTest1 {
     private String sql = "DELETE FROM T";
 
+    @Test
     public void testMySql() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateMySql(sql));
+        assertTrue(WallUtils.isValidateMySql(sql));
     }
 
+    @Test
     public void testORACLE() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateOracle(sql));
+        assertTrue(WallUtils.isValidateOracle(sql));
     }
 
+    @Test
     public void testMySql_false() throws Exception {
         WallConfig config = new WallConfig();
         config.setDeleteWhereNoneCheck(true);
 
-        Assert.assertFalse(WallUtils.isValidateMySql(sql, config));
+        assertFalse(WallUtils.isValidateMySql(sql, config));
     }
 
+    @Test
     public void testORACLE_false() throws Exception {
         WallConfig config = new WallConfig();
         config.setDeleteWhereNoneCheck(true);
 
-        Assert.assertFalse(WallUtils.isValidateOracle(sql, config));
+        assertFalse(WallUtils.isValidateOracle(sql, config));
     }
 }

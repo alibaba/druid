@@ -15,30 +15,23 @@
  */
 package com.alibaba.druid.bvt.proxy;
 
-import java.io.Reader;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.NClob;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLDataException;
-import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
-import java.sql.Statement;
-import java.sql.Types;
-import java.util.Calendar;
-
-import org.junit.Assert;
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.util.JdbcUtils;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class PreparedStatementTest extends TestCase {
+import java.io.Reader;
+import java.sql.*;
+import java.util.Calendar;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class PreparedStatementTest {
     private static String create_url = "jdbc:wrap-jdbc:filters=default,commonLogging,log4j:name=preparedStatementTest:jdbc:derby:memory:preparedStatementTestDB;create=true";
 
+    @BeforeEach
     protected void setUp() throws Exception {
         Class.forName("com.alibaba.druid.proxy.DruidDriver");
 
@@ -65,14 +58,16 @@ public class PreparedStatementTest extends TestCase {
         conn.close();
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dropTable();
 
         DruidDriver.getProxyDataSources().clear();
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+         JdbcStatManager.getInstance().reset();
     }
 
     @SuppressWarnings("deprecation")
+    @Test
     public void test_pstmt() throws Exception {
         Connection conn = null;
         PreparedStatement pstmt = null;

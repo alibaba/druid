@@ -15,13 +15,13 @@
  */
 package com.alibaba.druid.bvt.filter.wall.oracle;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallUtils;
+import org.junit.jupiter.api.Test;
 
-public class OracleWallTest6 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OracleWallTest6 {
+    @Test
     public void test_true() throws Exception {
         String sql = //
                 "select *"
@@ -60,6 +60,6 @@ public class OracleWallTest6 extends TestCase {
                         + "                   and (ur.nrole_id = '1' or ur.nrole_id = '20'))"
                         + "         order by DCREATE desc)"
                         + " where rownum <= 30";
-        Assert.assertTrue(WallUtils.isValidateOracle(sql));
+        assertTrue(WallUtils.isValidateOracle(sql));
     }
 }

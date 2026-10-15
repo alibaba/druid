@@ -15,11 +15,10 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallUtils;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * SQLServerWallTest
@@ -28,9 +27,10 @@ import com.alibaba.druid.wall.WallUtils;
  * @version 1.0, 2012-3-18
  * @see
  */
-public class MySqlWallTest6 extends TestCase {
+public class MySqlWallTest6 {
+    @Test
     public void test_stuff() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateMySql(//
+        assertFalse(WallUtils.isValidateMySql(//
                 "SELECT a.* FROM vote_info a where a.id<10 or (id <5 or 1=1) limit 1,10"));
     }
 }

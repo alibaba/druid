@@ -15,25 +15,30 @@
  */
 package com.alibaba.druid.bvt.pool;
 
-import java.sql.Connection;
-import java.util.Properties;
-
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.util.DruidPasswordCallback;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class PasswordCallbackTest extends TestCase {
+import java.sql.Connection;
+import java.util.Properties;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class PasswordCallbackTest {
+    @BeforeEach
     protected void setUp() throws Exception {
         DruidDataSourceStatManager.clear();
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        DruidDataSourceStatManager.clear();
     }
 
+    @Test
     public void test_0() throws Exception {
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:");
@@ -44,8 +49,8 @@ public class PasswordCallbackTest extends TestCase {
         Connection conn = dataSource.getConnection();
         conn.close();
 
-        Assert.assertEquals(dataSource.getUrl(), passwordCallback.getUrl());
-        Assert.assertEquals(dataSource.getConnectProperties(), passwordCallback.getProperties());
+        assertEquals(dataSource.getUrl(), passwordCallback.getUrl());
+        assertEquals(dataSource.getConnectProperties(), passwordCallback.getProperties());
 
         dataSource.close();
     }

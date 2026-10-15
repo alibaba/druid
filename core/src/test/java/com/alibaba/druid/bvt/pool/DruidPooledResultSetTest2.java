@@ -15,29 +15,34 @@
  */
 package com.alibaba.druid.bvt.pool;
 
+import com.alibaba.druid.mock.MockResultSet;
+import com.alibaba.druid.pool.DruidDataSource;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.*;
 
-import com.alibaba.druid.mock.MockResultSet;
-import com.alibaba.druid.pool.DruidDataSource;
-
-public class DruidPooledResultSetTest2 extends TestCase {
+public class DruidPooledResultSetTest2 {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setTestOnBorrow(false);
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
     }
 
+    @Test
     public void testWrap() throws Exception {
         String sql = "select ?";
         Connection conn = dataSource.getConnection();
@@ -48,11 +53,10 @@ public class DruidPooledResultSetTest2 extends TestCase {
 
         ResultSet raw = rs.unwrap(ResultSet.class);
 
-        Assert.assertTrue(raw instanceof MockResultSet);
+        assertTrue(raw instanceof MockResultSet);
 
         rs.close();
 
         conn.close();
     }
-
 }

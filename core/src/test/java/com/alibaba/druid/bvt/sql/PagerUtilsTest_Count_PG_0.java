@@ -1,34 +1,37 @@
 package com.alibaba.druid.bvt.sql;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.PagerUtils;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
-public class PagerUtilsTest_Count_PG_0 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class PagerUtilsTest_Count_PG_0 {
+    @Test
     public void test_pg_0() throws Exception {
         String sql = "select * from t";
         String result = PagerUtils.count(sql, JdbcConstants.POSTGRESQL);
-        Assert.assertEquals("SELECT COUNT(*)\n" + //
+        assertEquals("SELECT COUNT(*)\n" +
                 "FROM t", result);
     }
 
+    @Test
     public void test_pg_1() throws Exception {
         String sql = "select id, name from t";
         String result = PagerUtils.count(sql, JdbcConstants.POSTGRESQL);
-        Assert.assertEquals("SELECT COUNT(*)\n" + //
+        assertEquals("SELECT COUNT(*)\n" +
                 "FROM t", result);
     }
 
+    @Test
     public void test_pg_2() throws Exception {
         String sql = "select id, name from t order by id";
         String result = PagerUtils.count(sql, JdbcConstants.POSTGRESQL);
-        Assert.assertEquals("SELECT COUNT(*)\n" + //
+        assertEquals("SELECT COUNT(*)\n" +
                 "FROM t", result);
     }
 
+    @Test
     public void test_pg_3() throws Exception {
         String sql = "select * from test where shape.STIntersects(geometry::STGeomFromText('POLYGON ((86610.054 86610.054,112372.95799999963 88785.5940000005,112372.91199999955 88675.996999999508,86610.054 86610.054))',0))=1;";
         String countSql = PagerUtils.count(sql, JdbcConstants.POSTGRESQL);
@@ -43,10 +46,11 @@ public class PagerUtilsTest_Count_PG_0 extends TestCase {
                 "LIMIT 10 OFFSET 100", limitSql);
     }
 
+    @Test
     public void test_pg_group_0() throws Exception {
         String sql = "select type, count(*) from t group by type";
         String result = PagerUtils.count(sql, JdbcConstants.POSTGRESQL);
-        Assert.assertEquals("SELECT COUNT(*)\n" +
+        assertEquals("SELECT COUNT(*)\n" +
                 "FROM (\n" +
                 "\tSELECT type, count(*)\n" +
                 "\tFROM t\n" +
@@ -54,10 +58,11 @@ public class PagerUtilsTest_Count_PG_0 extends TestCase {
                 ") ALIAS_COUNT", result);
     }
 
+    @Test
     public void test_pg_union_0() throws Exception {
         String sql = "select id, name from t1 union select id, name from t2 order by id";
         String result = PagerUtils.count(sql, JdbcConstants.POSTGRESQL);
-        Assert.assertEquals("SELECT COUNT(*)\n" +
+        assertEquals("SELECT COUNT(*)\n" +
                 "FROM (\n" +
                 "\tSELECT id, name\n" +
                 "\tFROM t1\n" +
@@ -66,5 +71,4 @@ public class PagerUtilsTest_Count_PG_0 extends TestCase {
                 "\tFROM t2\n" +
                 ") ALIAS_COUNT", result);
     }
-
 }

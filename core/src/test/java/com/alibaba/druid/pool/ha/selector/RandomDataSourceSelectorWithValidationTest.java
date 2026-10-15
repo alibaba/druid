@@ -2,20 +2,20 @@ package com.alibaba.druid.pool.ha.selector;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.ha.HighAvailableDataSource;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.sql.DataSource;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class RandomDataSourceSelectorWithValidationTest {
     private HighAvailableDataSource highAvailableDataSource;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         highAvailableDataSource = new HighAvailableDataSource();
         String file = "/com/alibaba/druid/pool/ha/ha-datasource.properties";
@@ -24,7 +24,7 @@ public class RandomDataSourceSelectorWithValidationTest {
         highAvailableDataSource.init();
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         highAvailableDataSource.destroy();
         highAvailableDataSource = null;

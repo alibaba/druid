@@ -70,7 +70,7 @@ public class CharTypes {
     }
 
     public static boolean isFirstIdentifierChar(char c) {
-        if (c <= firstIdentifierFlags.length) {
+        if (c < firstIdentifierFlags.length) {
             return firstIdentifierFlags[c];
         }
         return c != '　' && c != '，';
@@ -103,7 +103,7 @@ public class CharTypes {
     }
 
     public static boolean isIdentifierChar(char c) {
-        if (c <= identifierFlags.length) {
+        if (c < identifierFlags.length) {
             return identifierFlags[c];
         }
         return c != '　' && c != '，' && c != '）' && c != '（';
@@ -138,7 +138,7 @@ public class CharTypes {
      * @return false if {@link LayoutCharacters#EOI}
      */
     public static boolean isWhitespace(char c) {
-        return (c <= whitespaceFlags.length && whitespaceFlags[c]) //
+        return (c < whitespaceFlags.length && whitespaceFlags[c]) //
                 || c == '　'; // Chinese space
     }
 

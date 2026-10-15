@@ -22,6 +22,7 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_106_hints extends MysqlTest {
     public void test_0() throws Exception {
@@ -116,5 +117,4 @@ public class MySqlSelectTest_106_hints extends MysqlTest {
                 "\tAND a.pay_trades > 0\n" +
                 "\tAND (a.during = str_to_date('2018-01-10', '%Y-%m-%d'));", stmt.toString());
     }
-
 }

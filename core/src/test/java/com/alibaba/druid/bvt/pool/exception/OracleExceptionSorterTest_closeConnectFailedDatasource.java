@@ -1,25 +1,28 @@
 package com.alibaba.druid.bvt.pool.exception;
 
-import java.lang.Thread.State;
-import java.sql.SQLException;
-import java.util.concurrent.TimeUnit;
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-import org.springframework.test.util.ReflectionTestUtils;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidDataSource.CreateConnectionThread;
 import com.alibaba.druid.pool.vendor.OracleExceptionSorter;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.test.util.OracleMockDriverConnectFailed;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.test.util.ReflectionTestUtils;
 
-public class OracleExceptionSorterTest_closeConnectFailedDatasource extends TestCase {
+import java.lang.Thread.State;
+import java.sql.SQLException;
+import java.util.concurrent.TimeUnit;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OracleExceptionSorterTest_closeConnectFailedDatasource {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
-
+        JdbcStatManager.getInstance().reset();
         dataSource = new DruidDataSource();
 
         dataSource.setExceptionSorter(new OracleExceptionSorter());
@@ -30,15 +33,16 @@ public class OracleExceptionSorterTest_closeConnectFailedDatasource extends Test
         dataSource.setMaxOpenPreparedStatements(100);
         dataSource.setMaxActive(1);
         dataSource.setMaxWait(1000);
-        
+
         OracleMockDriverConnectFailed.CONNECT_BARIER.reset();
     }
 
-    @Override
+        @AfterEach
     protected void tearDown() throws Exception {
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        DruidDataSourceStatManager.clear();
     }
 
+    @Test
     public void test_connect() throws Exception {
         Thread connectFailedThread = new Thread() {
             public void run() {
@@ -53,13 +57,12 @@ public class OracleExceptionSorterTest_closeConnectFailedDatasource extends Test
 
         OracleMockDriverConnectFailed.CONNECT_BARIER.await(100, TimeUnit.MILLISECONDS);
         dataSource.close();
-        
+
         // waiting for createConnectionThread terminated.
         CreateConnectionThread thread = (CreateConnectionThread) ReflectionTestUtils.getField(dataSource, "createConnectionThread");
         for (int i = 0; i < 10 && State.TERMINATED != thread.getState(); i++) {
             Thread.sleep(1000);
         }
-        Assert.assertEquals(State.TERMINATED, thread.getState());
+        assertEquals(State.TERMINATED, thread.getState());
     }
-
 }

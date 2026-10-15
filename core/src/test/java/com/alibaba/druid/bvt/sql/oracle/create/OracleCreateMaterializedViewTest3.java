@@ -24,6 +24,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleCreateMaterializedViewTest3 extends OracleTest {
     public void test_types() throws Exception {
         String sql = //
@@ -89,7 +91,7 @@ public class OracleCreateMaterializedViewTest3 extends OracleTest {
                         "REFRESH FAST ON DEMAND\n" +
                         "AS\n" +
                         "SELECT *\n" +
-                        "FROM atom.NONAUTO_CLAIM_FOLDER_T@IDS_44;",//
+                        "FROM atom.NONAUTO_CLAIM_FOLDER_T@IDS_44;",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

@@ -19,11 +19,14 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class OdpsCreateTableTest6_array extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OdpsCreateTableTest6_array {
+    @Test
     public void test_select() throws Exception {
         // 1095288847322
         String sql = "CREATE TABLE src_thrift\n" +
@@ -38,7 +41,7 @@ public class OdpsCreateTableTest6_array extends TestCase {
                 "    --unionField1 PropValueUnion,\n" +
                 "    --unionField2 PropValueUnion,\n" +
                 "    -- unionField3 PropValueUnion\n" +
-                ");";//
+                ");";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ODPS);
         SQLStatement stmt = statementList.get(0);
@@ -80,5 +83,4 @@ public class OdpsCreateTableTest6_array extends TestCase {
 
 //        assertTrue(visitor.getColumns().contains(new Column("abc", "name")));
     }
-
 }

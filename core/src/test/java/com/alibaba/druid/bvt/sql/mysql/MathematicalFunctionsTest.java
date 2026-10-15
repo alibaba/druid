@@ -15,19 +15,19 @@
  */
 package com.alibaba.druid.bvt.sql.mysql;
 
-import java.util.List;
-
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
+import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
-public class MathematicalFunctionsTest extends TestCase {
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MathematicalFunctionsTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT ACOS(1);";
 
@@ -36,9 +36,10 @@ public class MathematicalFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT ACOS(1);", text);
+        assertEquals("SELECT ACOS(1);", text);
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "SELECT ABS(2);";
 
@@ -47,9 +48,10 @@ public class MathematicalFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT ABS(2);", text);
+        assertEquals("SELECT ABS(2);", text);
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "SELECT ABS(-32);";
 
@@ -58,9 +60,10 @@ public class MathematicalFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT ABS(-32);", text);
+        assertEquals("SELECT ABS(-32);", text);
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = "SELECT ACOS(1.0001);";
 
@@ -69,9 +72,10 @@ public class MathematicalFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT ACOS(1.0001);", text);
+        assertEquals("SELECT ACOS(1.0001);", text);
     }
 
+    @Test
     public void test_4() throws Exception {
         String sql = "SELECT ACOS(0);";
 
@@ -80,9 +84,10 @@ public class MathematicalFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT ACOS(0);", text);
+        assertEquals("SELECT ACOS(0);", text);
     }
 
+    @Test
     public void test_5() throws Exception {
         String sql = "SELECT ASIN(0.2);";
 
@@ -91,9 +96,10 @@ public class MathematicalFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT ASIN(0.2);", text);
+        assertEquals("SELECT ASIN(0.2);", text);
     }
 
+    @Test
     public void test_6() throws Exception {
         String sql = "SELECT ASIN('foo');";
 
@@ -102,9 +108,10 @@ public class MathematicalFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT ASIN('foo');", text);
+        assertEquals("SELECT ASIN('foo');", text);
     }
 
+    @Test
     public void test_7() throws Exception {
         String sql = "SELECT ATAN(2);";
 
@@ -113,9 +120,10 @@ public class MathematicalFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT ATAN(2);", text);
+        assertEquals("SELECT ATAN(2);", text);
     }
 
+    @Test
     public void test_8() throws Exception {
         String sql = "SELECT ATAN(-2);";
 
@@ -124,9 +132,10 @@ public class MathematicalFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT ATAN(-2);", text);
+        assertEquals("SELECT ATAN(-2);", text);
     }
 
+    @Test
     public void test_9() throws Exception {
         String sql = "SELECT ATAN(-2,2);";
 
@@ -135,9 +144,10 @@ public class MathematicalFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT ATAN(-2, 2);", text);
+        assertEquals("SELECT ATAN(-2, 2);", text);
     }
 
+    @Test
     public void test_10() throws Exception {
         String sql = "SELECT ATAN2(PI(),0);";
 
@@ -146,9 +156,10 @@ public class MathematicalFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT ATAN2(PI(), 0);", text);
+        assertEquals("SELECT ATAN2(PI(), 0);", text);
     }
 
+    @Test
     public void test_11() throws Exception {
         String sql = "SELECT CEILING(1.23);";
 
@@ -157,9 +168,10 @@ public class MathematicalFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT CEILING(1.23);", text);
+        assertEquals("SELECT CEILING(1.23);", text);
     }
 
+    @Test
     public void test_12() throws Exception {
         String sql = "SELECT CEILING(-1.23);";
 
@@ -168,9 +180,10 @@ public class MathematicalFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT CEILING(-1.23);", text);
+        assertEquals("SELECT CEILING(-1.23);", text);
     }
 
+    @Test
     public void test_13() throws Exception {
         String sql = "SELECT CONV('a',16,2);";
 
@@ -179,9 +192,10 @@ public class MathematicalFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT CONV('a', 16, 2);", text);
+        assertEquals("SELECT CONV('a', 16, 2);", text);
     }
 
+    @Test
     public void test_14() throws Exception {
         String sql = "SELECT CONV(10+'10'+'10'+0xa,10,10);";
 
@@ -190,9 +204,10 @@ public class MathematicalFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT CONV(10 + '10' + '10' + 0xa, 10, 10);", text);
+        assertEquals("SELECT CONV(10 + '10' + '10' + 0xa, 10, 10);", text);
     }
 
+    @Test
     public void test_15() throws Exception {
         String sql = "SELECT COS(PI())";
 
@@ -201,9 +216,10 @@ public class MathematicalFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT COS(PI())", text);
+        assertEquals("SELECT COS(PI())", text);
     }
 
+    @Test
     public void test_16() throws Exception {
         String sql = "SELECT CRC32('MySQL')";
 
@@ -212,9 +228,10 @@ public class MathematicalFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT CRC32('MySQL')", text);
+        assertEquals("SELECT CRC32('MySQL')", text);
     }
 
+    @Test
     public void test_17() throws Exception {
         String sql = "SELECT DEGREES(PI())";
 
@@ -223,9 +240,10 @@ public class MathematicalFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT DEGREES(PI())", text);
+        assertEquals("SELECT DEGREES(PI())", text);
     }
 
+    @Test
     public void test_18() throws Exception {
         String sql = "SELECT DEGREES(PI() / 2)";
 
@@ -234,9 +252,10 @@ public class MathematicalFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT DEGREES(PI() / 2)", text);
+        assertEquals("SELECT DEGREES(PI() / 2)", text);
     }
 
+    @Test
     public void test_19() throws Exception {
         String sql = "SELECT MOD(29,9)";
 
@@ -245,9 +264,10 @@ public class MathematicalFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT MOD(29, 9)", text);
+        assertEquals("SELECT MOD(29, 9)", text);
     }
 
+    @Test
     public void test_20() throws Exception {
         String sql = "SELECT 29 MOD 9";
 
@@ -256,9 +276,10 @@ public class MathematicalFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT 29 % 9", text);
+        assertEquals("SELECT 29 % 9", text);
     }
 
+    @Test
     public void test_21() throws Exception {
         String sql = "SELECT PI()+0.000000000000000000";
 
@@ -267,9 +288,10 @@ public class MathematicalFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT PI() + 0.000000000000000000", text);
+        assertEquals("SELECT PI() + 0.000000000000000000", text);
     }
 
+    @Test
     public void test_22() throws Exception {
         String sql = "SELECT POW(2,-2)";
 
@@ -278,9 +300,10 @@ public class MathematicalFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT POW(2, -2)", text);
+        assertEquals("SELECT POW(2, -2)", text);
     }
 
+    @Test
     public void test_23() throws Exception {
         String sql = "SELECT RADIANS(90)";
 
@@ -289,9 +312,10 @@ public class MathematicalFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT RADIANS(90)", text);
+        assertEquals("SELECT RADIANS(90)", text);
     }
 
+    @Test
     public void test_24() throws Exception {
         String sql = "SELECT i, RAND() FROM t";
 
@@ -300,9 +324,10 @@ public class MathematicalFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT i, RAND()\nFROM t", text);
+        assertEquals("SELECT i, RAND()\nFROM t", text);
     }
 
+    @Test
     public void test_25() throws Exception {
         String sql = "SELECT * FROM tbl_name ORDER BY RAND()";
 
@@ -311,9 +336,10 @@ public class MathematicalFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT *\nFROM tbl_name\nORDER BY RAND()", text);
+        assertEquals("SELECT *\nFROM tbl_name\nORDER BY RAND()", text);
     }
 
+    @Test
     public void test_26() throws Exception {
         String sql = "SELECT ROUND(2.5), ROUND(25E-1)";
 
@@ -322,7 +348,7 @@ public class MathematicalFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT ROUND(2.5), ROUND(25E-1)", text);
+        assertEquals("SELECT ROUND(2.5), ROUND(25E-1)", text);
     }
 
     private String output(List<SQLStatement> stmtList) {

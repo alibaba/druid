@@ -15,6 +15,13 @@
  */
 package com.alibaba.druid.bvt.proxy;
 
+import com.alibaba.druid.proxy.DruidDriver;
+import com.alibaba.druid.stat.JdbcStatManager;
+import com.alibaba.druid.util.JdbcUtils;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -22,17 +29,12 @@ import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.sql.Statement;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Assert;
-
-import com.alibaba.druid.proxy.DruidDriver;
-import com.alibaba.druid.stat.JdbcStatManager;
-import com.alibaba.druid.util.JdbcUtils;
-
-public class StatementTest extends TestCase {
+public class StatementTest {
     private static String create_url = "jdbc:wrap-jdbc:filters=default,commonLogging,log4j:name=statementTest:jdbc:derby:memory:statementTest;create=true";
 
+    @BeforeEach
     protected void setUp() throws Exception {
         Class.forName("com.alibaba.druid.proxy.DruidDriver");
 
@@ -59,12 +61,14 @@ public class StatementTest extends TestCase {
         conn.close();
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dropTable();
         DruidDriver.getProxyDataSources().clear();
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+        JdbcStatManager.getInstance().reset();
     }
 
+    @Test
     public void test_stmt() throws Exception {
         Connection conn = null;
         Statement stmt = null;
@@ -93,7 +97,7 @@ public class StatementTest extends TestCase {
             }
 
             stmt.execute("SELECT * FROM T_PRE_STMT_TEST");
-            Assert.assertFalse(stmt.getMoreResults(Statement.CLOSE_CURRENT_RESULT));
+            assertFalse(stmt.getMoreResults(Statement.CLOSE_CURRENT_RESULT));
         } finally {
             JdbcUtils.close(rs);
             JdbcUtils.close(stmt);

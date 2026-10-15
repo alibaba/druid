@@ -7,6 +7,8 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
  * @version 1.0
  * @ClassName MySqlCreateTableTest145_tail_hint
@@ -51,7 +53,6 @@ public class MySqlCreateTableTest145_tail_hint extends MysqlTest {
         MySqlCreateTableStatement stmt = (MySqlCreateTableStatement) statementList.get(0);
 
         assertEquals(1, statementList.size());
-
 
         assertEquals("CREATE TABLE `log_fake` (\n" +
                 "\t`id` varchar(37) NOT NULL COMMENT 'uuid',\n" +
@@ -112,7 +113,5 @@ public class MySqlCreateTableTest145_tail_hint extends MysqlTest {
                 " PARTITION p201811 VALUES LESS THAN (1543593600000) ENGINE = InnoDB,\n" +
                 " PARTITION p201812 VALUES LESS THAN (1546272000000) ENGINE = InnoDB,\n" +
                 " PARTITION pmax VALUES LESS THAN MAXVALUE ENGINE = InnoDB) */", stmt.toLowerCaseString());
-
     }
-
 }

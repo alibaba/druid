@@ -23,13 +23,15 @@ import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlCreateSequenceTest1 extends OracleTest {
     public void test_0() throws Exception {
         String sql = //
-                "CREATE SEQUENCE customers_seq" + //
-                        " START WITH     1000" + //
-                        " INCREMENT BY   1" + //
-                        " NOCACHE" + //
+                "CREATE SEQUENCE customers_seq" +
+                        " START WITH     1000" +
+                        " INCREMENT BY   1" +
+                        " NOCACHE" +
                         " NOCYCLE;";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, DbType.mysql);
@@ -62,7 +64,7 @@ public class MySqlCreateSequenceTest1 extends OracleTest {
 
     public void test_1() throws Exception {
         String sql = //
-                "CREATE SIMPLE SEQUENCE customers_seq" + //
+                "CREATE SIMPLE SEQUENCE customers_seq" +
                         " WITH CACHE;";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, DbType.mysql);

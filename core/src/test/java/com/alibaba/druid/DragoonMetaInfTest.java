@@ -15,6 +15,8 @@
  */
 package com.alibaba.druid;
 
+import org.junit.jupiter.api.Test;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -23,9 +25,8 @@ import java.net.URL;
 import java.util.Enumeration;
 import java.util.Properties;
 
-import junit.framework.TestCase;
-
-public class DragoonMetaInfTest extends TestCase {
+public class DragoonMetaInfTest {
+    @Test
     public void test_0() throws Exception {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         Enumeration<URL> e = classLoader.getResources("META-INF/dragoon-filter.properties");

@@ -15,6 +15,17 @@
  */
 package com.alibaba.druid.bvt.proxy;
 
+import com.alibaba.druid.mock.MockConnection;
+import com.alibaba.druid.mock.MockResultSet;
+import com.alibaba.druid.mock.MockResultSetMetaData;
+import com.alibaba.druid.mock.MockStatement;
+import com.alibaba.druid.proxy.DruidDriver;
+import com.alibaba.druid.stat.JdbcStatManager;
+import com.alibaba.druid.util.JdbcUtils;
+import com.alibaba.druid.util.Utils;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.Reader;
@@ -26,25 +37,16 @@ import java.sql.Statement;
 import java.sql.Types;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Assert;
-
-import com.alibaba.druid.mock.MockConnection;
-import com.alibaba.druid.mock.MockResultSet;
-import com.alibaba.druid.mock.MockResultSetMetaData;
-import com.alibaba.druid.mock.MockStatement;
-import com.alibaba.druid.proxy.DruidDriver;
-import com.alibaba.druid.stat.JdbcStatManager;
-import com.alibaba.druid.util.Utils;
-import com.alibaba.druid.util.JdbcUtils;
-
-public class JdbcUtilsTest extends TestCase {
+public class JdbcUtilsTest {
+    @AfterEach
     protected void tearDown() throws Exception {
         DruidDriver.getProxyDataSources().clear();
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+        JdbcStatManager.getInstance().reset();
     }
 
+    @Test
     public void test_print() throws Exception {
         final AtomicInteger nextCount = new AtomicInteger(2);
 
@@ -105,6 +107,7 @@ public class JdbcUtilsTest extends TestCase {
         JdbcUtils.printResultSet(rs);
     }
 
+    @Test
     public void test_close() throws Exception {
         JdbcUtils.close((Connection) null);
         JdbcUtils.close((Statement) null);
@@ -144,6 +147,7 @@ public class JdbcUtilsTest extends TestCase {
         new JdbcUtils();
     }
 
+    @Test
     public void test_getTypeName() {
         JdbcUtils.getTypeName(Types.ARRAY);
         JdbcUtils.getTypeName(Types.BIGINT);
@@ -182,6 +186,7 @@ public class JdbcUtilsTest extends TestCase {
         JdbcUtils.getTypeName(Types.OTHER);
     }
 
+    @Test
     public void test_read() throws Exception {
         {
             Exception error = null;
@@ -201,7 +206,7 @@ public class JdbcUtilsTest extends TestCase {
             } catch (RuntimeException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
         {
             Exception error = null;
@@ -221,7 +226,7 @@ public class JdbcUtilsTest extends TestCase {
             } catch (RuntimeException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
         {
@@ -237,7 +242,7 @@ public class JdbcUtilsTest extends TestCase {
                 }
 
             }, 1);
-            Assert.assertEquals("", text);
+            assertEquals("", text);
         }
         {
             String text = Utils.read(new Reader() {
@@ -255,7 +260,7 @@ public class JdbcUtilsTest extends TestCase {
                 }
 
             }, 2);
-            Assert.assertEquals("AA", text);
+            assertEquals("AA", text);
         }
         {
             Reader reader = new Reader() {
@@ -272,8 +277,7 @@ public class JdbcUtilsTest extends TestCase {
 
             };
             String text = Utils.read(reader, 2);
-            Assert.assertEquals("AA", text);
+            assertEquals("AA", text);
         }
     }
-
 }

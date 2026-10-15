@@ -15,11 +15,12 @@
  */
 package com.alibaba.druid.benckmark.proxy;
 
+import org.junit.jupiter.api.Test;
+
 import java.util.concurrent.atomic.AtomicInteger;
 
-import junit.framework.TestCase;
-
-public class TestAtomicPerformance extends TestCase {
+public class TestAtomicPerformance {
+    @Test
     public void test_0() throws Exception {
         AtomicInteger count = new AtomicInteger();
         for (int i = 0; i < 5; ++i) {

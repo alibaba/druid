@@ -24,6 +24,8 @@ import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.repository.SchemaRepository;
 import com.alibaba.druid.util.JdbcConstants;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlCreateTableTest84 extends MysqlTest {
     public void test_one() throws Exception {
         String sql = "CREATE TABLE `test` (\n" +
@@ -139,7 +141,7 @@ public class MySqlCreateTableTest84 extends MysqlTest {
                         "\tUNIQUE KEY uk_a (c_tinyint),\n" +
                         "\tKEY k_b (c_smallint),\n" +
                         "\tKEY k_c (c_mediumint, c_int)\n" +
-                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT '10000000';"
-                , repository.console("show create table test"));
+                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT '10000000';",
+                repository.console("show create table test"));
     }
 }

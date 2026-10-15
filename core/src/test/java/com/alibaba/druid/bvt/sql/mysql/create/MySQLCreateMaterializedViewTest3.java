@@ -22,6 +22,8 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySQLCreateMaterializedViewTest3 extends MysqlTest {
     public void test_types() throws Exception {
         String sql = //
@@ -37,7 +39,7 @@ public class MySQLCreateMaterializedViewTest3 extends MysqlTest {
                         "ENABLE QUERY REWRITE\n" +
                         "AS\n" +
                         "SELECT id\n" +
-                        "FROM base;",//
+                        "FROM base;",
                 SQLUtils.toSQLString(stmt, DbType.mysql));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

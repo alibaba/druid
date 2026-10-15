@@ -15,18 +15,19 @@
  */
 package com.alibaba.druid.bvt.sql.oracle;
 
-import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExprGroup;
-import com.alibaba.druid.sql.parser.SQLParserFeature;
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExprGroup;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
+import com.alibaba.druid.sql.parser.SQLParserFeature;
+import org.junit.jupiter.api.Test;
 
-public class LargeOrTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class LargeOrTest {
+    @Test
     public void test_largeOr() throws Exception {
         StringBuilder buf = new StringBuilder();
         buf.append("SELECT 1 FROM T WHERE ID = ?");
@@ -39,9 +40,10 @@ public class LargeOrTest extends TestCase {
         SQLSelectQueryBlock select = (SQLSelectQueryBlock) stmt.getSelect().getQuery();
         SQLBinaryOpExprGroup where = (SQLBinaryOpExprGroup) select.getWhere();
         SQLBinaryOpExpr last = (SQLBinaryOpExpr) where.getItems().get(0);
-        Assert.assertEquals(SQLBinaryOperator.Equality, last.getOperator());
+        assertEquals(SQLBinaryOperator.Equality, last.getOperator());
     }
 
+    @Test
     public void test_largeAnd() throws Exception {
         StringBuilder buf = new StringBuilder();
         buf.append("SELECT 1 FROM T WHERE ID = ?");
@@ -54,6 +56,6 @@ public class LargeOrTest extends TestCase {
         SQLSelectQueryBlock select = (SQLSelectQueryBlock) stmt.getSelect().getQuery();
         SQLBinaryOpExprGroup where = (SQLBinaryOpExprGroup) select.getWhere();
         SQLBinaryOpExpr last = (SQLBinaryOpExpr) where.getItems().get(0);
-        Assert.assertEquals(SQLBinaryOperator.Equality, last.getOperator());
+        assertEquals(SQLBinaryOperator.Equality, last.getOperator());
     }
 }

@@ -3,23 +3,23 @@ package com.alibaba.druid.bvt.pool;
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Properties;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DruidDataSourceTest10 {
     DruidDataSource ds;
 
-    @Before
+    @BeforeEach
     public void setup() {
         ds = new DruidDataSource();
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         JdbcUtils.close(ds);
         ds = null;

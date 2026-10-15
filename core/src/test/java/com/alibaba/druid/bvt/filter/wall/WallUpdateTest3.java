@@ -15,51 +15,54 @@
  */
 package com.alibaba.druid.bvt.filter.wall;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * 这个场景，检测
  *
  * @author wenshao
  */
-public class WallUpdateTest3 extends TestCase {
+public class WallUpdateTest3 {
     private String sql = "UPDATE T_USER SET FNAME = ? WHERE 1 = 1";
     private String sql2 = "UPDATE T_USER SET FNAME = ? WHERE id = 1 or 1 = 1";
 
     private WallConfig config = new WallConfig();
 
+    @BeforeEach
     protected void setUp() throws Exception {
         config.setUpdateAllow(true);
     }
 
+    @Test
     public void testMySql() throws Exception {
         config.setUpdateWhereAlwayTrueCheck(true);
         config.setConditionAndAlwayTrueAllow(false);
 
-        Assert.assertFalse(WallUtils.isValidateMySql(sql, config));
-        Assert.assertFalse(WallUtils.isValidateMySql(sql2, config));
+        assertFalse(WallUtils.isValidateMySql(sql, config));
+        assertFalse(WallUtils.isValidateMySql(sql2, config));
 
         config.setUpdateWhereAlwayTrueCheck(false);
         config.setConditionAndAlwayTrueAllow(true);
-        Assert.assertTrue(WallUtils.isValidateMySql(sql2, config));
-        Assert.assertTrue(WallUtils.isValidateMySql(sql, config));
+        assertTrue(WallUtils.isValidateMySql(sql2, config));
+        assertTrue(WallUtils.isValidateMySql(sql, config));
     }
 
+    @Test
     public void testORACLE() throws Exception {
         config.setUpdateWhereAlwayTrueCheck(true);
         config.setConditionAndAlwayTrueAllow(false);
 
-        Assert.assertFalse(WallUtils.isValidateOracle(sql, config));
-        Assert.assertFalse(WallUtils.isValidateOracle(sql2, config));
+        assertFalse(WallUtils.isValidateOracle(sql, config));
+        assertFalse(WallUtils.isValidateOracle(sql2, config));
 
         config.setUpdateWhereAlwayTrueCheck(false);
         config.setConditionAndAlwayTrueAllow(true);
-        Assert.assertTrue(WallUtils.isValidateOracle(sql2, config));
-        Assert.assertTrue(WallUtils.isValidateOracle(sql, config));
+        assertTrue(WallUtils.isValidateOracle(sql2, config));
+        assertTrue(WallUtils.isValidateOracle(sql, config));
     }
 }

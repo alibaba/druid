@@ -24,6 +24,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleCreateIndexTest12 extends OracleTest {
     public void test_0() throws Exception {
         String sql = //
@@ -62,8 +64,8 @@ public class OracleCreateIndexTest12 extends OracleTest {
                         "\tPARTITION ix_p4,\n" +
                         "\tPARTITION ix_p5\n" +
                         "\t\tTABLESPACE tbs_04\n" +
-                        ");"
-                , SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                        ");",
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         assertEquals(1, visitor.getTables().size());
 

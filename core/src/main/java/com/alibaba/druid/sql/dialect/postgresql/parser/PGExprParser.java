@@ -218,8 +218,10 @@ public class PGExprParser extends SQLExprParser {
 
     @Override
     protected void parseDataTypeDouble(StringBuilder typeName) {
-        typeName.append(' ').append(lexer.stringVal());
-        lexer.nextToken();
+        if (lexer.identifierEquals(FnvHash.Constants.PRECISION)) {
+            typeName.append(' ').append(lexer.stringVal());
+            lexer.nextToken();
+        }
     }
 
     @Override
@@ -246,6 +248,27 @@ public class PGExprParser extends SQLExprParser {
     }
 
     public SQLExpr primary() {
+        if (lexer.token() == Token.IDENTIFIER && lexer.identifierEquals("VARIADIC")) {
+            // postgresql variadic function argument, e.g. func(VARIADIC ARRAY[...]) (issue #6393).
+            // Only treat VARIADIC as a prefix when a value expression actually follows; otherwise it
+            // is an ordinary identifier (e.g. a column named "variadic") and must be left intact.
+            Lexer.SavePoint mark = lexer.mark();
+            lexer.nextToken();
+            switch (lexer.token()) {
+                case ARRAY:
+                case LBRACKET:
+                case LPAREN:
+                case IDENTIFIER:
+                case LITERAL_INT:
+                case LITERAL_CHARS:
+                case LITERAL_FLOAT:
+                case QUES:
+                case VARIANT:
+                    return primaryRest(new SQLUnaryExpr(SQLUnaryOperator.VARIADIC, primary()));
+                default:
+                    lexer.reset(mark);
+            }
+        }
         if (lexer.token() == Token.ARRAY) {
             String ident = lexer.stringVal();
             lexer.nextToken();
@@ -288,9 +311,13 @@ public class PGExprParser extends SQLExprParser {
                 listExpr.setParent(values);
 
                 values.getValues().add(listExpr);
-
+                Lexer.SavePoint savePoint = lexer.mark();
                 if (lexer.token() == Token.COMMA) {
                     lexer.nextToken();
+                    if (lexer.token() != Token.LPAREN) {
+                        lexer.reset(savePoint);
+                        break;
+                    }
                     continue;
                 }
                 break;
@@ -349,9 +376,47 @@ public class PGExprParser extends SQLExprParser {
         } else if (lexer.identifierEquals(FnvHash.Constants.SECOND)) {
             lexer.nextToken();
             intervalExpr.setUnit(SQLIntervalUnit.SECOND);
+        } else if (lexer.identifierEquals(FnvHash.Constants.WEEK)) {
+            lexer.nextToken();
+            intervalExpr.setUnit(SQLIntervalUnit.WEEK);
         }
 
         return intervalExpr;
+    }
+
+    private SQLExpr tryParseJsonPathOperator(SQLExpr expr) {
+        String name;
+        if (expr instanceof SQLIdentifierExpr) {
+            name = ((SQLIdentifierExpr) expr).getName();
+        } else if (expr instanceof SQLPropertyExpr) {
+            name = ((SQLPropertyExpr) expr).getName();
+        } else {
+            return null;
+        }
+
+        if (name.length() <= 1 || name.charAt(name.length() - 1) != '#') {
+            return null;
+        }
+
+        SQLBinaryOperator jsonPathOp = null;
+        if (lexer.token() == Token.GT) {
+            jsonPathOp = SQLBinaryOperator.PoundGt;
+        } else if (lexer.token() == Token.GTGT) {
+            jsonPathOp = SQLBinaryOperator.PoundGtGt;
+        }
+
+        if (jsonPathOp == null) {
+            return null;
+        }
+
+        if (expr instanceof SQLIdentifierExpr) {
+            ((SQLIdentifierExpr) expr).setName(name.substring(0, name.length() - 1));
+        } else {
+            ((SQLPropertyExpr) expr).setName(name.substring(0, name.length() - 1));
+        }
+        lexer.nextToken();
+        SQLExpr rightExp = primary();
+        return new SQLBinaryOpExpr(expr, jsonPathOp, rightExp, dbType);
     }
 
     public SQLExpr primaryRest(SQLExpr expr) {
@@ -373,6 +438,14 @@ public class PGExprParser extends SQLExprParser {
             this.exprList(array.getValues(), array);
             accept(Token.RBRACKET);
             return primaryRest(array);
+        }
+
+        // Handle #> and #>> JSON path operators (lexer consumes # as part of identifier)
+        {
+            SQLExpr jsonPathResult = tryParseJsonPathOperator(expr);
+            if (jsonPathResult != null) {
+                return jsonPathResult;
+            }
         }
 
         if (expr.getClass() == SQLIdentifierExpr.class) {

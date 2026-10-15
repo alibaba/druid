@@ -1,11 +1,17 @@
 package com.alibaba.druid.bvt.sql.mysql;
 
 import com.alibaba.druid.sql.ast.SQLLimit;
+import com.alibaba.druid.sql.ast.SQLResetStatement;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBooleanExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntervalExpr;
 import com.alibaba.druid.sql.ast.statement.*;
-import com.alibaba.druid.sql.dialect.mysql.ast.*;
+import com.alibaba.druid.sql.dialect.mysql.ast.MySqlForceIndexHint;
+import com.alibaba.druid.sql.dialect.mysql.ast.MySqlIgnoreIndexHint;
+import com.alibaba.druid.sql.dialect.mysql.ast.MySqlKey;
+import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
+import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUnique;
+import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUseIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlCharExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlUserName;
@@ -13,9 +19,10 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement.TableSpaceOption;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateUserStatement.UserSpecification;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class MySqlASTVisitorAdapterTest extends TestCase {
+public class MySqlASTVisitorAdapterTest {
+    @Test
     public void test_adapter() throws Exception {
         MySqlASTVisitorAdapter adapter = new MySqlASTVisitorAdapter();
         new SQLBooleanExpr().accept(adapter);
@@ -40,7 +47,7 @@ public class MySqlASTVisitorAdapterTest extends TestCase {
         new CobarShowStatus().accept(adapter);
         new MySqlKillStatement().accept(adapter);
         new MySqlBinlogStatement().accept(adapter);
-        new MySqlResetStatement().accept(adapter);
+        new SQLResetStatement().accept(adapter);
         new UserSpecification().accept(adapter);
         new MySqlPartitionByKey().accept(adapter);
         new MySqlOutFileExpr().accept(adapter);

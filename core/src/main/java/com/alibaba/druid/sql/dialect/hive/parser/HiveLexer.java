@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.dialect.hive.parser;
 
 import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.parser.DialectFeature;
 import com.alibaba.druid.sql.parser.Keywords;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.NotAllowCommentException;
@@ -23,6 +24,8 @@ import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.Token;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,9 +36,29 @@ import static com.alibaba.druid.sql.parser.LayoutCharacters.EOI;
 import static com.alibaba.druid.sql.parser.Token.LITERAL_CHARS;
 
 public class HiveLexer extends Lexer {
-    @Override
-    protected Keywords loadKeywords() {
-        Map<String, Token> map = new HashMap<String, Token>();
+    public static final Keywords HIVE_KEYWORDS;
+    public static final DialectFeature HIVE_FEATURE = new DialectFeature(
+            Arrays.asList(
+                    ScanSQLTypeWithFrom,
+                    NextTokenColon,
+                    ScanAliasU,
+                    JoinRightTableFrom,
+                    GroupByAll,
+                    SQLDateExpr,
+                    ParseAssignItemRparenCommaSetReturn,
+                    TableAliasLock,
+                    TableAliasPartition,
+                    AsSkip,
+                    AsSequence,
+                    AsDatabase,
+                    AsDefault
+            ),
+            Collections.singletonList(
+                    PrimaryBangBangSupport
+            )
+    );
+    static {
+        Map<String, Token> map = new HashMap<>();
 
         map.putAll(Keywords.DEFAULT_KEYWORDS.getKeywords());
 
@@ -60,7 +83,12 @@ public class HiveLexer extends Lexer {
         map.put("DIV", Token.DIV);
         map.put("QUALIFY", Token.QUALIFY);
 
-        return new Keywords(map);
+        HIVE_KEYWORDS = new Keywords(map);
+    }
+
+    @Override
+    protected Keywords loadKeywords() {
+        return HIVE_KEYWORDS;
     }
 
     public HiveLexer(String input, DbType dbType) {
@@ -189,12 +217,16 @@ public class HiveLexer extends Lexer {
                         break;
                     case 'u':
                         if ((features & SQLParserFeature.SupportUnicodeCodePoint.mask) != 0) {
-                            char c1 = charAt(++pos);
-                            char c2 = charAt(++pos);
-                            char c3 = charAt(++pos);
-                            char c4 = charAt(++pos);
+                            int codePointSize = 0;
+                            for (int i = 0; i < 4; i++, codePointSize++) {
+                                char c = charAt(pos + 1 + i);
+                                if (!((c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F'))) {
+                                    break;
+                                }
+                            }
 
-                            int intVal = Integer.parseInt(new String(new char[]{c1, c2, c3, c4}), 16);
+                            int intVal = Integer.parseInt(text.substring(pos + 1, pos + 1 + codePointSize), 16);
+                            pos += codePointSize;
 
                             putChar((char) intVal);
                         } else {
@@ -390,24 +422,6 @@ public class HiveLexer extends Lexer {
 
     @Override
     protected void initDialectFeature() {
-        super.initDialectFeature();
-        this.dialectFeature.configFeature(
-                ScanSQLTypeWithFrom,
-                NextTokenColon,
-                ScanAliasU,
-                JoinRightTableFrom,
-                GroupByAll,
-                SQLDateExpr,
-                ParseAssignItemRparenCommaSetReturn,
-                TableAliasLock,
-                TableAliasPartition,
-                AsSkip,
-                AsSequence,
-                AsDatabase,
-                AsDefault
-        );
-        this.dialectFeature.unconfigFeature(
-                PrimaryBangBangSupport
-        );
+        this.dialectFeature = HIVE_FEATURE;
     }
 }

@@ -23,6 +23,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleCreateTableTest83 extends OracleTest {
     public void test_types() throws Exception {
         String sql = //
@@ -62,7 +64,7 @@ public class OracleCreateTableTest83 extends OracleTest {
                         "\tREPOSITORY_URL VARCHAR(512),\n" +
                         "\tSERVICE_URL VARCHAR(512),\n" +
                         "\tPRIMARY KEY (ID)\n" +
-                        ");",//
+                        ");",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         stmt.renameColumn("ID", "FID");
@@ -81,7 +83,7 @@ public class OracleCreateTableTest83 extends OracleTest {
                         "\tREPOSITORY_URL VARCHAR(512),\n" +
                         "\tSERVICE_URL VARCHAR(512),\n" +
                         "\tPRIMARY KEY (ID)\n" +
-                        ");",//
+                        ");",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 //
 //        SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ORACLE);

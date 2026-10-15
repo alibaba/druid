@@ -22,11 +22,14 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class MySqlSelectTest_114 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlSelectTest_114 {
+    @Test
     public void test_0() throws Exception {
         String sql = "select count(0) from (select id from auth WHERE 1=1 AND/**/b=2 ORDER BY create_time DESC) as total";
 
@@ -48,26 +51,29 @@ public class MySqlSelectTest_114 extends TestCase {
         assertEquals(1, visitor.getConditions().size());
         assertEquals(1, visitor.getOrderByColumns().size());
 
-        assertEquals("SELECT count(0)\n" +
-                "FROM (\n" +
-                "\tSELECT id\n" +
-                "\tFROM auth\n" +
-                "\tWHERE 1 = 1\n" +
-                "\t\tAND /**/\n" +
-                "\t\tb = 2\n" +
-                "\tORDER BY create_time DESC\n" +
-                ") total", stmt.toString());
+        assertEquals(
+            "SELECT count(0)\n"
+                + "FROM (\n"
+                + "\tSELECT id\n"
+                + "\tFROM auth\n"
+                + "\tWHERE 1 = 1\n"
+                + "\t\tAND /**/\n"
+                + "\t\tb = 2\n"
+                + "\tORDER BY create_time DESC\n"
+                + ") total",
+            stmt.toString());
 
         String psql = ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL);
-        assertEquals("SELECT count(0)\n" +
-                "FROM (\n" +
-                "\tSELECT id\n" +
-                "\tFROM auth\n" +
-                "\tWHERE 1 = 1\n" +
-                "\t\tAND b = ?\n" +
-                "\tORDER BY create_time DESC\n" +
-                ") total", psql);
+        assertEquals(
+            "SELECT count(0)\n"
+                + "FROM (\n"
+                + "\tSELECT id\n"
+                + "\tFROM auth\n"
+                + "\tWHERE 1 = 1\n"
+                + "\t\tAND /**/\n"
+                + "\t\tb = ?\n"
+                + "\tORDER BY create_time DESC\n"
+                + ") total",
+            psql);
     }
-
-
 }

@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.clickhouse;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.bvt.sql.SQLResourceTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class CKResourceTest extends SQLResourceTest {
     public CKResourceTest() {
@@ -28,5 +28,4 @@ public class CKResourceTest extends SQLResourceTest {
     public void clickhouse_parse() throws Exception {
         fileTest(0, 999, i -> "bvt/parser/clickhouse/" + i + ".txt");
     }
-
 }

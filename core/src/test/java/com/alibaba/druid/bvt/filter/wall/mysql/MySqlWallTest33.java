@@ -15,12 +15,11 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * SQLServerWallTest
@@ -29,16 +28,18 @@ import com.alibaba.druid.wall.WallUtils;
  * @version 1.0, 2012-3-18
  * @see
  */
-public class MySqlWallTest33 extends TestCase {
+public class MySqlWallTest33 {
+    @Test
     public void test_false() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateMySql(//
-                "DELETE FROM lhwdesign_data WHERE data_id IN (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?")); //
+        assertFalse(WallUtils.isValidateMySql(//
+                "DELETE FROM lhwdesign_data WHERE data_id IN (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?"));
     }
 
+    @Test
     public void test_true() throws Exception {
         WallConfig config = new WallConfig();
         config.setStrictSyntaxCheck(false);
-        Assert.assertTrue(WallUtils.isValidateMySql(//
-                "DELETE FROM lhwdesign_data WHERE data_id IN (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?", config)); //
+        assertTrue(WallUtils.isValidateMySql(//
+                "DELETE FROM lhwdesign_data WHERE data_id IN (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?", config));
     }
 }

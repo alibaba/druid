@@ -17,8 +17,9 @@ package com.alibaba.druid.bvt.filter.wall.mysql;
 
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * SQLServerWallTest
@@ -27,46 +28,50 @@ import org.junit.Assert;
  * @version 1.0, 2012-3-18
  * @see
  */
-public class MySqlWallTest43 extends TestCase {
+public class MySqlWallTest43 {
+    @Test
     public void test_false() throws Exception {
         WallProvider provider = new MySqlWallProvider();
         provider.getConfig().setConditionAndAlwayTrueAllow(false);
-        Assert.assertFalse(provider.checkValid(//
-                "SELECT COUNT(1) AS count FROM `team` " + //
+        assertFalse(provider.checkValid(//
+                "SELECT COUNT(1) AS count FROM `team` " +
                         "WHERE `team_type` = 'normal' AND 1 = 1 AND `city_id` IN (0,10)"));
 
-        Assert.assertEquals(1, provider.getTableStats().size());
+        assertEquals(1, provider.getTableStats().size());
     }
 
+    @Test
     public void test_true() throws Exception {
         WallProvider provider = new MySqlWallProvider();
         provider.getConfig().setConditionAndAlwayTrueAllow(true);
 
-        Assert.assertTrue(provider.checkValid(//
-                "SELECT COUNT(1) AS count FROM `team` " + //
+        assertTrue(provider.checkValid(//
+                "SELECT COUNT(1) AS count FROM `team` " +
                         "WHERE `team_type` = 'normal' AND 1 = 1 AND `city_id` IN (0,10)"));
 
-        Assert.assertEquals(1, provider.getTableStats().size());
+        assertEquals(1, provider.getTableStats().size());
     }
 
+    @Test
     public void test_false2() throws Exception {
         WallProvider provider = new MySqlWallProvider();
 
-        Assert.assertFalse(provider.checkValid(//
-                "SELECT COUNT(1) AS count FROM `team` " + //
+        assertFalse(provider.checkValid(//
+                "SELECT COUNT(1) AS count FROM `team` " +
                         "WHERE `team_type` = 'normal' AND 1 = 2 AND `city_id` IN (0,10)"));
 
-        Assert.assertEquals(1, provider.getTableStats().size());
+        assertEquals(1, provider.getTableStats().size());
     }
 
+    @Test
     public void test_true2() throws Exception {
         WallProvider provider = new MySqlWallProvider();
         provider.getConfig().setConditionAndAlwayFalseAllow(true);
 
-        Assert.assertTrue(provider.checkValid(//
-                "SELECT COUNT(1) AS count FROM `team` " + //
+        assertTrue(provider.checkValid(//
+                "SELECT COUNT(1) AS count FROM `team` " +
                         "WHERE `team_type` = 'normal' AND 1 = 2 AND `city_id` IN (0,10)"));
 
-        Assert.assertEquals(1, provider.getTableStats().size());
+        assertEquals(1, provider.getTableStats().size());
     }
 }

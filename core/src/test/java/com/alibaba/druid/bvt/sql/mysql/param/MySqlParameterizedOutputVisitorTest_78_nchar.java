@@ -1,19 +1,22 @@
 package com.alibaba.druid.bvt.sql.mysql.param;
 
-import com.alibaba.fastjson2.JSON;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import com.alibaba.fastjson2.JSON;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
  * Created by wenshao on 16/8/23.
  */
-public class MySqlParameterizedOutputVisitorTest_78_nchar extends TestCase {
+public class MySqlParameterizedOutputVisitorTest_78_nchar {
+    @Test
     public void test_for_parameterize() throws Exception {
         String sql = "select N'1' as `customerid`,N'5004' as `ordersourceid`,'2018-12-13 21:15:30.879' as `creationtime`";
         List<Object> outParameters = new ArrayList<Object>(0);

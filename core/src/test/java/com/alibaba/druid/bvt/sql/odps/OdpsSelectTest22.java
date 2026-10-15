@@ -19,12 +19,14 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class OdpsSelectTest22 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OdpsSelectTest22 {
+    @Test
     public void test_select() throws Exception {
         // 1095288847322
         String sql = "select bucket_id,sum(pv) as pv, sum(clk) as clk,sum(clk)/(sum(pv)+1e-10) as ctr,sum(ut_ad_clk) as ut_ad_clk,sum(ad_clk) as ad_clk,sum(cost) as cost\n" +
@@ -53,7 +55,7 @@ public class OdpsSelectTest22 extends TestCase {
                 ") CLK on UT.ad_session = CLK.ad_session and UT.item_id = CLK.item_id\n" +
                 "where UT.ad_clk > 0 or CLK.clk > 0\n" +
                 ") A\n" +
-                "group by bucket_id;";//
+                "group by bucket_id;";
         assertEquals("SELECT bucket_id, sum(pv) AS pv, sum(clk) AS clk\n" +
                 "\t, sum(clk) / (sum(pv) + 1e-10) AS ctr\n" +
                 "\t, sum(ut_ad_clk) AS ut_ad_clk, sum(ad_clk) AS ad_clk\n" +
@@ -155,5 +157,4 @@ public class OdpsSelectTest22 extends TestCase {
 
         assertTrue(visitor.containsColumn("alimama_algo.fund_mlr_n_chicago_user_track_distinct_shark", "item_id"));
     }
-
 }

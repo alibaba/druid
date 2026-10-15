@@ -1,13 +1,14 @@
 package com.alibaba.druid.bvt.sql.eval;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
-public class EvalMethodLengthTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class EvalMethodLengthTest {
+    @Test
     public void test_length() throws Exception {
-        Assert.assertEquals(4, SQLEvalVisitorUtils.evalExpr(JdbcConstants.MYSQL, "length('text')"));
+        assertEquals(4, SQLEvalVisitorUtils.evalExpr(JdbcConstants.MYSQL, "length('text')"));
     }
 }

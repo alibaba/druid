@@ -20,9 +20,10 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import org.junit.Assert;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlInsertTest_18_alias extends MysqlTest {
     public void test_insert_rollback_on_fail() throws Exception {
@@ -37,7 +38,6 @@ public class MySqlInsertTest_18_alias extends MysqlTest {
 
         String formatSql = "INSERT INTO t1 (fval)\n" +
                 "VALUES ('abc')";
-        Assert.assertEquals(formatSql, SQLUtils.toMySqlString(insertStmt));
+        assertEquals(formatSql, SQLUtils.toMySqlString(insertStmt));
     }
-
 }

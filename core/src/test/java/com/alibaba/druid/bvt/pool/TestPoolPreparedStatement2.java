@@ -15,26 +15,27 @@
  */
 package com.alibaba.druid.bvt.pool;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class TestPoolPreparedStatement2 extends TestCase {
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class TestPoolPreparedStatement2 {
     private MockDriver driver;
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         DruidDataSourceStatManager.clear();
-
         driver = new MockDriver();
-
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setDriver(driver);
@@ -54,11 +55,13 @@ public class TestPoolPreparedStatement2 extends TestCase {
 //        ((StatFilter) dataSource.getProxyFilters().get(0)).setMaxSqlStatCount(100);
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        DruidDataSourceStatManager.clear();
     }
 
+    @Test
     public void test_stmtCache() throws Exception {
         for (int j = 0; j < 10; ++j) {
             for (int i = 0; i < 10; ++i) {
@@ -94,14 +97,14 @@ public class TestPoolPreparedStatement2 extends TestCase {
 
         Connection conn = dataSource.getConnection();
         DruidPooledConnection poolableConn = conn.unwrap(DruidPooledConnection.class);
-        Assert.assertNotNull(poolableConn);
+        assertNotNull(poolableConn);
 
-        Assert.assertEquals(dataSource.getMaxPoolPreparedStatementPerConnectionSize(),
+        assertEquals(dataSource.getMaxPoolPreparedStatementPerConnectionSize(),
                 poolableConn.getConnectionHolder().getStatementPool().getMap().size());
 
         conn.close();
 
-        Assert.assertEquals(0, dataSource.getActiveCount());
-        Assert.assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getActiveCount());
+        assertEquals(1, dataSource.getPoolingCount());
     }
 }

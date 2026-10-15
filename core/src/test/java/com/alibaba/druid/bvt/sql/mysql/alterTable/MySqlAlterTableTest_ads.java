@@ -20,9 +20,12 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLAlterDatabaseStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterDatabaseSetOption;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class MySqlAlterTableTest_ads extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlAlterTableTest_ads {
+    @Test
     public void test_alter_1() throws Exception {
         String sql = "ALTER TABLE grant_db.grant_table ADD INDEX user_id_index HashMap (grant_c1)\n";
 
@@ -32,6 +35,7 @@ public class MySqlAlterTableTest_ads extends TestCase {
         assertEquals("ALTER TABLE grant_db.grant_table\n" + "\tADD INDEX user_id_index HASHMAP (grant_c1)", output);
     }
 
+    @Test
     public void test_alter_2() throws Exception {
         String sql = "ALTER TABLE grant_db.grant_table  clustered by()\n";
 
@@ -41,6 +45,7 @@ public class MySqlAlterTableTest_ads extends TestCase {
         assertEquals("ALTER TABLE grant_db.grant_table\n" + "\tCLUSTERED BY ()", output);
     }
 
+    @Test
     public void test_alter_3() throws Exception {
         String sql = "ALTER TABLE grant_db.grant_table  subpartition_available_partition_num=10\n";
 
@@ -50,6 +55,7 @@ public class MySqlAlterTableTest_ads extends TestCase {
         assertEquals("ALTER TABLE grant_db.grant_table\n" + "\tSUBPARTITION_AVAILABLE_PARTITION_NUM = 10", output);
     }
 
+    @Test
     public void test_alter_4() throws Exception {
         String sql = "ALTER TABLEGROUP grant_db.group1  minRedundancy=10 k2=v2 executeTimeout=2000\n";
 
@@ -59,6 +65,7 @@ public class MySqlAlterTableTest_ads extends TestCase {
         assertEquals("ALTER TABLEGROUP grant_db.group1 minRedundancy = 10 k2 = v2 executeTimeout = 2000", output);
     }
 
+    @Test
     public void test_alter_5() throws Exception {
         String sql = "ALTER TABLE schema1.table1 ADD COLUMN col1 varchar default '10' not null primary key";
 
@@ -68,6 +75,7 @@ public class MySqlAlterTableTest_ads extends TestCase {
         assertEquals("ALTER TABLE schema1.table1\n" + "\tADD COLUMN col1 varchar NOT NULL PRIMARY KEY DEFAULT '10'", output);
     }
 
+    @Test
     public void test_alter_6() throws Exception {
         String sql = "alter database test_db set ecu_count=2";
 
@@ -77,6 +85,7 @@ public class MySqlAlterTableTest_ads extends TestCase {
         assertEquals("ALTER DATABASE test_db SET ecu_count = 2", output);
     }
 
+    @Test
     public void test_alter_7() throws Exception {
         String sql = "ALTER TABLE grant_db.grant_table ADD INDEX user_id_index HashMap (grant_c1)";
 
@@ -86,6 +95,7 @@ public class MySqlAlterTableTest_ads extends TestCase {
         assertEquals("ALTER TABLE grant_db.grant_table\n" + "\tADD INDEX user_id_index HASHMAP (grant_c1)", output);
     }
 
+    @Test
     public void test_alter_8() throws Exception {
         String sql = "ALTER TABLE grant_db.grant_table ADD column col2 varchar default '10' not null primary key";
 
@@ -96,6 +106,7 @@ public class MySqlAlterTableTest_ads extends TestCase {
                 + "\tADD COLUMN col2 varchar NOT NULL PRIMARY KEY DEFAULT '10'", output);
     }
 
+    @Test
     public void test_alter_9() throws Exception {
         String sql = "alter database test_db set ecu_count=2";
 
@@ -105,6 +116,7 @@ public class MySqlAlterTableTest_ads extends TestCase {
         assertEquals("ALTER DATABASE test_db SET ecu_count = 2", output);
     }
 
+    @Test
     public void test_alter_10() throws Exception {
         String sql = "alter database ads_cd_pre2 set resource_type='ecu' ecu_type=c8 ecu_count=2 modify_resource_type=true";
 

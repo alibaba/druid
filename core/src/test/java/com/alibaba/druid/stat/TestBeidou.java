@@ -15,13 +15,14 @@
  */
 package com.alibaba.druid.stat;
 
+import org.junit.jupiter.api.Test;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 
-import junit.framework.TestCase;
-
-public class TestBeidou extends TestCase {
+public class TestBeidou {
+    @Test
     public void test_0() throws Exception {
         String url = "jdbc:mysql://172.22.32.5/beidou?useUnicode=true&characterEncoding=UTF-8";
         Class.forName("com.mysql.jdbc.Driver");

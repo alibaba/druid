@@ -15,13 +15,14 @@
  */
 package com.alibaba.druid.bvt.pool;
 
+import com.alibaba.druid.PoolTestCase;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.support.logging.Log;
+
 import java.lang.reflect.Field;
 import java.sql.Connection;
 
-import com.alibaba.druid.PoolTestCase;
-
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.support.logging.Log;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ConfigErrorTest2 extends PoolTestCase {
     private DruidDataSource dataSource;

@@ -25,6 +25,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleCreateViewTest14 extends OracleTest {
     public void test_types() throws Exception {
         String sql = //
@@ -316,7 +318,7 @@ public class OracleCreateViewTest14 extends OracleTest {
                         "FROM resaccount res, businessres bus\n" +
                         "WHERE bus.reservation_id = res.reservation_id\n" +
                         "\tAND (bus.confirm_status = '3'\n" +
-                        "\t\tOR bus.confirm_status = '7')",//
+                        "\t\tOR bus.confirm_status = '7')",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

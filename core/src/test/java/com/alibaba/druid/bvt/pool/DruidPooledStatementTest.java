@@ -1,25 +1,27 @@
 package com.alibaba.druid.bvt.pool;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
-import java.sql.SQLWarning;
-import java.sql.Statement;
-
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledStatement;
 import com.alibaba.druid.proxy.jdbc.ResultSetProxy;
 import com.alibaba.druid.proxy.jdbc.StatementProxy;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class DruidPooledStatementTest extends TestCase {
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
+import java.sql.SQLWarning;
+import java.sql.Statement;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class DruidPooledStatementTest {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
@@ -27,18 +29,20 @@ public class DruidPooledStatementTest extends TestCase {
         dataSource.getProxyFilters().add(new ErrorFilter());
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
     }
 
+    @Test
     public void test_executeQuery_error() throws Exception {
         Connection conn = dataSource.getConnection();
 
         Statement stmt = conn.createStatement();
 
-        Assert.assertEquals(0, dataSource.getPoolingCount());
-        Assert.assertEquals(1, dataSource.getActiveCount());
-        Assert.assertEquals(0, dataSource.getErrorCount());
+        assertEquals(0, dataSource.getPoolingCount());
+        assertEquals(1, dataSource.getActiveCount());
+        assertEquals(0, dataSource.getErrorCount());
 
         Exception error = null;
         try {
@@ -46,25 +50,26 @@ public class DruidPooledStatementTest extends TestCase {
         } catch (Exception e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
-        Assert.assertEquals(1, dataSource.getErrorCount());
+        assertEquals(1, dataSource.getErrorCount());
 
         stmt.close();
         conn.close();
 
-        Assert.assertEquals(1, dataSource.getPoolingCount());
-        Assert.assertEquals(0, dataSource.getActiveCount());
+        assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getActiveCount());
     }
 
+    @Test
     public void test_executeUpdate_error() throws Exception {
         Connection conn = dataSource.getConnection();
 
         Statement stmt = conn.createStatement();
 
-        Assert.assertEquals(0, dataSource.getPoolingCount());
-        Assert.assertEquals(1, dataSource.getActiveCount());
-        Assert.assertEquals(0, dataSource.getErrorCount());
+        assertEquals(0, dataSource.getPoolingCount());
+        assertEquals(1, dataSource.getActiveCount());
+        assertEquals(0, dataSource.getErrorCount());
 
         Exception error = null;
         try {
@@ -72,25 +77,26 @@ public class DruidPooledStatementTest extends TestCase {
         } catch (Exception e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
-        Assert.assertEquals(1, dataSource.getErrorCount());
+        assertEquals(1, dataSource.getErrorCount());
 
         stmt.close();
         conn.close();
 
-        Assert.assertEquals(1, dataSource.getPoolingCount());
-        Assert.assertEquals(0, dataSource.getActiveCount());
+        assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getActiveCount());
     }
 
+    @Test
     public void test_executeUpdate_error_1() throws Exception {
         Connection conn = dataSource.getConnection();
 
         Statement stmt = conn.createStatement();
 
-        Assert.assertEquals(0, dataSource.getPoolingCount());
-        Assert.assertEquals(1, dataSource.getActiveCount());
-        Assert.assertEquals(0, dataSource.getErrorCount());
+        assertEquals(0, dataSource.getPoolingCount());
+        assertEquals(1, dataSource.getActiveCount());
+        assertEquals(0, dataSource.getErrorCount());
 
         Exception error = null;
         try {
@@ -98,25 +104,26 @@ public class DruidPooledStatementTest extends TestCase {
         } catch (Exception e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
-        Assert.assertEquals(1, dataSource.getErrorCount());
+        assertEquals(1, dataSource.getErrorCount());
 
         stmt.close();
         conn.close();
 
-        Assert.assertEquals(1, dataSource.getPoolingCount());
-        Assert.assertEquals(0, dataSource.getActiveCount());
+        assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getActiveCount());
     }
 
+    @Test
     public void test_executeUpdate_error_2() throws Exception {
         Connection conn = dataSource.getConnection();
 
         Statement stmt = conn.createStatement();
 
-        Assert.assertEquals(0, dataSource.getPoolingCount());
-        Assert.assertEquals(1, dataSource.getActiveCount());
-        Assert.assertEquals(0, dataSource.getErrorCount());
+        assertEquals(0, dataSource.getPoolingCount());
+        assertEquals(1, dataSource.getActiveCount());
+        assertEquals(0, dataSource.getErrorCount());
 
         Exception error = null;
         try {
@@ -124,25 +131,26 @@ public class DruidPooledStatementTest extends TestCase {
         } catch (Exception e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
-        Assert.assertEquals(1, dataSource.getErrorCount());
+        assertEquals(1, dataSource.getErrorCount());
 
         stmt.close();
         conn.close();
 
-        Assert.assertEquals(1, dataSource.getPoolingCount());
-        Assert.assertEquals(0, dataSource.getActiveCount());
+        assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getActiveCount());
     }
 
+    @Test
     public void test_executeUpdate_error_3() throws Exception {
         Connection conn = dataSource.getConnection();
 
         Statement stmt = conn.createStatement();
 
-        Assert.assertEquals(0, dataSource.getPoolingCount());
-        Assert.assertEquals(1, dataSource.getActiveCount());
-        Assert.assertEquals(0, dataSource.getErrorCount());
+        assertEquals(0, dataSource.getPoolingCount());
+        assertEquals(1, dataSource.getActiveCount());
+        assertEquals(0, dataSource.getErrorCount());
 
         Exception error = null;
         try {
@@ -150,25 +158,26 @@ public class DruidPooledStatementTest extends TestCase {
         } catch (Exception e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
-        Assert.assertEquals(1, dataSource.getErrorCount());
+        assertEquals(1, dataSource.getErrorCount());
 
         stmt.close();
         conn.close();
 
-        Assert.assertEquals(1, dataSource.getPoolingCount());
-        Assert.assertEquals(0, dataSource.getActiveCount());
+        assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getActiveCount());
     }
 
+    @Test
     public void test_execute_error() throws Exception {
         Connection conn = dataSource.getConnection();
 
         Statement stmt = conn.createStatement();
 
-        Assert.assertEquals(0, dataSource.getPoolingCount());
-        Assert.assertEquals(1, dataSource.getActiveCount());
-        Assert.assertEquals(0, dataSource.getErrorCount());
+        assertEquals(0, dataSource.getPoolingCount());
+        assertEquals(1, dataSource.getActiveCount());
+        assertEquals(0, dataSource.getErrorCount());
 
         Exception error = null;
         try {
@@ -176,25 +185,26 @@ public class DruidPooledStatementTest extends TestCase {
         } catch (Exception e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
-        Assert.assertEquals(1, dataSource.getErrorCount());
+        assertEquals(1, dataSource.getErrorCount());
 
         stmt.close();
         conn.close();
 
-        Assert.assertEquals(1, dataSource.getPoolingCount());
-        Assert.assertEquals(0, dataSource.getActiveCount());
+        assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getActiveCount());
     }
 
+    @Test
     public void test_execute_error_1() throws Exception {
         Connection conn = dataSource.getConnection();
 
         Statement stmt = conn.createStatement();
 
-        Assert.assertEquals(0, dataSource.getPoolingCount());
-        Assert.assertEquals(1, dataSource.getActiveCount());
-        Assert.assertEquals(0, dataSource.getErrorCount());
+        assertEquals(0, dataSource.getPoolingCount());
+        assertEquals(1, dataSource.getActiveCount());
+        assertEquals(0, dataSource.getErrorCount());
 
         Exception error = null;
         try {
@@ -202,25 +212,26 @@ public class DruidPooledStatementTest extends TestCase {
         } catch (Exception e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
-        Assert.assertEquals(1, dataSource.getErrorCount());
+        assertEquals(1, dataSource.getErrorCount());
 
         stmt.close();
         conn.close();
 
-        Assert.assertEquals(1, dataSource.getPoolingCount());
-        Assert.assertEquals(0, dataSource.getActiveCount());
+        assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getActiveCount());
     }
 
+    @Test
     public void test_execute_error_2() throws Exception {
         Connection conn = dataSource.getConnection();
 
         Statement stmt = conn.createStatement();
 
-        Assert.assertEquals(0, dataSource.getPoolingCount());
-        Assert.assertEquals(1, dataSource.getActiveCount());
-        Assert.assertEquals(0, dataSource.getErrorCount());
+        assertEquals(0, dataSource.getPoolingCount());
+        assertEquals(1, dataSource.getActiveCount());
+        assertEquals(0, dataSource.getErrorCount());
 
         Exception error = null;
         try {
@@ -228,25 +239,26 @@ public class DruidPooledStatementTest extends TestCase {
         } catch (Exception e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
-        Assert.assertEquals(1, dataSource.getErrorCount());
+        assertEquals(1, dataSource.getErrorCount());
 
         stmt.close();
         conn.close();
 
-        Assert.assertEquals(1, dataSource.getPoolingCount());
-        Assert.assertEquals(0, dataSource.getActiveCount());
+        assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getActiveCount());
     }
 
+    @Test
     public void test_execute_error_3() throws Exception {
         Connection conn = dataSource.getConnection();
 
         Statement stmt = conn.createStatement();
 
-        Assert.assertEquals(0, dataSource.getPoolingCount());
-        Assert.assertEquals(1, dataSource.getActiveCount());
-        Assert.assertEquals(0, dataSource.getErrorCount());
+        assertEquals(0, dataSource.getPoolingCount());
+        assertEquals(1, dataSource.getActiveCount());
+        assertEquals(0, dataSource.getErrorCount());
 
         Exception error = null;
         try {
@@ -254,25 +266,26 @@ public class DruidPooledStatementTest extends TestCase {
         } catch (Exception e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
-        Assert.assertEquals(1, dataSource.getErrorCount());
+        assertEquals(1, dataSource.getErrorCount());
 
         stmt.close();
         conn.close();
 
-        Assert.assertEquals(1, dataSource.getPoolingCount());
-        Assert.assertEquals(0, dataSource.getActiveCount());
+        assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getActiveCount());
     }
 
+    @Test
     public void test_getMaxFieldSize_error() throws Exception {
         Connection conn = dataSource.getConnection();
 
         Statement stmt = conn.createStatement();
 
-        Assert.assertEquals(0, dataSource.getPoolingCount());
-        Assert.assertEquals(1, dataSource.getActiveCount());
-        Assert.assertEquals(0, dataSource.getErrorCount());
+        assertEquals(0, dataSource.getPoolingCount());
+        assertEquals(1, dataSource.getActiveCount());
+        assertEquals(0, dataSource.getErrorCount());
 
         Exception error = null;
         try {
@@ -280,25 +293,26 @@ public class DruidPooledStatementTest extends TestCase {
         } catch (Exception e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
-        Assert.assertEquals(1, dataSource.getErrorCount());
+        assertEquals(1, dataSource.getErrorCount());
 
         stmt.close();
         conn.close();
 
-        Assert.assertEquals(1, dataSource.getPoolingCount());
-        Assert.assertEquals(0, dataSource.getActiveCount());
+        assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getActiveCount());
     }
 
+    @Test
     public void test_setMaxFieldSize_error() throws Exception {
         Connection conn = dataSource.getConnection();
 
         Statement stmt = conn.createStatement();
 
-        Assert.assertEquals(0, dataSource.getPoolingCount());
-        Assert.assertEquals(1, dataSource.getActiveCount());
-        Assert.assertEquals(0, dataSource.getErrorCount());
+        assertEquals(0, dataSource.getPoolingCount());
+        assertEquals(1, dataSource.getActiveCount());
+        assertEquals(0, dataSource.getErrorCount());
 
         Exception error = null;
         try {
@@ -306,25 +320,26 @@ public class DruidPooledStatementTest extends TestCase {
         } catch (Exception e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
-        Assert.assertEquals(1, dataSource.getErrorCount());
+        assertEquals(1, dataSource.getErrorCount());
 
         stmt.close();
         conn.close();
 
-        Assert.assertEquals(1, dataSource.getPoolingCount());
-        Assert.assertEquals(0, dataSource.getActiveCount());
+        assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getActiveCount());
     }
 
+    @Test
     public void test_getMaxRows_error() throws Exception {
         Connection conn = dataSource.getConnection();
 
         Statement stmt = conn.createStatement();
 
-        Assert.assertEquals(0, dataSource.getPoolingCount());
-        Assert.assertEquals(1, dataSource.getActiveCount());
-        Assert.assertEquals(0, dataSource.getErrorCount());
+        assertEquals(0, dataSource.getPoolingCount());
+        assertEquals(1, dataSource.getActiveCount());
+        assertEquals(0, dataSource.getErrorCount());
 
         Exception error = null;
         try {
@@ -332,25 +347,26 @@ public class DruidPooledStatementTest extends TestCase {
         } catch (Exception e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
-        Assert.assertEquals(1, dataSource.getErrorCount());
+        assertEquals(1, dataSource.getErrorCount());
 
         stmt.close();
         conn.close();
 
-        Assert.assertEquals(1, dataSource.getPoolingCount());
-        Assert.assertEquals(0, dataSource.getActiveCount());
+        assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getActiveCount());
     }
 
+    @Test
     public void test_setMaxRows_error() throws Exception {
         Connection conn = dataSource.getConnection();
 
         Statement stmt = conn.createStatement();
 
-        Assert.assertEquals(0, dataSource.getPoolingCount());
-        Assert.assertEquals(1, dataSource.getActiveCount());
-        Assert.assertEquals(0, dataSource.getErrorCount());
+        assertEquals(0, dataSource.getPoolingCount());
+        assertEquals(1, dataSource.getActiveCount());
+        assertEquals(0, dataSource.getErrorCount());
 
         Exception error = null;
         try {
@@ -358,25 +374,26 @@ public class DruidPooledStatementTest extends TestCase {
         } catch (Exception e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
-        Assert.assertEquals(1, dataSource.getErrorCount());
+        assertEquals(1, dataSource.getErrorCount());
 
         stmt.close();
         conn.close();
 
-        Assert.assertEquals(1, dataSource.getPoolingCount());
-        Assert.assertEquals(0, dataSource.getActiveCount());
+        assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getActiveCount());
     }
 
+    @Test
     public void test_setEscapeProcessing_error() throws Exception {
         Connection conn = dataSource.getConnection();
 
         Statement stmt = conn.createStatement();
 
-        Assert.assertEquals(0, dataSource.getPoolingCount());
-        Assert.assertEquals(1, dataSource.getActiveCount());
-        Assert.assertEquals(0, dataSource.getErrorCount());
+        assertEquals(0, dataSource.getPoolingCount());
+        assertEquals(1, dataSource.getActiveCount());
+        assertEquals(0, dataSource.getErrorCount());
 
         Exception error = null;
         try {
@@ -384,25 +401,26 @@ public class DruidPooledStatementTest extends TestCase {
         } catch (Exception e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
-        Assert.assertEquals(1, dataSource.getErrorCount());
+        assertEquals(1, dataSource.getErrorCount());
 
         stmt.close();
         conn.close();
 
-        Assert.assertEquals(1, dataSource.getPoolingCount());
-        Assert.assertEquals(0, dataSource.getActiveCount());
+        assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getActiveCount());
     }
 
+    @Test
     public void test_getQueryTimeout_error() throws Exception {
         Connection conn = dataSource.getConnection();
 
         Statement stmt = conn.createStatement();
 
-        Assert.assertEquals(0, dataSource.getPoolingCount());
-        Assert.assertEquals(1, dataSource.getActiveCount());
-        Assert.assertEquals(0, dataSource.getErrorCount());
+        assertEquals(0, dataSource.getPoolingCount());
+        assertEquals(1, dataSource.getActiveCount());
+        assertEquals(0, dataSource.getErrorCount());
 
         Exception error = null;
         try {
@@ -410,25 +428,26 @@ public class DruidPooledStatementTest extends TestCase {
         } catch (Exception e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
-        Assert.assertEquals(1, dataSource.getErrorCount());
+        assertEquals(1, dataSource.getErrorCount());
 
         stmt.close();
         conn.close();
 
-        Assert.assertEquals(1, dataSource.getPoolingCount());
-        Assert.assertEquals(0, dataSource.getActiveCount());
+        assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getActiveCount());
     }
 
+    @Test
     public void test_setQueryTimeout_error() throws Exception {
         Connection conn = dataSource.getConnection();
 
         Statement stmt = conn.createStatement();
 
-        Assert.assertEquals(0, dataSource.getPoolingCount());
-        Assert.assertEquals(1, dataSource.getActiveCount());
-        Assert.assertEquals(0, dataSource.getErrorCount());
+        assertEquals(0, dataSource.getPoolingCount());
+        assertEquals(1, dataSource.getActiveCount());
+        assertEquals(0, dataSource.getErrorCount());
 
         Exception error = null;
         try {
@@ -436,25 +455,26 @@ public class DruidPooledStatementTest extends TestCase {
         } catch (Exception e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
-        Assert.assertEquals(1, dataSource.getErrorCount());
+        assertEquals(1, dataSource.getErrorCount());
 
         stmt.close();
         conn.close();
 
-        Assert.assertEquals(1, dataSource.getPoolingCount());
-        Assert.assertEquals(0, dataSource.getActiveCount());
+        assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getActiveCount());
     }
 
+    @Test
     public void test_cancel_error() throws Exception {
         Connection conn = dataSource.getConnection();
 
         Statement stmt = conn.createStatement();
 
-        Assert.assertEquals(0, dataSource.getPoolingCount());
-        Assert.assertEquals(1, dataSource.getActiveCount());
-        Assert.assertEquals(0, dataSource.getErrorCount());
+        assertEquals(0, dataSource.getPoolingCount());
+        assertEquals(1, dataSource.getActiveCount());
+        assertEquals(0, dataSource.getErrorCount());
 
         Exception error = null;
         try {
@@ -462,25 +482,26 @@ public class DruidPooledStatementTest extends TestCase {
         } catch (Exception e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
-        Assert.assertEquals(1, dataSource.getErrorCount());
+        assertEquals(1, dataSource.getErrorCount());
 
         stmt.close();
         conn.close();
 
-        Assert.assertEquals(1, dataSource.getPoolingCount());
-        Assert.assertEquals(0, dataSource.getActiveCount());
+        assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getActiveCount());
     }
 
+    @Test
     public void test_getWarnings_error() throws Exception {
         Connection conn = dataSource.getConnection();
 
         Statement stmt = conn.createStatement();
 
-        Assert.assertEquals(0, dataSource.getPoolingCount());
-        Assert.assertEquals(1, dataSource.getActiveCount());
-        Assert.assertEquals(0, dataSource.getErrorCount());
+        assertEquals(0, dataSource.getPoolingCount());
+        assertEquals(1, dataSource.getActiveCount());
+        assertEquals(0, dataSource.getErrorCount());
 
         Exception error = null;
         try {
@@ -488,25 +509,26 @@ public class DruidPooledStatementTest extends TestCase {
         } catch (Exception e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
-        Assert.assertEquals(1, dataSource.getErrorCount());
+        assertEquals(1, dataSource.getErrorCount());
 
         stmt.close();
         conn.close();
 
-        Assert.assertEquals(1, dataSource.getPoolingCount());
-        Assert.assertEquals(0, dataSource.getActiveCount());
+        assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getActiveCount());
     }
 
+    @Test
     public void test_clearWarnings_error() throws Exception {
         Connection conn = dataSource.getConnection();
 
         Statement stmt = conn.createStatement();
 
-        Assert.assertEquals(0, dataSource.getPoolingCount());
-        Assert.assertEquals(1, dataSource.getActiveCount());
-        Assert.assertEquals(0, dataSource.getErrorCount());
+        assertEquals(0, dataSource.getPoolingCount());
+        assertEquals(1, dataSource.getActiveCount());
+        assertEquals(0, dataSource.getErrorCount());
 
         Exception error = null;
         try {
@@ -514,25 +536,26 @@ public class DruidPooledStatementTest extends TestCase {
         } catch (Exception e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
-        Assert.assertEquals(1, dataSource.getErrorCount());
+        assertEquals(1, dataSource.getErrorCount());
 
         stmt.close();
         conn.close();
 
-        Assert.assertEquals(1, dataSource.getPoolingCount());
-        Assert.assertEquals(0, dataSource.getActiveCount());
+        assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getActiveCount());
     }
 
+    @Test
     public void test_setCursorName_error() throws Exception {
         Connection conn = dataSource.getConnection();
 
         Statement stmt = conn.createStatement();
 
-        Assert.assertEquals(0, dataSource.getPoolingCount());
-        Assert.assertEquals(1, dataSource.getActiveCount());
-        Assert.assertEquals(0, dataSource.getErrorCount());
+        assertEquals(0, dataSource.getPoolingCount());
+        assertEquals(1, dataSource.getActiveCount());
+        assertEquals(0, dataSource.getErrorCount());
 
         Exception error = null;
         try {
@@ -540,25 +563,26 @@ public class DruidPooledStatementTest extends TestCase {
         } catch (Exception e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
-        Assert.assertEquals(1, dataSource.getErrorCount());
+        assertEquals(1, dataSource.getErrorCount());
 
         stmt.close();
         conn.close();
 
-        Assert.assertEquals(1, dataSource.getPoolingCount());
-        Assert.assertEquals(0, dataSource.getActiveCount());
+        assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getActiveCount());
     }
 
+    @Test
     public void test_getResultSet_error() throws Exception {
         Connection conn = dataSource.getConnection();
 
         Statement stmt = conn.createStatement();
 
-        Assert.assertEquals(0, dataSource.getPoolingCount());
-        Assert.assertEquals(1, dataSource.getActiveCount());
-        Assert.assertEquals(0, dataSource.getErrorCount());
+        assertEquals(0, dataSource.getPoolingCount());
+        assertEquals(1, dataSource.getActiveCount());
+        assertEquals(0, dataSource.getErrorCount());
 
         Exception error = null;
         try {
@@ -566,26 +590,27 @@ public class DruidPooledStatementTest extends TestCase {
         } catch (Exception e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
-        Assert.assertEquals(1, dataSource.getErrorCount());
+        assertEquals(1, dataSource.getErrorCount());
 
         stmt.close();
         conn.close();
 
-        Assert.assertEquals(1, dataSource.getPoolingCount());
-        Assert.assertEquals(0, dataSource.getActiveCount());
-        Assert.assertEquals(0, dataSource.getDataSourceStat().getResultSetStat().getOpenCount());
+        assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getActiveCount());
+        assertEquals(0, dataSource.getDataSourceStat().getResultSetStat().getOpenCount());
     }
 
+    @Test
     public void test_getUpdateCount_error() throws Exception {
         Connection conn = dataSource.getConnection();
 
         Statement stmt = conn.createStatement();
 
-        Assert.assertEquals(0, dataSource.getPoolingCount());
-        Assert.assertEquals(1, dataSource.getActiveCount());
-        Assert.assertEquals(0, dataSource.getErrorCount());
+        assertEquals(0, dataSource.getPoolingCount());
+        assertEquals(1, dataSource.getActiveCount());
+        assertEquals(0, dataSource.getErrorCount());
 
         Exception error = null;
         try {
@@ -593,25 +618,26 @@ public class DruidPooledStatementTest extends TestCase {
         } catch (Exception e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
-        Assert.assertEquals(1, dataSource.getErrorCount());
+        assertEquals(1, dataSource.getErrorCount());
 
         stmt.close();
         conn.close();
 
-        Assert.assertEquals(1, dataSource.getPoolingCount());
-        Assert.assertEquals(0, dataSource.getActiveCount());
+        assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getActiveCount());
     }
 
+    @Test
     public void test_getMoreResults_error() throws Exception {
         Connection conn = dataSource.getConnection();
 
         Statement stmt = conn.createStatement();
 
-        Assert.assertEquals(0, dataSource.getPoolingCount());
-        Assert.assertEquals(1, dataSource.getActiveCount());
-        Assert.assertEquals(0, dataSource.getErrorCount());
+        assertEquals(0, dataSource.getPoolingCount());
+        assertEquals(1, dataSource.getActiveCount());
+        assertEquals(0, dataSource.getErrorCount());
 
         Exception error = null;
         try {
@@ -619,25 +645,26 @@ public class DruidPooledStatementTest extends TestCase {
         } catch (Exception e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
-        Assert.assertEquals(1, dataSource.getErrorCount());
+        assertEquals(1, dataSource.getErrorCount());
 
         stmt.close();
         conn.close();
 
-        Assert.assertEquals(1, dataSource.getPoolingCount());
-        Assert.assertEquals(0, dataSource.getActiveCount());
+        assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getActiveCount());
     }
 
+    @Test
     public void test_setFetchDirection_error() throws Exception {
         Connection conn = dataSource.getConnection();
 
         Statement stmt = conn.createStatement();
 
-        Assert.assertEquals(0, dataSource.getPoolingCount());
-        Assert.assertEquals(1, dataSource.getActiveCount());
-        Assert.assertEquals(0, dataSource.getErrorCount());
+        assertEquals(0, dataSource.getPoolingCount());
+        assertEquals(1, dataSource.getActiveCount());
+        assertEquals(0, dataSource.getErrorCount());
 
         Exception error = null;
         try {
@@ -645,25 +672,26 @@ public class DruidPooledStatementTest extends TestCase {
         } catch (Exception e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
-        Assert.assertEquals(1, dataSource.getErrorCount());
+        assertEquals(1, dataSource.getErrorCount());
 
         stmt.close();
         conn.close();
 
-        Assert.assertEquals(1, dataSource.getPoolingCount());
-        Assert.assertEquals(0, dataSource.getActiveCount());
+        assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getActiveCount());
     }
 
+    @Test
     public void test_getFetchDirection_error() throws Exception {
         Connection conn = dataSource.getConnection();
 
         Statement stmt = conn.createStatement();
 
-        Assert.assertEquals(0, dataSource.getPoolingCount());
-        Assert.assertEquals(1, dataSource.getActiveCount());
-        Assert.assertEquals(0, dataSource.getErrorCount());
+        assertEquals(0, dataSource.getPoolingCount());
+        assertEquals(1, dataSource.getActiveCount());
+        assertEquals(0, dataSource.getErrorCount());
 
         Exception error = null;
         try {
@@ -671,25 +699,26 @@ public class DruidPooledStatementTest extends TestCase {
         } catch (Exception e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
-        Assert.assertEquals(1, dataSource.getErrorCount());
+        assertEquals(1, dataSource.getErrorCount());
 
         stmt.close();
         conn.close();
 
-        Assert.assertEquals(1, dataSource.getPoolingCount());
-        Assert.assertEquals(0, dataSource.getActiveCount());
+        assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getActiveCount());
     }
 
+    @Test
     public void test_setFetchSize_error() throws Exception {
         Connection conn = dataSource.getConnection();
 
         Statement stmt = conn.createStatement();
 
-        Assert.assertEquals(0, dataSource.getPoolingCount());
-        Assert.assertEquals(1, dataSource.getActiveCount());
-        Assert.assertEquals(0, dataSource.getErrorCount());
+        assertEquals(0, dataSource.getPoolingCount());
+        assertEquals(1, dataSource.getActiveCount());
+        assertEquals(0, dataSource.getErrorCount());
 
         Exception error = null;
         try {
@@ -697,25 +726,26 @@ public class DruidPooledStatementTest extends TestCase {
         } catch (Exception e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
-        Assert.assertEquals(1, dataSource.getErrorCount());
+        assertEquals(1, dataSource.getErrorCount());
 
         stmt.close();
         conn.close();
 
-        Assert.assertEquals(1, dataSource.getPoolingCount());
-        Assert.assertEquals(0, dataSource.getActiveCount());
+        assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getActiveCount());
     }
 
+    @Test
     public void test_getFetchSize_error() throws Exception {
         Connection conn = dataSource.getConnection();
 
         Statement stmt = conn.createStatement();
 
-        Assert.assertEquals(0, dataSource.getPoolingCount());
-        Assert.assertEquals(1, dataSource.getActiveCount());
-        Assert.assertEquals(0, dataSource.getErrorCount());
+        assertEquals(0, dataSource.getPoolingCount());
+        assertEquals(1, dataSource.getActiveCount());
+        assertEquals(0, dataSource.getErrorCount());
 
         Exception error = null;
         try {
@@ -723,25 +753,26 @@ public class DruidPooledStatementTest extends TestCase {
         } catch (Exception e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
-        Assert.assertEquals(1, dataSource.getErrorCount());
+        assertEquals(1, dataSource.getErrorCount());
 
         stmt.close();
         conn.close();
 
-        Assert.assertEquals(1, dataSource.getPoolingCount());
-        Assert.assertEquals(0, dataSource.getActiveCount());
+        assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getActiveCount());
     }
 
+    @Test
     public void test_getResultSetConcurrency_error() throws Exception {
         Connection conn = dataSource.getConnection();
 
         Statement stmt = conn.createStatement();
 
-        Assert.assertEquals(0, dataSource.getPoolingCount());
-        Assert.assertEquals(1, dataSource.getActiveCount());
-        Assert.assertEquals(0, dataSource.getErrorCount());
+        assertEquals(0, dataSource.getPoolingCount());
+        assertEquals(1, dataSource.getActiveCount());
+        assertEquals(0, dataSource.getErrorCount());
 
         Exception error = null;
         try {
@@ -749,25 +780,26 @@ public class DruidPooledStatementTest extends TestCase {
         } catch (Exception e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
-        Assert.assertEquals(1, dataSource.getErrorCount());
+        assertEquals(1, dataSource.getErrorCount());
 
         stmt.close();
         conn.close();
 
-        Assert.assertEquals(1, dataSource.getPoolingCount());
-        Assert.assertEquals(0, dataSource.getActiveCount());
+        assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getActiveCount());
     }
 
+    @Test
     public void test_getResultSetType_error() throws Exception {
         Connection conn = dataSource.getConnection();
 
         Statement stmt = conn.createStatement();
 
-        Assert.assertEquals(0, dataSource.getPoolingCount());
-        Assert.assertEquals(1, dataSource.getActiveCount());
-        Assert.assertEquals(0, dataSource.getErrorCount());
+        assertEquals(0, dataSource.getPoolingCount());
+        assertEquals(1, dataSource.getActiveCount());
+        assertEquals(0, dataSource.getErrorCount());
 
         Exception error = null;
         try {
@@ -775,25 +807,26 @@ public class DruidPooledStatementTest extends TestCase {
         } catch (Exception e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
-        Assert.assertEquals(1, dataSource.getErrorCount());
+        assertEquals(1, dataSource.getErrorCount());
 
         stmt.close();
         conn.close();
 
-        Assert.assertEquals(1, dataSource.getPoolingCount());
-        Assert.assertEquals(0, dataSource.getActiveCount());
+        assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getActiveCount());
     }
 
+    @Test
     public void test_addBatch_error() throws Exception {
         Connection conn = dataSource.getConnection();
 
         Statement stmt = conn.createStatement();
 
-        Assert.assertEquals(0, dataSource.getPoolingCount());
-        Assert.assertEquals(1, dataSource.getActiveCount());
-        Assert.assertEquals(0, dataSource.getErrorCount());
+        assertEquals(0, dataSource.getPoolingCount());
+        assertEquals(1, dataSource.getActiveCount());
+        assertEquals(0, dataSource.getErrorCount());
 
         Exception error = null;
         try {
@@ -801,25 +834,26 @@ public class DruidPooledStatementTest extends TestCase {
         } catch (Exception e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
-        Assert.assertEquals(1, dataSource.getErrorCount());
+        assertEquals(1, dataSource.getErrorCount());
 
         stmt.close();
         conn.close();
 
-        Assert.assertEquals(1, dataSource.getPoolingCount());
-        Assert.assertEquals(0, dataSource.getActiveCount());
+        assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getActiveCount());
     }
 
+    @Test
     public void test_clearBatch_error() throws Exception {
         Connection conn = dataSource.getConnection();
 
         Statement stmt = conn.createStatement();
 
-        Assert.assertEquals(0, dataSource.getPoolingCount());
-        Assert.assertEquals(1, dataSource.getActiveCount());
-        Assert.assertEquals(0, dataSource.getErrorCount());
+        assertEquals(0, dataSource.getPoolingCount());
+        assertEquals(1, dataSource.getActiveCount());
+        assertEquals(0, dataSource.getErrorCount());
 
         Exception error = null;
         try {
@@ -827,25 +861,26 @@ public class DruidPooledStatementTest extends TestCase {
         } catch (Exception e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
-        Assert.assertEquals(1, dataSource.getErrorCount());
+        assertEquals(1, dataSource.getErrorCount());
 
         stmt.close();
         conn.close();
 
-        Assert.assertEquals(1, dataSource.getPoolingCount());
-        Assert.assertEquals(0, dataSource.getActiveCount());
+        assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getActiveCount());
     }
 
+    @Test
     public void test_executeBatch_error() throws Exception {
         Connection conn = dataSource.getConnection();
 
         Statement stmt = conn.createStatement();
 
-        Assert.assertEquals(0, dataSource.getPoolingCount());
-        Assert.assertEquals(1, dataSource.getActiveCount());
-        Assert.assertEquals(0, dataSource.getErrorCount());
+        assertEquals(0, dataSource.getPoolingCount());
+        assertEquals(1, dataSource.getActiveCount());
+        assertEquals(0, dataSource.getErrorCount());
 
         Exception error = null;
         try {
@@ -853,25 +888,26 @@ public class DruidPooledStatementTest extends TestCase {
         } catch (Exception e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
-        Assert.assertEquals(1, dataSource.getErrorCount());
+        assertEquals(1, dataSource.getErrorCount());
 
         stmt.close();
         conn.close();
 
-        Assert.assertEquals(1, dataSource.getPoolingCount());
-        Assert.assertEquals(0, dataSource.getActiveCount());
+        assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getActiveCount());
     }
 
+    @Test
     public void test_getMoreResults_error_1() throws Exception {
         Connection conn = dataSource.getConnection();
 
         Statement stmt = conn.createStatement();
 
-        Assert.assertEquals(0, dataSource.getPoolingCount());
-        Assert.assertEquals(1, dataSource.getActiveCount());
-        Assert.assertEquals(0, dataSource.getErrorCount());
+        assertEquals(0, dataSource.getPoolingCount());
+        assertEquals(1, dataSource.getActiveCount());
+        assertEquals(0, dataSource.getErrorCount());
 
         Exception error = null;
         try {
@@ -879,25 +915,26 @@ public class DruidPooledStatementTest extends TestCase {
         } catch (Exception e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
-        Assert.assertEquals(1, dataSource.getErrorCount());
+        assertEquals(1, dataSource.getErrorCount());
 
         stmt.close();
         conn.close();
 
-        Assert.assertEquals(1, dataSource.getPoolingCount());
-        Assert.assertEquals(0, dataSource.getActiveCount());
+        assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getActiveCount());
     }
 
+    @Test
     public void test_getGeneratedKeys_error() throws Exception {
         Connection conn = dataSource.getConnection();
 
         Statement stmt = conn.createStatement();
 
-        Assert.assertEquals(0, dataSource.getPoolingCount());
-        Assert.assertEquals(1, dataSource.getActiveCount());
-        Assert.assertEquals(0, dataSource.getErrorCount());
+        assertEquals(0, dataSource.getPoolingCount());
+        assertEquals(1, dataSource.getActiveCount());
+        assertEquals(0, dataSource.getErrorCount());
 
         Exception error = null;
         try {
@@ -905,25 +942,26 @@ public class DruidPooledStatementTest extends TestCase {
         } catch (Exception e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
-        Assert.assertEquals(1, dataSource.getErrorCount());
+        assertEquals(1, dataSource.getErrorCount());
 
         stmt.close();
         conn.close();
 
-        Assert.assertEquals(1, dataSource.getPoolingCount());
-        Assert.assertEquals(0, dataSource.getActiveCount());
+        assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getActiveCount());
     }
 
+    @Test
     public void test_getResultSetHoldability_error() throws Exception {
         Connection conn = dataSource.getConnection();
 
         Statement stmt = conn.createStatement();
 
-        Assert.assertEquals(0, dataSource.getPoolingCount());
-        Assert.assertEquals(1, dataSource.getActiveCount());
-        Assert.assertEquals(0, dataSource.getErrorCount());
+        assertEquals(0, dataSource.getPoolingCount());
+        assertEquals(1, dataSource.getActiveCount());
+        assertEquals(0, dataSource.getErrorCount());
 
         Exception error = null;
         try {
@@ -931,25 +969,26 @@ public class DruidPooledStatementTest extends TestCase {
         } catch (Exception e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
-        Assert.assertEquals(1, dataSource.getErrorCount());
+        assertEquals(1, dataSource.getErrorCount());
 
         stmt.close();
         conn.close();
 
-        Assert.assertEquals(1, dataSource.getPoolingCount());
-        Assert.assertEquals(0, dataSource.getActiveCount());
+        assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getActiveCount());
     }
 
+    @Test
     public void test_closeOnCompletion_error() throws Exception {
         Connection conn = dataSource.getConnection();
 
         DruidPooledStatement stmt = (DruidPooledStatement) conn.createStatement();
 
-        Assert.assertEquals(0, dataSource.getPoolingCount());
-        Assert.assertEquals(1, dataSource.getActiveCount());
-        Assert.assertEquals(0, dataSource.getErrorCount());
+        assertEquals(0, dataSource.getPoolingCount());
+        assertEquals(1, dataSource.getActiveCount());
+        assertEquals(0, dataSource.getErrorCount());
 
         Exception error = null;
         try {
@@ -957,25 +996,26 @@ public class DruidPooledStatementTest extends TestCase {
         } catch (SQLFeatureNotSupportedException e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
-        Assert.assertEquals(0, dataSource.getErrorCount());
+        assertEquals(0, dataSource.getErrorCount());
 
         stmt.close();
         conn.close();
 
-        Assert.assertEquals(1, dataSource.getPoolingCount());
-        Assert.assertEquals(0, dataSource.getActiveCount());
+        assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getActiveCount());
     }
 
+    @Test
     public void test_isCloseOnCompletion_error() throws Exception {
         Connection conn = dataSource.getConnection();
 
         DruidPooledStatement stmt = (DruidPooledStatement) conn.createStatement();
 
-        Assert.assertEquals(0, dataSource.getPoolingCount());
-        Assert.assertEquals(1, dataSource.getActiveCount());
-        Assert.assertEquals(0, dataSource.getErrorCount());
+        assertEquals(0, dataSource.getPoolingCount());
+        assertEquals(1, dataSource.getActiveCount());
+        assertEquals(0, dataSource.getErrorCount());
 
         Exception error = null;
         try {
@@ -983,15 +1023,15 @@ public class DruidPooledStatementTest extends TestCase {
         } catch (SQLFeatureNotSupportedException e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
 
-        Assert.assertEquals(0, dataSource.getErrorCount());
+        assertEquals(0, dataSource.getErrorCount());
 
         stmt.close();
         conn.close();
 
-        Assert.assertEquals(1, dataSource.getPoolingCount());
-        Assert.assertEquals(0, dataSource.getActiveCount());
+        assertEquals(1, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getActiveCount());
     }
 
     private final class ErrorFilter extends FilterAdapter {

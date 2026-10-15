@@ -1,18 +1,20 @@
 package com.alibaba.druid.bvt.sql.mysql.createTable;
 
-import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Dagon0577
  * @date 2020/5/14 10:51
  */
-public class MySqlCreateTableTest135 extends TestCase {
+public class MySqlCreateTableTest135 {
+    @Test
     public void test_0() throws Exception {
         String sql =
                 "create table MQ_TOPIC_RECORD(\n"
@@ -26,7 +28,6 @@ public class MySqlCreateTableTest135 extends TestCase {
 
         assertEquals(1, statementList.size());
 
-
         assertEquals("CREATE TABLE MQ_TOPIC_RECORD (\n" +
                 "\tTOPIC_ID bigint(11) NOT NULL,\n" +
                 "\tBROKENNAME national VARCHAR(50),\n" +
@@ -38,6 +39,5 @@ public class MySqlCreateTableTest135 extends TestCase {
                 "\tBROKENNAME national VARCHAR(50),\n" +
                 "\tBROKENNAME2 national CHAR(50)\n" +
                 ");", stmt.toLowerCaseString());
-
     }
 }

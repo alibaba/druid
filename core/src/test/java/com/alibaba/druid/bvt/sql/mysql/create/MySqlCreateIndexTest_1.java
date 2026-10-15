@@ -20,10 +20,11 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlCreateIndexTest_1 extends MysqlTest {
     @Test
@@ -37,6 +38,6 @@ public class MySqlCreateIndexTest_1 extends MysqlTest {
         stmt.accept(visitor);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE SPATIAL INDEX g ON geom (g);", output);
+        assertEquals("CREATE SPATIAL INDEX g ON geom (g);", output);
     }
 }

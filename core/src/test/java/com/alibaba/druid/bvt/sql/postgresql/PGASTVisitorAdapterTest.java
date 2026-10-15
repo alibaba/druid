@@ -5,10 +5,10 @@ import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGFunctionTableSource;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.FetchClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.ForClause;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitorAdapter;
+import org.junit.jupiter.api.Test;
 
-import junit.framework.TestCase;
-
-public class PGASTVisitorAdapterTest extends TestCase {
+public class PGASTVisitorAdapterTest {
+    @Test
     public void test_adapter() throws Exception {
         PGASTVisitorAdapter adapter = new PGASTVisitorAdapter();
 

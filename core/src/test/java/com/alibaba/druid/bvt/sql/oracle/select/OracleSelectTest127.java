@@ -20,12 +20,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
 
-public class OracleSelectTest127 extends TestCase {
+public class OracleSelectTest127 {
+    @Test
     public void test_0() throws Exception {
         String sql = "select \"fid\" from t1;";
 
@@ -58,5 +60,4 @@ public class OracleSelectTest127 extends TestCase {
 
         assertTrue(visitor.containsColumn("t1", "fid"));
     }
-
 }

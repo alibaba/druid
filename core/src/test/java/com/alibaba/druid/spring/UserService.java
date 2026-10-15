@@ -43,5 +43,4 @@ public class UserService implements IUserService {
     public void setSequenceService(ISequenceService sequenceService) {
         this.sequenceService = sequenceService;
     }
-
 }

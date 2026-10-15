@@ -15,11 +15,12 @@
  */
 package com.alibaba.druid.bvt.filter.wall.sqlserver;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallUtils;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * SQLServerWallTest
@@ -28,35 +29,29 @@ import com.alibaba.druid.wall.WallUtils;
  * @version 1.0, 2012-3-18
  * @see
  */
-public class SQLServerWallTest extends TestCase {
-    /**
-     * @param name
-     */
-    public SQLServerWallTest(String name) {
-        super(name);
-    }
-
+public class SQLServerWallTest {
     /*
      * (non-Javadoc)
      * @see junit.framework.TestCase#setUp()
      */
+    @BeforeEach
     protected void setUp() throws Exception {
-        super.setUp();
     }
 
     /*
      * (non-Javadoc)
      * @see junit.framework.TestCase#tearDown()
      */
+    @AfterEach
     protected void tearDown() throws Exception {
-        super.tearDown();
     }
 
+    @Test
     public void test_stuff() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT * from table where version = @@version"));
-        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT 1 — comment"));
-        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT * from t where a=1 /* and b=1*/"));
-        Assert.assertFalse(WallUtils.isValidateSqlServer("WAITFOR DELAY ’0:0:5′ "));
-        Assert.assertFalse(WallUtils.isValidateSqlServer("BULK INSERT mydata FROM ‘c:boot.ini’;"));
+        assertFalse(WallUtils.isValidateSqlServer("SELECT * from table where version = @@version"));
+        assertFalse(WallUtils.isValidateSqlServer("SELECT 1 — comment"));
+        assertFalse(WallUtils.isValidateSqlServer("SELECT * from t where a=1 /* and b=1*/"));
+        assertFalse(WallUtils.isValidateSqlServer("WAITFOR DELAY ’0:0:5′ "));
+        assertFalse(WallUtils.isValidateSqlServer("BULK INSERT mydata FROM ‘c:boot.ini’;"));
     }
 }

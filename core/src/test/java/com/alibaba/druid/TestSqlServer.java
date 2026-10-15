@@ -15,19 +15,20 @@
  */
 package com.alibaba.druid;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 
-import junit.framework.TestCase;
-
-
-public class TestSqlServer extends TestCase {
+public class TestSqlServer {
     private String jdbcUrl;
     private String user;
     private String password;
     private String driverClass;
     private String SQL;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         // jdbcUrl = "jdbc:oracle:thin:@a.b.c.d:1521:ocnauto";
         // user = "alibaba";
@@ -42,6 +43,7 @@ public class TestSqlServer extends TestCase {
         driverClass = "net.sourceforge.jtds.jdbc.Driver";
     }
 
+    @Test
     public void test_0() throws Exception {
         Class.forName(driverClass);
 

@@ -7,16 +7,12 @@ import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
-import com.alibaba.druid.stat.TableStat;
-import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
-import org.apache.commons.io.FileUtils;
+import org.junit.jupiter.api.Test;
 
-import java.io.File;
 import java.util.List;
-import java.util.Set;
 
-public class CreateTableSetSchemaDemo extends TestCase {
+public class CreateTableSetSchemaDemo {
+    @Test
     public void test_schemaStat() throws Exception {
         String sql = "create table t(fid varchar(20))";
 

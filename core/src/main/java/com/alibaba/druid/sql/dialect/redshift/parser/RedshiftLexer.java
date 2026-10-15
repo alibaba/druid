@@ -11,9 +11,9 @@ import java.util.Map;
 
 public class RedshiftLexer
         extends PGLexer {
-    @Override
-    protected Keywords loadKeywords() {
-        Map<String, Token> map = new HashMap<String, Token>();
+    static final Keywords REDSHIFT_KEYWORDS;
+    static {
+        Map<String, Token> map = new HashMap<>();
 
         map.putAll(Keywords.DEFAULT_KEYWORDS.getKeywords());
 
@@ -73,7 +73,12 @@ public class RedshiftLexer
         map.put("SORTKEY", Token.SORTKEY);
         map.put("BACKUP", Token.BACKUP);
 
-        return new Keywords(map);
+        REDSHIFT_KEYWORDS = new Keywords(map);
+    }
+
+    @Override
+    protected Keywords loadKeywords() {
+        return REDSHIFT_KEYWORDS;
     }
 
     public RedshiftLexer(String input, SQLParserFeature... features) {

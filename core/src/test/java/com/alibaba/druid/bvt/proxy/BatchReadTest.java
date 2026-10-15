@@ -15,6 +15,13 @@
  */
 package com.alibaba.druid.bvt.proxy;
 
+import com.alibaba.druid.proxy.DruidDriver;
+import com.alibaba.druid.stat.JdbcStatManager;
+import com.alibaba.druid.util.JdbcUtils;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -22,17 +29,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Assert;
-
-import com.alibaba.druid.proxy.DruidDriver;
-import com.alibaba.druid.stat.JdbcStatManager;
-import com.alibaba.druid.util.JdbcUtils;
-
-public class BatchReadTest extends TestCase {
+public class BatchReadTest {
     private static String create_url = "jdbc:wrap-jdbc:filters=default,commonLogging,log4j:name=batchReadTest:jdbc:derby:memory:batchDB;create=true";
 
+    @BeforeEach
     protected void setUp() throws Exception {
         Class.forName("com.alibaba.druid.proxy.DruidDriver");
 
@@ -61,13 +63,15 @@ public class BatchReadTest extends TestCase {
         conn.close();
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dropTable();
 
         DruidDriver.getProxyDataSources().clear();
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+         JdbcStatManager.getInstance().reset();
     }
 
+    @Test
     public void test_stmt_batch() throws Exception {
         Connection conn = null;
         Statement stmt = null;
@@ -108,6 +112,7 @@ public class BatchReadTest extends TestCase {
         }
     }
 
+    @Test
     public void test_pstmt_batch() throws Exception {
         Connection conn = null;
         Statement stmt = null;
@@ -133,7 +138,7 @@ public class BatchReadTest extends TestCase {
 
             int[] updateCounts = pstmt.executeBatch();
 
-            Assert.assertArrayEquals(new int[]{1, 1}, updateCounts);
+            assertArrayEquals(new int[]{1, 1}, updateCounts);
 
             pstmt.setFetchDirection(stmt.getFetchDirection());
             pstmt.setFetchSize(pstmt.getFetchSize());

@@ -15,12 +15,11 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * SQLServerWallTest
@@ -29,15 +28,15 @@ import com.alibaba.druid.wall.spi.MySqlWallProvider;
  * @version 1.0, 2012-3-18
  * @see
  */
-public class MySqlWallTest92 extends TestCase {
+public class MySqlWallTest92 {
+    @Test
     public void test_false() throws Exception {
         WallProvider provider = new MySqlWallProvider();
 
-        Assert.assertFalse(provider.checkValid(//
+        assertFalse(provider.checkValid(//
                 "SELECT * FROM T WHERE FID = 40 OR 1 = (SELECT (CASE WHEN (4484=4484) THEN 1 ELSE 0 END))"));
 
-        Assert.assertEquals(1, provider.getTableStats().size());
-        Assert.assertTrue(provider.getTableStats().containsKey("t"));
+        assertEquals(1, provider.getTableStats().size());
+        assertTrue(provider.getTableStats().containsKey("t"));
     }
-
 }

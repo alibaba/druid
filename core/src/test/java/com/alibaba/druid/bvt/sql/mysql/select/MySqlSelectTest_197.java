@@ -7,6 +7,8 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_197 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select \"\"\"1\"\"\"\"\" as a;";
@@ -68,7 +70,6 @@ public class MySqlSelectTest_197 extends MysqlTest {
         assertEquals(1, statementList.size());
 
         assertEquals("SELECT '''1''''' AS a;", stmt.toString());
-
     }
 
     public void test_4() throws Exception {
@@ -83,6 +84,5 @@ public class MySqlSelectTest_197 extends MysqlTest {
         assertEquals(1, statementList.size());
 
         assertEquals("SELECT '''1''''' AS a;", stmt.toString());
-
     }
 }

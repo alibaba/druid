@@ -23,6 +23,7 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleSelectTest123 extends MysqlTest {
     public void test_0() throws Exception {
@@ -228,5 +229,4 @@ public class OracleSelectTest123 extends MysqlTest {
                 "\t) para ON para.site_address_id = b.site_address_id \n" +
                 "ORDER BY b.Device_Bom_Id, b.Dev_Bom_Type_Attribute, b.site_seq, b.addr_seq", stmt.toString());
     }
-
 }

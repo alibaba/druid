@@ -21,6 +21,8 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlCreateExternalCatalogTest2 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "CREATE EXTERNAL CATALOG shanghao_test.oss_catalog_0\n" +
@@ -49,5 +51,4 @@ public class MySqlCreateExternalCatalogTest2 extends MysqlTest {
                 "'connection-password'='access_key')\n" +
                 "COMMENT 'This is a sample to create an oss connector catalog';", stmt.toString());
     }
-
 }

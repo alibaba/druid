@@ -15,27 +15,25 @@
  */
 package com.alibaba.druid.bvt.filter.wall.sqlserver;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.SQLServerWallProvider;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * SQLServerWallTest
  *
  * @see
  */
-public class SQLServerWallTest_12 extends TestCase {
+public class SQLServerWallTest_12 {
+    @Test
     public void test_true() throws Exception {
         WallProvider provider = new SQLServerWallProvider();
         provider.getConfig().setCommentAllow(true);
 
         String sql = "EXEC master..xp_msver";
 
-        Assert.assertTrue(provider.checkValid(sql));
-
+        assertTrue(provider.checkValid(sql));
     }
-
 }

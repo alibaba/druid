@@ -15,45 +15,50 @@
  */
 package com.alibaba.druid.bvt.filter;
 
+import com.alibaba.druid.filter.Filter;
+import com.alibaba.druid.filter.FilterAdapter;
+import com.alibaba.druid.filter.FilterChain;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.DruidPooledConnection;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.*;
 
-import com.alibaba.druid.filter.Filter;
-import com.alibaba.druid.filter.FilterAdapter;
-import com.alibaba.druid.filter.FilterChain;
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.pool.DruidPooledConnection;
-
-public class FilterDatasourceConnectAndRecycleFilterTest extends TestCase {
+public class FilterDatasourceConnectAndRecycleFilterTest {
     TestFilter filter = new TestFilter();
     List<Filter> filterList = new ArrayList<Filter>();
     private DruidDataSource dataSource = new DruidDataSource();
 
+    @BeforeEach
     protected void setUp() throws Exception {
         filterList.add(filter);
         dataSource.setProxyFilters(filterList);
         dataSource.setUrl("jdbc:mock:");
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
     }
 
+    @Test
     public void test() throws Exception {
-        Assert.assertEquals(0, filter.getDataSourceConnectCount());
-        Assert.assertEquals(0, filter.getDataSourceRecycleCount());
+        assertEquals(0, filter.getDataSourceConnectCount());
+        assertEquals(0, filter.getDataSourceRecycleCount());
         Connection conn = dataSource.getConnection();
-        Assert.assertEquals(1, filter.getDataSourceConnectCount());
-        Assert.assertEquals(0, filter.getDataSourceRecycleCount());
+        assertEquals(1, filter.getDataSourceConnectCount());
+        assertEquals(0, filter.getDataSourceRecycleCount());
         conn.close();
-        Assert.assertEquals(1, filter.getDataSourceConnectCount());
-        Assert.assertEquals(1, filter.getDataSourceRecycleCount());
+        assertEquals(1, filter.getDataSourceConnectCount());
+        assertEquals(1, filter.getDataSourceRecycleCount());
     }
 
     public static class TestFilter extends FilterAdapter {

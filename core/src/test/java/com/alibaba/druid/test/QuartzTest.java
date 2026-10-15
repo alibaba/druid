@@ -1,13 +1,10 @@
 package com.alibaba.druid.test;
 
-import java.util.Properties;
-
 import com.alibaba.druid.PoolTestCase;
-import junit.framework.TestCase;
-
-import org.quartz.Scheduler;
 import org.quartz.impl.StdScheduler;
 import org.quartz.impl.StdSchedulerFactory;
+
+import java.util.Properties;
 
 public class QuartzTest extends PoolTestCase {
     StdSchedulerFactory factory;
@@ -29,7 +26,6 @@ public class QuartzTest extends PoolTestCase {
     protected void tearDown() throws Exception {
         scheduler.shutdown();
 
-
         Thread.sleep(1000 * 1000);
         super.tearDown();
     }
@@ -37,5 +33,4 @@ public class QuartzTest extends PoolTestCase {
     public void testQuartz() throws Exception {
         scheduler.start();
     }
-
 }

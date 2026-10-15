@@ -7,10 +7,12 @@ import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
-public class SchemaStatTest9 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class SchemaStatTest9 {
+    @Test
     public void test_schemaStat() throws Exception {
         String sql = "select now() from t";
 
@@ -25,8 +27,8 @@ public class SchemaStatTest9 extends TestCase {
 //        System.out.println(statVisitor.getGroupByColumns()); // group by
 //        System.out.println("relationships : " + statVisitor.getRelationships()); // group by
 
-        Assert.assertEquals(0, statVisitor.getColumns().size());
-        Assert.assertEquals(0, statVisitor.getConditions().size());
+        assertEquals(0, statVisitor.getColumns().size());
+        assertEquals(0, statVisitor.getConditions().size());
         assertEquals(1, statVisitor.getFunctions().size());
         assertEquals("now", statVisitor.getFunctions().get(0).getMethodName());
     }

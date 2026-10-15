@@ -16,8 +16,9 @@
 package com.alibaba.druid.bvt.filter.wall.pg;
 
 import com.alibaba.druid.wall.WallUtils;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * SQLServerWallTest
@@ -26,7 +27,8 @@ import org.junit.Assert;
  * @version 1.0, 2012-3-18
  * @see
  */
-public class PGWallTest2 extends TestCase {
+public class PGWallTest2 {
+    @Test
     public void test_wall() throws Exception {
         assertTrue(WallUtils.isValidatePostgres(//
                 "select u.id, (\n" +
@@ -37,6 +39,7 @@ public class PGWallTest2 extends TestCase {
                         "limit 1;"));
     }
 
+    @Test
     public void test_wall_2() throws Exception {
         assertTrue(WallUtils.isValidatePostgres(//
                 "select 1 from t_user u\n" +

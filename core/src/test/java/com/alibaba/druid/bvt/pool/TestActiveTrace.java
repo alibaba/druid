@@ -15,21 +15,22 @@
  */
 package com.alibaba.druid.bvt.pool;
 
-import java.sql.Connection;
-
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class TestActiveTrace extends TestCase {
+import java.sql.Connection;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class TestActiveTrace {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         DruidDataSourceStatManager.clear();
-
         dataSource = new DruidDataSource();
         dataSource.setRemoveAbandoned(true);
         dataSource.setRemoveAbandonedTimeoutMillis(100);
@@ -37,14 +38,15 @@ public class TestActiveTrace extends TestCase {
         dataSource.setTimeBetweenEvictionRunsMillis(10);
         dataSource.setMinEvictableIdleTimeMillis(300 * 1000);
         dataSource.setUrl("jdbc:mock:xxx");
-
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        DruidDataSourceStatManager.clear();
     }
 
+    @Test
     public void test_activeTrace() throws Exception {
         for (int i = 0; i < 1000; ++i) {
             dataSource.shrink();
@@ -53,10 +55,10 @@ public class TestActiveTrace extends TestCase {
             conn.close();
             // sleep 10ms for checking stability, see https://github.com/alibaba/druid/issues/5620
             Thread.sleep(10);
-            // Assert.assertEquals(1, dataSource.getPoolingCount());
+            // assertEquals(1, dataSource.getPoolingCount());
             dataSource.shrink();
-            Assert.assertEquals("createCount : " + dataSource.getCreateCount(), 0, dataSource.getPoolingCount());
-            Assert.assertEquals(0, dataSource.getActiveConnections().size());
+            assertEquals(0, dataSource.getPoolingCount(), "createCount : " + dataSource.getCreateCount());
+            assertEquals(0, dataSource.getActiveConnections().size());
         }
     }
 }

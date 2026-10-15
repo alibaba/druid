@@ -15,27 +15,27 @@
  */
 package com.alibaba.druid.bvt.filter.wall.oracle;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * 这个场景测试访问Oracle系统对象
  *
  * @author admin
  */
-public class OracleWallPermitFunctionTest extends TestCase {
+public class OracleWallPermitFunctionTest {
+    @Test
     public void test_permitTable() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateOracle("select * from t where fid = 1 union select SYS_CONTEXT ('USERENV', 'CURRENT_USER') from X"));
+        assertFalse(WallUtils.isValidateOracle("select * from t where fid = 1 union select SYS_CONTEXT ('USERENV', 'CURRENT_USER') from X"));
     }
 
+    @Test
     public void test_permitTable_allow() throws Exception {
         WallConfig config = new WallConfig();
         config.setFunctionCheck(false);
-        Assert.assertTrue(WallUtils.isValidateOracle("select SYS_CONTEXT ('USERENV', 'CURRENT_USER') from X", config));
+        assertTrue(WallUtils.isValidateOracle("select SYS_CONTEXT ('USERENV', 'CURRENT_USER') from X", config));
     }
-
 }

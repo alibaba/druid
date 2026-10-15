@@ -22,20 +22,22 @@ import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
-public class MySqlAlterTableAddIndex_4 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlAlterTableAddIndex_4 {
+    @Test
     public void test_alter_first() throws Exception {
         String sql = "ALTER TABLE t_order ADD INDEX `g_i_buyer` (`buyer_id`) COVERING (order_snapshot) dbpartition by hash(`buyer_id`);";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
 
-        Assert.assertEquals("ALTER TABLE t_order\n" +
+        assertEquals("ALTER TABLE t_order\n" +
                 "\tADD INDEX `g_i_buyer` (`buyer_id`) COVERING (order_snapshot) DBPARTITION BY hash(`buyer_id`);", SQLUtils.toMySqlString(stmt));
 
-        Assert.assertEquals("alter table t_order\n" +
+        assertEquals("alter table t_order\n" +
                 "\tadd index `g_i_buyer` (`buyer_id`) covering (order_snapshot) dbpartition by hash(`buyer_id`);", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         SchemaStatVisitor visitor = new SQLUtils().createSchemaStatVisitor(JdbcConstants.MYSQL);
@@ -45,5 +47,4 @@ public class MySqlAlterTableAddIndex_4 extends TestCase {
         assertEquals(1, tableStat.getAlterCount());
         assertEquals(1, tableStat.getCreateIndexCount());
     }
-
 }

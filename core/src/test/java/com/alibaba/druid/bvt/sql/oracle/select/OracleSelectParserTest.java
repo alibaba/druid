@@ -18,11 +18,12 @@ package com.alibaba.druid.bvt.sql.oracle.select;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class OracleSelectParserTest extends TestCase {
+public class OracleSelectParserTest {
+    @Test
     public void test_select() throws Exception {
         String sql = "SELECT last_name, department_id FROM employees WHERE department_id = (SELECT department_id FROM employees WHERE last_name = 'Lorentz') ORDER BY last_name, department_id;";
 
@@ -32,6 +33,7 @@ public class OracleSelectParserTest extends TestCase {
         output(statementList);
     }
 
+    @Test
     public void test_hinits() throws Exception {
         String sql = "SELECT /*+FIRST_ROWS*/ * FROM T";
 

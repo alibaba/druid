@@ -4,14 +4,17 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class HiveSelectTest_4_array
-        extends TestCase {
+ {
+    @Test
     public void test_select() throws Exception {
-        String sql = "select religions['catholic'][0] from json_nested_test;";//
+        String sql = "select religions['catholic'][0] from json_nested_test;";
         assertEquals("SELECT religions['catholic'][0]\n" +
                 "FROM json_nested_test;", SQLUtils.formatHive(sql));
         assertEquals("select religions['catholic'][0]\n" +
@@ -37,6 +40,5 @@ public class HiveSelectTest_4_array
         assertTrue(visitor.containsColumn("json_nested_test", "religions"));
 //        assertTrue(visitor.containsColumn("customers", "isxx"));
 //        assertTrue(visitor.containsColumn("customers", "*"));
-
     }
 }

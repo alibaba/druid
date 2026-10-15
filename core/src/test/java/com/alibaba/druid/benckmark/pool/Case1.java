@@ -15,6 +15,17 @@
  */
 package com.alibaba.druid.benckmark.pool;
 
+import com.alibaba.druid.TestUtil;
+import com.alibaba.druid.mock.MockDriver;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.jolbox.bonecp.BoneCPDataSource;
+import com.mchange.v2.c3p0.ComboPooledDataSource;
+import org.apache.commons.dbcp.BasicDataSource;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import javax.sql.DataSource;
+
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadInfo;
 import java.sql.Connection;
@@ -25,24 +36,12 @@ import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicLong;
 
-import javax.sql.DataSource;
-
-import junit.framework.TestCase;
-
-import org.apache.commons.dbcp.BasicDataSource;
-
-import com.alibaba.druid.TestUtil;
-import com.alibaba.druid.mock.MockDriver;
-import com.alibaba.druid.pool.DruidDataSource;
-import com.jolbox.bonecp.BoneCPDataSource;
-import com.mchange.v2.c3p0.ComboPooledDataSource;
-
 /**
  * TestOnBo 类Case1.java的实现描述：TODO 类实现描述
  *
  * @author admin 2011-5-28 下午03:47:40
  */
-public class Case1 extends TestCase {
+public class Case1 {
     private String jdbcUrl;
     private String user;
     private String password;
@@ -74,6 +73,7 @@ public class Case1 extends TestCase {
         }
     }
 
+    @BeforeEach
     protected void setUp() throws Exception {
         DriverManager.registerDriver(TestDriver.instance);
 
@@ -88,6 +88,7 @@ public class Case1 extends TestCase {
         physicalConnStat.set(0);
     }
 
+    @Test
     public void test_druid() throws Exception {
         DruidDataSource dataSource = new DruidDataSource();
 
@@ -110,6 +111,7 @@ public class Case1 extends TestCase {
         System.out.println();
     }
 
+    @Test
     public void test_dbcp() throws Exception {
         final BasicDataSource dataSource = new BasicDataSource();
 
@@ -132,6 +134,7 @@ public class Case1 extends TestCase {
         System.out.println();
     }
 
+    @Test
     public void test_bonecp() throws Exception {
         BoneCPDataSource dataSource = new BoneCPDataSource();
         // dataSource.(10);
@@ -158,6 +161,7 @@ public class Case1 extends TestCase {
         System.out.println();
     }
 
+    @Test
     public void test_c3p0() throws Exception {
         ComboPooledDataSource dataSource = new ComboPooledDataSource();
         // dataSource.(10);
@@ -178,6 +182,7 @@ public class Case1 extends TestCase {
         System.out.println();
     }
 
+    @Test
     public void test_tomcat_jdbc() throws Exception {
         org.apache.tomcat.jdbc.pool.DataSource dataSource = new org.apache.tomcat.jdbc.pool.DataSource();
         // dataSource.(10);
@@ -261,6 +266,5 @@ public class Case1 extends TestCase {
                 + NumberFormat.getInstance().format(blockedCount) //
                 + " waited " + NumberFormat.getInstance().format(waitedCount) + " physicalConn "
                 + physicalConnStat.get());
-
     }
 }

@@ -20,6 +20,7 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_288 extends MysqlTest {
     public void test_0() throws Exception {
@@ -242,6 +243,4 @@ public class MySqlSelectTest_288 extends MysqlTest {
                 "\t) back\n" +
                 "\tON d.server_id = back.server_id)", stmt.toString());
     }
-
-
 }

@@ -3,10 +3,12 @@ package com.alibaba.druid.sql.dialect.gaussdb.visitor;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
+import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLWithSubqueryClause;
+import com.alibaba.druid.sql.dialect.gaussdb.GaussDb;
 import com.alibaba.druid.sql.dialect.gaussdb.ast.GaussDbDistributeBy;
 import com.alibaba.druid.sql.dialect.gaussdb.ast.GaussDbPartitionValue;
 import com.alibaba.druid.sql.dialect.gaussdb.ast.stmt.GaussDbCreateTableStatement;
@@ -20,13 +22,11 @@ import java.util.stream.Collectors;
 
 public class GaussDbOutputVisitor extends PGOutputVisitor implements GaussDbASTVisitor {
     public GaussDbOutputVisitor(StringBuilder appender, boolean parameterized) {
-        super(appender, parameterized);
-        dbType = DbType.gaussdb;
+        super(appender, DbType.gaussdb, GaussDb.DIALECT, parameterized);
     }
 
     public GaussDbOutputVisitor(StringBuilder appender) {
-        super(appender);
-        dbType = DbType.gaussdb;
+        super(appender, DbType.gaussdb, GaussDb.DIALECT);
     }
 
     @Override
@@ -48,10 +48,13 @@ public class GaussDbOutputVisitor extends PGOutputVisitor implements GaussDbASTV
         printCreateTableAfterName(x);
 
         printTableElements(x);
+        printServer(x);
 
         printCreateTableLike(x);
 
         printTableOptions(x);
+
+        printForeignMode(x);
 
         printOnCommit(x);
 
@@ -71,6 +74,29 @@ public class GaussDbOutputVisitor extends PGOutputVisitor implements GaussDbASTV
         return false;
     }
 
+    public void printForeignMode(GaussDbCreateTableStatement x) {
+        if (x.getForeignTableMode() != null) {
+            switch (x.getForeignTableMode()) {
+                case WRITE_ONLY:
+                    print0(ucase ? "WRITE ONLY" : "write only");
+                    break;
+                case READ_ONLY:
+                    print0(ucase ? "READ ONLY" : "read only");
+                    break;
+                case READ_WRITE:
+                    print0(ucase ? "READ WRITE" : "read write");
+                    break;
+            }
+        }
+    }
+    public void printServer(GaussDbCreateTableStatement x) {
+        if (x.getServer() != null) {
+            println();
+            print0(ucase ? "SERVER " : "server ");
+            x.getServer().accept(this);
+            println();
+        }
+    }
     public void printRowMovement(GaussDbCreateTableStatement x) {
         if (x.getRowMovementType() != null) {
             println();
@@ -120,9 +146,7 @@ public class GaussDbOutputVisitor extends PGOutputVisitor implements GaussDbASTV
     public boolean visit(SQLPartitionByRange x) {
         print0(ucase ? "RANGE" : "range");
         printColumns(x.getColumns());
-        if (!x.getPartitions().isEmpty()) {
-            printPartitionsValue(x.getPartitions());
-        }
+        printPartitionsValue(x.getPartitions());
         return false;
     }
 
@@ -130,9 +154,7 @@ public class GaussDbOutputVisitor extends PGOutputVisitor implements GaussDbASTV
     public boolean visit(SQLPartitionByList x) {
         print0(ucase ? "LIST" : "list");
         printColumns(x.getColumns());
-        if (!x.getPartitions().isEmpty()) {
-            printPartitionsValue(x.getPartitions());
-        }
+        printPartitionsValue(x.getPartitions());
         return false;
     }
 
@@ -428,6 +450,70 @@ public class GaussDbOutputVisitor extends PGOutputVisitor implements GaussDbASTV
         }
         if (x.isHdfsDirectory()) {
             print0(ucase ? "HDFSDIRECTORY " : "hdfsdirectory ");
+        }
+    }
+
+    protected void printCreateTableFeatures(SQLCreateTableStatement x) {
+        if (x.isEnabled(SQLCreateTableStatement.Feature.OrReplace)) {
+            print0(ucase ? "OR REPLACE " : "or replace ");
+        }
+        SQLCreateTableStatement.Feature[] features = {
+                SQLCreateTableStatement.Feature.Global,
+                SQLCreateTableStatement.Feature.Local,
+                SQLCreateTableStatement.Feature.Temporary,
+                SQLCreateTableStatement.Feature.Shadow,
+                SQLCreateTableStatement.Feature.External,
+                SQLCreateTableStatement.Feature.Transactional,
+                SQLCreateTableStatement.Feature.Dimension,
+                SQLCreateTableStatement.Feature.Unlogged
+        };
+
+        for (SQLCreateTableStatement.Feature feature : features) {
+            if (x.isEnabled(feature)) {
+                String name;
+                if (feature.equals(SQLCreateTableStatement.Feature.External)) {
+                    name = "FOREIGN";
+                } else {
+                    name = feature.name();
+                }
+                print0(ucase ? name.toUpperCase() : name.toLowerCase());
+                print(' ');
+            }
+        }
+    }
+
+    protected void printTableOptions(SQLCreateTableStatement x) {
+        List<SQLAssignItem> tblProperties = x.getTableOptions();
+        if (tblProperties.isEmpty()) {
+            return;
+        }
+        if (x.isEnabled(SQLCreateTableStatement.Feature.External)) {
+            print0(ucase ? "OPTIONS (" : "options (");
+            println();
+            indentCount++;
+            int i = 0;
+            for (SQLAssignItem property : tblProperties) {
+                if (i != 0) {
+                    print(",");
+                    println();
+                }
+                property.getTarget().accept(this);
+                print0(" ");
+                property.getValue().accept(this);
+                i++;
+            }
+            indentCount--;
+            println();
+            print0(")");
+            println();
+        } else {
+            printTableOptionsPrefix(x);
+            int i = 0;
+            for (SQLAssignItem property : tblProperties) {
+                printTableOption(property.getTarget(), property.getValue(), i);
+                ++i;
+            }
+            printTableOptionsPostfix(x);
         }
     }
 }

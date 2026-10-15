@@ -1,14 +1,14 @@
 package com.alibaba.druid.bvt.sql;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.parser.SQLExprParser;
+import org.junit.jupiter.api.Test;
 
-public class EqualTest_orderBy extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class EqualTest_orderBy {
+    @Test
     public void test_exits() throws Exception {
         String sql = "ORDER BY f1";
         String sql_c = "ORDER BY f2";
@@ -25,16 +25,16 @@ public class EqualTest_orderBy extends TestCase {
             SQLExprParser parser = new SQLExprParser(sql_c);
             exprC = (SQLOrderBy) parser.parseOrderBy();
         }
-        Assert.assertEquals(exprA, exprB);
-        Assert.assertNotEquals(exprA, exprC);
-        Assert.assertTrue(exprA.equals(exprA));
-        Assert.assertFalse(exprA.equals(new Object()));
-        Assert.assertEquals(exprA.hashCode(), exprB.hashCode());
+        assertEquals(exprA, exprB);
+        assertNotEquals(exprA, exprC);
+        assertTrue(exprA.equals(exprA));
+        assertFalse(exprA.equals(new Object()));
+        assertEquals(exprA.hashCode(), exprB.hashCode());
 
-        Assert.assertEquals(new SQLOrderBy(), new SQLOrderBy());
-        Assert.assertEquals(new SQLOrderBy().hashCode(), new SQLOrderBy().hashCode());
+        assertEquals(new SQLOrderBy(), new SQLOrderBy());
+        assertEquals(new SQLOrderBy().hashCode(), new SQLOrderBy().hashCode());
 
-        Assert.assertEquals(new SQLSelectOrderByItem(), new SQLSelectOrderByItem());
-        Assert.assertEquals(new SQLSelectOrderByItem().hashCode(), new SQLSelectOrderByItem().hashCode());
+        assertEquals(new SQLSelectOrderByItem(), new SQLSelectOrderByItem());
+        assertEquals(new SQLSelectOrderByItem().hashCode(), new SQLSelectOrderByItem().hashCode());
     }
 }

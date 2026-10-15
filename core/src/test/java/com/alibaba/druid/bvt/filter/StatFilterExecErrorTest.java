@@ -1,13 +1,5 @@
 package com.alibaba.druid.bvt.filter;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.pool.DruidDataSource;
@@ -16,10 +8,20 @@ import com.alibaba.druid.proxy.jdbc.ResultSetProxy;
 import com.alibaba.druid.proxy.jdbc.StatementProxy;
 import com.alibaba.druid.stat.JdbcSqlStat;
 import com.alibaba.druid.util.JdbcUtils;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class StatFilterExecErrorTest extends TestCase {
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class StatFilterExecErrorTest {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
 
@@ -43,10 +45,12 @@ public class StatFilterExecErrorTest extends TestCase {
         dataSource.init();
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
     }
 
+    @Test
     public void test_stat() throws Exception {
         Connection conn = dataSource.getConnection();
 
@@ -55,7 +59,7 @@ public class StatFilterExecErrorTest extends TestCase {
 
         JdbcSqlStat sqlStat = dataSource.getDataSourceStat().getSqlStat(sql);
 
-        Assert.assertEquals(0, sqlStat.getReadStringLength());
+        assertEquals(0, sqlStat.getReadStringLength());
 
         try {
             stmt.executeQuery();
@@ -65,10 +69,9 @@ public class StatFilterExecErrorTest extends TestCase {
             JdbcUtils.close(conn);
         }
 
-        Assert.assertEquals(1, sqlStat.getErrorCount());
-        Assert.assertEquals(0, sqlStat.getRunningCount());
+        assertEquals(1, sqlStat.getErrorCount());
+        assertEquals(0, sqlStat.getRunningCount());
 
         sqlStat.reset();
     }
-
 }

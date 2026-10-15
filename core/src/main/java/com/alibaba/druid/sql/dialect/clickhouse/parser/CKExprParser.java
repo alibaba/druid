@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.clickhouse.parser;
 
+import com.alibaba.druid.sql.ast.SQLArrayDataType;
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
@@ -75,6 +76,17 @@ public class CKExprParser extends SQLExprParser {
     protected SQLExpr parseAliasExpr(String alias) {
         String chars = alias.substring(1, alias.length() - 1);
         return new SQLCharExpr(chars);
+    }
+
+    public SQLExpr primary() {
+        if (lexer.token() == Token.LBRACKET) {
+            SQLArrayExpr array = new SQLArrayExpr();
+            lexer.nextToken();
+            this.exprList(array.getValues(), array);
+            accept(Token.RBRACKET);
+            return primaryRest(array);
+        }
+        return super.primary();
     }
 
     public SQLExpr primaryRest(SQLExpr expr) {
@@ -161,5 +173,15 @@ public class CKExprParser extends SQLExprParser {
         accept(Token.RPAREN);
 
         return struct;
+    }
+
+    @Override
+    protected SQLArrayDataType parseArrayDataType() {
+        lexer.nextToken();
+        accept(Token.LPAREN);
+        SQLDataType itemType = parseDataType();
+        SQLArrayDataType array = new SQLArrayDataType(itemType, dbType);
+        accept(Token.RPAREN);
+        return array;
     }
 }

@@ -1,58 +1,60 @@
 package com.alibaba.druid.bvt.proxy.filter;
 
 import com.alibaba.druid.DbType;
-import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.filter.stat.StatFilter;
+import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
-public class StatFilterTest3 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class StatFilterTest3 {
     @SuppressWarnings("deprecation")
+    @Test
     public void test_dbType() throws Exception {
         StatFilter filter = new StatFilter();
 
-        Assert.assertFalse(filter.isMergeSql());
+        assertFalse(filter.isMergeSql());
 
         filter.setDbType("mysql");
         filter.setMergeSql(true);
 
-        Assert.assertTrue(filter.isMergeSql());
-        Assert.assertEquals(DbType.mysql, filter.getDbType());
+        assertTrue(filter.isMergeSql());
+        assertEquals(DbType.mysql, filter.getDbType());
 
-        Assert.assertEquals("SELECT ?\nLIMIT ?", filter.mergeSql("select 'x' limit 1"));
+        assertEquals("SELECT ?\nLIMIT ?", filter.mergeSql("select 'x' limit 1"));
     }
 
+    @Test
     public void test_dbType_error() throws Exception {
         StatFilter filter = new StatFilter();
         filter.setDbType("mysql");
         filter.setMergeSql(true);
 
-        Assert.assertEquals(DbType.mysql, filter.getDbType());
+        assertEquals(DbType.mysql, filter.getDbType());
 
-        Assert.assertEquals("sdafawer asf ", filter.mergeSql("sdafawer asf "));
+        assertEquals("sdafawer asf ", filter.mergeSql("sdafawer asf "));
     }
 
+    @Test
     public void test_merge() throws Exception {
         StatFilter filter = new StatFilter();
         filter.setDbType("mysql");
         filter.setMergeSql(false);
 
-        Assert.assertEquals(DbType.mysql, filter.getDbType());
+        assertEquals(DbType.mysql, filter.getDbType());
 
-        Assert.assertEquals("select 'x' limit 1", filter.mergeSql("select 'x' limit 1"));
+        assertEquals("select 'x' limit 1", filter.mergeSql("select 'x' limit 1"));
     }
 
-
+    @Test
     public void test_merge_pg() throws Exception {
         StatFilter filter = new StatFilter();
         filter.setDbType(JdbcConstants.POSTGRESQL);
         filter.setMergeSql(true);
 
-        Assert.assertEquals(JdbcConstants.POSTGRESQL, filter.getDbType());
+        assertEquals(JdbcConstants.POSTGRESQL, filter.getDbType());
 
-        Assert.assertEquals("DROP TABLE IF EXISTS test_site_data_select_111;\n" +
+        assertEquals("DROP TABLE IF EXISTS test_site_data_select_111;\n" +
                 "CREATE TABLE test_site_data_select_111\n" +
                 "AS\n" +
                 "SELECT *\n" +
@@ -62,6 +64,7 @@ public class StatFilterTest3 extends TestCase {
                 "\tAND site_id = ?;", filter.mergeSql("drop table if exists test_site_data_select_111; create table test_site_data_select_111 AS select * from postman_trace_info_one  where lng>0 and lat>0  and site_id='17814' ;", JdbcConstants.POSTGRESQL));
     }
 
+    @Test
     public void test_merge_oracle() throws Exception {
         StatFilter filter = new StatFilter();
         filter.setDbType(DbType.oceanbase_oracle);
@@ -70,20 +73,21 @@ public class StatFilterTest3 extends TestCase {
         filter.mergeSql("insert into t(f1, f2) values (1, 2)", DbType.oceanbase_oracle);
     }
 
+    @Test
     public void test_merge_nodbtype() throws Exception {
         StatFilter filter = new StatFilter();
 
-        Assert.assertFalse(filter.isMergeSql());
+        assertFalse(filter.isMergeSql());
 
         filter.setMergeSql(true);
 
-        Assert.assertTrue(filter.isMergeSql());
-        Assert.assertNull(filter.getDbType());
+        assertTrue(filter.isMergeSql());
+        assertNull(filter.getDbType());
 
-        Assert.assertEquals("SELECT *\n" +
+        assertEquals("SELECT *\n" +
                         "FROM temp.test\n" +
                         "ORDER BY id DESC\n" +
-                        "LIMIT ?"
-                , filter.mergeSql("select * from temp.test order by id desc limit 1"));
+                        "LIMIT ?",
+                filter.mergeSql("select * from temp.test order by id desc limit 1"));
     }
 }

@@ -23,12 +23,13 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_57 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SELECT SUBSTR('12345678' FROM 2 FOR 4)";
 
         System.out.println(sql);
-
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL, true);
         SQLStatement stmt = statementList.get(0);

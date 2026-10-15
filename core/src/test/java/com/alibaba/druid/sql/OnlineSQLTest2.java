@@ -15,24 +15,25 @@
  */
 package com.alibaba.druid.sql;
 
+import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
+import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
+import org.junit.jupiter.api.Test;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.List;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.*;
 
-import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
-
-public class OnlineSQLTest2 extends TestCase {
+public class OnlineSQLTest2 {
     private String url = "jdbc:mysql://a.b.c.d/dragoon_v25_monitordb_test";
     private String user = "dragoon";
     private String password = "dragoon";
 
+    @Test
     public void test_list_sql() throws Exception {
         Connection conn = DriverManager.getConnection(url, user, password);
 
@@ -89,7 +90,7 @@ public class OnlineSQLTest2 extends TestCase {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         statemen.accept(visitor);

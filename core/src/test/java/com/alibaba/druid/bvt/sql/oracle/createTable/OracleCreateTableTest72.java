@@ -22,6 +22,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleCreateTableTest72 extends OracleTest {
     public void test_types() throws Exception {
         String sql = //
@@ -60,7 +62,7 @@ public class OracleCreateTableTest72 extends OracleTest {
                         "\t\"IS_FROM_MEMBER\" CHAR(1) NOT NULL ENABLE,\n" +
                         "\t\"IS_JOIN\" CHAR(1) NOT NULL ENABLE\n" +
                         ")\n" +
-                        "ON COMMIT DELETE ROWS",//
+                        "ON COMMIT DELETE ROWS",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 //
 //        SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ORACLE);

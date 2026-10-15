@@ -9,6 +9,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
  * @version 1.0
  * @ClassName MySqlSelectTest_eq_null_parameterized
@@ -33,5 +35,4 @@ public class MySqlSelectTest_eq_null_parameterized extends MysqlTest {
                 "FROM test_null_shard\n" +
                 "WHERE id = ?;", ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL));
     }
-
 }

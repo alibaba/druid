@@ -15,23 +15,17 @@
  */
 package com.alibaba.druid;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.io.Writer;
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.util.Utils;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class TestReplaceLicense extends TestCase {
+import java.io.*;
+
+public class TestReplaceLicense {
     private String license;
     private String lineSeparator;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("License.txt");
         Reader reader = new InputStreamReader(is);
@@ -43,10 +37,10 @@ public class TestReplaceLicense extends TestCase {
         // sun.security.action.GetPropertyAction("line.separator"));
     }
 
+    @Test
     public void test_0() throws Exception {
         File file = new File("/usr/alibaba/workspace/druid");
         listFile(file);
-
     }
 
     public void listFile(File file) throws Exception {
@@ -79,7 +73,6 @@ public class TestReplaceLicense extends TestCase {
             Writer writer = new OutputStreamWriter(out, "utf-8");
             writer.write(newContent);
             writer.close();
-        } else {
         }
     }
 }

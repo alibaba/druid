@@ -19,12 +19,14 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
 
-public class OracleSelectTest125 extends TestCase {
+public class OracleSelectTest125 {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT\n" +
                 "specialact0_. ID AS id1_14_,\n" +
@@ -66,5 +68,4 @@ public class OracleSelectTest125 extends TestCase {
                 "where 1 = 1\n" +
                 "offset ? rows fetch first ? rows only", stmt.toLowerCaseString());
     }
-
 }

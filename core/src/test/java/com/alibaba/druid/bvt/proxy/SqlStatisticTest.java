@@ -15,21 +15,21 @@
  */
 package com.alibaba.druid.bvt.proxy;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.stat.JdbcSqlStat;
+import org.junit.jupiter.api.Test;
 
-public class SqlStatisticTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class SqlStatisticTest {
+    @Test
     public void test_sql_stat() throws Exception {
         JdbcSqlStat stat = new JdbcSqlStat("SELECT * FROM t_user");
-        Assert.assertEquals(null, stat.getExecuteLastStartTime());
-        Assert.assertEquals(null, stat.getExecuteNanoSpanMaxOccurTime());
-        Assert.assertEquals(null, stat.getExecuteErrorLastTime());
+        assertEquals(null, stat.getExecuteLastStartTime());
+        assertEquals(null, stat.getExecuteNanoSpanMaxOccurTime());
+        assertEquals(null, stat.getExecuteErrorLastTime());
 
         stat.error(new Exception());
-        Assert.assertNotNull(stat.getExecuteErrorLast());
-        Assert.assertNotNull(stat.getExecuteErrorLastTime());
+        assertNotNull(stat.getExecuteErrorLast());
+        assertNotNull(stat.getExecuteErrorLastTime());
     }
 }

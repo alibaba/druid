@@ -15,22 +15,25 @@
  */
 package com.alibaba.druid.bvt.bug;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.mock.MockPreparedStatement;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class Bug_for_xuershan extends TestCase {
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class Bug_for_xuershan {
     private DruidDataSource dataSource;
     private MockDriver driver;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         driver = new MockDriver() {
             public ResultSet createResultSet(MockPreparedStatement stmt) {
@@ -43,16 +46,18 @@ public class Bug_for_xuershan extends TestCase {
         dataSource.setDriver(driver);
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
     }
 
+    @Test
     public void test_bug_for_xuershan() throws Exception {
         String sql = "select 1";
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement(sql);
         stmt.execute();
-        Assert.assertNull(stmt.getResultSet());
+        assertNull(stmt.getResultSet());
         stmt.close();
         conn.close();
     }

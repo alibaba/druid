@@ -18,12 +18,12 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.function.IntFunction;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SQLResourceTest {
-    protected final static String DELIMITER_LONG = "------------------------------------------------------------------------------------------------------------------------";
-    protected final static String DELIMITER_SHORT = "--------------------";
+    protected static final String DELIMITER_LONG = "------------------------------------------------------------------------------------------------------------------------";
+    protected static final String DELIMITER_SHORT = "--------------------";
 
     protected final DbType dbType;
 
@@ -115,17 +115,17 @@ public class SQLResourceTest {
             assertEquals(2, parts.length);
 
             String sql = parts[0].trim();
-            String expected = parts[1].trim().replaceAll("\r\n","\n");
+            String expected = parts[1].trim().replaceAll("\r\n", "\n");
 
             System.out.println();
             System.out.println(sql);
             System.out.println();
-            System.out.println(DELIMITER_SHORT + " " + file.getName() +  " [" + (i + 1) + "/" + tests.length + "] " + dbType);
+            System.out.println(DELIMITER_SHORT + " " + file.getName() + " [" + (i + 1) + "/" + tests.length + "] " + dbType);
             System.out.println();
 
             SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
             SQLStatement stmt = parser.parseStatement();
-            assertEquals(parser.getLexer().info(), Token.EOF, parser.getLexer().token());
+            assertEquals(Token.EOF, parser.getLexer().token(), parser.getLexer().info());
             String result = SQLUtils.toSQLString(stmt, dbType).trim();
             assertEquals(expected, result);
 

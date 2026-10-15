@@ -17,18 +17,18 @@ package com.alibaba.druid.wall.spi;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
+import com.alibaba.druid.sql.dialect.sqlite.visitor.SQLiteASTVisitor;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.WallVisitor;
 
-public class SQLiteWallVisitor extends WallVisitorBase implements WallVisitor, MySqlASTVisitor {
+public class SQLiteWallVisitor extends WallVisitorBase implements WallVisitor, SQLiteASTVisitor {
     public SQLiteWallVisitor(WallProvider provider) {
         super(provider);
     }
 
     @Override
     public DbType getDbType() {
-        return DbType.postgresql;
+        return DbType.sqlite;
     }
 
     public boolean visit(SQLIdentifierExpr x) {

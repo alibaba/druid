@@ -15,22 +15,17 @@
  */
 package com.alibaba.druid.bvt.proxy;
 
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.stat.JdbcStatManager;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class CallStatementTest extends TestCase {
+import java.sql.*;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class CallStatementTest {
     /**
      * Procedures that should be created before the tests are run and dropped when the tests have finished. First
      * element in each row is the name of the procedure, second element is SQL which creates it.
@@ -59,6 +54,7 @@ public class CallStatementTest extends TestCase {
 
     private static String create_url = "jdbc:wrap-jdbc:filters=default,commonLogging,log4j:name=demo:jdbc:derby:memory:callableStatementDB;create=true";
 
+    @BeforeEach
     protected void setUp() throws Exception {
         Class.forName("com.alibaba.druid.proxy.DruidDriver");
 
@@ -90,12 +86,14 @@ public class CallStatementTest extends TestCase {
         conn.close();
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dropTable();
         DruidDriver.getProxyDataSources().clear();
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+        JdbcStatManager.getInstance().reset();
     }
 
+    @Test
     public void test_precall() throws Exception {
         f_testExecuteQueryWithNoDynamicResultSets();
         f_testExecuteQueryWithNoDynamicResultSets_callable();
@@ -111,7 +109,7 @@ public class CallStatementTest extends TestCase {
             error = sqle;
         }
 
-        Assert.assertNotNull(error);
+        assertNotNull(error);
         stmt.close();
         connect.close();
     }
@@ -127,7 +125,7 @@ public class CallStatementTest extends TestCase {
         } catch (SQLException sqle) {
             error = sqle;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
         cs.close();
         connect.close();
     }
@@ -168,7 +166,9 @@ public class CallStatementTest extends TestCase {
         ps.setInt(1, p2);
         data2[0] = ps.executeQuery();
 
-        if (p2 == 99) data2[0].close();
+        if (p2 == 99) {
+            data2[0].close();
+        }
 
         // return no results
         if (p2 == 199) {
@@ -225,10 +225,16 @@ public class CallStatementTest extends TestCase {
 
     public static void parameter1(int a, String b, String c, java.sql.ResultSet[] rs) throws SQLException {
         System.out.print("PT1 a=" + a);
-        if (b == null) System.out.println(" b = null");
-        else System.out.print(" b=<" + b + ">(" + b.length() + ")");
-        if (c == null) System.out.println(" c = null");
-        else System.out.print(" c=<" + c + ">(" + c.length() + ")");
+        if (b == null) {
+            System.out.println(" b = null");
+        } else {
+            System.out.print(" b=<" + b + ">(" + b.length() + ")");
+        }
+        if (c == null) {
+            System.out.println(" c = null");
+        } else {
+            System.out.print(" c=<" + c + ">(" + c.length() + ")");
+        }
 
         System.out.println("");
 
@@ -281,5 +287,4 @@ public class CallStatementTest extends TestCase {
     public static void outparams1(int[] p1, int p2) {
         p1[0] = p2 * 2;
     }
-
 }

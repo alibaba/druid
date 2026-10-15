@@ -179,3 +179,54 @@ DISTRIBUTED BY HASH (`mandt`, `delinum`, `delistatus`) BUCKETS 4
 PROPERTIES (
 	"replication_num" = "1"
 );
+------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE `sales_records_test_simple` (
+  `record_id` BIGINT NOT NULL COMMENT '记录唯一ID',
+  `item_id` VARCHAR(100) NULL COMMENT '商品ID',
+  `item_name` VARCHAR(255) NULL COMMENT '商品名称',
+  `quantity` INT NULL COMMENT '销售数量',
+  `unit_price` DECIMAL(10, 2) NULL COMMENT '销售单价',
+  `event_date` DATE NOT NULL COMMENT '分区日期'
+)
+ENGINE=OLAP
+DUPLICATE KEY(`record_id`, `item_id`)
+COMMENT '销售记录测试表'
+PARTITION BY RANGE(`event_date`)
+DISTRIBUTED BY HASH(`item_id`) BUCKETS 8
+PROPERTIES (
+    "replication_allocation" = "tag.location.default: 3",
+    "storage_medium" = "SSD",
+    "storage_format" = "V2",
+    "dynamic_partition.enable" = "true",
+    "dynamic_partition.time_unit" = "DAY",
+    "dynamic_partition.time_zone" = "Asia/Shanghai",
+    "dynamic_partition.start" = "-30",
+    "dynamic_partition.end" = "3",
+    "dynamic_partition.prefix" = "p",
+    "dynamic_partition.buckets" = "8"
+);
+--------------------
+CREATE TABLE `sales_records_test_simple` (
+	`record_id` BIGINT NOT NULL COMMENT '记录唯一ID',
+	`item_id` VARCHAR(100) NULL COMMENT '商品ID',
+	`item_name` VARCHAR(255) NULL COMMENT '商品名称',
+	`quantity` INT NULL COMMENT '销售数量',
+	`unit_price` DECIMAL(10, 2) NULL COMMENT '销售单价',
+	`event_date` DATE NOT NULL COMMENT '分区日期'
+) ENGINE = OLAP
+DUPLICATE KEY (`record_id`, `item_id`)
+COMMENT '销售记录测试表'
+PARTITION BY RANGE (`event_date`) ()
+DISTRIBUTED BY HASH (`item_id`) BUCKETS 8
+PROPERTIES (
+	"replication_allocation" = "tag.location.default: 3",
+	"storage_medium" = "SSD",
+	"storage_format" = "V2",
+	"dynamic_partition.enable" = "true",
+	"dynamic_partition.time_unit" = "DAY",
+	"dynamic_partition.time_zone" = "Asia/Shanghai",
+	"dynamic_partition.start" = "-30",
+	"dynamic_partition.end" = "3",
+	"dynamic_partition.prefix" = "p",
+	"dynamic_partition.buckets" = "8"
+);

@@ -23,6 +23,8 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_equals extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select a from t where not a>1 and not b<1";
@@ -33,7 +35,6 @@ public class MySqlSelectTest_equals extends MysqlTest {
         SQLSelectQuery queryBlock2 = getQueryBlock(sql2);
 
         assertNotSame(queryBlock, queryBlock2);
-
     }
 
     public void test_1() throws Exception {
@@ -45,7 +46,6 @@ public class MySqlSelectTest_equals extends MysqlTest {
         SQLSelectQuery queryBlock2 = getQueryBlock(sql2);
 
         assertEquals(queryBlock, queryBlock2);
-
     }
 
     private SQLSelectQuery getQueryBlock(String sql) {

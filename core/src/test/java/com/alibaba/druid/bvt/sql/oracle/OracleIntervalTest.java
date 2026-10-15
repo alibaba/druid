@@ -15,15 +15,15 @@
  */
 package com.alibaba.druid.bvt.sql.oracle;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
+import org.junit.jupiter.api.Test;
 
-public class OracleIntervalTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OracleIntervalTest {
+    @Test
     public void test_interval_literal() throws Exception {
         String sql = "SELECT INTERVAL '123-2' YEAR(3) TO MONTH FROM DUAL";
 
@@ -32,11 +32,12 @@ public class OracleIntervalTest extends TestCase {
 
         String text = TestUtils.outputOracle(stmt);
 
-        Assert.assertEquals("SELECT INTERVAL '123-2' YEAR(3) TO MONTH\nFROM DUAL", text);
+        assertEquals("SELECT INTERVAL '123-2' YEAR(3) TO MONTH\nFROM DUAL", text);
 
         System.out.println(text);
     }
 
+    @Test
     public void test_interval_literal_1() throws Exception {
         String sql = "SELECT INTERVAL '123' YEAR(3) FROM DUAL";
 
@@ -45,11 +46,12 @@ public class OracleIntervalTest extends TestCase {
 
         String text = TestUtils.outputOracle(stmt);
 
-        Assert.assertEquals("SELECT INTERVAL '123' YEAR(3)\nFROM DUAL", text);
+        assertEquals("SELECT INTERVAL '123' YEAR(3)\nFROM DUAL", text);
 
         System.out.println(text);
     }
 
+    @Test
     public void test_interval_literal_2() throws Exception {
         String sql = "SELECT INTERVAL '5-3' YEAR TO MONTH + INTERVAL'20' MONTH FROM DUAL";
 
@@ -58,11 +60,12 @@ public class OracleIntervalTest extends TestCase {
 
         String text = TestUtils.outputOracle(stmt);
 
-        Assert.assertEquals("SELECT INTERVAL '5-3' YEAR TO MONTH + INTERVAL '20' MONTH\nFROM DUAL", text);
+        assertEquals("SELECT INTERVAL '5-3' YEAR TO MONTH + INTERVAL '20' MONTH\nFROM DUAL", text);
 
         System.out.println(text);
     }
 
+    @Test
     public void test_interval_literal_3() throws Exception {
         String sql = "SELECT INTERVAL '6-11' YEAR TO MONTH FROM DUAL";
 
@@ -71,11 +74,12 @@ public class OracleIntervalTest extends TestCase {
 
         String text = TestUtils.outputOracle(stmt);
 
-        Assert.assertEquals("SELECT INTERVAL '6-11' YEAR TO MONTH\nFROM DUAL", text);
+        assertEquals("SELECT INTERVAL '6-11' YEAR TO MONTH\nFROM DUAL", text);
 
         System.out.println(text);
     }
 
+    @Test
     public void test_interval_literal_4() throws Exception {
         String sql = "SELECT INTERVAL '4 5:12:10.222' DAY TO SECOND(3) FROM DUAL";
 
@@ -84,11 +88,12 @@ public class OracleIntervalTest extends TestCase {
 
         String text = TestUtils.outputOracle(stmt);
 
-        Assert.assertEquals("SELECT INTERVAL '4 5:12:10.222' DAY TO SECOND(3)\nFROM DUAL", text);
+        assertEquals("SELECT INTERVAL '4 5:12:10.222' DAY TO SECOND(3)\nFROM DUAL", text);
 
         System.out.println(text);
     }
 
+    @Test
     public void test_interval_literal_5() throws Exception {
         String sql = "SELECT INTERVAL '30.12345' SECOND(2,4) FROM DUAL";
 
@@ -97,11 +102,12 @@ public class OracleIntervalTest extends TestCase {
 
         String text = TestUtils.outputOracle(stmt);
 
-        Assert.assertEquals("SELECT INTERVAL '30.12345' SECOND(2, 4)\nFROM DUAL", text);
+        assertEquals("SELECT INTERVAL '30.12345' SECOND(2, 4)\nFROM DUAL", text);
 
         System.out.println(text);
     }
 
+    @Test
     public void test_interval() throws Exception {
         String sql = "SELECT (SYSTIMESTAMP - order_date) DAY(9) TO SECOND from orders WHERE order_id = 2458;";
 
@@ -110,7 +116,7 @@ public class OracleIntervalTest extends TestCase {
 
         String text = TestUtils.outputOracle(stmt);
 
-        Assert.assertEquals("SELECT (SYSTIMESTAMP - order_date) DAY(9) TO SECOND\n" + "FROM orders\n"
+        assertEquals("SELECT (SYSTIMESTAMP - order_date) DAY(9) TO SECOND\n" + "FROM orders\n"
                 + "WHERE order_id = 2458;", text);
 
         System.out.println(text);

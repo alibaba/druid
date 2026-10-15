@@ -1,16 +1,15 @@
 package com.alibaba.druid.bvt.pool;
 
-import java.sql.SQLException;
-
 import com.alibaba.druid.PoolTestCase;
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.GetConnectionTimeoutException;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
+
+import java.sql.SQLException;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DruidConnectionHolderTest3 extends PoolTestCase {
     private DruidDataSource dataSource;
@@ -28,7 +27,6 @@ public class DruidConnectionHolderTest3 extends PoolTestCase {
                 throw new MySQLException();
             }
         });
-
     }
 
     protected void tearDown() throws Exception {
@@ -45,10 +43,10 @@ public class DruidConnectionHolderTest3 extends PoolTestCase {
             } catch (MySQLException e) {
                 error = e;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
 
-        Assert.assertEquals(0, dataSource.getPoolingCount());
+        assertEquals(0, dataSource.getPoolingCount());
 
         Exception error = null;
         try {
@@ -56,7 +54,7 @@ public class DruidConnectionHolderTest3 extends PoolTestCase {
         } catch (GetConnectionTimeoutException e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
     }
 
     public static class MySQLException extends SQLException {

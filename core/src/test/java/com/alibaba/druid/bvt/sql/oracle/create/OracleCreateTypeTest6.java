@@ -24,6 +24,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleCreateTypeTest6 extends OracleTest {
     public void test_types() throws Exception {
         String sql = "CREATE OR REPLACE TYPE         \"VARRAY_DEPT_TYPE\"\n" +
@@ -36,7 +38,7 @@ public class OracleCreateTypeTest6 extends OracleTest {
 
         assertEquals(1, statementList.size());
 
-        assertEquals("CREATE OR REPLACE TYPE \"VARRAY_DEPT_TYPE\" VARRAY (7000) OF NUMBER(10)",//
+        assertEquals("CREATE OR REPLACE TYPE \"VARRAY_DEPT_TYPE\" VARRAY (7000) OF NUMBER(10)",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

@@ -1,0 +1,76 @@
+BEGIN TRY SELECT 1 / 0; END TRY BEGIN CATCH SELECT ERROR_NUMBER() AS ErrorNumber, ERROR_MESSAGE() AS ErrorMessage; END CATCH
+--------------------
+BEGIN TRY
+	SELECT 1 / 0;
+END TRY
+BEGIN CATCH
+	SELECT ERROR_NUMBER() AS ErrorNumber, ERROR_MESSAGE() AS ErrorMessage;
+END CATCH
+------------------------------------------------------------------------------------------------------------------------
+BEGIN TRY INSERT INTO t1 VALUES (1); INSERT INTO t1 VALUES (2); INSERT INTO t1 VALUES (3); END TRY BEGIN CATCH DECLARE @msg NVARCHAR(4000); SELECT @msg = ERROR_MESSAGE(); END CATCH
+--------------------
+BEGIN TRY
+	INSERT INTO t1
+	VALUES (1);
+	INSERT INTO t1
+	VALUES (2);
+	INSERT INTO t1
+	VALUES (3);
+END TRY
+BEGIN CATCH
+	DECLARE @msg NVARCHAR(4000);
+	SELECT @msg = ERROR_MESSAGE();
+END CATCH
+------------------------------------------------------------------------------------------------------------------------
+BEGIN TRY SELECT 1 / 0; END TRY BEGIN CATCH SELECT ERROR_NUMBER() AS ErrorNumber, ERROR_SEVERITY() AS ErrorSeverity, ERROR_STATE() AS ErrorState, ERROR_PROCEDURE() AS ErrorProcedure, ERROR_LINE() AS ErrorLine, ERROR_MESSAGE() AS ErrorMessage; END CATCH
+--------------------
+BEGIN TRY
+	SELECT 1 / 0;
+END TRY
+BEGIN CATCH
+	SELECT ERROR_NUMBER() AS ErrorNumber, ERROR_SEVERITY() AS ErrorSeverity, ERROR_STATE() AS ErrorState, ERROR_PROCEDURE() AS ErrorProcedure, ERROR_LINE() AS ErrorLine
+		, ERROR_MESSAGE() AS ErrorMessage;
+END CATCH
+------------------------------------------------------------------------------------------------------------------------
+BEGIN TRY SELECT 1; END TRY BEGIN CATCH END CATCH
+--------------------
+BEGIN TRY
+	SELECT 1;
+END TRY
+BEGIN CATCH
+END CATCH
+------------------------------------------------------------------------------------------------------------------------
+BEGIN TRY BEGIN TRY SELECT 1 / 0; END TRY BEGIN CATCH SELECT ERROR_MESSAGE(); END CATCH END TRY BEGIN CATCH SELECT 'outer catch'; END CATCH
+--------------------
+BEGIN TRY
+	BEGIN TRY
+		SELECT 1 / 0;
+	END TRY
+	BEGIN CATCH
+		SELECT ERROR_MESSAGE();
+	END CATCH
+END TRY
+BEGIN CATCH
+	SELECT 'outer catch';
+END CATCH
+------------------------------------------------------------------------------------------------------------------------
+BEGIN TRY BEGIN TRANSACTION; INSERT INTO t1 VALUES (1); COMMIT; END TRY BEGIN CATCH ROLLBACK; END CATCH
+--------------------
+BEGIN TRY
+	BEGIN TRANSACTION;
+	INSERT INTO t1
+	VALUES (1);
+	COMMIT TRANSACTION;
+END TRY
+BEGIN CATCH
+	ROLLBACK TRANSACTION;
+END CATCH
+------------------------------------------------------------------------------------------------------------------------
+BEGIN TRY SELECT 1; END TRY BEGIN CATCH SELECT 2; END CATCH
+--------------------
+BEGIN TRY
+	SELECT 1;
+END TRY
+BEGIN CATCH
+	SELECT 2;
+END CATCH

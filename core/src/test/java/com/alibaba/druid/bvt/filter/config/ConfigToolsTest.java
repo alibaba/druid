@@ -1,34 +1,37 @@
 package com.alibaba.druid.bvt.filter.config;
 
+import com.alibaba.druid.filter.config.ConfigTools;
+import org.junit.jupiter.api.Test;
+
 import java.util.Random;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.*;
 
-import com.alibaba.druid.filter.config.ConfigTools;
-
-public class ConfigToolsTest extends TestCase {
+public class ConfigToolsTest {
+    @Test
     public void test_0() throws Exception {
         String plainText = "abcdef";
         String cipherText = ConfigTools.encrypt(plainText);
         String decipherText = ConfigTools.decrypt(cipherText);
 
-        Assert.assertEquals(plainText, decipherText);
+        assertEquals(plainText, decipherText);
     }
 
+    @Test
     public void test_genKeys() throws Exception {
         String plainText = Long.toString(new Random().nextLong());
         String[] keys = ConfigTools.genKeyPair(512);
 
         String cipherText = ConfigTools.encrypt(keys[0], plainText);
-        Assert.assertEquals(plainText, ConfigTools.decrypt(keys[1], cipherText));
+        assertEquals(plainText, ConfigTools.decrypt(keys[1], cipherText));
     }
 
+    @Test
     public void test_genKeys1024() throws Exception {
         String plainText = Long.toString(new Random().nextLong());
         String[] keys = ConfigTools.genKeyPair(1024);
 
         String cipherText = ConfigTools.encrypt(keys[0], plainText);
-        Assert.assertEquals(plainText, ConfigTools.decrypt(keys[1], cipherText));
+        assertEquals(plainText, ConfigTools.decrypt(keys[1], cipherText));
     }
 }

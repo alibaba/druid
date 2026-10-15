@@ -23,9 +23,10 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.repository.SchemaRepository;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
-import com.alibaba.druid.stat.TableStat;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleSelectTest108 extends OracleTest {
     public void test_0() throws Exception {
@@ -76,6 +77,5 @@ public class OracleSelectTest108 extends OracleTest {
         assertEquals(3, visitor.getConditions().size());
         assertEquals(1, visitor.getRelationships().size());
         assertEquals(2, visitor.getOrderByColumns().size());
-
     }
 }

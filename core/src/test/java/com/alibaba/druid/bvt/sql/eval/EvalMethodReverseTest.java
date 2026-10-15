@@ -1,13 +1,14 @@
 package com.alibaba.druid.bvt.sql.eval;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
-public class EvalMethodReverseTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class EvalMethodReverseTest {
+    @Test
     public void test_reverse() throws Exception {
-        Assert.assertEquals("cba", SQLEvalVisitorUtils.evalExpr(JdbcConstants.MYSQL, "REVERSE('abc')"));
+        assertEquals("cba", SQLEvalVisitorUtils.evalExpr(JdbcConstants.MYSQL, "REVERSE('abc')"));
     }
 }

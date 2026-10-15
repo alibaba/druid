@@ -1,15 +1,11 @@
 package com.alibaba.druid.sql.parser;
 
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddColumn;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableChangeOwner;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGSQLStatementParser;
-import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
-import java.util.List;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * PG alter语法解析
@@ -18,8 +14,8 @@ import java.util.List;
  * @version v1.0
  * @date 2024/1/30 9:48
  */
-public class PGAlterTest extends TestCase {
-
+public class PGAlterTest {
+    @Test
     public void testPgAlterTableChangeOwner() {
         String sql = "alter table alter_table_test\n" + "    owner to test_alter";
         SQLStatementParser parser = new PGSQLStatementParser(sql);
@@ -28,7 +24,7 @@ public class PGAlterTest extends TestCase {
         try {
             stmtStr = stmt.toString();
         } catch (ClassCastException e) {
-            Assert.fail(e.getMessage());
+            fail(e.getMessage());
         }
 
         System.out.println(stmtStr);
@@ -37,5 +33,4 @@ public class PGAlterTest extends TestCase {
         assert stmt.getItems().get(0) instanceof SQLAlterTableChangeOwner;
         assert (((SQLAlterTableChangeOwner) stmt.getItems().get(0)).getOwner().getSimpleName()).equals("test_alter");
     }
-
 }

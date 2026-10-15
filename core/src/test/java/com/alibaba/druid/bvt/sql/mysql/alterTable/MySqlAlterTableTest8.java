@@ -20,10 +20,12 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.Token;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
-public class MySqlAlterTableTest8 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlAlterTableTest8 {
+    @Test
     public void test_alter_first() throws Exception {
         String sql = "ALTER TABLE t2 AUTO_INCREMENT = 3";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -39,11 +41,10 @@ public class MySqlAlterTableTest8 extends TestCase {
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("ALTER TABLE t2" + //
+        assertEquals("ALTER TABLE t2" +
                 "\n\tAUTO_INCREMENT = 3", output);
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(0, visitor.getColumns().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(0, visitor.getColumns().size());
     }
-
 }

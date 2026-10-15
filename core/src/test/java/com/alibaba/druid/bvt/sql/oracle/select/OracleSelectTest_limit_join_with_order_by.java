@@ -9,6 +9,8 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleSelectTest_limit_join_with_order_by extends OracleTest {
     /**
      * 当sql有order by语句时， 分页结果sql中， join语句丢失on的条件

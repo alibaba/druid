@@ -19,9 +19,12 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class MySqlAlterViewTest_0 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlAlterViewTest_0 {
+    @Test
     public void test_alter_first() throws Exception {
         String sql = "alter definer = 'ivan'@'%' view my_view3 as select count(*) from t3;";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -39,5 +42,4 @@ public class MySqlAlterViewTest_0 extends TestCase {
                 "select count(*)\n" +
                 "from t3;", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
-
 }

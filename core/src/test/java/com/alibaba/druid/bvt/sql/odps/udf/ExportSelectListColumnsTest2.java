@@ -1,14 +1,14 @@
 package com.alibaba.druid.bvt.sql.odps.udf;
 
-import org.junit.Assert;
-
 import com.alibaba.druid.support.opds.udf.ExportSelectListColumns;
+import org.junit.jupiter.api.Test;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class ExportSelectListColumnsTest2 extends TestCase {
+public class ExportSelectListColumnsTest2 {
     private ExportSelectListColumns udf = new ExportSelectListColumns();
 
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT * "
                 + "\n FROM fund_base_cv_ad_auction_ocr_pv_tfs a"
@@ -16,7 +16,6 @@ public class ExportSelectListColumnsTest2 extends TestCase {
 
         String text = udf.evaluate(sql, "odps");
 
-        Assert.assertEquals("fund_base_cv_ad_auction_ocr_pv_tfs.*", text);
-
+        assertEquals("fund_base_cv_ad_auction_ocr_pv_tfs.*", text);
     }
 }

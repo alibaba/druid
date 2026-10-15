@@ -9,14 +9,17 @@ import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by wenshao on 16/8/23.
  */
-public class MySqlParameterizedOutputVisitorTest_10 extends TestCase {
+public class MySqlParameterizedOutputVisitorTest_10 {
+    @Test
     public void test_for_parameterize() throws Exception {
          /*String instance = "100.81.152.9"+"_"+3314;
         int urlNum = Math.abs(instance.hashCode()) % 2;
@@ -29,7 +32,7 @@ public class MySqlParameterizedOutputVisitorTest_10 extends TestCase {
 
         String sql = "SELECT `SURVEY_ANSWER`.`TIME_UPDATED`, `SURVEY_ANSWER`.`ANSWER_VALUE` FROM `S_ANSWER_P0115` `SURVEY_ANSWER` WHERE `SURVEY_ANSWER`.`SURVEY_ID` = 11 AND `SURVEY_ANSWER`.`QUESTION_CODE` = 'qq' ORDER BY `SURVEY_ANSWER`.`TIME_UPDATED` DESC LIMIT 1, 2";
         String psql = ParameterizedOutputVisitorUtils.parameterize(sql, dbType);
-       /* Assert.assertEquals("SELECT *\n" +
+       /* assertEquals("SELECT *\n" +
                 "FROM t\n" +
                 "LIMIT ?, ?", psql);*/
 
@@ -53,8 +56,8 @@ public class MySqlParameterizedOutputVisitorTest_10 extends TestCase {
             stmt.accept(visitor);
         }
         System.out.println(visitor.getParameters());
-      /*  Assert.assertEquals(2, visitor.getArguments().size());
-        Assert.assertEquals(3, visitor.getArguments().get(0));
-        Assert.assertEquals(4, visitor.getArguments().get(1));*/
+      /*  assertEquals(2, visitor.getArguments().size());
+        assertEquals(3, visitor.getArguments().get(0));
+        assertEquals(4, visitor.getArguments().get(1));*/
     }
 }

@@ -22,20 +22,22 @@ import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
-public class MySqlAlterTableAddPrimaryKey_1 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlAlterTableAddPrimaryKey_1 {
+    @Test
     public void test_alter_first() throws Exception {
         String sql = "alter table tabelname add constraint  mYconstraint primary key(id)";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
 
-        Assert.assertEquals("ALTER TABLE tabelname" + //
+        assertEquals("ALTER TABLE tabelname" +
                 "\n\tADD PRIMARY KEY (id)", SQLUtils.toMySqlString(stmt));
 
-        Assert.assertEquals("alter table tabelname" + //
+        assertEquals("alter table tabelname" +
                 "\n\tadd primary key (id)", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         SchemaStatVisitor visitor = new SQLUtils().createSchemaStatVisitor(JdbcConstants.MYSQL);
@@ -45,5 +47,4 @@ public class MySqlAlterTableAddPrimaryKey_1 extends TestCase {
         assertEquals(1, tableStat.getAlterCount());
         assertEquals(1, tableStat.getCreateIndexCount());
     }
-
 }

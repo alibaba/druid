@@ -1,17 +1,17 @@
 package com.alibaba.druid.bvt.sql;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.PagerUtils;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
-public class PagerUtilsTest_Limit_db2_1 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class PagerUtilsTest_Limit_db2_1 {
+    @Test
     public void test_db2_union() throws Exception {
         String sql = "select * from t1 union select * from t2";
         String result = PagerUtils.limit(sql, JdbcConstants.DB2, 20, 10);
-        Assert.assertEquals("SELECT *\n" +
+        assertEquals("SELECT *\n" +
                 "FROM (\n" +
                 "\tSELECT XX.*, ROW_NUMBER() OVER () AS ROWNUM\n" +
                 "\tFROM (\n" +

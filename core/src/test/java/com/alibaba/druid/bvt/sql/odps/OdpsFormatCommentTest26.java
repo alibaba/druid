@@ -1,15 +1,15 @@
 package com.alibaba.druid.bvt.sql.odps;
 
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.SQLUtils;
+import org.junit.jupiter.api.Test;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class OdpsFormatCommentTest26 extends TestCase {
+public class OdpsFormatCommentTest26 {
+    @Test
     public void test_drop_function() throws Exception {
         String sql = "create table t as select * from dual;";
-        Assert.assertEquals("CREATE TABLE t"
+        assertEquals("CREATE TABLE t"
                 + "\nAS"
                 + "\nSELECT *"
                 + "\nFROM dual;", SQLUtils.formatOdps(sql));

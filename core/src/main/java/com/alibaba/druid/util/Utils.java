@@ -37,14 +37,13 @@ public class Utils {
     }
 
     public static Properties loadProperties(String resource) {
-        InputStream in = Utils.class.getClassLoader().getResourceAsStream(resource);
         Properties properties = new Properties();
-        if (in != null) {
-            try {
+        try (InputStream in = Utils.class.getClassLoader().getResourceAsStream(resource)) {
+            if (in != null) {
                 properties.load(in);
-             } catch (IOException ignore) {
-                // ignored
             }
+        } catch (IOException ignore) {
+            // ignored
         }
         return properties;
     }

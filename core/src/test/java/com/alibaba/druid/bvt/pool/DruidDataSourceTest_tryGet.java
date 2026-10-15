@@ -1,15 +1,17 @@
 package com.alibaba.druid.bvt.pool;
 
-import org.junit.Assert;
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class DruidDataSourceTest_tryGet extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class DruidDataSourceTest_tryGet {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
@@ -19,18 +21,19 @@ public class DruidDataSourceTest_tryGet extends TestCase {
         dataSource.init();
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
     }
 
+    @Test
     public void test_0() throws Exception {
         DruidPooledConnection conn1 = this.dataSource.tryGetConnection();
-        Assert.assertNotNull(conn1);
+        assertNotNull(conn1);
 
         DruidPooledConnection conn2 = this.dataSource.tryGetConnection();
-        Assert.assertNull(conn2);
+        assertNull(conn2);
 
         conn1.close();
     }
-
 }

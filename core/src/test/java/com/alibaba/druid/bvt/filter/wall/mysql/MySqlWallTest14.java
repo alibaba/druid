@@ -15,11 +15,10 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallUtils;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * SQLServerWallTest
@@ -28,11 +27,12 @@ import com.alibaba.druid.wall.WallUtils;
  * @version 1.0, 2012-3-18
  * @see
  */
-public class MySqlWallTest14 extends TestCase {
+public class MySqlWallTest14 {
+    @Test
     public void test_true() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateMySql(//
-                "SELECT index_privacy AS index,info_privacy AS ?,msgboard_privacy AS messageboard,photos_privacy AS photos," + //
-                        "diary_privacy AS diary,owrite_privacy AS weibo " + //
-                        "FROM pw_ouserdata WHERE uid= ?")); //
+        assertTrue(WallUtils.isValidateMySql(//
+                "SELECT index_privacy AS index,info_privacy AS ?,msgboard_privacy AS messageboard,photos_privacy AS photos," +
+                        "diary_privacy AS diary,owrite_privacy AS weibo " +
+                        "FROM pw_ouserdata WHERE uid= ?"));
     }
 }

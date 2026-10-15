@@ -1,5 +1,13 @@
 package com.alibaba.druid.pvt.pool;
 
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.util.JdbcUtils;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import javax.sql.DataSource;
+
 import java.lang.management.ManagementFactory;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -9,21 +17,15 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicLong;
 
-import javax.sql.DataSource;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Assert;
-
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.util.JdbcUtils;
-
-import junit.framework.TestCase;
-
-public class Large10ConcurrentTest extends TestCase {
+public class Large10ConcurrentTest {
     private DruidDataSource[] dataSources;
     private ScheduledExecutorService scheduler;
 
     private ExecutorService executor;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         long xmx = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getMax() / (1000 * 1000); // m
 
@@ -60,6 +62,7 @@ public class Large10ConcurrentTest extends TestCase {
         }
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         for (int i = 0; i < dataSources.length; ++i) {
             JdbcUtils.close(dataSources[i]);
@@ -68,6 +71,7 @@ public class Large10ConcurrentTest extends TestCase {
         scheduler.shutdown();
     }
 
+    @Test
     public void test_large() throws Exception {
         final Connection[] connections = new Connection[dataSources.length * 8];
         final CountDownLatch connLatch = new CountDownLatch(connections.length);
@@ -95,11 +99,11 @@ public class Large10ConcurrentTest extends TestCase {
         connLatch.await();
 
         for (int i = 0; i < dataSources.length; ++i) {
-            Assert.assertEquals(8, dataSources[i].getActiveCount());
+            assertEquals(8, dataSources[i].getActiveCount());
         }
 
         for (int i = 0; i < dataSources.length; ++i) {
-            Assert.assertEquals(0, dataSources[i].getPoolingCount());
+            assertEquals(0, dataSources[i].getPoolingCount());
         }
 
         final CountDownLatch closeLatch = new CountDownLatch(connections.length);

@@ -1,16 +1,15 @@
 package com.alibaba.druid.bvt.sql.postgresql.issues;
 
-import java.util.List;
-
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Test;
+import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * 优化括号解析之后的sql验证
@@ -19,7 +18,6 @@ import static org.junit.Assert.assertEquals;
  * @see <a href="https://github.com/alibaba/druid/issues/5847">Issue来源</a>
  */
 public class Issue5847 {
-
     @Test
     public void test_parse() {
         for (String sql : new String[]{

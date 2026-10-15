@@ -1,31 +1,33 @@
 package com.alibaba.druid.bvt.pool;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.concurrent.atomic.AtomicInteger;
+import com.alibaba.druid.mock.MockDriver;
+import com.alibaba.druid.mock.MockStatementBase;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.DruidPooledConnection;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.sql.ConnectionEvent;
 import javax.sql.ConnectionEventListener;
 import javax.sql.PooledConnection;
 
-import junit.framework.TestCase;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.concurrent.atomic.AtomicInteger;
 
-import org.junit.Assert;
-
-import com.alibaba.druid.mock.MockDriver;
-import com.alibaba.druid.mock.MockStatementBase;
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.pool.DruidPooledConnection;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * 这个场景测试defaultAutoCommit
  *
  * @author wenshao [szujobs@hotmail.com]
  */
-public class DruidDataSourceTest_getPooledConnection extends TestCase {
+public class DruidDataSourceTest_getPooledConnection {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
@@ -36,18 +38,20 @@ public class DruidDataSourceTest_getPooledConnection extends TestCase {
                 throw new SQLException();
             }
         });
-
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
     }
 
+    @Test
     public void test_conn() throws Exception {
         PooledConnection conn = dataSource.getPooledConnection();
         conn.close();
     }
 
+    @Test
     public void test_conn_1() throws Exception {
         Exception error = null;
         try {
@@ -55,9 +59,10 @@ public class DruidDataSourceTest_getPooledConnection extends TestCase {
         } catch (UnsupportedOperationException e) {
             error = e;
         }
-        Assert.assertNotNull(error);
+        assertNotNull(error);
     }
 
+    @Test
     public void test_event_error() throws Exception {
         DruidPooledConnection conn = (DruidPooledConnection) dataSource.getPooledConnection();
 
@@ -79,7 +84,7 @@ public class DruidDataSourceTest_getPooledConnection extends TestCase {
         } catch (SQLException e) {
         }
 
-        Assert.assertEquals(1, errorCount.get());
+        assertEquals(1, errorCount.get());
         conn.close();
     }
 }

@@ -22,19 +22,22 @@ import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class MySqlAlterTableAddIndex_0 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlAlterTableAddIndex_0 {
+    @Test
     public void test_alter_first() throws Exception {
         String sql = "ALTER TABLE `test`.`tb1`  ADD INDEX `ix` (`f2` ASC) ;";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
 
-        assertEquals("ALTER TABLE `test`.`tb1`" + //
+        assertEquals("ALTER TABLE `test`.`tb1`" +
                 "\n\tADD INDEX `ix` (`f2` ASC);", SQLUtils.toMySqlString(stmt));
 
-        assertEquals("alter table `test`.`tb1`" + //
+        assertEquals("alter table `test`.`tb1`" +
                 "\n\tadd index `ix` (`f2` asc);", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.MYSQL);
@@ -46,6 +49,7 @@ public class MySqlAlterTableAddIndex_0 extends TestCase {
         assertEquals(1, tableStat.getCreateIndexCount());
     }
 
+    @Test
     public void test_alter_fulltext() throws Exception {
         String sql = "ALTER TABLE `test`.`tb1` alter INDEX `ix` set fulltext analyzer='sfewfw' ;";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -54,9 +58,9 @@ public class MySqlAlterTableAddIndex_0 extends TestCase {
 
         assertEquals("ALTER TABLE `test`.`tb1`\n"
                 + "\t ALTER INDEX `ix` FULLTEXT  ANALYZER = 'sfewfw';", SQLUtils.toMySqlString(stmt));
-
     }
 
+    @Test
     public void test_alter_fulltext2() throws Exception {
         String sql = "ALTER TABLE `test`.`tb1` alter INDEX `ix` set fulltext index analyzer='sfewfw' ;";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -65,9 +69,9 @@ public class MySqlAlterTableAddIndex_0 extends TestCase {
 
         assertEquals("ALTER TABLE `test`.`tb1`\n"
                 + "\t ALTER INDEX `ix` FULLTEXT INDEX ANALYZER = 'sfewfw';", SQLUtils.toMySqlString(stmt));
-
     }
 
+    @Test
     public void test_alter_fulltext3() throws Exception {
         String sql = "ALTER TABLE `test`.`tb1` alter INDEX `ix` set fulltext QUERY analyzer='sfewfw' ;";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -76,7 +80,5 @@ public class MySqlAlterTableAddIndex_0 extends TestCase {
 
         assertEquals("ALTER TABLE `test`.`tb1`\n"
                 + "\t ALTER INDEX `ix` FULLTEXT QUERY ANALYZER = 'sfewfw';", SQLUtils.toMySqlString(stmt));
-
     }
-
 }

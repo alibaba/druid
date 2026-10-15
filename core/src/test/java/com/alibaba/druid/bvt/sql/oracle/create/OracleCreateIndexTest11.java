@@ -24,6 +24,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleCreateIndexTest11 extends OracleTest {
     public void test_0() throws Exception {
         String sql = //
@@ -110,8 +112,8 @@ public class OracleCreateIndexTest11 extends OracleTest {
                         "\t\tSUBPARTITION pq4003 TABLESPACE tbs_03,\n" +
                         "\t\tSUBPARTITION pq4004 TABLESPACE tbs_03\n" +
                         "\t)\n" +
-                        ");"
-                , SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                        ");",
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         assertEquals(1, visitor.getTables().size());
 

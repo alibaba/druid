@@ -24,6 +24,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleBlockTest21 extends OracleTest {
     public void test_0() throws Exception {
         String sql = "BEGIN\n" +
@@ -36,7 +38,7 @@ public class OracleBlockTest21 extends OracleTest {
                 "    DBMS_OUTPUT.PUT_LINE('First name = ' || someone.first_name ||\n" +
                 "                         ', Last name = ' || someone.last_name);\n" +
                 "  END LOOP;\n" +
-                "END;"; //
+                "END;";
 
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
         assertEquals(1, stmtList.size());

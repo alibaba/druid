@@ -61,6 +61,7 @@ public class OdpsSelectQueryBlock extends SQLSelectQueryBlock {
             acceptChild(visitor, this.from);
             acceptChild(visitor, this.where);
             acceptChild(visitor, this.groupBy);
+            acceptChild(visitor, this.qualify);
             acceptChild(visitor, this.orderBy);
             acceptChild(visitor, this.zOrderBy);
             acceptChild(visitor, this.clusterBy);

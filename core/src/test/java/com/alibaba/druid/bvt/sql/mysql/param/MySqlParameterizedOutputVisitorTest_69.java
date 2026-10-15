@@ -3,16 +3,19 @@ package com.alibaba.druid.bvt.sql.mysql.param;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import com.alibaba.fastjson2.JSON;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import com.alibaba.fastjson2.JSON;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MySqlParameterizedOutputVisitorTest_69 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlParameterizedOutputVisitorTest_69 {
+    @Test
     public void test_in() throws Exception {
         String sql = "select ((0='x6') & 31) ^ (ROW(76, 4) NOT IN (ROW(1, 2 ),ROW(3, 4)) );";
 
@@ -30,6 +33,7 @@ public class MySqlParameterizedOutputVisitorTest_69 extends TestCase {
         assertEquals("SELECT ((0 = 'x6') & 31) ^ (ROW(76, 4) NOT IN (ROW(1, 2), ROW(3, 4)));", rsql);
     }
 
+    @Test
     public void test_between() throws Exception {
         String sql = "select ((0='x6') & 31) ^ (76 NOT BETWEEN 3 AND 4) ;";
         MySqlStatementParser parser = new MySqlStatementParser(sql);

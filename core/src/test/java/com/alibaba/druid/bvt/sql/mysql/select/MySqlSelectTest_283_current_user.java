@@ -21,6 +21,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_283_current_user extends MysqlTest {
     public void test_0() throws Exception {
@@ -52,6 +53,4 @@ public class MySqlSelectTest_283_current_user extends MysqlTest {
                 "from t\n" +
                 "where u = current_user", stmt.toLowerCaseString());
     }
-
-
 }

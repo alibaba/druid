@@ -15,16 +15,18 @@
  */
 package com.alibaba.druid.bvt.pool;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.pool.DruidDataSource;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.*;
 
-public class SlowSqlMillisTest2 extends TestCase {
+public class SlowSqlMillisTest2 {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
@@ -36,18 +38,20 @@ public class SlowSqlMillisTest2 extends TestCase {
 
         {
             StatFilter filter = (StatFilter) dataSource.getProxyFilters().get(0);
-            Assert.assertEquals(3000, filter.getSlowSqlMillis());
+            assertEquals(3000, filter.getSlowSqlMillis());
         }
         dataSource.init();
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         System.clearProperty("druid.stat.slowSqlMillis");
         dataSource.close();
     }
 
+    @Test
     public void test_connect() throws Exception {
         StatFilter filter = (StatFilter) dataSource.getProxyFilters().get(0);
-        Assert.assertEquals(500, filter.getSlowSqlMillis());
+        assertEquals(500, filter.getSlowSqlMillis());
     }
 }

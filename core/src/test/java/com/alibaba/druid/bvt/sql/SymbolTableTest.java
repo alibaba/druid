@@ -2,9 +2,12 @@ package com.alibaba.druid.bvt.sql;
 
 import com.alibaba.druid.sql.parser.SymbolTable;
 import com.alibaba.druid.util.FnvHash;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class SymbolTableTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class SymbolTableTest {
+    @Test
     public void test_symbols() throws Exception {
         SymbolTable symbols = new SymbolTable(65535);
 

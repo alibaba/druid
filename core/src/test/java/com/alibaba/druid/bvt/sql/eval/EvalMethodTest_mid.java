@@ -1,14 +1,14 @@
 package com.alibaba.druid.bvt.sql.eval;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
-public class EvalMethodTest_mid extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class EvalMethodTest_mid {
+    @Test
     public void test_method() throws Exception {
-        Assert.assertEquals("ratically", SQLEvalVisitorUtils.evalExpr(JdbcConstants.MYSQL, "mid('Quadratically',5)"));
+        assertEquals("ratically", SQLEvalVisitorUtils.evalExpr(JdbcConstants.MYSQL, "mid('Quadratically',5)"));
     }
 }

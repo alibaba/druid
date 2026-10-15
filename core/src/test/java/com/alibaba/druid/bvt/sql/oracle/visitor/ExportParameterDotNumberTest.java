@@ -1,22 +1,21 @@
 package com.alibaba.druid.bvt.sql.oracle.visitor;
 
-import java.util.List;
-
 import com.alibaba.druid.DbType;
-import org.junit.Assert;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleExportParameterVisitor;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import junit.framework.TestCase;
+import java.util.List;
 
-public class ExportParameterDotNumberTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class ExportParameterDotNumberTest {
     /**
      * Logger for this class
      */
@@ -24,6 +23,7 @@ public class ExportParameterDotNumberTest extends TestCase {
 
     DbType dbType = JdbcConstants.MYSQL;
 
+    @Test
     public void test_exportParameter() throws Exception {
         String[] sqls = {"INSERT INTO test_tab1 (name) VALUES ( 2.0  )",
                 "INSERT INTO test_tab1 (name) VALUES ( 2  )",
@@ -40,8 +40,7 @@ public class ExportParameterDotNumberTest extends TestCase {
 
             LOG.info("to_sql:{} ==> plist:{}", sql, plist);
 
-            Assert.assertTrue(plist.size() > 0);
+            assertTrue(plist.size() > 0);
         }
     }
-
 }

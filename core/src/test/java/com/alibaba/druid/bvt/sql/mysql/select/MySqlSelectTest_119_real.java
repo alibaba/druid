@@ -7,6 +7,8 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_119_real extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select * from test1 where REAL '2019.3' = testcol";

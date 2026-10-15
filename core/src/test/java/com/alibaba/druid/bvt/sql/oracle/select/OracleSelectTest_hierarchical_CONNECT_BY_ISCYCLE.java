@@ -24,6 +24,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleSelectTest_hierarchical_CONNECT_BY_ISCYCLE extends OracleTest {
     public void test_0() throws Exception {
         String sql = "SELECT last_name \"Employee\", CONNECT_BY_ISCYCLE \"Cycle\",\n" +
@@ -31,7 +33,7 @@ public class OracleSelectTest_hierarchical_CONNECT_BY_ISCYCLE extends OracleTest
                 "   FROM employees\n" +
                 "   WHERE level <= 3 AND department_id = 80\n" +
                 "   START WITH last_name = 'King'\n" +
-                "   CONNECT BY NOCYCLE PRIOR employee_id = manager_id AND LEVEL <= 4;"; //
+                "   CONNECT BY NOCYCLE PRIOR employee_id = manager_id AND LEVEL <= 4;";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
         SQLStatement statemen = statementList.get(0);
@@ -54,8 +56,8 @@ public class OracleSelectTest_hierarchical_CONNECT_BY_ISCYCLE extends OracleTest
 
         assertEquals(4, visitor.getColumns().size());
 
-//        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "*")));
-//        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "YEAR")));
-//        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "order_mode")));
+//        assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "*")));
+//        assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "YEAR")));
+//        assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "order_mode")));
     }
 }

@@ -7,10 +7,12 @@ import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
-public class SchemaStatTest3 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class SchemaStatTest3 {
+    @Test
     public void test_schemaStat() throws Exception {
         String sql = "select count(*) from t";
 
@@ -23,7 +25,7 @@ public class SchemaStatTest3 extends TestCase {
 
         System.out.println(visitor.getColumns());
 
-        Assert.assertEquals(1, visitor.getColumns().size());
-        Assert.assertTrue(visitor.containsColumn("t", "*"));
+        assertEquals(1, visitor.getColumns().size());
+        assertTrue(visitor.containsColumn("t", "*"));
     }
 }

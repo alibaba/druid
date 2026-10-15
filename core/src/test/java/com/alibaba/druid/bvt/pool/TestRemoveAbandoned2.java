@@ -15,20 +15,23 @@
  */
 package com.alibaba.druid.bvt.pool;
 
-import java.sql.Connection;
-
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class TestRemoveAbandoned2 extends TestCase {
+import java.sql.Connection;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class TestRemoveAbandoned2 {
     private MockDriver driver;
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         driver = new MockDriver();
 
@@ -47,22 +50,22 @@ public class TestRemoveAbandoned2 extends TestCase {
         dataSource.setTestOnBorrow(false);
         dataSource.setValidationQuery("SELECT 1");
         dataSource.setFilters("stat");
-
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        DruidDataSourceStatManager.clear();
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        DruidDataSourceStatManager.clear();
     }
 
+    @Test
     public void test_removeAbandoned() throws Exception {
         {
             Connection conn = dataSource.getConnection();
             conn.close();
         }
-        Assert.assertEquals(0, dataSource.getActiveCount());
-
+        assertEquals(0, dataSource.getActiveCount());
 
         Thread abandonThread = new Thread("abandoned") {
             public void run() {
@@ -81,7 +84,7 @@ public class TestRemoveAbandoned2 extends TestCase {
             DruidPooledConnection conn = dataSource.getConnection();
             conn.close();
         }
-        Assert.assertEquals(0, dataSource.getActiveCount());
+        assertEquals(0, dataSource.getActiveCount());
         abandonThread.interrupt();
 
         System.out.println("removeAbandondedCount : " + dataSource.getRemoveAbandonedCount());

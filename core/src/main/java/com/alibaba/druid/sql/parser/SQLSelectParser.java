@@ -648,6 +648,10 @@ public class SQLSelectParser extends SQLParser {
             }
 
             accept(Token.AS);
+
+            // PostgreSQL: name AS [ NOT ] MATERIALIZED ( query )
+            parseCTEMaterializationHint(entry);
+
             accept(Token.LPAREN);
 
             switch (lexer.token) {
@@ -756,6 +760,7 @@ public class SQLSelectParser extends SQLParser {
                     case BANGEQ:
                     case LIKE:
                     case NOT:
+                    case VARIANT:
                         where = this.exprParser.relationalRest(where);
                         break;
                     default:
@@ -922,6 +927,7 @@ public class SQLSelectParser extends SQLParser {
                 groupBy.setWithCube(true);
             }
 
+            boolean previousWasComma = true;
             for (; ; ) {
                 List<String> comments = null;
                 if (lexer.hasComment()) {
@@ -930,6 +936,9 @@ public class SQLSelectParser extends SQLParser {
                 SQLExpr item = parseGroupByItem();
                 if (comments != null) {
                     item.addBeforeComment(comments);
+                }
+                if (!previousWasComma && item instanceof SQLGroupingSetExpr) {
+                    ((SQLGroupingSetExpr) item).setHasPrefixComma(false);
                 }
 
                 item.setParent(groupBy);
@@ -946,8 +955,10 @@ public class SQLSelectParser extends SQLParser {
                             && lexer.line == line + 1) {
                         item.addAfterComment(lexer.readAndResetComments());
                     }
+                    previousWasComma = true;
                     continue;
                 } else if (lexer.identifierEquals(FnvHash.Constants.GROUPING)) {
+                    previousWasComma = false;
                     continue;
                 } else {
                     break;
@@ -1001,6 +1012,11 @@ public class SQLSelectParser extends SQLParser {
                 lexer.nextToken();
                 accept(Token.BY);
 
+                // This is the reverse "HAVING ... GROUP BY" path. It only
+                // recognises COMMA as a separator and never falls into the
+                // bare-GROUPING continuation branch used by the forward
+                // parseGroupBy loop above, so the SQLGroupingSetExpr
+                // hasPrefixComma flag stays at its default (true) here.
                 for (; ; ) {
                     SQLExpr item = parseGroupByItem();
 
@@ -1099,6 +1115,10 @@ public class SQLSelectParser extends SQLParser {
         } else {
             item = this.exprParser.expr();
         }
+        if (lexer.nextIf(Token.AS)) {
+            item = new SQLAliasedExpr(item, lexer.stringVal);
+            lexer.nextToken();
+        }
 
         if (dialectFeatureEnabled(GroupByItemOrder)) {
             if (lexer.token == Token.DESC) {
@@ -1113,7 +1133,7 @@ public class SQLSelectParser extends SQLParser {
         if (lexer.token == Token.HINT) {
             SQLCommentHint hint = this.exprParser.parseHint(); // skip
             if (item instanceof SQLObjectImpl) {
-                ((SQLExprImpl) item).setHint(hint);
+                ((SQLObjectImpl) item).setHint(hint);
             }
         }
 
@@ -1122,11 +1142,18 @@ public class SQLSelectParser extends SQLParser {
 
     protected void parseSelectList(SQLSelectQueryBlock queryBlock) {
         final List<SQLSelectItem> selectList = queryBlock.getSelectList();
+        boolean hasComma = true;
         for (; ; ) {
+            List<String> previousComments = lexer.comments;
             final SQLSelectItem selectItem = this.exprParser.parseSelectItem();
+            selectItem.addBeforeComment(previousComments);
             selectList.add(selectItem);
             selectItem.setParent(queryBlock);
-
+            if (!hasComma && selectItem.getExpr() instanceof SQLVariantRefExpr) {
+                SQLVariantRefExpr sqlVariantRefExpr = (SQLVariantRefExpr) selectItem.getExpr();
+                sqlVariantRefExpr.setHasPrefixComma(false);
+                hasComma = true;
+            }
             //https://github.com/alibaba/druid/issues/5708
             if (lexer.hasComment()
                     && lexer.isKeepComments()
@@ -1136,7 +1163,14 @@ public class SQLSelectParser extends SQLParser {
             }
 
             if (lexer.token != Token.COMMA) {
-                break;
+                if (lexer.token == Token.VARIANT) {
+                    hasComma = false;
+                    continue;
+                } else if (selectItem.getExpr() instanceof SQLVariantRefExpr && ((SQLVariantRefExpr) selectItem.getExpr()).isTemplateParameter() && lexer.token != Token.FROM) {
+                    continue;
+                } else {
+                    break;
+                }
             }
 
             int line = lexer.line;
@@ -1251,6 +1285,14 @@ public class SQLSelectParser extends SQLParser {
                         this.exprParser.names(values.getColumns(), values);
                         accept(Token.RPAREN);
                     }
+                } else if (tableSource instanceof SQLUnionQueryTableSource) {
+                    // derived table over a UNION: AS alias (col1, col2, ...)  (see issue #6572)
+                    SQLUnionQueryTableSource unionTableSource = (SQLUnionQueryTableSource) tableSource;
+                    if (lexer.token == Token.LPAREN) {
+                        lexer.nextToken();
+                        this.exprParser.names(unionTableSource.getColumns(), unionTableSource);
+                        accept(Token.RPAREN);
+                    }
                 }
             }
 
@@ -1296,7 +1338,7 @@ public class SQLSelectParser extends SQLParser {
         }
 
         if (lexer.token == Token.SELECT) {
-            throw new ParserException("TODO " + lexer.info());
+            throw new ParserException("unexpected SELECT in table source, subquery must be wrapped in parentheses. " + lexer.info());
         }
 
         SQLTableSource unnestTableSource = parseUnnestTableSource();
@@ -1321,6 +1363,7 @@ public class SQLSelectParser extends SQLParser {
 
         return tableSrc;
     }
+
     protected SQLExprTableSource getTableSource() {
         return new SQLExprTableSource();
     }
@@ -1355,6 +1398,48 @@ public class SQLSelectParser extends SQLParser {
         tableReference.setExpr(expr);
     }
 
+    protected SQLTableSource parseLateralTableSource() {
+        if (lexer.token == Token.LPAREN) {
+            Lexer.SavePoint mark = lexer.mark();
+            lexer.nextToken();
+            if (lexer.token == Token.SELECT || lexer.token == Token.WITH || lexer.token == Token.VALUES) {
+                SQLSelect select = select();
+                accept(Token.RPAREN);
+                SQLSubqueryTableSource subquery = new SQLSubqueryTableSource(select);
+                subquery.setLateral(true);
+                String alias = tableAlias();
+                if (alias != null) {
+                    subquery.setAlias(alias);
+                }
+                if (lexer.token == Token.LPAREN) {
+                    lexer.nextToken();
+                    this.exprParser.names(subquery.getColumns(), subquery);
+                    accept(Token.RPAREN);
+                }
+                return subquery;
+            } else {
+                lexer.reset(mark);
+                SQLExpr funcExpr = this.exprParser.expr();
+                SQLExprTableSource funcTableSource = new SQLExprTableSource(funcExpr);
+                funcTableSource.setLateral(true);
+                String alias = tableAlias();
+                if (alias != null) {
+                    funcTableSource.setAlias(alias);
+                }
+                return funcTableSource;
+            }
+        } else {
+            SQLExpr funcExpr = this.exprParser.expr();
+            SQLExprTableSource funcTableSource = new SQLExprTableSource(funcExpr);
+            funcTableSource.setLateral(true);
+            String alias = tableAlias();
+            if (alias != null) {
+                funcTableSource.setAlias(alias);
+            }
+            return funcTableSource;
+        }
+    }
+
     protected SQLTableSource parseUnnestTableSource() {
         if (lexer.identifierEquals(FnvHash.Constants.UNNEST)) {
             Lexer.SavePoint mark = lexer.mark();
@@ -1380,10 +1465,11 @@ public class SQLSelectParser extends SQLParser {
 
                 if (lexer.nextIf(Token.WITH)) {
                     acceptIdentifier("OFFSET");
-                    lexer.nextIf(Token.AS);
-                    unnest.setOffset(
-                            this.exprParser.expr()
-                    );
+                    unnest.setWithOffset(true);
+                    // the offset alias is optional: WITH OFFSET [AS alias] (see issue #6547)
+                    if (lexer.nextIf(Token.AS) || lexer.token == Token.IDENTIFIER) {
+                        unnest.setOffset(this.exprParser.expr());
+                    }
                 }
                 return unnest;
             } else {
@@ -1518,6 +1604,13 @@ public class SQLSelectParser extends SQLParser {
                 && lexer.isKeepComments()
                 && !(tableSource instanceof SQLSubqueryTableSource)) {
             tableSource.addAfterComment(lexer.readAndResetComments());
+        }
+
+        if (lexer.token == Token.HINT && dbType == DbType.odps) {
+            List<SQLCommentHint> hints = this.exprParser.parseHints();
+            for (SQLCommentHint hint : hints) {
+                tableSource.addAfterComment(hint.getText());
+            }
         }
 
         if (tableSource.getAlias() == null || tableSource.getAlias().length() == 0) {
@@ -1828,7 +1921,10 @@ public class SQLSelectParser extends SQLParser {
                     }
                 }
             } else {
-                if (lexer.token == Token.VALUES) {
+                if (lexer.token == Token.LATERAL || lexer.identifierEquals(FnvHash.Constants.LATERAL)) {
+                    lexer.nextToken();
+                    rightTableSource = parseLateralTableSource();
+                } else if (lexer.token == Token.VALUES) {
                     rightTableSource = this.parseValues();
                 } else {
                     SQLTableSource unnestTableSource = parseUnnestTableSource();
@@ -2014,7 +2110,7 @@ public class SQLSelectParser extends SQLParser {
                     join.addCondition(joinOn2);
                 }
 
-                if (dialectFeatureEnabled(UDJ) && lexer.identifierEquals(FnvHash.Constants.USING)) {
+                if (dialectFeatureEnabled(UserDefinedJoin) && lexer.identifierEquals(FnvHash.Constants.USING)) {
                     SQLJoinTableSource.UDJ udj = new SQLJoinTableSource.UDJ();
                     lexer.nextToken();
                     udj.setFunction(this.exprParser.name());
@@ -2445,7 +2541,7 @@ public class SQLSelectParser extends SQLParser {
             accept(Token.LPAREN);
 
             if (lexer.token() == (Token.SELECT)) {
-                throw new ParserException("TODO. " + lexer.info());
+                throw new ParserException("subquery in UNPIVOT IN clause is not supported. " + lexer.info());
             }
             parsePivotIn(unPivot, unPivot.getPivotIn());
 

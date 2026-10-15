@@ -15,14 +15,6 @@
  */
 package com.alibaba.druid.bvt.filter;
 
-import java.sql.Clob;
-import java.sql.SQLException;
-import java.util.Collections;
-
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.filter.FilterChainImpl;
 import com.alibaba.druid.mock.MockCallableStatement;
 import com.alibaba.druid.mock.MockClob;
@@ -32,13 +24,23 @@ import com.alibaba.druid.proxy.jdbc.CallableStatementProxyImpl;
 import com.alibaba.druid.proxy.jdbc.ClobProxy;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxyImpl;
 import com.alibaba.druid.util.JdbcUtils;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class FilterChainTest_Clob_2 extends TestCase {
+import java.sql.Clob;
+import java.sql.SQLException;
+import java.util.Collections;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class FilterChainTest_Clob_2 {
     private DruidDataSource dataSource;
     private CallableStatementProxy statement;
 
-    private int invokeCount = 0;
+    private int invokeCount;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
 
@@ -51,66 +53,72 @@ public class FilterChainTest_Clob_2 extends TestCase {
         };
 
         statement = new CallableStatementProxyImpl(new ConnectionProxyImpl(null, null, null, 0), mockStmt, "", 1);
-
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
 
         invokeCount = 0;
     }
 
+    @Test
     public void test_getClob() throws Exception {
         FilterChainImpl chain = new FilterChainImpl(dataSource);
 
         Clob clob = chain.callableStatement_getClob(statement, 1);
 
-        Assert.assertTrue(clob instanceof ClobProxy);
-        Assert.assertEquals(1, invokeCount);
+        assertTrue(clob instanceof ClobProxy);
+        assertEquals(1, invokeCount);
     }
 
+    @Test
     public void test_getClob_1() throws Exception {
         FilterChainImpl chain = new FilterChainImpl(dataSource);
 
         Clob clob = chain.callableStatement_getClob(statement, "1");
 
-        Assert.assertTrue(clob instanceof ClobProxy);
-        Assert.assertEquals(1, invokeCount);
+        assertTrue(clob instanceof ClobProxy);
+        assertEquals(1, invokeCount);
     }
 
+    @Test
     public void test_getObject() throws Exception {
         FilterChainImpl chain = new FilterChainImpl(dataSource);
 
         Clob clob = (Clob) chain.callableStatement_getObject(statement, 1);
 
-        Assert.assertTrue(clob instanceof ClobProxy);
-        Assert.assertEquals(1, invokeCount);
+        assertTrue(clob instanceof ClobProxy);
+        assertEquals(1, invokeCount);
     }
 
+    @Test
     public void test_getObject_1() throws Exception {
         FilterChainImpl chain = new FilterChainImpl(dataSource);
 
         Clob clob = (Clob) chain.callableStatement_getObject(statement, "1");
 
-        Assert.assertTrue(clob instanceof ClobProxy);
-        Assert.assertEquals(1, invokeCount);
+        assertTrue(clob instanceof ClobProxy);
+        assertEquals(1, invokeCount);
     }
 
+    @Test
     public void test_getObject_2() throws Exception {
         FilterChainImpl chain = new FilterChainImpl(dataSource);
 
         Clob clob = (Clob) chain.callableStatement_getObject(statement, 1, Collections.<String, Class<?>>emptyMap());
 
-        Assert.assertTrue(clob instanceof ClobProxy);
-        Assert.assertEquals(1, invokeCount);
+        assertTrue(clob instanceof ClobProxy);
+        assertEquals(1, invokeCount);
     }
 
+    @Test
     public void test_getObject_3() throws Exception {
         FilterChainImpl chain = new FilterChainImpl(dataSource);
 
         Clob clob = (Clob) chain.callableStatement_getObject(statement, "1", Collections.<String, Class<?>>emptyMap());
 
-        Assert.assertTrue(clob instanceof ClobProxy);
-        Assert.assertEquals(1, invokeCount);
+        assertTrue(clob instanceof ClobProxy);
+        assertEquals(1, invokeCount);
     }
 }

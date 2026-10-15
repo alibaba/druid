@@ -1,17 +1,16 @@
 package com.alibaba.druid.bvt;
 
-import java.util.List;
-
 import com.alibaba.druid.DbType;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import org.junit.jupiter.api.Test;
 
+import java.util.List;
 
-public class OrTest extends TestCase {
+public class OrTest {
+    @Test
     public void test_xx() throws Exception {
-        String sql = "select * from t where not match('', '') or (c > 0 and d >0)";
+        String sql = "select * from t where not match('', '') or (c > 0 and d > 0)";
 
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, (DbType) null);
         SQLStatement stmt = stmtList.get(0);

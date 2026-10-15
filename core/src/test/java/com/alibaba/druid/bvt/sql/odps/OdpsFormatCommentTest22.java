@@ -1,28 +1,29 @@
 package com.alibaba.druid.bvt.sql.odps;
 
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.SQLUtils;
+import org.junit.jupiter.api.Test;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class OdpsFormatCommentTest22 extends TestCase {
+public class OdpsFormatCommentTest22 {
+    @Test
     public void test_if() throws Exception {
         String sql = "select if(a>0,1, 0) from dual";
-        Assert.assertEquals("SELECT IF(a > 0, 1, 0)"
+        assertEquals("SELECT IF(a > 0, 1, 0)"
                 + "\nFROM dual", SQLUtils.formatOdps(sql));
     }
 
+    @Test
     public void test_coalesce() throws Exception {
         String sql = "select coalesce(f1,f2) from dual";
-        Assert.assertEquals("SELECT COALESCE(f1, f2)"
+        assertEquals("SELECT COALESCE(f1, f2)"
                 + "\nFROM dual", SQLUtils.formatOdps(sql));
     }
 
+    @Test
     public void test_count() throws Exception {
         String sql = "select count(*) from dual";
-        Assert.assertEquals("SELECT count(*)"
+        assertEquals("SELECT count(*)"
                 + "\nFROM dual", SQLUtils.formatOdps(sql));
     }
-
 }

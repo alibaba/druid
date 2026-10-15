@@ -1,18 +1,17 @@
 package com.alibaba.druid.bvt.sql.postgresql;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGSQLStatementParser;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGExportParameterVisitor;
+import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.List;
 
-public class PGExportParameterVisitorTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class PGExportParameterVisitorTest {
+    @Test
     public void test_pg() throws Exception {
         String sql = "select fname, count(*) from t where fid = 1 group by fname order by 1";
 
@@ -23,7 +22,7 @@ public class PGExportParameterVisitorTest extends TestCase {
         PGExportParameterVisitor visitor = new PGExportParameterVisitor(parameters);
         stmt.accept(visitor);
 
-        Assert.assertEquals(1, parameters.size());
-        Assert.assertEquals(1, parameters.get(0));
+        assertEquals(1, parameters.size());
+        assertEquals(1, parameters.get(0));
     }
 }

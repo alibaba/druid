@@ -25,6 +25,8 @@ import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleSelectTest110 extends OracleTest {
     public void test_0() throws Exception {
         String sql = "SELECT\n" + "  Home_City,\n" + "  bank_type,\n" + "  differ_flag,\n" + "  adjust_flag,\n"
@@ -88,7 +90,6 @@ public class OracleSelectTest110 extends OracleTest {
         assertEquals(2, visitor.getConditions().size());
         assertEquals(0, visitor.getRelationships().size());
         assertEquals(0, visitor.getOrderByColumns().size());
-
     }
 
     public void test_1() throws Exception {
@@ -99,7 +100,6 @@ public class OracleSelectTest110 extends OracleTest {
         List<SQLStatement> statementList = parser.parseStatementList();
 
         assertEquals(1, statementList.size());
-
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(DbType.oracle);
         SQLStatement stmt = statementList.get(0);
@@ -125,7 +125,6 @@ public class OracleSelectTest110 extends OracleTest {
         assertEquals(4, visitor.getConditions().size());
         assertEquals(0, visitor.getRelationships().size());
         assertEquals(0, visitor.getOrderByColumns().size());
-
     }
 
     public void test_2() throws Exception {
@@ -146,7 +145,6 @@ public class OracleSelectTest110 extends OracleTest {
         List<SQLStatement> statementList = parser.parseStatementList();
 
         assertEquals(1, statementList.size());
-
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(DbType.oracle);
         SQLStatement stmt = statementList.get(0);
@@ -181,6 +179,5 @@ public class OracleSelectTest110 extends OracleTest {
         assertEquals(1, visitor.getConditions().size());
         assertEquals(0, visitor.getRelationships().size());
         assertEquals(0, visitor.getOrderByColumns().size());
-
     }
 }

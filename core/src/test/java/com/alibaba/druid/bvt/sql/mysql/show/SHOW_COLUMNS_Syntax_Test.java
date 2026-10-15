@@ -20,12 +20,14 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class SHOW_COLUMNS_Syntax_Test extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class SHOW_COLUMNS_Syntax_Test {
+    @Test
     public void test_0() throws Exception {
         String sql = "SHOW COLUMNS FROM City;";
 
@@ -34,9 +36,10 @@ public class SHOW_COLUMNS_Syntax_Test extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SHOW COLUMNS FROM City;", text);
+        assertEquals("SHOW COLUMNS FROM City;", text);
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "SHOW COLUMNS FROM mytable FROM mydb;";
 
@@ -45,9 +48,10 @@ public class SHOW_COLUMNS_Syntax_Test extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SHOW COLUMNS FROM mydb.mytable;", text);
+        assertEquals("SHOW COLUMNS FROM mydb.mytable;", text);
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "SHOW COLUMNS FROM mydb.mytable;";
 
@@ -56,9 +60,10 @@ public class SHOW_COLUMNS_Syntax_Test extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SHOW COLUMNS FROM mydb.mytable;", text);
+        assertEquals("SHOW COLUMNS FROM mydb.mytable;", text);
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = "SHOW COLUMNS FROM mytable IN mydb;";
 
@@ -67,7 +72,7 @@ public class SHOW_COLUMNS_Syntax_Test extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SHOW COLUMNS FROM mydb.mytable;", text);
+        assertEquals("SHOW COLUMNS FROM mydb.mytable;", text);
     }
 
     private String output(List<SQLStatement> stmtList) {

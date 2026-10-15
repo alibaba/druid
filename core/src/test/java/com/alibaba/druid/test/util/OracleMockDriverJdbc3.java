@@ -15,15 +15,14 @@
  */
 package com.alibaba.druid.test.util;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.Properties;
-
 import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.mock.MockResultSet;
 import com.alibaba.druid.mock.MockStatementBase;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.Properties;
 
 public class OracleMockDriverJdbc3 extends MockDriver {
     public Connection connect(String url, Properties info) throws SQLException {

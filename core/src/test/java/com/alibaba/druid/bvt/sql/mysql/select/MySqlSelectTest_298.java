@@ -25,6 +25,8 @@ import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_298
         extends MysqlTest {
     public void test_0() throws Exception {
@@ -260,7 +262,6 @@ public class MySqlSelectTest_298
                 "FROM test4dmp.course\n" +
                 "WHERE cid BETWEEN 18 AND 19\n" +
                 "ORDER BY id", stmt.toString());
-
 
         SQLStatement stmt2 = SQLUtils
                 .parseSingleStatement(sql, DbType.mysql);

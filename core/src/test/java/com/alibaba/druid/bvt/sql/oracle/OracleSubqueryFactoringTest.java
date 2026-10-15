@@ -15,14 +15,15 @@
  */
 package com.alibaba.druid.bvt.sql.oracle;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
+import org.junit.jupiter.api.Test;
 
-public class OracleSubqueryFactoringTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OracleSubqueryFactoringTest {
+    @Test
     public void test_interval() throws Exception {
         String sql = "WITH dept_costs AS (\n"
                 + "SELECT department_name, SUM(salary) dept_total\n"
@@ -56,7 +57,5 @@ public class OracleSubqueryFactoringTest extends TestCase {
         String text = TestUtils.outputOracle(stmt);
 
         assertEquals(expected, text);
-
     }
-
 }

@@ -15,16 +15,16 @@
  */
 package com.alibaba.druid.mysql;
 
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.util.JdbcUtils;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-import junit.framework.TestCase;
-
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.util.JdbcUtils;
-
-public class MySqlHexTest extends TestCase {
+public class MySqlHexTest {
     final int COUNT = 800;
 
     private String jdbcUrl;
@@ -34,6 +34,7 @@ public class MySqlHexTest extends TestCase {
 
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         jdbcUrl = "jdbc:mysql://hbase-01:3306/sonar";
         user = "sonar";
@@ -46,10 +47,9 @@ public class MySqlHexTest extends TestCase {
         dataSource.setPoolPreparedStatements(true);
         dataSource.setUsername(user);
         dataSource.setPassword(password);
-
     }
 
-
+    @Test
     public void test_0() throws Exception {
         Connection conn = dataSource.getConnection();
 
@@ -64,5 +64,4 @@ public class MySqlHexTest extends TestCase {
 
         conn.close();
     }
-
 }

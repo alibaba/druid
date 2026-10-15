@@ -15,29 +15,30 @@
  */
 package com.alibaba.druid.bvt.jmx;
 
-import java.lang.management.ManagementFactory;
+import org.junit.jupiter.api.Test;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import javax.management.ObjectName;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
+import java.lang.management.ManagementFactory;
 
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class JMXExporterTest extends TestCase {
+public class JMXExporterTest {
+    @Test
     public void test_export() throws Exception {
         String file = "com/alibaba/druid/jmx/spring_stat_export.xml";
 
         ObjectName objectName = new ObjectName("com.alibaba.druid:type=JdbcStatManager");
 
-        Assert.assertFalse(ManagementFactory.getPlatformMBeanServer().isRegistered(objectName)); // before jmx register
+        assertFalse(ManagementFactory.getPlatformMBeanServer().isRegistered(objectName)); // before jmx register
 
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(file);
 
-        Assert.assertTrue(ManagementFactory.getPlatformMBeanServer().isRegistered(objectName)); // after jmx register
+        assertTrue(ManagementFactory.getPlatformMBeanServer().isRegistered(objectName)); // after jmx register
 
         context.close();
 
-        Assert.assertFalse(ManagementFactory.getPlatformMBeanServer().isRegistered(objectName));
+        assertFalse(ManagementFactory.getPlatformMBeanServer().isRegistered(objectName));
     }
 }

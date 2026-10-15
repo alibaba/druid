@@ -1,15 +1,15 @@
 package com.alibaba.druid.bvt.sql.eval;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
-public class EvalMethodTest_Elt extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class EvalMethodTest_Elt {
+    @Test
     public void test_method() throws Exception {
-        Assert.assertEquals("ej",
+        assertEquals("ej",
                 SQLEvalVisitorUtils.evalExpr(JdbcConstants.MYSQL, "ELT(1, 'ej', 'Heja', 'hej', 'foo')"));
     }
 }

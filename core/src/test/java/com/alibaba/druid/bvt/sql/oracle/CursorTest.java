@@ -15,14 +15,15 @@
  */
 package com.alibaba.druid.bvt.sql.oracle;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
+import org.junit.jupiter.api.Test;
 
-public class CursorTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class CursorTest {
+    @Test
     public void test_cursor() throws Exception {
         String sql = "SELECT department_name, CURSOR(SELECT salary, commission_pct FROM employees e WHERE e.department_id = d.department_id) "
                 + "FROM departments d;";
@@ -32,7 +33,7 @@ public class CursorTest extends TestCase {
 
         String text = TestUtils.outputOracle(stmt);
 
-        Assert.assertEquals("SELECT department_name, CURSOR(\n\t\tSELECT salary, commission_pct\n" + "\t\tFROM employees e\n"
+        assertEquals("SELECT department_name, CURSOR(\n\t\tSELECT salary, commission_pct\n" + "\t\tFROM employees e\n"
                 + "\t\tWHERE e.department_id = d.department_id\n\t)\n" + "FROM departments d;", text);
 
         System.out.println(text);

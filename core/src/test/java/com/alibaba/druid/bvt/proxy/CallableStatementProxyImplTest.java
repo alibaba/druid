@@ -15,28 +15,6 @@
  */
 package com.alibaba.druid.bvt.proxy;
 
-import java.io.InputStream;
-import java.io.Reader;
-import java.math.BigDecimal;
-import java.net.URL;
-import java.sql.Array;
-import java.sql.Blob;
-import java.sql.CallableStatement;
-import java.sql.Clob;
-import java.sql.NClob;
-import java.sql.Ref;
-import java.sql.ResultSet;
-import java.sql.RowId;
-import java.sql.SQLException;
-import java.sql.SQLXML;
-import java.sql.Types;
-import java.util.Calendar;
-import java.util.Properties;
-
-import org.junit.Assert;
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.filter.FilterEventAdapter;
 import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.proxy.jdbc.CallableStatementProxyImpl;
@@ -46,13 +24,27 @@ import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxyConfig;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxyImpl;
 import com.alibaba.druid.stat.JdbcStatManager;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
-public class CallableStatementProxyImplTest extends TestCase {
+import java.io.InputStream;
+import java.io.Reader;
+import java.math.BigDecimal;
+import java.net.URL;
+import java.sql.*;
+import java.util.Calendar;
+import java.util.Properties;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class CallableStatementProxyImplTest {
+    @AfterEach
     protected void tearDown() throws Exception {
         DruidDriver.getProxyDataSources().clear();
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+        JdbcStatManager.getInstance().reset();
     }
 
+    @Test
     public void test_call() throws Exception {
         DataSourceProxyConfig config = new DataSourceProxyConfig();
         DataSourceProxy dataSource = new DataSourceProxyImpl(null, config);
@@ -600,5 +592,4 @@ public class CallableStatementProxyImplTest extends TestCase {
         public void setNClob(String parameterName, Reader reader) throws SQLException {
         }
     }
-
 }

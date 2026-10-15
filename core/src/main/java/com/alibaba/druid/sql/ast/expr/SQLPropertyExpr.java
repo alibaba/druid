@@ -25,10 +25,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-public final class SQLPropertyExpr extends SQLExprImpl implements SQLName, SQLReplaceable, Comparable<SQLPropertyExpr> {
-    private SQLExpr owner;
+public class SQLPropertyExpr extends SQLExprImpl implements SQLName, SQLReplaceable, Comparable<SQLPropertyExpr> {
+    protected SQLExpr owner;
     private String splitString;
-    private String name;
+    protected String name;
 
     protected long nameHashCod64;
     protected long hashCode64;

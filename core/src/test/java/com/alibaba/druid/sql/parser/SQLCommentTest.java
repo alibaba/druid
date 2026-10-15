@@ -3,14 +3,15 @@ package com.alibaba.druid.sql.parser;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 /**
  * test
  */
-public class SQLCommentTest  extends TestCase {
+public class SQLCommentTest {
     // issues 5708
-    public void test1(){
+    @Test
+    public void test1() {
         String sqlStr = "SELECT \n" +
                 "test1, -- test1的注释\n" +
                 "test2 -- test2的注释\n" +
@@ -20,12 +21,13 @@ public class SQLCommentTest  extends TestCase {
         System.out.println(sqlStatement1);
     }
     // issues 5709
-    public void test2(){
+    @Test
+    public void test2() {
         String sqlStr = "INSERT INTO S371_BSD_O_IDCS(\n" +
                 "AAAA  -- AAAA\n" +
-                ",BBBB   -- BBBB\n" +
-                ",CCCC   -- CCCC\n" +
-                ",DDDD   -- DDDD\n" +
+                ", BBBB   -- BBBB\n" +
+                ", CCCC   -- CCCC\n" +
+                ", DDDD   -- DDDD\n" +
                 ")\n" +
                 "\n" +
                 "\t(SELECT \n" +

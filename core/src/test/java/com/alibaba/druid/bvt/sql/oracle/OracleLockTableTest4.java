@@ -24,6 +24,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleLockTableTest4 extends OracleTest {
     public void test_0() throws Exception {
         String sql = "LOCK TABLE \"TAB9527\" IN EXCLUSIVE MODE  NOWAIT";
@@ -49,7 +51,6 @@ public class OracleLockTableTest4 extends OracleTest {
         assertEquals(1, visitor.getTables().size());
         assertEquals(0, visitor.getColumns().size());
 
-//        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("bonuses", "employee_id")));
+//        assertTrue(visitor.getColumns().contains(new TableStat.Column("bonuses", "employee_id")));
     }
-
 }

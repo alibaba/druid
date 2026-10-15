@@ -23,6 +23,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleCreateSynonymTest_1 extends OracleTest {
     public void test_0() throws Exception {
         String sql = //
@@ -44,8 +46,8 @@ public class OracleCreateSynonymTest_1 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        assertEquals("CREATE SYNONYM offices FOR hr.locations;"
-                , SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+        assertEquals("CREATE SYNONYM offices FOR hr.locations;",
+                SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         assertEquals(0, visitor.getTables().size());
 

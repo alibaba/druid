@@ -16,17 +16,20 @@
 package com.alibaba.druid.bvt.filter.wall.oracle;
 
 import com.alibaba.druid.wall.WallUtils;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
-public class OracleWallTest7 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OracleWallTest7 {
+    @Test
     public void test_true() throws Exception {
         String sql = //
                 "begin\n"
                         + "end";
-        Assert.assertTrue(WallUtils.isValidateOracle(sql));
+        assertTrue(WallUtils.isValidateOracle(sql));
     }
 
+    @Test
     public void test_insert_all() throws Exception {
         String sql = //
                 "INSERT ALL\n" +
@@ -38,6 +41,7 @@ public class OracleWallTest7 extends TestCase {
         assertTrue(WallUtils.isValidateOracle(sql));
     }
 
+    @Test
     public void test_lock() throws Exception {
         String sql = //
                 "LOCK TABLE \"SFXT\".\"FLYWAY_SCHEMA_HISTORY\" IN EXCLUSIVE MODE";

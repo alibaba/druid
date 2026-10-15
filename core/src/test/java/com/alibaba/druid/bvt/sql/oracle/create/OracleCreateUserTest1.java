@@ -23,10 +23,12 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleCreateUserTest1 extends OracleTest {
     public void test_0() throws Exception {
         String sql = //
-                "create user DZFP_CX identified by oracle;"; //
+                "create user DZFP_CX identified by oracle;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

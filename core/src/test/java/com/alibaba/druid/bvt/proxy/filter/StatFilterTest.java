@@ -15,34 +15,33 @@
  */
 package com.alibaba.druid.bvt.proxy.filter;
 
+import com.alibaba.druid.proxy.DruidDriver;
+import com.alibaba.druid.stat.JdbcStatManager;
+import com.alibaba.druid.support.json.JSONUtils;
+import org.junit.jupiter.api.Test;
+
+import javax.management.openmbean.CompositeData;
+import javax.management.openmbean.TabularData;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-import javax.management.openmbean.CompositeData;
-import javax.management.openmbean.TabularData;
+import static org.junit.jupiter.api.Assertions.*;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
-import com.alibaba.druid.proxy.DruidDriver;
-import com.alibaba.druid.stat.JdbcStatManager;
-import com.alibaba.druid.support.json.JSONUtils;
-
-public class StatFilterTest extends TestCase {
+public class StatFilterTest {
     public void setUp() throws Exception {
         JdbcStatManager.getInstance().reset();
     }
 
     public void tearDown() throws Exception {
-        JdbcStatManager.getInstance().reset();
-
+         JdbcStatManager.getInstance().reset();
         DruidDriver.getProxyDataSources().clear();
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+         JdbcStatManager.getInstance().reset();
     }
 
+    @Test
     public void test_stat() throws Exception {
         String url = "jdbc:wrap-jdbc:filters=default:jdbc:mock:xx";
         Connection conn = DriverManager.getConnection(url);
@@ -58,7 +57,7 @@ public class StatFilterTest extends TestCase {
         conn.close();
 
         TabularData sqlList = JdbcStatManager.getInstance().getSqlList();
-        Assert.assertEquals(true, sqlList.size() > 0);
+        assertEquals(true, sqlList.size() > 0);
 
         int count = 0;
         for (Object item : sqlList.values()) {
@@ -67,9 +66,9 @@ public class StatFilterTest extends TestCase {
                 count++;
             }
             long[] histogram = (long[]) row.get("Histogram");
-            Assert.assertEquals(0L, histogram[histogram.length - 1]);
+            assertEquals(0L, histogram[histogram.length - 1]);
         }
-        Assert.assertEquals(true, count > 0);
+        assertEquals(true, count > 0);
 
         System.out.println(JSONUtils.toJSONString(sqlList));
     }

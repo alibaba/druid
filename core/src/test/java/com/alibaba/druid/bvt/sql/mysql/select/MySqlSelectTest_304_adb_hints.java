@@ -21,6 +21,8 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_304_adb_hints
         extends MysqlTest {
     public void test_0() throws Exception {
@@ -281,7 +283,6 @@ public class MySqlSelectTest_304_adb_hints
                 "ORDER BY s.acctbal DESC, n.name, s.name, p.partkey\n" +
                 "LIMIT 100", stmt.toString());
     }
-
 
     public void test_13() throws Exception {
         String sql = "SELECT COUNT(*)\n" +

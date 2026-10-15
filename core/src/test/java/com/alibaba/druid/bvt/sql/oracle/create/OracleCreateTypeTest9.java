@@ -24,6 +24,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleCreateTypeTest9 extends OracleTest {
     public void test_types() throws Exception {
         String sql = "CREATE OR REPLACE TYPE \"T_EVA_PM_INFO_OBJECT\"                    \n" +
@@ -40,7 +42,6 @@ public class OracleCreateTypeTest9 extends OracleTest {
                 " );";
 
         System.out.println(sql);
-
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -59,7 +60,7 @@ public class OracleCreateTypeTest9 extends OracleTest {
                         "\tfinalUsage2 varchar2(256), \n" +
                         "\tsanctionedParty12 varchar2(256), \n" +
                         "\tsanctionedParty22 varchar2(256)\n" +
-                        ");",//
+                        ");",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

@@ -20,6 +20,7 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_277 extends MysqlTest {
     public void test_0() throws Exception {
@@ -33,6 +34,4 @@ public class MySqlSelectTest_277 extends MysqlTest {
                 "FROM test_datatype_list\n" +
                 "ORDER BY 1, 2, 3", stmt.toString());
     }
-
-
 }

@@ -16,35 +16,38 @@
 package com.alibaba.druid.bvt.sql.odps;
 
 import com.alibaba.druid.sql.SQLUtils;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
-public class OdpsSelectTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OdpsSelectTest {
+    @Test
     public void test_distribute_by() throws Exception {
-        String sql = "select region from sale_detail distribute by region;";//
-        assertEquals("SELECT region" //
-                + "\nFROM sale_detail" //
+        String sql = "select region from sale_detail distribute by region;";
+        assertEquals("SELECT region"
+                + "\nFROM sale_detail"
                 + "\nDISTRIBUTE BY region;", SQLUtils.formatOdps(sql));
     }
 
+    @Test
     public void test_distribute_by_1() throws Exception {
-        String sql = " select region from sale_detail distribute by region sort by f1;";//
-        assertEquals("SELECT region" //
-                + "\nFROM sale_detail" //
+        String sql = " select region from sale_detail distribute by region sort by f1;";
+        assertEquals("SELECT region"
+                + "\nFROM sale_detail"
                 + "\nDISTRIBUTE BY region\n" +
                 "SORT BY f1;", SQLUtils.formatOdps(sql));
     }
 
+    @Test
     public void test_distribute_by_2() throws Exception {
-        String sql = " select region from sale_detail distribute by region sort by f1 asc;";//
-        assertEquals("SELECT region" //
-                + "\nFROM sale_detail" //
+        String sql = " select region from sale_detail distribute by region sort by f1 asc;";
+        assertEquals("SELECT region"
+                + "\nFROM sale_detail"
                 + "\nDISTRIBUTE BY region\n" +
                 "SORT BY f1 ASC;", SQLUtils.formatOdps(sql));
-        assertEquals("select region" //
-                + "\nfrom sale_detail" //
+        assertEquals("select region"
+                + "\nfrom sale_detail"
                 + "\ndistribute by region\n" +
                 "sort by f1 asc;", SQLUtils.formatOdps(sql, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
-
 }

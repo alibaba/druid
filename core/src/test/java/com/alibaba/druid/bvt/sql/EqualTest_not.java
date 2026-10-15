@@ -1,13 +1,13 @@
 package com.alibaba.druid.bvt.sql;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.ast.expr.SQLNotExpr;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleExprParser;
+import org.junit.jupiter.api.Test;
 
-public class EqualTest_not extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class EqualTest_not {
+    @Test
     public void test_exits() throws Exception {
         String sql = "not f1 = f2";
         String sql_c = "not f1 = f3";
@@ -24,13 +24,13 @@ public class EqualTest_not extends TestCase {
             OracleExprParser parser = new OracleExprParser(sql_c);
             exprC = (SQLNotExpr) parser.expr();
         }
-        Assert.assertEquals(exprA, exprB);
-        Assert.assertNotEquals(exprA, exprC);
-        Assert.assertTrue(exprA.equals(exprA));
-        Assert.assertFalse(exprA.equals(new Object()));
-        Assert.assertEquals(exprA.hashCode(), exprB.hashCode());
+        assertEquals(exprA, exprB);
+        assertNotEquals(exprA, exprC);
+        assertTrue(exprA.equals(exprA));
+        assertFalse(exprA.equals(new Object()));
+        assertEquals(exprA.hashCode(), exprB.hashCode());
 
-        Assert.assertEquals(new SQLNotExpr(), new SQLNotExpr());
-        Assert.assertEquals(new SQLNotExpr().hashCode(), new SQLNotExpr().hashCode());
+        assertEquals(new SQLNotExpr(), new SQLNotExpr());
+        assertEquals(new SQLNotExpr().hashCode(), new SQLNotExpr().hashCode());
     }
 }

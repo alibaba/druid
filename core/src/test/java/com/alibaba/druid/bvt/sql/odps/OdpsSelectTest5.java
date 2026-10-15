@@ -15,19 +15,18 @@
  */
 package com.alibaba.druid.bvt.sql.odps;
 
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.SQLUtils;
+import org.junit.jupiter.api.Test;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class OdpsSelectTest5 extends TestCase {
+public class OdpsSelectTest5 {
+    @Test
     public void test_distribute_by() throws Exception {
-        String sql = "select * from t where ds='20160303' and hour in ('18') ";//
-        Assert.assertEquals("SELECT *"
+        String sql = "select * from t where ds='20160303' and hour in ('18') ";
+        assertEquals("SELECT *"
                 + "\nFROM t"
                 + "\nWHERE ds = '20160303'"
                 + "\n\tAND hour IN ('18')", SQLUtils.formatOdps(sql));
     }
-
 }

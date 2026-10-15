@@ -15,24 +15,14 @@
  */
 package com.alibaba.druid.test.util;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.sql.Array;
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Time;
-import java.sql.Timestamp;
-import java.time.ZoneId;
-import java.util.Calendar;
-import java.util.EnumSet;
-import java.util.Properties;
-import java.util.TimeZone;
-import java.util.concurrent.Executor;
-
-import oracle.jdbc.*;
+import com.alibaba.druid.mock.MockConnection;
+import com.alibaba.druid.mock.MockConnectionClosedException;
+import com.alibaba.druid.mock.MockDriver;
+import oracle.jdbc.LogicalTransactionId;
+import oracle.jdbc.LogicalTransactionIdEventListener;
+import oracle.jdbc.OracleOCIFailover;
+import oracle.jdbc.OracleSavepoint;
+import oracle.jdbc.OracleShardingKey;
 import oracle.jdbc.aq.AQDequeueOptions;
 import oracle.jdbc.aq.AQEnqueueOptions;
 import oracle.jdbc.aq.AQMessage;
@@ -40,21 +30,17 @@ import oracle.jdbc.aq.AQNotificationRegistration;
 import oracle.jdbc.dcn.DatabaseChangeRegistration;
 import oracle.jdbc.internal.OracleConnection;
 import oracle.jdbc.pool.OracleConnectionCacheCallback;
-import oracle.sql.ARRAY;
-import oracle.sql.BINARY_DOUBLE;
-import oracle.sql.BINARY_FLOAT;
-import oracle.sql.DATE;
-import oracle.sql.INTERVALDS;
-import oracle.sql.INTERVALYM;
-import oracle.sql.NUMBER;
-import oracle.sql.TIMESTAMP;
-import oracle.sql.TIMESTAMPLTZ;
-import oracle.sql.TIMESTAMPTZ;
-import oracle.sql.TypeDescriptor;
+import oracle.sql.*;
 
-import com.alibaba.druid.mock.MockConnection;
-import com.alibaba.druid.mock.MockConnectionClosedException;
-import com.alibaba.druid.mock.MockDriver;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.sql.*;
+import java.time.ZoneId;
+import java.util.Calendar;
+import java.util.EnumSet;
+import java.util.Properties;
+import java.util.TimeZone;
+import java.util.concurrent.Executor;
 
 public class OracleMockConnection extends MockConnection implements oracle.jdbc.OracleConnection {
     private int defaultRowPrefetch = 10;

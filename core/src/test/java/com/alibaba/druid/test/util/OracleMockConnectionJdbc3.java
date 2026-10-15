@@ -1,10 +1,9 @@
 package com.alibaba.druid.test.util;
 
-import java.sql.SQLException;
-import java.util.Properties;
-
 import com.alibaba.druid.mock.MockDriver;
 
+import java.sql.SQLException;
+import java.util.Properties;
 
 public class OracleMockConnectionJdbc3 extends OracleMockConnection {
     public OracleMockConnectionJdbc3(MockDriver driver, String url, Properties connectProperties) {

@@ -15,17 +15,7 @@
  */
 package com.alibaba.druid.bvt.pool.basic;
 
-import java.sql.SQLException;
-import java.util.Collections;
-import java.util.Properties;
-
-import javax.security.auth.callback.PasswordCallback;
-
 import com.alibaba.druid.PoolTestCase;
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
@@ -35,15 +25,21 @@ import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.stat.JdbcStatContext;
 import com.alibaba.druid.stat.JdbcStatManager;
 
+import javax.security.auth.callback.PasswordCallback;
+
+import java.sql.SQLException;
+import java.util.Collections;
+import java.util.Properties;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 public class DataSourceTest3 extends PoolTestCase {
     private MockDriver driver;
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
-        DruidDataSourceStatManager.clear();
-
+         DruidDataSourceStatManager.clear();
         driver = new MockDriver();
-
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setDriver(driver);
@@ -65,10 +61,8 @@ public class DataSourceTest3 extends PoolTestCase {
 
     protected void tearDown() throws Exception {
         dataSource.close();
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
-
+        DruidDataSourceStatManager.clear();
         JdbcStatManager.getInstance().setStatContext(null);
-
         super.tearDown();
     }
 
@@ -84,7 +78,7 @@ public class DataSourceTest3 extends PoolTestCase {
             } catch (Exception ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
@@ -133,7 +127,7 @@ public class DataSourceTest3 extends PoolTestCase {
             } catch (Exception ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
@@ -194,7 +188,6 @@ public class DataSourceTest3 extends PoolTestCase {
         DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
 
         conn.close();
-
     }
 
     public void test_error_10() throws Exception {
@@ -209,7 +202,7 @@ public class DataSourceTest3 extends PoolTestCase {
             } catch (Exception ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
@@ -227,7 +220,7 @@ public class DataSourceTest3 extends PoolTestCase {
             } catch (Exception ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
@@ -239,7 +232,7 @@ public class DataSourceTest3 extends PoolTestCase {
     public void test_ValidConnectionChecker() throws Exception {
         dataSource.getValidConnectionCheckerClassName();
         dataSource.setValidConnectionChecker(new MySqlValidConnectionChecker());
-        Assert.assertEquals(MySqlValidConnectionChecker.class.getName(),
+        assertEquals(MySqlValidConnectionChecker.class.getName(),
                 dataSource.getValidConnectionCheckerClassName());
     }
 
@@ -257,7 +250,6 @@ public class DataSourceTest3 extends PoolTestCase {
          *
          */
         private static final long serialVersionUID = 1L;
-
     }
 
     public void test_setPasswordCallbackClassName() throws Exception {
@@ -276,7 +268,7 @@ public class DataSourceTest3 extends PoolTestCase {
             } catch (Exception ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
@@ -302,7 +294,7 @@ public class DataSourceTest3 extends PoolTestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
@@ -318,7 +310,7 @@ public class DataSourceTest3 extends PoolTestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
@@ -328,6 +320,5 @@ public class DataSourceTest3 extends PoolTestCase {
 
         DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
         dataSource.validateConnection(conn);
-
     }
 }

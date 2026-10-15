@@ -15,6 +15,18 @@
  */
 package com.alibaba.druid.bvt.pool.basic;
 
+import com.alibaba.druid.mock.MockConnection;
+import com.alibaba.druid.mock.MockPreparedStatement;
+import com.alibaba.druid.pool.DruidConnectionHolder;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.DruidPooledConnection;
+import com.alibaba.druid.pool.DruidPooledPreparedStatement;
+import com.alibaba.druid.pool.DruidPooledPreparedStatement.PreparedStatementKey;
+import com.alibaba.druid.pool.PreparedStatementHolder;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;
@@ -24,23 +36,13 @@ import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.Arrays;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Assert;
-
-import com.alibaba.druid.mock.MockConnection;
-import com.alibaba.druid.mock.MockPreparedStatement;
-import com.alibaba.druid.pool.DruidConnectionHolder;
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.pool.DruidPooledConnection;
-import com.alibaba.druid.pool.DruidPooledPreparedStatement;
-import com.alibaba.druid.pool.DruidPooledPreparedStatement.PreparedStatementKey;
-import com.alibaba.druid.pool.PreparedStatementHolder;
-
-public class PoolablePreparedStatementTest extends TestCase {
+public class PoolablePreparedStatementTest {
     protected MockPreparedStatement raw;
     protected DruidPooledPreparedStatement stmt;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         DruidDataSource dataSource = new DruidDataSource();
         MockConnection mockConn = new MockConnection();
@@ -61,20 +63,23 @@ public class PoolablePreparedStatementTest extends TestCase {
         };
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         stmt.clearParameters();
-        Assert.assertEquals(0, raw.getParameters().size());
+        assertEquals(0, raw.getParameters().size());
     }
 
+    @Test
     public void test_basic() throws Exception {
-        Assert.assertEquals(raw, stmt.getRawPreparedStatement());
-        Assert.assertEquals(raw, stmt.getRawStatement());
+        assertEquals(raw, stmt.getRawPreparedStatement());
+        assertEquals(raw, stmt.getRawStatement());
     }
 
+    @Test
     public void test_setBoolean() throws Exception {
         stmt.setBoolean(1, true);
 
-        Assert.assertEquals(Boolean.TRUE, raw.getParameters().get(0));
+        assertEquals(Boolean.TRUE, raw.getParameters().get(0));
 
         {
             SQLException error = null;
@@ -83,14 +88,15 @@ public class PoolablePreparedStatementTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
+    @Test
     public void test_setNull() throws Exception {
         stmt.setNull(1, Types.INTEGER);
 
-        Assert.assertEquals(null, raw.getParameters().get(0));
+        assertEquals(null, raw.getParameters().get(0));
 
         {
             SQLException error = null;
@@ -99,14 +105,15 @@ public class PoolablePreparedStatementTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
+    @Test
     public void test_setByte() throws Exception {
         stmt.setByte(1, (byte) 23);
 
-        Assert.assertEquals(new Byte((byte) 23), raw.getParameters().get(0));
+        assertEquals(new Byte((byte) 23), raw.getParameters().get(0));
 
         {
             SQLException error = null;
@@ -115,14 +122,15 @@ public class PoolablePreparedStatementTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
+    @Test
     public void test_setShort() throws Exception {
         stmt.setShort(1, Short.MAX_VALUE);
 
-        Assert.assertEquals(new Short(Short.MAX_VALUE), raw.getParameters().get(0));
+        assertEquals(new Short(Short.MAX_VALUE), raw.getParameters().get(0));
 
         {
             SQLException error = null;
@@ -131,14 +139,15 @@ public class PoolablePreparedStatementTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
+    @Test
     public void test_setInt() throws Exception {
         stmt.setInt(1, Integer.MAX_VALUE);
 
-        Assert.assertEquals(new Integer(Integer.MAX_VALUE), raw.getParameters().get(0));
+        assertEquals(new Integer(Integer.MAX_VALUE), raw.getParameters().get(0));
 
         {
             SQLException error = null;
@@ -147,14 +156,15 @@ public class PoolablePreparedStatementTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
+    @Test
     public void test_setLong() throws Exception {
         stmt.setLong(1, Long.MAX_VALUE);
 
-        Assert.assertEquals(new Long(Long.MAX_VALUE), raw.getParameters().get(0));
+        assertEquals(new Long(Long.MAX_VALUE), raw.getParameters().get(0));
 
         {
             SQLException error = null;
@@ -163,14 +173,15 @@ public class PoolablePreparedStatementTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
+    @Test
     public void test_setFloat() throws Exception {
         stmt.setFloat(1, Float.MAX_VALUE);
 
-        Assert.assertEquals(new Float(Float.MAX_VALUE), raw.getParameters().get(0));
+        assertEquals(new Float(Float.MAX_VALUE), raw.getParameters().get(0));
 
         {
             SQLException error = null;
@@ -179,14 +190,15 @@ public class PoolablePreparedStatementTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
+    @Test
     public void test_setDouble() throws Exception {
         stmt.setDouble(1, Double.MAX_VALUE);
 
-        Assert.assertEquals(new Double(Double.MAX_VALUE), raw.getParameters().get(0));
+        assertEquals(new Double(Double.MAX_VALUE), raw.getParameters().get(0));
 
         {
             SQLException error = null;
@@ -195,14 +207,15 @@ public class PoolablePreparedStatementTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
+    @Test
     public void test_setBigDecimal() throws Exception {
         stmt.setBigDecimal(1, BigDecimal.TEN);
 
-        Assert.assertEquals(BigDecimal.TEN, raw.getParameters().get(0));
+        assertEquals(BigDecimal.TEN, raw.getParameters().get(0));
 
         {
             SQLException error = null;
@@ -211,14 +224,15 @@ public class PoolablePreparedStatementTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
+    @Test
     public void test_setString() throws Exception {
         stmt.setString(1, "中国");
 
-        Assert.assertEquals("中国", raw.getParameters().get(0));
+        assertEquals("中国", raw.getParameters().get(0));
 
         {
             SQLException error = null;
@@ -227,15 +241,16 @@ public class PoolablePreparedStatementTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
+    @Test
     public void test_setBytes() throws Exception {
         byte[] bytes = "中国".getBytes();
         stmt.setBytes(1, bytes);
 
-        Assert.assertEquals(true, Arrays.equals(bytes, (byte[]) raw.getParameters().get(0)));
+        assertEquals(true, Arrays.equals(bytes, (byte[]) raw.getParameters().get(0)));
 
         {
             SQLException error = null;
@@ -244,15 +259,16 @@ public class PoolablePreparedStatementTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
+    @Test
     public void test_setDate() throws Exception {
         Date value = new Date(System.currentTimeMillis());
         stmt.setDate(1, value);
 
-        Assert.assertEquals(value, raw.getParameters().get(0));
+        assertEquals(value, raw.getParameters().get(0));
 
         {
             SQLException error = null;
@@ -261,15 +277,16 @@ public class PoolablePreparedStatementTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
+    @Test
     public void test_setTimestamp() throws Exception {
         Timestamp value = new Timestamp(System.currentTimeMillis());
         stmt.setTimestamp(1, value);
 
-        Assert.assertEquals(value, raw.getParameters().get(0));
+        assertEquals(value, raw.getParameters().get(0));
 
         {
             SQLException error = null;
@@ -278,15 +295,16 @@ public class PoolablePreparedStatementTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
+    @Test
     public void test_setAsciiStream() throws Exception {
         InputStream value = null;
         stmt.setAsciiStream(1, value);
 
-        Assert.assertEquals(value, raw.getParameters().get(0));
+        assertEquals(value, raw.getParameters().get(0));
 
         {
             SQLException error = null;
@@ -295,16 +313,17 @@ public class PoolablePreparedStatementTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
     @SuppressWarnings("deprecation")
+    @Test
     public void test_setUnicodeStream() throws Exception {
         InputStream value = null;
         stmt.setUnicodeStream(1, value, 0);
 
-        Assert.assertEquals(value, raw.getParameters().get(0));
+        assertEquals(value, raw.getParameters().get(0));
 
         {
             SQLException error = null;
@@ -313,15 +332,16 @@ public class PoolablePreparedStatementTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
+    @Test
     public void test_setBinaryStream() throws Exception {
         InputStream value = null;
         stmt.setBinaryStream(1, value, 0);
 
-        Assert.assertEquals(value, raw.getParameters().get(0));
+        assertEquals(value, raw.getParameters().get(0));
 
         {
             SQLException error = null;
@@ -330,10 +350,11 @@ public class PoolablePreparedStatementTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
+    @Test
     public void test_updateCharacterStream_2() throws Exception {
         stmt.setCharacterStream(1, (Reader) null, 1L);
 
@@ -344,10 +365,11 @@ public class PoolablePreparedStatementTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
+    @Test
     public void test_setRef() throws Exception {
         stmt.setRef(1, null);
 
@@ -358,10 +380,11 @@ public class PoolablePreparedStatementTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 
+    @Test
     public void test_setArray() throws Exception {
         stmt.setArray(1, null);
 
@@ -372,7 +395,7 @@ public class PoolablePreparedStatementTest extends TestCase {
             } catch (SQLException ex) {
                 error = ex;
             }
-            Assert.assertNotNull(error);
+            assertNotNull(error);
         }
     }
 }

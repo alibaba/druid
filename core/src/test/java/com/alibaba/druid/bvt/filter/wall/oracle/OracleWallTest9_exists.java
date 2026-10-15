@@ -16,10 +16,12 @@
 package com.alibaba.druid.bvt.filter.wall.oracle;
 
 import com.alibaba.druid.wall.WallUtils;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
-public class OracleWallTest9_exists extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OracleWallTest9_exists {
+    @Test
     public void test_true() throws Exception {
         String sql = //
                 "select *\n" +
@@ -27,6 +29,6 @@ public class OracleWallTest9_exists extends TestCase {
                         " where  v.u_id in (select id from U where wx_b = 1)\n" +
                         "   and not exists (select 1 from M where code = v.code)\n" +
                         "   and rownum < 1000";
-        Assert.assertTrue(WallUtils.isValidateOracle(sql));
+        assertTrue(WallUtils.isValidateOracle(sql));
     }
 }

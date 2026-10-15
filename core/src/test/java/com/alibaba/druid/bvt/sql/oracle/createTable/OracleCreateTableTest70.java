@@ -22,6 +22,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleCreateTableTest70 extends OracleTest {
     public void test_types() throws Exception {
         String sql = //
@@ -45,7 +47,7 @@ public class OracleCreateTableTest70 extends OracleTest {
                         "PARTITION BY RANGE (c3) INTERVAL (numtoyminterval(1, 'month')) (\n" +
                         "\tPARTITION part1 VALUES LESS THAN (to_date('2010-01-01', 'YYYY-MM-DD')),\n" +
                         "\tPARTITION part2 VALUES LESS THAN (to_date('2010-02-01', 'YYYY-MM-DD'))\n" +
-                        ")",//
+                        ")",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 //
 //        SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ORACLE);

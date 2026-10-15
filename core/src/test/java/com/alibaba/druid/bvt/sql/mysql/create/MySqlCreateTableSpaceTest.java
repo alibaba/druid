@@ -20,10 +20,11 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlCreateTableSpaceTest extends MysqlTest {
     @Test
@@ -37,6 +38,6 @@ public class MySqlCreateTableSpaceTest extends MysqlTest {
         stmt.accept(visitor);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE TABLESPACE tblsp1 ADD DATAFILE 'tblsp_work1' FILE_BLOCK_SIZE = lg_1 INITIAL_SIZE = 4G ENGINE MYISAM;", output);
+        assertEquals("CREATE TABLESPACE tblsp1 ADD DATAFILE 'tblsp_work1' FILE_BLOCK_SIZE = lg_1 INITIAL_SIZE = 4G ENGINE MYISAM;", output);
     }
 }

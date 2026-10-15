@@ -24,9 +24,11 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleSelectTest16 extends OracleTest {
     public void test_0() throws Exception {
-        String sql = "select privilege#,level from sysauth$ connect by grantee#=prior privilege# and privilege#>0 start with grantee#=:1 and privilege#>0"; //
+        String sql = "select privilege#,level from sysauth$ connect by grantee#=prior privilege# and privilege#>0 start with grantee#=:1 and privilege#>0";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
         SQLStatement statemen = statementList.get(0);
@@ -49,8 +51,8 @@ public class OracleSelectTest16 extends OracleTest {
 
         assertEquals(2, visitor.getColumns().size());
 
-//        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "*")));
-//        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "YEAR")));
-//        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "order_mode")));
+//        assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "*")));
+//        assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "YEAR")));
+//        assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "order_mode")));
     }
 }

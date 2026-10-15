@@ -19,14 +19,16 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class OdpsSelectTest18 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OdpsSelectTest18 {
+    @Test
     public void test_select() throws Exception {
-        String sql = "select a, b, c from tableA where a in ( select a from tableB limit 10 )";//
+        String sql = "select a, b, c from tableA where a in ( select a from tableB limit 10 )";
         assertEquals("SELECT a, b, c\n" +
                 "FROM tableA\n" +
                 "WHERE a IN (\n" +
@@ -45,7 +47,7 @@ public class OdpsSelectTest18 extends TestCase {
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ODPS);
         SQLStatement stmt = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ODPS);
         stmt.accept(visitor);
@@ -55,11 +57,10 @@ public class OdpsSelectTest18 extends TestCase {
 //      System.out.println("coditions : " + visitor.getConditions());
 //      System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(2, visitor.getTables().size());
-        Assert.assertEquals(4, visitor.getColumns().size());
-        Assert.assertEquals(1, visitor.getConditions().size());
+        assertEquals(2, visitor.getTables().size());
+        assertEquals(4, visitor.getColumns().size());
+        assertEquals(1, visitor.getConditions().size());
 
-//        Assert.assertTrue(visitor.getColumns().contains(new Column("abc", "name")));
+//        assertTrue(visitor.getColumns().contains(new Column("abc", "name")));
     }
-
 }

@@ -15,14 +15,12 @@
  */
 package com.alibaba.druid.sql;
 
-import java.util.List;
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2OutputVisitor;
 
-public class DB2Test extends TestCase {
+import java.util.List;
+
+public class DB2Test {
     protected String output(List<SQLStatement> stmtList) {
         StringBuilder out = new StringBuilder();
         DB2OutputVisitor visitor = new DB2OutputVisitor(out);
@@ -40,6 +38,6 @@ public class DB2Test extends TestCase {
         if ("false".equals(outputProperty)) {
             return;
         }
-//	        System.out.println(text);
+        // System.out.println(text);
     }
 }

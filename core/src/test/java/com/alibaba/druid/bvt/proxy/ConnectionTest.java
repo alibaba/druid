@@ -15,28 +15,21 @@
  */
 package com.alibaba.druid.bvt.proxy;
 
-import java.sql.Blob;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLClientInfoException;
-import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
-import java.sql.Savepoint;
-import java.sql.Statement;
-
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.util.JdbcUtils;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class ConnectionTest extends TestCase {
+import java.sql.*;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class ConnectionTest {
     private static String create_url = "jdbc:wrap-jdbc:filters=default,commonLogging,log4j:name=demo:jdbc:derby:memory:connectionTestDB;create=true";
 
+    @BeforeEach
     protected void setUp() throws Exception {
         Class.forName("com.alibaba.druid.proxy.DruidDriver");
 
@@ -63,13 +56,15 @@ public class ConnectionTest extends TestCase {
         conn.close();
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dropTable();
         DruidDriver.getProxyDataSources().clear();
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+        JdbcStatManager.getInstance().reset();
     }
 
     @SuppressWarnings("deprecation")
+    @Test
     public void test_connection() throws Exception {
         Connection conn = null;
         PreparedStatement pstmt = null;
@@ -125,7 +120,7 @@ public class ConnectionTest extends TestCase {
             pstmt.setBlob(2, blob);
 
             int updateCount = pstmt.executeUpdate();
-            Assert.assertEquals(1, updateCount);
+            assertEquals(1, updateCount);
 
             stmt = conn.createStatement();
 

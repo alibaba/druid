@@ -19,6 +19,7 @@ import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.mysql.MySQL;
 import com.alibaba.druid.sql.dialect.mysql.ast.*;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.*;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.ConditionValue.ConditionType;
@@ -41,15 +42,14 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     {
         this.dbType = DbType.mysql;
         this.shardingSupport = true;
-        this.quote = '`';
     }
 
     public MySqlOutputVisitor(StringBuilder appender) {
-        super(appender, DbType.mysql);
+        super(appender, DbType.mysql, MySQL.DIALECT);
     }
 
     public MySqlOutputVisitor(StringBuilder appender, boolean parameterized) {
-        super(appender, DbType.mysql, parameterized);
+        super(appender, DbType.mysql, MySQL.DIALECT, parameterized);
 
         try {
             configFromProperty();
@@ -260,7 +260,12 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         boolean parameterized = this.parameterized;
         this.parameterized = false;
 
-        x.getName().accept(this);
+        if (x.isIfNotExists()) {
+            print0(ucase ? "IF NOT EXISTS " : "if not exists ");
+        }
+
+        String columnName = replaceQuota(x.getName().getSimpleName());
+        printName0(columnName);
 
         SQLDataType dataType = x.getDataType();
         if (dataType != null) {
@@ -718,6 +723,9 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     }
 
     public boolean visit(SQLCharExpr x, boolean parameterized) {
+        if (x.hasBeforeComment()) {
+            printlnComments(x.getBeforeCommentsDirect());
+        }
         if (this.appender == null) {
             return false;
         }
@@ -781,6 +789,9 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         }
 
         appender.append('\'');
+        if (x.hasAfterComment()) {
+            printAfterComments(x.getAfterCommentsDirect());
+        }
         return false;
     }
 
@@ -1956,18 +1967,6 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     public boolean visit(MySqlBinlogStatement x) {
         print0(ucase ? "BINLOG " : "binlog ");
         x.getExpr().accept(this);
-        return false;
-    }
-
-    @Override
-    public boolean visit(MySqlResetStatement x) {
-        print0(ucase ? "RESET " : "reset ");
-        for (int i = 0; i < x.getOptions().size(); ++i) {
-            if (i != 0) {
-                print0(", ");
-            }
-            print0(x.getOptions().get(i));
-        }
         return false;
     }
 
@@ -5504,7 +5503,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         SQLExpr onError = x.getOnError();
         if (onError != null) {
             print(' ');
-            if (!(onEmpty instanceof SQLNullExpr || onEmpty instanceof SQLIdentifierExpr)) {
+            if (!(onError instanceof SQLNullExpr || onError instanceof SQLIdentifierExpr)) {
                 print0(ucase ? "DEFAULT " : "default ");
             }
             onError.accept(this);
@@ -5587,7 +5586,12 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         SQLExpr id = x.getId();
         if (id != null) {
             print(' ');
-            printExpr(id);
+            if (id instanceof SQLListExpr) {
+                // multi-part xid: gtrid, bqual, formatID — comma-separated, no surrounding parens
+                printAndAccept(((SQLListExpr) id).getItems(), ", ");
+            } else {
+                printExpr(id);
+            }
         }
         return false;
     }

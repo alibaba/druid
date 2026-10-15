@@ -15,11 +15,10 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallUtils;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * SQLServerWallTest
@@ -28,24 +27,28 @@ import com.alibaba.druid.wall.WallUtils;
  * @version 1.0, 2012-3-18
  * @see
  */
-public class MySqlWallTest32 extends TestCase {
+public class MySqlWallTest32 {
+    @Test
     public void test_false() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateMySql(//
-                "select * from t where FID = 1 OR NOT(UNHEX(HEX(FNAME)) != FNAME)")); //
+        assertFalse(WallUtils.isValidateMySql(//
+                "select * from t where FID = 1 OR NOT(UNHEX(HEX(FNAME)) != FNAME)"));
     }
 
+    @Test
     public void test_false_1() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateMySql(//
-                "select * from t where FID = 1 OR NOT(UNHEX(HEX(FNAME)) > FNAME)")); //
+        assertFalse(WallUtils.isValidateMySql(//
+                "select * from t where FID = 1 OR NOT(UNHEX(HEX(FNAME)) > FNAME)"));
     }
 
+    @Test
     public void test_false_2() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateMySql(//
-                "select * from t where FID = 1 OR NOT(UNHEX(HEX(FNAME)) < FNAME)")); //
+        assertFalse(WallUtils.isValidateMySql(//
+                "select * from t where FID = 1 OR NOT(UNHEX(HEX(FNAME)) < FNAME)"));
     }
 
+    @Test
     public void test_false_3() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateMySql(//
-                "select * from t where FID = 1 OR NOT(UNHEX(HEX(FNAME)) NOT LIKE FNAME)")); //
+        assertFalse(WallUtils.isValidateMySql(//
+                "select * from t where FID = 1 OR NOT(UNHEX(HEX(FNAME)) NOT LIKE FNAME)"));
     }
 }

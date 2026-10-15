@@ -15,14 +15,14 @@
  */
 package com.alibaba.druid.bvt.filter.wall.oracle;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallUtils;
+import org.junit.jupiter.api.Test;
 
-public class OracleWallTest2 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OracleWallTest2 {
+    @Test
     public void test_true() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateOracle("CREATE SEQUENCE projects_seq START WITH 10000"));
+        assertTrue(WallUtils.isValidateOracle("CREATE SEQUENCE projects_seq START WITH 10000"));
     }
 }

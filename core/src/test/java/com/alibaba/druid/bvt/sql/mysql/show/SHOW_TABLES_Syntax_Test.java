@@ -20,73 +20,73 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class SHOW_TABLES_Syntax_Test extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class SHOW_TABLES_Syntax_Test {
+    @Test
     public void test_0() throws Exception {
         String sql = "SHOW TABLES FROM     SUNTEST   ";
         SQLStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> stmtList = parser.parseStatementList();
         String text = SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
-        Assert.assertEquals("SHOW TABLES FROM SUNTEST", text);
+        assertEquals("SHOW TABLES FROM SUNTEST", text);
 
         sql = "SHOW       TABLES";
         parser = new MySqlStatementParser(sql);
         stmtList = parser.parseStatementList();
         text = SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
-        Assert.assertEquals("SHOW TABLES", text);
+        assertEquals("SHOW TABLES", text);
 
         sql = "SHOW   FULL    TABLES";
         parser = new MySqlStatementParser(sql);
         stmtList = parser.parseStatementList();
         text = SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
-        Assert.assertEquals("SHOW FULL TABLES", text);
+        assertEquals("SHOW FULL TABLES", text);
 
         sql = "SHOW   FULL    TABLES    FROM    SUNTEST   ";
         parser = new MySqlStatementParser(sql);
         stmtList = parser.parseStatementList();
         text = SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
-        Assert.assertEquals("SHOW FULL TABLES FROM SUNTEST", text);
+        assertEquals("SHOW FULL TABLES FROM SUNTEST", text);
 
         sql = "SHOW TABLES IN SUNTEST   ";
         parser = new MySqlStatementParser(sql);
         stmtList = parser.parseStatementList();
         text = SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
-        Assert.assertEquals("SHOW TABLES FROM SUNTEST", text);
+        assertEquals("SHOW TABLES FROM SUNTEST", text);
 
         sql = "SHOW FULL TABLES IN SUNTEST   ";
         parser = new MySqlStatementParser(sql);
         stmtList = parser.parseStatementList();
         text = SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
-        Assert.assertEquals("SHOW FULL TABLES FROM SUNTEST", text);
+        assertEquals("SHOW FULL TABLES FROM SUNTEST", text);
 
         sql = "SHOW FULL TABLES IN SUNTEST  LIKE '%DDD%' ";
         parser = new MySqlStatementParser(sql);
         stmtList = parser.parseStatementList();
         text = SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
-        Assert.assertEquals("SHOW FULL TABLES FROM SUNTEST LIKE '%DDD%'", text);
+        assertEquals("SHOW FULL TABLES FROM SUNTEST LIKE '%DDD%'", text);
 
         sql = "SHOW FULL TABLES FROM SUNTEST  LIKE '%DDD%' ";
         parser = new MySqlStatementParser(sql);
         stmtList = parser.parseStatementList();
         text = SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
-        Assert.assertEquals("SHOW FULL TABLES FROM SUNTEST LIKE '%DDD%'", text);
+        assertEquals("SHOW FULL TABLES FROM SUNTEST LIKE '%DDD%'", text);
 
         sql = "SHOW FULL TABLES IN SUNTEST  WHERE NAME =  'DDD' ";
         parser = new MySqlStatementParser(sql);
         stmtList = parser.parseStatementList();
         text = SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
-        Assert.assertEquals("SHOW FULL TABLES FROM SUNTEST WHERE NAME = 'DDD'", text);
+        assertEquals("SHOW FULL TABLES FROM SUNTEST WHERE NAME = 'DDD'", text);
 
         sql = "SHOW FULL TABLES FROM SUNTEST  WHERE NAME =  'DDD' ";
         parser = new MySqlStatementParser(sql);
         stmtList = parser.parseStatementList();
         text = SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
-        Assert.assertEquals("SHOW FULL TABLES FROM SUNTEST WHERE NAME = 'DDD'", text);
-
+        assertEquals("SHOW FULL TABLES FROM SUNTEST WHERE NAME = 'DDD'", text);
     }
-
 }

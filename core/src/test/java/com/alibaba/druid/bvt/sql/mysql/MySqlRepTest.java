@@ -4,7 +4,6 @@ import com.alibaba.druid.sql.repository.SchemaRepository;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class MySqlRepTest {
-
     public static void main(String[] args) {
         SchemaRepository repository = new SchemaRepository(JdbcUtils.MYSQL);
         repository.setDefaultSchema("test_db");

@@ -15,19 +15,19 @@
  */
 package com.alibaba.druid.bvt.sql.mysql;
 
-import java.util.List;
-
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
+import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
-public class InformationFunctionsTest extends TestCase {
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class InformationFunctionsTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT BENCHMARK(1000000,ENCODE('hello','goodbye'))";
 
@@ -36,9 +36,10 @@ public class InformationFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT BENCHMARK(1000000, ENCODE('hello', 'goodbye'))", text);
+        assertEquals("SELECT BENCHMARK(1000000, ENCODE('hello', 'goodbye'))", text);
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "SELECT CHARSET('abc');";
 
@@ -47,9 +48,10 @@ public class InformationFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT CHARSET('abc');", text);
+        assertEquals("SELECT CHARSET('abc');", text);
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "SELECT CHARSET(CONVERT('abc' USING utf8));";
 
@@ -58,9 +60,10 @@ public class InformationFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT CHARSET(CONVERT('abc' USING utf8));", text);
+        assertEquals("SELECT CHARSET(CONVERT('abc' USING utf8));", text);
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = "SELECT CHARSET(USER());";
 
@@ -69,9 +72,10 @@ public class InformationFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT CHARSET(USER());", text);
+        assertEquals("SELECT CHARSET(USER());", text);
     }
 
+    @Test
     public void test_4() throws Exception {
         String sql = "SELECT COERCIBILITY('abc' COLLATE latin1_swedish_ci);";
 
@@ -80,9 +84,10 @@ public class InformationFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT COERCIBILITY('abc' COLLATE latin1_swedish_ci);", text);
+        assertEquals("SELECT COERCIBILITY('abc' COLLATE latin1_swedish_ci);", text);
     }
 
+    @Test
     public void test_5() throws Exception {
         String sql = "SELECT COLLATION('abc');";
 
@@ -91,9 +96,10 @@ public class InformationFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT COLLATION('abc');", text);
+        assertEquals("SELECT COLLATION('abc');", text);
     }
 
+    @Test
     public void test_6() throws Exception {
         String sql = "SELECT * FROM mysql.user;";
 
@@ -102,9 +108,10 @@ public class InformationFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT *\nFROM mysql.user;", text);
+        assertEquals("SELECT *\nFROM mysql.user;", text);
     }
 
+    @Test
     public void test_7() throws Exception {
         String sql = "SELECT CURRENT_USER();";
 
@@ -113,9 +120,10 @@ public class InformationFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT CURRENT_USER();", text);
+        assertEquals("SELECT CURRENT_USER();", text);
     }
 
+    @Test
     public void test_8() throws Exception {
         String sql = "SELECT DATABASE();";
 
@@ -124,9 +132,10 @@ public class InformationFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT DATABASE();", text);
+        assertEquals("SELECT DATABASE();", text);
     }
 
+    @Test
     public void test_9() throws Exception {
         String sql = "SELECT SQL_CALC_FOUND_ROWS * FROM tbl_name;";
 
@@ -135,9 +144,10 @@ public class InformationFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT SQL_CALC_FOUND_ROWS *\nFROM tbl_name;", text);
+        assertEquals("SELECT SQL_CALC_FOUND_ROWS *\nFROM tbl_name;", text);
     }
 
+    @Test
     public void test_10() throws Exception {
         String sql = "SELECT FOUND_ROWS();";
 
@@ -146,9 +156,10 @@ public class InformationFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT FOUND_ROWS();", text);
+        assertEquals("SELECT FOUND_ROWS();", text);
     }
 
+    @Test
     public void test_11() throws Exception {
         String sql = "SELECT LAST_INSERT_ID();";
 
@@ -157,9 +168,10 @@ public class InformationFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT LAST_INSERT_ID();", text);
+        assertEquals("SELECT LAST_INSERT_ID();", text);
     }
 
+    @Test
     public void test_12() throws Exception {
         String sql = "SELECT ROW_COUNT();";
 
@@ -168,9 +180,10 @@ public class InformationFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT ROW_COUNT();", text);
+        assertEquals("SELECT ROW_COUNT();", text);
     }
 
+    @Test
     public void test_13() throws Exception {
         String sql = "SELECT USER();";
 
@@ -179,9 +192,10 @@ public class InformationFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT USER();", text);
+        assertEquals("SELECT USER();", text);
     }
 
+    @Test
     public void test_14() throws Exception {
         String sql = "SELECT VERSION();";
 
@@ -190,7 +204,7 @@ public class InformationFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT VERSION();", text);
+        assertEquals("SELECT VERSION();", text);
     }
 
     private String output(List<SQLStatement> stmtList) {

@@ -236,7 +236,6 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         long startTime = System.currentTimeMillis();
 
         long nanoSpan;
-        long nowTime = System.currentTimeMillis();
 
         JdbcDataSourceStat dataSourceStat = chain.getDataSource().getDataSourceStat();
         dataSourceStat.getConnectionStat().beforeConnect();
@@ -254,9 +253,12 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
             dataSourceStat.getConnections().put(connection.getId(), statEntry);
 
+            long nowNano = System.nanoTime();
+            long nowTime = System.currentTimeMillis();
+
             statEntry.setConnectTime(new Date(startTime));
             statEntry.setConnectTimespanNano(nanoSpan);
-            statEntry.setEstablishNano(System.nanoTime());
+            statEntry.setEstablishNano(nowNano);
             statEntry.setEstablishTime(nowTime);
             statEntry.setConnectStackTrace(new Exception());
 
@@ -549,7 +551,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         JdbcSqlStat sqlStat = statement.getSqlStat();
 
         if (sqlStat != null) {
-            sqlStat.decrementExecutingCount();
+            sqlStat.decrementRunningCount();
             sqlStat.error(error);
             sqlStat.addExecuteTime(statement.getLastExecuteType(), statement.isFirstResultSet(), nanos);
             statement.setLastExecuteTimeNano(nanos);
@@ -666,9 +668,8 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
         if (counter == null) {
             String dataSourceName = connection.getDirectDataSource().getName();
-            connection.putAttribute(ATTR_NAME_CONNECTION_STAT,
-                    new JdbcConnectionStat.Entry(dataSourceName, connection.getId()));
-            counter = (JdbcConnectionStat.Entry) connection.getAttribute(ATTR_NAME_CONNECTION_STAT);
+            counter = new JdbcConnectionStat.Entry(dataSourceName, connection.getId());
+            connection.putAttribute(ATTR_NAME_CONNECTION_STAT, counter);
         }
 
         return counter;

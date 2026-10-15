@@ -15,12 +15,12 @@
  */
 package com.alibaba.druid.spring;
 
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 public class SequenceService implements SequenceServiceMBean, ISequenceService {
     private Lock lock = new ReentrantLock();
@@ -93,5 +93,4 @@ public class SequenceService implements SequenceServiceMBean, ISequenceService {
             lock.unlock();
         }
     }
-
 }

@@ -15,25 +15,26 @@
  */
 package com.alibaba.druid.bvt.filter.wall;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallUtils;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * 这个场景，检测可疑的Having条件
  *
  * @author wenshao
  */
-public class WallHavingTest extends TestCase {
+public class WallHavingTest {
     private String sql = "SELECT F1, COUNT(*) FROM T GROUP BY F1 HAVING COUNT(*) OR 1 = 1";
 
+    @Test
     public void testMySql() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateMySql(sql));
+        assertFalse(WallUtils.isValidateMySql(sql));
     }
 
+    @Test
     public void testORACLE() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateOracle(sql));
+        assertFalse(WallUtils.isValidateOracle(sql));
     }
 }

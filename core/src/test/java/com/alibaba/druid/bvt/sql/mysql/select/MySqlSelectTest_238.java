@@ -19,6 +19,7 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_238 extends MysqlTest {
     public void test_0() throws Exception {
@@ -39,7 +40,6 @@ public class MySqlSelectTest_238 extends MysqlTest {
                 " where s.channel_id=24 and s.deleted = 0 and s.is_leaf = 1\n" +
                 " and s.cat_id in (127234002 )\n" +
                 ") a";
-
 
         SQLSelectStatement stmt = (SQLSelectStatement) SQLUtils.parseSingleMysqlStatement(sql);
 
@@ -74,6 +74,4 @@ public class MySqlSelectTest_238 extends MysqlTest {
                 "\t\tAND s.cat_id IN (127234002)\n" +
                 ") a", stmt.toString());
     }
-
-
 }

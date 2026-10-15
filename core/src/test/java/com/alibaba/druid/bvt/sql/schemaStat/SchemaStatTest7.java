@@ -7,10 +7,12 @@ import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
-public class SchemaStatTest7 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class SchemaStatTest7 {
+    @Test
     public void test_schemaStat() throws Exception {
         String sql = "select t.a,t.b from t where cast(t.statdate as decimal) >=20160626";
 
@@ -24,7 +26,7 @@ public class SchemaStatTest7 extends TestCase {
 //        System.out.println(statVisitor.getColumns());
 //        System.out.println(statVisitor.getGroupByColumns()); // group by
 
-        Assert.assertEquals(3, statVisitor.getColumns().size());
-        Assert.assertEquals(1, statVisitor.getConditions().size());
+        assertEquals(3, statVisitor.getColumns().size());
+        assertEquals(1, statVisitor.getConditions().size());
     }
 }

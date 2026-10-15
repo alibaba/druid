@@ -15,14 +15,15 @@
  */
 package com.alibaba.druid.bvt.sql.oracle;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
+import org.junit.jupiter.api.Test;
 
-public class OracleSampleClauseTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OracleSampleClauseTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "SELECT COUNT(*) * 10 FROM orders SAMPLE (10);";
 
@@ -34,9 +35,9 @@ public class OracleSampleClauseTest extends TestCase {
         String text = TestUtils.outputOracle(stmt);
 
         assertEquals(expected, text);
-
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "SELECT COUNT(*) * 10 FROM orders SAMPLE (10) SEED (1);";
 
@@ -48,7 +49,5 @@ public class OracleSampleClauseTest extends TestCase {
         String text = TestUtils.outputOracle(stmt);
 
         assertEquals(expected, text);
-
     }
-
 }

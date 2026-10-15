@@ -24,10 +24,11 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlRevokeTest extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "REVOKE INSERT ON *.* FROM 'jeffrey'@'localhost';";
-
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -61,6 +62,4 @@ public class MySqlRevokeTest extends MysqlTest {
                     output);
         }
     }
-
-
 }

@@ -2,12 +2,11 @@ package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SQLExprStatementTest {
-
     @Test
     public void testDefaultConstructor() {
         SQLExpr sqlExpr = new SQLBinaryOpExpr();
@@ -15,7 +14,7 @@ public class SQLExprStatementTest {
         stmt.setExpr(sqlExpr);
 
         assertEquals(sqlExpr, stmt.getExpr());
-        
+
         // Test parent relationship
         assertEquals(stmt, sqlExpr.getParent());
     }
@@ -27,7 +26,7 @@ public class SQLExprStatementTest {
         stmt.setExpr(sqlExpr);
 
         assertEquals(sqlExpr, stmt.getExpr());
-        
+
         // Test parent relationship
         assertEquals(stmt, sqlExpr.getParent());
     }

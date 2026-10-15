@@ -20,8 +20,9 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlCreateTableTest69 extends MysqlTest {
     @Test
@@ -42,7 +43,7 @@ public class MySqlCreateTableTest69 extends MysqlTest {
 
         {
             String output = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("CREATE TABLE t1 (\n" +
+            assertEquals("CREATE TABLE t1 (\n" +
                     "\ts1 INT,\n" +
                     "\ts2 INT AS (EXP(s1)) STORED\n" +
                     ")\n" +
@@ -53,7 +54,7 @@ public class MySqlCreateTableTest69 extends MysqlTest {
 
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            Assert.assertEquals("create table t1 (\n" +
+            assertEquals("create table t1 (\n" +
                     "\ts1 INT,\n" +
                     "\ts2 INT as (EXP(s1)) stored\n" +
                     ")\n" +

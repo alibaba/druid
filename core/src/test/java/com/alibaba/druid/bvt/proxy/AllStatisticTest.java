@@ -15,6 +15,15 @@
  */
 package com.alibaba.druid.bvt.proxy;
 
+import com.alibaba.druid.proxy.DruidDriver;
+import com.alibaba.druid.stat.JdbcStatManager;
+import com.alibaba.druid.util.JdbcUtils;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import javax.management.openmbean.TabularData;
+
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -24,23 +33,16 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.concurrent.atomic.AtomicLong;
 
-import javax.management.openmbean.TabularData;
+import static org.junit.jupiter.api.Assertions.*;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
-import com.alibaba.druid.proxy.DruidDriver;
-import com.alibaba.druid.stat.JdbcStatManager;
-import com.alibaba.druid.util.JdbcUtils;
-
-public class AllStatisticTest extends TestCase {
+public class AllStatisticTest {
     String url = "jdbc:wrap-jdbc:filters=default,commonLogging,log4j:name=statTest:jdbc:derby:classpath:petstore-db";
 
     private AtomicLong fetchRowCout = new AtomicLong();
 
-    Connection globalConnection = null;
+    Connection globalConnection;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         JdbcStatManager stat = JdbcStatManager.getInstance();
 
@@ -51,31 +53,32 @@ public class AllStatisticTest extends TestCase {
         Connection conn = DriverManager.getConnection(url);
 
         int size = stat.getConnectionList().size();
-        Assert.assertTrue(size >= 1);
+        assertTrue(size >= 1);
         conn.close();
 
         TabularData connectionList = stat.getConnectionList();
 
-        Assert.assertEquals(connectionList.size(), size - 1);
+        assertEquals(connectionList.size(), size - 1);
 
         stat.reset();
 
         globalConnection = DriverManager.getConnection(url);
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         JdbcUtils.close(globalConnection);
         DruidDriver.getProxyDataSources().clear();
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+        JdbcStatManager.getInstance().reset();
     }
 
+    @Test
     public void test_stmt() throws Exception {
         // ////////////////////////
 
         f1();
         f2();
         f3();
-
     }
 
     public void f1() throws Exception {

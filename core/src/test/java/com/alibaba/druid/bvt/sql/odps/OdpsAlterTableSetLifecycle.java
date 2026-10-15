@@ -1,15 +1,15 @@
 package com.alibaba.druid.bvt.sql.odps;
 
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.SQLUtils;
+import org.junit.jupiter.api.Test;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class OdpsAlterTableSetLifecycle extends TestCase {
+public class OdpsAlterTableSetLifecycle {
+    @Test
     public void test_if() throws Exception {
         String sql = "alter table test_lifecycle set lifecycle 50;";
-        Assert.assertEquals("ALTER TABLE test_lifecycle" //
+        assertEquals("ALTER TABLE test_lifecycle"
                 + "\n\tSET LIFECYCLE 50;", SQLUtils.formatOdps(sql));
     }
 }

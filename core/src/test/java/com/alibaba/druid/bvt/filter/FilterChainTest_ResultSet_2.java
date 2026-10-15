@@ -15,15 +15,6 @@
  */
 package com.alibaba.druid.bvt.filter;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Collections;
-import java.util.Properties;
-
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.filter.FilterChainImpl;
 import com.alibaba.druid.mock.MockCallableStatement;
 import com.alibaba.druid.mock.MockResultSet;
@@ -33,13 +24,24 @@ import com.alibaba.druid.proxy.jdbc.CallableStatementProxyImpl;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxyImpl;
 import com.alibaba.druid.proxy.jdbc.ResultSetProxy;
 import com.alibaba.druid.util.JdbcUtils;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class FilterChainTest_ResultSet_2 extends TestCase {
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Collections;
+import java.util.Properties;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class FilterChainTest_ResultSet_2 {
     private DruidDataSource dataSource;
     private CallableStatementProxy statement;
 
-    private int invokeCount = 0;
+    private int invokeCount;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         ConnectionProxyImpl conn = new ConnectionProxyImpl(dataSource, null, new Properties(), 0);
@@ -52,48 +54,52 @@ public class FilterChainTest_ResultSet_2 extends TestCase {
         };
 
         statement = new CallableStatementProxyImpl(conn, mockStmt, "", 1);
-
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
 
         invokeCount = 0;
     }
 
+    @Test
     public void test_getObject() throws Exception {
         FilterChainImpl chain = new FilterChainImpl(dataSource);
 
         ResultSet clob = (ResultSet) chain.callableStatement_getObject(statement, 1);
 
-        Assert.assertTrue(clob instanceof ResultSetProxy);
-        Assert.assertEquals(1, invokeCount);
+        assertTrue(clob instanceof ResultSetProxy);
+        assertEquals(1, invokeCount);
     }
 
+    @Test
     public void test_getObject_1() throws Exception {
         FilterChainImpl chain = new FilterChainImpl(dataSource);
 
         ResultSet clob = (ResultSet) chain.callableStatement_getObject(statement, "1");
 
-        Assert.assertTrue(clob instanceof ResultSetProxy);
-        Assert.assertEquals(1, invokeCount);
+        assertTrue(clob instanceof ResultSetProxy);
+        assertEquals(1, invokeCount);
     }
 
+    @Test
     public void test_getObject_2() throws Exception {
         FilterChainImpl chain = new FilterChainImpl(dataSource);
 
         ResultSet clob = (ResultSet) chain.callableStatement_getObject(statement, 1, Collections.<String, Class<?>>emptyMap());
 
-        Assert.assertTrue(clob instanceof ResultSetProxy);
-        Assert.assertEquals(1, invokeCount);
+        assertTrue(clob instanceof ResultSetProxy);
+        assertEquals(1, invokeCount);
     }
 
+    @Test
     public void test_getObject_3() throws Exception {
         FilterChainImpl chain = new FilterChainImpl(dataSource);
 
         ResultSet clob = (ResultSet) chain.callableStatement_getObject(statement, "1", Collections.<String, Class<?>>emptyMap());
 
-        Assert.assertTrue(clob instanceof ResultSetProxy);
-        Assert.assertEquals(1, invokeCount);
+        assertTrue(clob instanceof ResultSetProxy);
+        assertEquals(1, invokeCount);
     }
 }

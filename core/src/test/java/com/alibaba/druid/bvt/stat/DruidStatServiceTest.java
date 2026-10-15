@@ -15,21 +15,16 @@
  */
 package com.alibaba.druid.bvt.stat;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertThat;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.List;
-import java.util.Map;
-
-import org.junit.Assert;
-import junit.framework.TestCase;
-
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.stat.DruidStatService;
+import com.alibaba.druid.stat.spring.UserService;
+import com.alibaba.druid.support.http.WebStatFilter;
+import com.alibaba.druid.support.http.stat.WebAppStatManager;
+import com.alibaba.druid.support.json.JSONUtils;
+import com.alibaba.druid.util.JdbcUtils;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.mock.web.MockFilterChain;
@@ -39,18 +34,23 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.mock.web.MockServletContext;
 
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.stat.DruidStatService;
-import com.alibaba.druid.stat.spring.UserService;
-import com.alibaba.druid.support.http.WebStatFilter;
-import com.alibaba.druid.support.http.stat.WebAppStatManager;
-import com.alibaba.druid.support.json.JSONUtils;
-import com.alibaba.druid.util.JdbcUtils;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.List;
+import java.util.Map;
 
-public class DruidStatServiceTest extends TestCase {
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
+public class DruidStatServiceTest {
     private DruidDataSource dataSource;
 
-    @Override
+        @BeforeEach
     protected void setUp() throws Exception {
         DruidStatService.getInstance().setResetEnable(true);
         // DruidStatService is singleton, reset all for other testcase.
@@ -67,10 +67,12 @@ public class DruidStatServiceTest extends TestCase {
         dataSource.init();
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
     }
 
+    @Test
     public void test_statService_getSqlList() throws Exception {
         String sql = "select 1";
         Connection conn = dataSource.getConnection();
@@ -92,12 +94,13 @@ public class DruidStatServiceTest extends TestCase {
 
         Map<String, Object> sqlStat = sqlList.get(0);
 
-        Assert.assertEquals(0, sqlStat.get("RunningCount"));
-        Assert.assertEquals(1, sqlStat.get("ExecuteCount"));
-        Assert.assertEquals(1, sqlStat.get("FetchRowCount"));
-        Assert.assertEquals(0, sqlStat.get("EffectedRowCount"));
+        assertEquals(0, sqlStat.get("RunningCount"));
+        assertEquals(1, sqlStat.get("ExecuteCount"));
+        assertEquals(1, sqlStat.get("FetchRowCount"));
+        assertEquals(0, sqlStat.get("EffectedRowCount"));
     }
 
+    @Test
     public void test_statService_getSqlById() throws Exception {
         String sql = "select 1";
         Connection conn = dataSource.getConnection();
@@ -117,16 +120,17 @@ public class DruidStatServiceTest extends TestCase {
 
         Map<String, Object> sqlStat = (Map<String, Object>) resultMap.get("Content");
 
-        Assert.assertEquals(0, sqlStat.get("RunningCount"));
-        Assert.assertEquals(1, sqlStat.get("ExecuteCount"));
-        Assert.assertEquals(1, sqlStat.get("FetchRowCount"));
-        Assert.assertEquals(0, sqlStat.get("EffectedRowCount"));
+        assertEquals(0, sqlStat.get("RunningCount"));
+        assertEquals(1, sqlStat.get("ExecuteCount"));
+        assertEquals(1, sqlStat.get("FetchRowCount"));
+        assertEquals(0, sqlStat.get("EffectedRowCount"));
 
         String result2 = DruidStatService.getInstance().service("/sql-" + Integer.MAX_VALUE + ".json");
         resultMap = (Map<String, Object>) JSONUtils.parse(result2);
-        Assert.assertNull(resultMap.get("Content"));
+        assertNull(resultMap.get("Content"));
     }
 
+    @Test
     public void test_statService_getDataSourceList() throws Exception {
         {
             DruidStatService.getInstance().service("/reset-all.json");
@@ -148,14 +152,15 @@ public class DruidStatServiceTest extends TestCase {
 
         List<Map<String, Object>> dataSourceList = (List<Map<String, Object>>) resultMap.get("Content");
 
-        Assert.assertTrue(dataSourceList.size() > 0);
+        assertTrue(dataSourceList.size() > 0);
 
         Map<String, Object> dataSourceStat = dataSourceList.get(0);
 
-//        Assert.assertEquals(1, dataSourceStat.get("PoolingCount"));
-//        Assert.assertEquals(0, dataSourceStat.get("ActiveCount"));
+//        assertEquals(1, dataSourceStat.get("PoolingCount"));
+//        assertEquals(0, dataSourceStat.get("ActiveCount"));
     }
 
+    @Test
     public void test_statService_getDataSourceIdList() throws Exception {
         String sql = "select 1";
         Connection conn = dataSource.getConnection();
@@ -185,6 +190,7 @@ public class DruidStatServiceTest extends TestCase {
      *
      * @throws Exception
      */
+    @Test
     public void test_statService_getBasic() throws Exception {
         String result = DruidStatService.getInstance().service("/basic.json");
         Map<String, Object> resultMap = (Map<String, Object>) JSONUtils.parse(result);
@@ -195,9 +201,10 @@ public class DruidStatServiceTest extends TestCase {
         assertThat((Boolean) contentMap.get("ResetEnable"), is(true));
     }
 
+    @Test
     public void test_statService_getActiveConnectionStackTrace() throws Exception {
         String sql = "select 1";
-        dataSource.setRemoveAbandoned(true);// initiative close connection.
+        dataSource.setRemoveAbandoned(true); // initiative close connection.
         dataSource.setRemoveAbandonedTimeout(Integer.MAX_VALUE);
         Connection conn = dataSource.getConnection();
 
@@ -245,12 +252,14 @@ public class DruidStatServiceTest extends TestCase {
 //        conn.close();
 //    }
 
+    @Test
     public void test_statService_returnJSONActiveConnectionStackTrace() throws Exception {
         String result = DruidStatService.getInstance().service("/activeConnectionStackTrace-1.json");
         Map<String, Object> resultMap = (Map<String, Object>) JSONUtils.parse(result);
         assertThat((Integer) resultMap.get("ResultCode"), equalTo(-1));
     }
 
+    @Test
     public void test_statService_getWebURIList() throws Exception {
         String uri = "/";
         MockServletContext servletContext = new MockServletContext();
@@ -287,6 +296,7 @@ public class DruidStatServiceTest extends TestCase {
         filter.destroy();
     }
 
+    @Test
     public void test_statService_getWebURIById() throws Exception {
         String uri = "/";
         MockServletContext servletContext = new MockServletContext();
@@ -316,6 +326,7 @@ public class DruidStatServiceTest extends TestCase {
         filter.destroy();
     }
 
+    @Test
     public void test_statService_getWebApp() throws Exception {
         String uri = "/";
         MockServletContext servletContext = new MockServletContext();
@@ -349,6 +360,7 @@ public class DruidStatServiceTest extends TestCase {
         filter.destroy();
     }
 
+    @Test
     public void test_statService_getWebSession() throws Exception {
         String uri = "/";
         MockServletContext servletContext = new MockServletContext();
@@ -389,6 +401,7 @@ public class DruidStatServiceTest extends TestCase {
         filter.destroy();
     }
 
+    @Test
     public void test_statService_getSpring() throws Exception {
         ApplicationContext context = new ClassPathXmlApplicationContext(
                 "classpath:com/alibaba/druid/stat/spring-config-stat.xml");
@@ -412,6 +425,7 @@ public class DruidStatServiceTest extends TestCase {
         assertThat((Integer) contentMap.get("ExecuteCount"), equalTo(2));
     }
 
+    @Test
     public void test_statService_getSpringDetail() throws Exception {
         ApplicationContext context = new ClassPathXmlApplicationContext(
                 "classpath:com/alibaba/druid/stat/spring-config-stat.xml");
@@ -429,6 +443,7 @@ public class DruidStatServiceTest extends TestCase {
         assertThat((Integer) contentMap.get("ExecuteCount"), equalTo(2));
     }
 
+    @Test
     public void test_statService_getResetAll() throws Exception {
         // data source mock
         String sql = "select 1";
@@ -503,12 +518,14 @@ public class DruidStatServiceTest extends TestCase {
         assertThat(contentSpringList, is(nullValue()));
     }
 
+    @Test
     public void test_statService() throws Exception {
         String result = DruidStatService.getInstance().service("/bad.json");
         Map<String, Object> resultMap = (Map<String, Object>) JSONUtils.parse(result);
         assertThat((Integer) resultMap.get("ResultCode"), equalTo(-1));
     }
 
+    @Test
     public void test_statService_getParameters() throws Exception {
         String url = "?x=a&y=b";
         Map<String, String> parameters = DruidStatService.getParameters(url);

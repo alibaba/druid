@@ -15,19 +15,19 @@
  */
 package com.alibaba.druid.benckmark.sql;
 
-import java.util.List;
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.test.TestUtils;
-import com.alibaba.druid.util.Utils;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class MySqlPerfTest extends TestCase {
+import java.util.List;
+
+public class MySqlPerfTest {
     private String sql;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         sql = "SELECT * FROM T";
         sql = "SELECT ID, NAME, AGE FROM USER WHERE ID = ?";
@@ -35,6 +35,7 @@ public class MySqlPerfTest extends TestCase {
 //        sql = Utils.readFromResource("benchmark/sql/ob_sql.txt");
     }
 
+    @Test
     public void test_pert() throws Exception {
         for (int i = 0; i < 10; ++i) {
             perfMySql(sql);

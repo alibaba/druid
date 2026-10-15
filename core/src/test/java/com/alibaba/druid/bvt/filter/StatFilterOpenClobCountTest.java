@@ -1,14 +1,5 @@
 package com.alibaba.druid.bvt.filter;
 
-import java.sql.Clob;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.mock.MockClob;
@@ -17,10 +8,22 @@ import com.alibaba.druid.proxy.jdbc.ClobProxyImpl;
 import com.alibaba.druid.proxy.jdbc.ResultSetProxy;
 import com.alibaba.druid.stat.JdbcSqlStat;
 import com.alibaba.druid.util.JdbcUtils;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class StatFilterOpenClobCountTest extends TestCase {
+import java.sql.Clob;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class StatFilterOpenClobCountTest {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
 
@@ -45,10 +48,12 @@ public class StatFilterOpenClobCountTest extends TestCase {
         dataSource.init();
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
     }
 
+    @Test
     public void test_stat() throws Exception {
         Connection conn = dataSource.getConnection();
 
@@ -57,7 +62,7 @@ public class StatFilterOpenClobCountTest extends TestCase {
 
         JdbcSqlStat sqlStat = dataSource.getDataSourceStat().getSqlStat(sql);
 
-        Assert.assertEquals(0, sqlStat.getClobOpenCount());
+        assertEquals(0, sqlStat.getClobOpenCount());
 
         ResultSet rs = stmt.executeQuery();
         rs.next();
@@ -68,12 +73,13 @@ public class StatFilterOpenClobCountTest extends TestCase {
 
         conn.close();
 
-        Assert.assertEquals(2, sqlStat.getClobOpenCount());
+        assertEquals(2, sqlStat.getClobOpenCount());
 
         sqlStat.reset();
-        Assert.assertEquals(0, sqlStat.getClobOpenCount());
+        assertEquals(0, sqlStat.getClobOpenCount());
     }
 
+    @Test
     public void test_stat_1() throws Exception {
         Connection conn = dataSource.getConnection();
 
@@ -82,7 +88,7 @@ public class StatFilterOpenClobCountTest extends TestCase {
 
         JdbcSqlStat sqlStat = dataSource.getDataSourceStat().getSqlStat(sql);
 
-        Assert.assertEquals(0, sqlStat.getClobOpenCount());
+        assertEquals(0, sqlStat.getClobOpenCount());
 
         ResultSet rs = stmt.executeQuery();
         rs.next();
@@ -94,9 +100,9 @@ public class StatFilterOpenClobCountTest extends TestCase {
 
         conn.close();
 
-        Assert.assertEquals(3, sqlStat.getClobOpenCount());
+        assertEquals(3, sqlStat.getClobOpenCount());
 
         sqlStat.reset();
-        Assert.assertEquals(0, sqlStat.getClobOpenCount());
+        assertEquals(0, sqlStat.getClobOpenCount());
     }
 }

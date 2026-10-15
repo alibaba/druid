@@ -8,17 +8,19 @@ import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
  * Created by wenshao on 16/8/23.
  */
-public class MySqlParameterizedOutputVisitorTest_56 extends TestCase {
+public class MySqlParameterizedOutputVisitorTest_56 {
+    @Test
     public void test_for_parameterize() throws Exception {
         final DbType dbType = JdbcConstants.MYSQL;
         String sql = "/* 0b802ab415058233338893940e1882/0.1.2.23//abd5b625/ */"
@@ -83,12 +85,13 @@ public class MySqlParameterizedOutputVisitorTest_56 extends TestCase {
         System.out.println(rsql);
     }
 
+    @Test
     public void test_for_parameter_char() throws Exception {
         String sql = "insert into t values(?,?,?)";
 
         List<SQLStatement> sqlStatements = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
 
-        Assert.assertTrue(sqlStatements.size() == 1);
+        assertTrue(sqlStatements.size() == 1);
 
         StringBuilder out = new StringBuilder(sql.length());
         MySqlOutputVisitor visitor = new MySqlOutputVisitor(out);
@@ -96,7 +99,7 @@ public class MySqlParameterizedOutputVisitorTest_56 extends TestCase {
         visitor.setInputParameters(parameters);
         SQLStatement sqlStatement = sqlStatements.get(0);
         sqlStatement.accept(visitor);
-        Assert.assertEquals("INSERT INTO t\n" +
+        assertEquals("INSERT INTO t\n" +
                 "VALUES ('a', 'b', 'c')", out.toString());
     }
 }

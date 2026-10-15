@@ -1,26 +1,30 @@
 package com.alibaba.druid.bvt.pool.basic;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class MaxEvictableIdleTimeMillisTest2 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MaxEvictableIdleTimeMillisTest2 {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setTestOnBorrow(false);
         dataSource.setMaxActive(50);
         dataSource.setMinIdle(5);
-
-
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
     }
 
+    @Test
     public void test_error() throws Exception {
         Exception error = null;
         try {
@@ -33,10 +37,8 @@ public class MaxEvictableIdleTimeMillisTest2 extends TestCase {
             error = ex;
             ex.printStackTrace();
         }
-        Assert.assertNotNull(error);
-        Assert.assertTrue(dataSource.isInited());
-        Assert.assertEquals(30, dataSource.getMaxEvictableIdleTimeMillis());
+        assertNotNull(error);
+        assertTrue(dataSource.isInited());
+        assertEquals(30, dataSource.getMaxEvictableIdleTimeMillis());
     }
-
-
 }

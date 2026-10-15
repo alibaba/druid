@@ -23,6 +23,8 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlReplaceTest_1 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "REPLACE INTO `tb_001` (`gmt_create`, `theday`, `pt`, `song_id`, `song_name`, `play_num_1d`) (SELECT now(), '20170820', case a.pt\n" +

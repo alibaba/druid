@@ -13,6 +13,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OnFatalErrorMaxActiveTest_1 extends PoolTestCase {
     protected DruidDataSource dataSource;
 

@@ -18,45 +18,47 @@
  */
 package com.alibaba.druid.bvt.sql.cobar;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author <a href="mailto:danping.yudp@alibaba-inc.com">YU Danping</a>
  */
 
-public class DMLCallParserTest extends TestCase {
+public class DMLCallParserTest {
+    @Test
     public void testCall_0() throws Exception {
         String sql = "call p(?,?)";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CALL p(?, ?)", output);
+        assertEquals("CALL p(?, ?)", output);
     }
 
+    @Test
     public void testCall_1() throws Exception {
         String sql = "call p(@var1,'@var2',var3)";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CALL p(@var1, '@var2', var3)", output);
+        assertEquals("CALL p(@var1, '@var2', var3)", output);
     }
 
+    @Test
     public void testCall_2() throws Exception {
         String sql = "call p()";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CALL p()", output);
+        assertEquals("CALL p()", output);
     }
 
 //    public void testCall() throws SQLSyntaxErrorException {
@@ -66,7 +68,7 @@ public class DMLCallParserTest extends TestCase {
 //        DMLCallStatement calls = parser.call();
 //        parser.match(Token.EOF);
 //        String output = output2MySQL(calls, sql);
-//        Assert.assertEquals("CALL p(?, ?)", output);
+//        assertEquals("CALL p(?, ?)", output);
 //
 //        sql = "call p(@var1,'@var2',var3)";
 //        lexer = new SQLLexer(sql);
@@ -74,7 +76,7 @@ public class DMLCallParserTest extends TestCase {
 //        calls = parser.call();
 //        parser.match(Token.EOF);
 //        output = output2MySQL(calls, sql);
-//        Assert.assertEquals("CALL p(@var1, '@var2', var3)", output);
+//        assertEquals("CALL p(@var1, '@var2', var3)", output);
 //
 //        sql = "call p()";
 //        lexer = new SQLLexer(sql);
@@ -82,7 +84,7 @@ public class DMLCallParserTest extends TestCase {
 //        calls = parser.call();
 //        parser.match(Token.EOF);
 //        output = output2MySQL(calls, sql);
-//        Assert.assertEquals("CALL p()", output);
+//        assertEquals("CALL p()", output);
 //
 //        sql = "call p(?)";
 //        lexer = new SQLLexer(sql);
@@ -90,6 +92,6 @@ public class DMLCallParserTest extends TestCase {
 //        calls = parser.call();
 //        parser.match(Token.EOF);
 //        output = output2MySQL(calls, sql);
-//        Assert.assertEquals("CALL p(?)", output);
+//        assertEquals("CALL p(?)", output);
 //    }
 }

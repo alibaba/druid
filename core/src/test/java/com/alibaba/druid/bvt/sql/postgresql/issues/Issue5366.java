@@ -1,7 +1,5 @@
 package com.alibaba.druid.bvt.sql.postgresql.issues;
 
-import java.util.Map;
-
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -9,12 +7,13 @@ import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * 验证 Postgresql 无法解析 create table PARTITION OF 语句 #5366
@@ -24,7 +23,6 @@ import static org.junit.Assert.assertTrue;
  * @see <a href="https://www.postgresql.org/docs/current/sql-createtable.html">CREATE TABLE</a>
  */
 public class Issue5366 {
-
     @Test
     public void test_create_table() throws Exception {
         for (DbType dbType : new DbType[]{DbType.postgresql}) {
@@ -80,7 +78,7 @@ public class Issue5366 {
                 System.out.println(dbType + "生成的sql===" + statement);
                 String newSql = statement.toString();
                 String normalizeNewSql = normalizeSql(newSql);
-                assertEquals(normalizeSql.toLowerCase(),normalizeNewSql.toLowerCase());
+                assertEquals(normalizeSql.toLowerCase(), normalizeNewSql.toLowerCase());
                 SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(dbType);
                 statement.accept(visitor);
                 System.out.println(dbType + "getTables==" + visitor.getTables());

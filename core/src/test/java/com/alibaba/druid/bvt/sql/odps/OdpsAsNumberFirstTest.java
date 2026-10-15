@@ -1,17 +1,16 @@
 package com.alibaba.druid.bvt.sql.odps;
 
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.SQLUtils;
+import org.junit.jupiter.api.Test;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class OdpsAsNumberFirstTest extends TestCase {
+public class OdpsAsNumberFirstTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "select id as 39dd"
                 + "\n from t1";
-        Assert.assertEquals("SELECT id AS 39dd" //
+        assertEquals("SELECT id AS 39dd"
                 + "\nFROM t1", SQLUtils.formatOdps(sql));
     }
-
 }

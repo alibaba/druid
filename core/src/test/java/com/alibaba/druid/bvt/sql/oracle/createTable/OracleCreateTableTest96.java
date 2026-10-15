@@ -22,6 +22,8 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleCreateTableTest96 extends OracleTest {
     public void test_0() throws Exception {
         String sql = //
@@ -74,6 +76,5 @@ public class OracleCreateTableTest96 extends OracleTest {
                 "NOCOMPRESS\n" +
                 "LOGGING\n" +
                 "TABLESPACE \"CAOBOHAHA_IAU\"", stmt.toString());
-
     }
 }

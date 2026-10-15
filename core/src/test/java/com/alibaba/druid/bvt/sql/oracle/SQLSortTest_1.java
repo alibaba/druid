@@ -2,9 +2,12 @@ package com.alibaba.druid.bvt.sql.oracle;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class SQLSortTest_1 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class SQLSortTest_1 {
+    @Test
     public void test_sort() throws Exception {
         String sql = "create view v1 as select * from v0; create view v0 as select * from t;";
 

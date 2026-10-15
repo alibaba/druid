@@ -2,20 +2,20 @@ package com.alibaba.druid.bvt.pool;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DruidDataSourceShrinkTest {
     protected DruidDataSource dataSource;
     protected ExecutorService executor;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
@@ -24,7 +24,7 @@ public class DruidDataSourceShrinkTest {
         executor = Executors.newFixedThreadPool(2);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         JdbcUtils.close(dataSource);
         executor.shutdownNow();

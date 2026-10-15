@@ -5,12 +5,14 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLListExpr;
+import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.dialect.gaussdb.ast.stmt.GaussDbInsertStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGInsertStatement;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectStatement;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGSQLStatementParser;
 import com.alibaba.druid.sql.parser.EOFParserException;
 import com.alibaba.druid.sql.parser.ParserException;
@@ -89,7 +91,17 @@ public class GaussDbStatementParser extends PGSQLStatementParser {
                 }
                 break;
             }
-        } else if (lexer.token() == (Token.SELECT)) {
+        }
+
+        if (lexer.token() == Token.WITH) {
+            PGSelectStatement nextWithQuery = (PGSelectStatement) this.parseWith();
+            stmt.setQuery(nextWithQuery.getSelect());
+        } else if (lexer.token() == Token.SELECT) {
+            SQLQueryExpr queryExpr = (SQLQueryExpr) this.exprParser.expr();
+            stmt.setQuery(queryExpr.getSubQuery());
+        }
+
+        if (lexer.token() == (Token.SELECT)) {
             SQLSelect select = this.createSQLSelectParser().select();
             stmt.setQuery(select);
         }

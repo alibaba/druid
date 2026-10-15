@@ -21,9 +21,10 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import org.junit.Assert;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleSelectTest98 extends OracleTest {
     public void test_0() throws Exception {
@@ -40,7 +41,7 @@ public class OracleSelectTest98 extends OracleTest {
         SQLSelectStatement stmt = (SQLSelectStatement) statementList.get(0);
         System.out.println(stmt.toString());
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
 //        SQLMethodInvokeExpr expr = (SQLMethodInvokeExpr) stmt.getSelect().getQueryBlock().getSelectList().get(0).getExpr();
 //        SQLMethodInvokeExpr param0 = (SQLMethodInvokeExpr) expr.getParameters().get(0);
@@ -70,6 +71,4 @@ public class OracleSelectTest98 extends OracleTest {
         assertEquals(0, visitor.getRelationships().size());
         assertEquals(1, visitor.getOrderByColumns().size());
     }
-
-
 }

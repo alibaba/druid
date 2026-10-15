@@ -5,9 +5,12 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGSQLStatementParser;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGOutputVisitor;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class UnsignedBigIntTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class UnsignedBigIntTest {
+    @Test
     public void test_mysqlUnsignedBitInt() throws Exception {
         String sql = "SELECT a from b where c <> 1 LIMIT 18446744073709551615 OFFSET 0";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -19,6 +22,7 @@ public class UnsignedBigIntTest extends TestCase {
         assertEquals("SELECT a FROM b WHERE c <> 1 LIMIT 18446744073709551615 OFFSET 0", sb.toString());
     }
 
+    @Test
     public void test_postgresqlUnsignedBitInt() {
         String sql = "SELECT a from b where c <> 1 LIMIT 18446744073709551615 OFFSET 1";
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);

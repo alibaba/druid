@@ -5,7 +5,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.repository.SchemaRepository;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class BigQuerySchemaTest {
     @Test

@@ -2,17 +2,19 @@ package com.alibaba.druid.bvt.sql.mysql.param;
 
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.alibaba.druid.sql.visitor.VisitorFeature.OutputParameterizedQuesUnMergeInList;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by wenshao on 16/8/23.
  */
-public class MySqlParameterizedOutputVisitorTest_60_in extends TestCase {
+public class MySqlParameterizedOutputVisitorTest_60_in {
+    @Test
     public void test_for_parameterize() throws Exception {
         String sql = "select * from a where id in (1, 2,3)";
 
@@ -27,6 +29,7 @@ public class MySqlParameterizedOutputVisitorTest_60_in extends TestCase {
         assertEquals(3, params.get(2));
     }
 
+    @Test
     public void test_for_parameterize_1() throws Exception {
         String sql = "select * from a where (id,userId) in ((1,2), (2,3),(3,4))";
 
@@ -41,6 +44,7 @@ public class MySqlParameterizedOutputVisitorTest_60_in extends TestCase {
         assertEquals("[3, 4]", params.get(2).toString());
     }
 
+    @Test
     public void test_for_parameterize_2() throws Exception {
         String sql = "select * from a where (id,userId) in ((1,2), (2,3),(3,4))";
 
@@ -59,6 +63,7 @@ public class MySqlParameterizedOutputVisitorTest_60_in extends TestCase {
         assertEquals("4", params.get(5).toString());
     }
 
+    @Test
     public void test_for_parameterize_3() throws Exception {
         String sql = "select * from a where (id,userId) in ((1,2))";
 

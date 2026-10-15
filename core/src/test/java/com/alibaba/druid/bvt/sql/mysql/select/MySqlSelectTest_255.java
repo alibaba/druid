@@ -20,6 +20,7 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlSelectTest_255 extends MysqlTest {
     public void test_0() throws Exception {
@@ -33,6 +34,4 @@ public class MySqlSelectTest_255 extends MysqlTest {
                 "\tVALUES 10, 20\n" +
                 ")", stmt.toString());
     }
-
-
 }

@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.impala;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.bvt.sql.SQLResourceTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ImpalaResourceTest extends SQLResourceTest {
     public ImpalaResourceTest() {
@@ -28,5 +28,4 @@ public class ImpalaResourceTest extends SQLResourceTest {
     public void impala_parse() throws Exception {
         fileTest(0, 999, i -> "bvt/parser/impala/" + i + ".txt");
     }
-
 }

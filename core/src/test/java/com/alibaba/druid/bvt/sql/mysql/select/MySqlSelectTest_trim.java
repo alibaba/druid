@@ -12,6 +12,8 @@ import com.alibaba.druid.util.JdbcConstants;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_trim extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select trim('x' from 'xxdxx')";
@@ -22,7 +24,6 @@ public class MySqlSelectTest_trim extends MysqlTest {
         assertEquals(1, statementList.size());
 
         //assertEquals("SELECT trim('x')", stmt.toString());
-
 
         List<Object> outParameters = new ArrayList<Object>();
         String parameterizeSql = ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, outParameters,
@@ -41,7 +42,6 @@ public class MySqlSelectTest_trim extends MysqlTest {
 
         //assertEquals("SELECT trim('x')", stmt.toString());
 
-
         outParameters = new ArrayList<Object>();
         parameterizeSql = ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, outParameters,
                 VisitorFeature.OutputParameterizedQuesUnMergeInList,
@@ -58,7 +58,6 @@ public class MySqlSelectTest_trim extends MysqlTest {
 
         //assertEquals("SELECT trim('x')", stmt.toString());
 
-
         outParameters = new ArrayList<Object>();
         parameterizeSql = ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, outParameters,
                 VisitorFeature.OutputParameterizedQuesUnMergeInList,
@@ -68,5 +67,4 @@ public class MySqlSelectTest_trim extends MysqlTest {
         System.out.println(parameterizeSql);
         System.out.println(outParameters);
     }
-
 }

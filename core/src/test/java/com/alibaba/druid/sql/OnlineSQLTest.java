@@ -15,6 +15,13 @@
  */
 package com.alibaba.druid.sql;
 
+import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
+import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
+import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
+import com.alibaba.druid.sql.dialect.oracle.visitor.OracleParameterizedOutputVisitor;
+import org.junit.jupiter.api.Test;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -23,20 +30,14 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
-import org.junit.Assert;
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.*;
 
-import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
-import com.alibaba.druid.sql.dialect.oracle.visitor.OracleParameterizedOutputVisitor;
-
-public class OnlineSQLTest extends TestCase {
+public class OnlineSQLTest {
     private String url = "jdbc:mysql://a.b.c.d/dragoon_v25monitordb_online";
     private String user = "dragoon";
     private String password = "dragoon";
 
+    @Test
     public void test_list_sql() throws Exception {
         // reset();
 
@@ -137,7 +138,7 @@ public class OnlineSQLTest extends TestCase {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         StringBuilder out = new StringBuilder();
         MySqlOutputVisitor visitor = new MySqlOutputVisitor(out, true);
@@ -166,7 +167,7 @@ public class OnlineSQLTest extends TestCase {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         StringBuilder out = new StringBuilder();
         OracleParameterizedOutputVisitor visitor = new OracleParameterizedOutputVisitor(out);

@@ -15,27 +15,28 @@
  */
 package com.alibaba.druid.bvt.filter.wall;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.wall.WallCheckResult;
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class TenantSelectTest2 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class TenantSelectTest2 {
     private String sql = "SELECT ID, NAME FROM orders WHERE FID = ? OR FID = ?";
-    private String expect_sql = "SELECT ID, NAME, tenant" + //
-            "\nFROM orders" + //
-            "\nWHERE FID = ?" + //
+    private String expect_sql = "SELECT ID, NAME, tenant" +
+            "\nFROM orders" +
+            "\nWHERE FID = ?" +
             "\n\tOR FID = ?";
 
     private WallConfig config = new WallConfig();
     private WallConfig config_callback = new WallConfig();
 
+    @BeforeEach
     protected void setUp() throws Exception {
         config.setTenantTablePattern("*");
         config.setTenantColumn("tenant");
@@ -43,22 +44,24 @@ public class TenantSelectTest2 extends TestCase {
         config_callback.setTenantCallBack(new TenantTestCallBack());
     }
 
+    @Test
     public void testMySql() throws Exception {
         WallProvider.setTenantValue(123);
         MySqlWallProvider provider = new MySqlWallProvider(config);
         WallCheckResult checkResult = provider.check(sql);
-        Assert.assertEquals(0, checkResult.getViolations().size());
+        assertEquals(0, checkResult.getViolations().size());
 
         String resultSql = SQLUtils.toSQLString(checkResult.getStatementList(), JdbcConstants.MYSQL);
-        Assert.assertEquals(expect_sql, resultSql);
+        assertEquals(expect_sql, resultSql);
     }
 
+    @Test
     public void testMySql2() throws Exception {
         MySqlWallProvider provider = new MySqlWallProvider(config_callback);
         WallCheckResult checkResult = provider.check(sql);
-        Assert.assertEquals(0, checkResult.getViolations().size());
+        assertEquals(0, checkResult.getViolations().size());
 
         String resultSql = SQLUtils.toSQLString(checkResult.getStatementList(), JdbcConstants.MYSQL);
-        Assert.assertEquals(expect_sql, resultSql);
+        assertEquals(expect_sql, resultSql);
     }
 }

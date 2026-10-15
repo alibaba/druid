@@ -22,10 +22,12 @@ import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
-public class MySqlAlterTableAddIndex_8 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlAlterTableAddIndex_8 {
+    @Test
     public void test_alter_first() throws Exception {
         String sql =
                 "alter table `seller_table2` rename `seller_table3` , add key `idx_create`(`gmt_create`)";
@@ -33,11 +35,11 @@ public class MySqlAlterTableAddIndex_8 extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
 
-        Assert.assertEquals("ALTER TABLE `seller_table2`\n" +
+        assertEquals("ALTER TABLE `seller_table2`\n" +
                 "\tRENAME TO `seller_table3`,\n" +
                 "\tADD KEY `idx_create` (`gmt_create`)", SQLUtils.toMySqlString(stmt));
 
-        Assert.assertEquals("alter table `seller_table2`\n" +
+        assertEquals("alter table `seller_table2`\n" +
                 "\trename to `seller_table3`,\n" +
                 "\tadd key `idx_create` (`gmt_create`)", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
@@ -48,5 +50,4 @@ public class MySqlAlterTableAddIndex_8 extends TestCase {
         assertEquals(1, tableStat.getAlterCount());
         assertEquals(1, tableStat.getCreateIndexCount());
     }
-
 }

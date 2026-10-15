@@ -15,11 +15,10 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallUtils;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * SQLServerWallTest
@@ -28,11 +27,12 @@ import com.alibaba.druid.wall.WallUtils;
  * @version 1.0, 2012-3-18
  * @see
  */
-public class MySqlWallTest3 extends TestCase {
+public class MySqlWallTest3 {
+    @Test
     public void test_stuff() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateMySql(//
-                "SELECT COUNT(p.id) FROM TB_PRO p" + //
-                        "        INNER JOIN   TB_Db  b ON b.id =p.dbid " + //
+        assertTrue(WallUtils.isValidateMySql(//
+                "SELECT COUNT(p.id) FROM TB_PRO p" +
+                        "        INNER JOIN   TB_Db  b ON b.id =p.dbid " +
                         "        WHERE p.index_status='0' AND p.sc=?"));
     }
 }

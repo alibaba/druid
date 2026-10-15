@@ -3,12 +3,15 @@ package com.alibaba.druid.bvt.sql.mysql.param;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MySqlParameterizedOutputVisitorTest_80 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlParameterizedOutputVisitorTest_80 {
+    @Test
     public void test1() {
         String sql = "select ((0='x6') & 31) ^ (ROW(76, 4) NOT IN (ROW(1, 2 ),ROW(3, 4)) );";
 
@@ -33,6 +36,7 @@ public class MySqlParameterizedOutputVisitorTest_80 extends TestCase {
         assertEquals(4, outParameters.get(8));
     }
 
+    @Test
     public void test2() {
         String sql = "select a from t group by 1 order by 1;";
 
@@ -43,6 +47,7 @@ public class MySqlParameterizedOutputVisitorTest_80 extends TestCase {
                 "ORDER BY 1;", stmt.toString());
     }
 
+    @Test
     public void test3() {
         String sql = "/*test*/ select * from test ;";
 

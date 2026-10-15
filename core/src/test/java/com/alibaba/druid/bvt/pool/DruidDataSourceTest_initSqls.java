@@ -1,16 +1,18 @@
 package com.alibaba.druid.bvt.pool;
 
+import com.alibaba.druid.pool.DruidDataSource;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.sql.Connection;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Assert;
-
-import com.alibaba.druid.pool.DruidDataSource;
-
-public class DruidDataSourceTest_initSqls extends TestCase {
+public class DruidDataSourceTest_initSqls {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
@@ -20,18 +22,19 @@ public class DruidDataSourceTest_initSqls extends TestCase {
         dataSource.setDefaultCatalog("c123");
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
     }
 
+    @Test
     public void testDefault() throws Exception {
         Connection conn = dataSource.getConnection();
 
-        Assert.assertEquals(true, conn.isReadOnly());
-        Assert.assertEquals(Connection.TRANSACTION_SERIALIZABLE, conn.getTransactionIsolation());
-        Assert.assertEquals("c123", conn.getCatalog());
+        assertEquals(true, conn.isReadOnly());
+        assertEquals(Connection.TRANSACTION_SERIALIZABLE, conn.getTransactionIsolation());
+        assertEquals("c123", conn.getCatalog());
 
         conn.close();
     }
-
 }

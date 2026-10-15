@@ -1,0 +1,39 @@
+SELECT COALESCE(a, b, c) FROM t1
+--------------------
+SELECT COALESCE(a, b, c)
+FROM t1
+------------------------------------------------------------------------------------------------------------------------
+SELECT NVL(a, b) FROM t1
+--------------------
+SELECT NVL(a, b)
+FROM t1
+------------------------------------------------------------------------------------------------------------------------
+SELECT IFF(condition, true_val, false_val) FROM t1
+--------------------
+SELECT IFF(condition, true_val, false_val)
+FROM t1
+------------------------------------------------------------------------------------------------------------------------
+SELECT DATEADD(day, 7, current_date()) FROM t1
+--------------------
+SELECT DATEADD(day, 7, current_date())
+FROM t1
+------------------------------------------------------------------------------------------------------------------------
+SELECT DATEDIFF(day, start_date, end_date) FROM t1
+--------------------
+SELECT DATEDIFF(day, start_date, end_date)
+FROM t1
+------------------------------------------------------------------------------------------------------------------------
+SELECT LISTAGG(name, ', ') WITHIN GROUP (ORDER BY name) FROM t1
+--------------------
+SELECT LISTAGG(name, ', ') WITHIN GROUP (ORDER BY name)
+FROM t1
+------------------------------------------------------------------------------------------------------------------------
+SELECT a, b, SUM(c) OVER (PARTITION BY a ORDER BY b ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS running_sum FROM t1
+--------------------
+SELECT a, b, SUM(c) OVER (PARTITION BY a ORDER BY b ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS running_sum
+FROM t1
+------------------------------------------------------------------------------------------------------------------------
+SELECT ARRAY_AGG(name) WITHIN GROUP (ORDER BY id) FROM t1
+--------------------
+SELECT ARRAY_AGG(name) WITHIN GROUP (ORDER BY id)
+FROM t1

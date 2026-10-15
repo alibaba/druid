@@ -41,7 +41,7 @@ public class DruidFilterTestCase {
      */
     @Configuration
     @ComponentScan
-    public static class Config{
+    public static class Config {
         /**
          * @author dk
          */
@@ -50,12 +50,12 @@ public class DruidFilterTestCase {
             private static Logger logger = LoggerFactory.getLogger(SomeCustomFilter.class);
 
             @Override
-            public void init(DataSourceProxy dataSourceProxy){
+            public void init(DataSourceProxy dataSourceProxy) {
                 if (!(dataSourceProxy instanceof DruidDataSource)) {
                     logger.error("ConfigLoader only support DruidDataSource");
                 }
                 DruidDataSource dataSource = (DruidDataSource) dataSourceProxy;
-                logger.info("db configuration: url="+ dataSource.getUrl());
+                logger.info("db configuration: url=" + dataSource.getUrl());
             }
         }
     }

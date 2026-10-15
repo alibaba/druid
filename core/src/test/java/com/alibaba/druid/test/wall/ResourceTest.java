@@ -1,19 +1,20 @@
 package com.alibaba.druid.test.wall;
 
-import java.io.File;
-import java.io.FileInputStream;
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.util.Utils;
 import com.alibaba.druid.wall.Violation;
 import com.alibaba.druid.wall.WallCheckResult;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class ResourceTest extends TestCase {
+import java.io.File;
+import java.io.FileInputStream;
+
+public class ResourceTest {
     private String[] items;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         File file = new File("D:\\scan_error.txt");
         FileInputStream is = new FileInputStream(file);
@@ -23,6 +24,7 @@ public class ResourceTest extends TestCase {
         items = all.split("\\|\\r\\n\\|");
     }
 
+    @Test
     public void test_xx() throws Exception {
         WallProvider provider = new MySqlWallProvider();
 
@@ -41,5 +43,4 @@ public class ResourceTest extends TestCase {
 
         System.out.println("violaionCount : " + provider.getViolationCount());
     }
-
 }

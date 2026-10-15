@@ -20,9 +20,10 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlCreateProcedureTest14 extends MysqlTest {
     public void test_0() throws Exception {
@@ -34,7 +35,7 @@ public class MySqlCreateProcedureTest14 extends MysqlTest {
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL);
         SQLStatement stmt = statementList.get(0);
-//    	print(statementList);
+        // print(statementList);
         assertEquals(1, statementList.size());
 
         System.out.println(SQLUtils.toMySqlString(stmt));
@@ -51,8 +52,8 @@ public class MySqlCreateProcedureTest14 extends MysqlTest {
 
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());
-//        System.out.println("coditions : " + visitor.getConditions());
-//        System.out.println("orderBy : " + visitor.getOrderByColumns());
+        // System.out.println("coditions : " + visitor.getConditions());
+        // System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         assertEquals(1, visitor.getTables().size());
         assertEquals(1, visitor.getColumns().size());
@@ -60,5 +61,4 @@ public class MySqlCreateProcedureTest14 extends MysqlTest {
 
         assertTrue(visitor.containsColumn("mysql.user", "*"));
     }
-
 }

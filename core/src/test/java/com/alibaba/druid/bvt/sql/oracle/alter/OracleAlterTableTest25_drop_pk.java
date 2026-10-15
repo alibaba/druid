@@ -21,10 +21,12 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
-public class OracleAlterTableTest25_drop_pk extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OracleAlterTableTest25_drop_pk {
+    @Test
     public void test_alter_constraint() throws Exception {
         String sql = "alter table supplier drop primary key;";
         OracleStatementParser parser = new OracleStatementParser(sql);
@@ -40,11 +42,10 @@ public class OracleAlterTableTest25_drop_pk extends TestCase {
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         String output = SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE);
-        Assert.assertEquals("ALTER TABLE supplier\n" +
+        assertEquals("ALTER TABLE supplier\n" +
                 "\tDROP PRIMARY KEY;", output);
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(0, visitor.getColumns().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(0, visitor.getColumns().size());
     }
-
 }

@@ -17,6 +17,8 @@ package com.alibaba.druid.bvt.sql.mysql.select;
 
 import com.alibaba.druid.sql.MysqlTest;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_311_issue
         extends MysqlTest {
     public void test_join() throws Exception {

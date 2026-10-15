@@ -173,6 +173,7 @@ public class PagerUtils {
                 return limitSQLQueryBlock(queryBlock, dbType, offset, count, check);
             case oracle:
             case oceanbase_oracle:
+            case polardb2:
                 return limitOracle(select, dbType, offset, count, check);
             default:
                 throw new UnsupportedOperationException();
@@ -553,6 +554,7 @@ public class PagerUtils {
             case polardbx:
                 return new MySqlSelectQueryBlock();
             case oracle:
+            case polardb2:
                 return new OracleSelectQueryBlock();
             case postgresql:
             case greenplum:

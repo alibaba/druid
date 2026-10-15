@@ -4,16 +4,19 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
-import com.alibaba.fastjson2.JSON;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.sql.visitor.VisitorFeature;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import com.alibaba.fastjson2.JSON;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MySqlParameterizedOutputVisitorTest_74 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlParameterizedOutputVisitorTest_74 {
+    @Test
     public void test_in() throws Exception {
         String sql = "select 0 from corona_select_multi_db_one_tb "
             + "where( 9 =( (3,4) not in ((1,2 ),( 3,5)) ) ) =bigint_test";
@@ -32,6 +35,7 @@ public class MySqlParameterizedOutputVisitorTest_74 extends TestCase {
         assertEquals("[0,9,3,4,1,2,3,5]", JSON.toJSONString(outParameters));
     }
 
+    @Test
     public void test_between() throws Exception {
         String sql = "select 0 from corona_select_multi_db_one_tb where( 9 =( 3 not between 1 and 5 ) ) =bigint_test";
 

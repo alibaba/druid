@@ -25,6 +25,8 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlGrantTest_ads extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "GRANT SELECT ON TABLE * TO 'ALIYUN$ads_user1@aliyun.com'";
@@ -150,7 +152,6 @@ public class MySqlGrantTest_ads extends MysqlTest {
         assertEquals(1, visitor.getTables().size());
         assertEquals(0, visitor.getColumns().size());
         assertEquals(0, visitor.getConditions().size());
-
     }
 
     public void test_6() throws Exception {
@@ -287,7 +288,6 @@ public class MySqlGrantTest_ads extends MysqlTest {
         assertEquals(1, visitor.getTables().size());
         assertEquals(0, visitor.getColumns().size());
         assertEquals(0, visitor.getConditions().size());
-
     }
 
     public void test_doc_0() throws Exception {
@@ -341,5 +341,4 @@ public class MySqlGrantTest_ads extends MysqlTest {
         assertEquals("GRANT DESCRIBE, SELECT(col1, col2) ON db_name.table_name TO 'ALIYUN$account_name';", //
                 stmt.toString());
     }
-
 }

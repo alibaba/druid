@@ -15,6 +15,16 @@
  */
 package com.alibaba.druid.benckmark.pool;
 
+import com.alibaba.druid.TestUtil;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.util.JdbcUtils;
+import org.apache.commons.dbcp.BasicDataSource;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.util.Assert;
+
+import javax.sql.DataSource;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -23,18 +33,7 @@ import java.sql.Statement;
 import java.text.NumberFormat;
 import java.util.concurrent.CountDownLatch;
 
-import javax.sql.DataSource;
-
-import junit.framework.TestCase;
-
-import org.apache.commons.dbcp.BasicDataSource;
-import org.springframework.util.Assert;
-
-import com.alibaba.druid.TestUtil;
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.util.JdbcUtils;
-
-public class Oracle_Case4 extends TestCase {
+public class Oracle_Case4 {
     private String jdbcUrl;
     private String user;
     private String password;
@@ -46,13 +45,14 @@ public class Oracle_Case4 extends TestCase {
     private int threadCount = 1;
     private int loopCount = 5;
     final int LOOP_COUNT = 1000 * 1;
-    private boolean testOnBorrow = false;
+    private boolean testOnBorrow;
     private boolean preparedStatementCache = true;
     private int preparedStatementCacheSize = 50;
     private String properties = "defaultRowPrefetch=50";
 
     private String SQL;
 
+    @BeforeEach
     protected void setUp() throws Exception {
 //         jdbcUrl = "jdbc:oracle:thin:@a.b.c.d:1521:ocnauto";
 //         user = "alibaba";
@@ -67,6 +67,7 @@ public class Oracle_Case4 extends TestCase {
         driverClass = "oracle.jdbc.driver.OracleDriver";
     }
 
+    @Test
     public void test_druid() throws Exception {
         DruidDataSource dataSource = new DruidDataSource();
 
@@ -95,6 +96,7 @@ public class Oracle_Case4 extends TestCase {
         System.out.println();
     }
 
+    @Test
     public void test_dbcp() throws Exception {
         final BasicDataSource dataSource = new BasicDataSource();
 

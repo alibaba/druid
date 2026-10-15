@@ -15,18 +15,18 @@
  */
 package com.alibaba.druid.bvt.sql.mysql;
 
-import java.util.List;
-
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
+import org.junit.jupiter.api.Test;
 
-public class SHOW_STATUS_Syntax_Test extends TestCase {
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class SHOW_STATUS_Syntax_Test {
+    @Test
     public void test_0() throws Exception {
         String sql = "SHOW STATUS LIKE 'Key%'";
 
@@ -35,9 +35,10 @@ public class SHOW_STATUS_Syntax_Test extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SHOW STATUS LIKE 'Key%';", text);
+        assertEquals("SHOW STATUS LIKE 'Key%';", text);
     }
 
+    @Test
     public void test_where() throws Exception {
         String sql = "SHOW STATUS WHERE X LIKE 'Key%'";
 
@@ -46,9 +47,10 @@ public class SHOW_STATUS_Syntax_Test extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SHOW STATUS WHERE X LIKE 'Key%';", text);
+        assertEquals("SHOW STATUS WHERE X LIKE 'Key%';", text);
     }
 
+    @Test
     public void test_corba() throws Exception {
         String sql = "SHOW COBAR_STATUS";
 
@@ -57,9 +59,10 @@ public class SHOW_STATUS_Syntax_Test extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SHOW COBAR_STATUS;", text);
+        assertEquals("SHOW COBAR_STATUS;", text);
     }
 
+    @Test
     public void test_1() throws Exception {
         String sql = "SHOW GLOBAL STATUS LIKE 'Key%'";
 
@@ -68,9 +71,10 @@ public class SHOW_STATUS_Syntax_Test extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SHOW GLOBAL STATUS LIKE 'Key%';", text);
+        assertEquals("SHOW GLOBAL STATUS LIKE 'Key%';", text);
     }
 
+    @Test
     public void test_2() throws Exception {
         String sql = "SHOW SESSION STATUS LIKE 'Key%'";
 
@@ -79,9 +83,10 @@ public class SHOW_STATUS_Syntax_Test extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SHOW SESSION STATUS LIKE 'Key%';", text);
+        assertEquals("SHOW SESSION STATUS LIKE 'Key%';", text);
     }
 
+    @Test
     public void test_3() throws Exception {
         String sql = "SHOW SESSION STATUS";
 
@@ -90,7 +95,7 @@ public class SHOW_STATUS_Syntax_Test extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SHOW SESSION STATUS;", text);
+        assertEquals("SHOW SESSION STATUS;", text);
     }
 
     private String output(List<SQLStatement> stmtList) {

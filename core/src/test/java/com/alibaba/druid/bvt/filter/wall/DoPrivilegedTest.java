@@ -15,25 +15,27 @@
  */
 package com.alibaba.druid.bvt.filter.wall;
 
-import java.security.PrivilegedAction;
-
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.WallUtils;
+import org.junit.jupiter.api.Test;
 
-public class DoPrivilegedTest extends TestCase {
+import java.security.PrivilegedAction;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class DoPrivilegedTest {
+    @Test
     public void test_0() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateMySql("select @@version_compile_os FROM X"));
+        assertTrue(WallUtils.isValidateMySql("select @@version_compile_os FROM X"));
     }
 
+    @Test
     public void test_0_0() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateMySql("select * FROM X where version=@@version_compile_os"));
+        assertFalse(WallUtils.isValidateMySql("select * FROM X where version=@@version_compile_os"));
     }
 
+    @Test
     public void test_1() throws Exception {
         final WallConfig config = new WallConfig();
         config.setDoPrivilegedAllow(true);
@@ -41,10 +43,9 @@ public class DoPrivilegedTest extends TestCase {
         WallProvider.doPrivileged(new PrivilegedAction<Object>() {
             @Override
             public Object run() {
-                Assert.assertTrue(WallUtils.isValidateMySql("select @@version_compile_os FROM X", config));
+                assertTrue(WallUtils.isValidateMySql("select @@version_compile_os FROM X", config));
                 return null;
             }
         });
-
     }
 }

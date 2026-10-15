@@ -1,15 +1,15 @@
 package com.alibaba.druid.bvt.sql.eval;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
-public class EvalMethodTest_substring extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class EvalMethodTest_substring {
+    @Test
     public void test_method() throws Exception {
-        Assert.assertEquals("barbar",
+        assertEquals("barbar",
                 SQLEvalVisitorUtils.evalExpr(JdbcConstants.MYSQL, "SUBSTRING('foobarbar' FROM 4)"));
     }
 }

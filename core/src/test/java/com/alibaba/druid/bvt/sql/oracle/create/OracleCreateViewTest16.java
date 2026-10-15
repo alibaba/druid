@@ -25,6 +25,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleCreateViewTest16 extends OracleTest {
     public void test_types() throws Exception {
         String sql = //
@@ -149,7 +151,7 @@ public class OracleCreateViewTest16 extends OracleTest {
                         "\t\tAND HR_SECURITY.SHOW_BIS_RECORD(orderhdr.org_id) = 'TRUE'\n" +
                         ")\n" +
                         "GROUP BY ITEM_ID, WAREHOUSE_SHIPPED_FROM, SALES_COMPANY, SALES_ORGANIZATION, PERIOD_START_DATE, OPERATING_UNIT_ID, YEAR_ID, QUARTER_ID, PERIOD_ID\n" +
-                        "WITH READ ONLY",//
+                        "WITH READ ONLY",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

@@ -23,6 +23,8 @@ import com.alibaba.druid.stat.TableStat;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleCreateProcedureTest4 extends OracleTest {
     public void test_0() throws Exception {
         String sql = "PROCEDURE abc_apply(in_json  IN VARCHAR2,\n" +
@@ -164,7 +166,7 @@ public class OracleCreateProcedureTest4 extends OracleTest {
                 "                          '???:' || in_loginname);\n" +
                 "    ROLLBACK;\n" +
                 "    RETURN;\n" +
-                "END;"; //
+                "END;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

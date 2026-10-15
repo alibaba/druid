@@ -22,6 +22,8 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleCreateTableTest93 extends OracleTest {
     public void test_0() throws Exception {
         String sql = //
@@ -162,6 +164,5 @@ public class OracleCreateTableTest93 extends OracleTest {
                 "\tCELL_FLASH_CACHE DEFAULT\n" +
                 ")\n" +
                 "XMLTYPE \"DOC_XML\" ALLOW NONSCHEMA DISALLOW ANYSCHEMA;", stmt.toString());
-
     }
 }

@@ -24,6 +24,8 @@ import com.alibaba.druid.sql.parser.ParserException;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlGrantTest_36 extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "GRANT DELETE, CREATE, DROP ON *.* TO 'oa_2'@'localhost' with grant option";
@@ -81,5 +83,4 @@ public class MySqlGrantTest_36 extends MysqlTest {
         }
         assertNotNull(error);
     }
-
 }

@@ -20,8 +20,9 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MySqlCreateTableTest63 extends MysqlTest {
     @Test
@@ -36,7 +37,7 @@ public class MySqlCreateTableTest63 extends MysqlTest {
 
         {
             String output = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("CREATE TABLE t ("
+            assertEquals("CREATE TABLE t ("
                     + "\n\tpk int PRIMARY KEY AUTO_INCREMENT,"
                     + "\n\ta TIMESTAMP,"
                     + "\n\tKEY (a DESC)"
@@ -44,7 +45,7 @@ public class MySqlCreateTableTest63 extends MysqlTest {
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            Assert.assertEquals("create table t ("
+            assertEquals("create table t ("
                     + "\n\tpk int primary key auto_increment,"
                     + "\n\ta TIMESTAMP,"
                     + "\n\tkey (a desc)"

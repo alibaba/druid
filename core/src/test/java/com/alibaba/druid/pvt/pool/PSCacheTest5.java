@@ -1,19 +1,21 @@
 package com.alibaba.druid.pvt.pool;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-
-import org.junit.Assert;
-
-import junit.framework.TestCase;
-
 import com.alibaba.druid.mock.MockPreparedStatement;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class PSCacheTest5 extends TestCase {
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class PSCacheTest5 {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:x1");
@@ -21,10 +23,12 @@ public class PSCacheTest5 extends TestCase {
         dataSource.setMaxOpenPreparedStatements(10);
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
     }
 
+    @Test
     public void test_0() throws Exception {
         MockPreparedStatement mockStmt = null;
         {
@@ -38,7 +42,7 @@ public class PSCacheTest5 extends TestCase {
             Connection conn = dataSource.getConnection();
             PreparedStatement ps = conn.prepareStatement("select 1");
 
-            Assert.assertSame(mockStmt, ps.unwrap(MockPreparedStatement.class));
+            assertSame(mockStmt, ps.unwrap(MockPreparedStatement.class));
 
             ps.execute();
             ps.close();

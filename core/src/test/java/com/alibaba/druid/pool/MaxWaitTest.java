@@ -15,15 +15,17 @@
  */
 package com.alibaba.druid.pool;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.Statement;
 import java.util.concurrent.CountDownLatch;
 
-public class MaxWaitTest extends TestCase {
+public class MaxWaitTest {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mysql://localhost:3306/sonar");
@@ -36,6 +38,7 @@ public class MaxWaitTest extends TestCase {
         dataSource.setMaxActive(3);
     }
 
+    @Test
     public void test_maxWait() throws Exception {
         final CountDownLatch latch = new CountDownLatch(10);
         for (int i = 0; i < 20; ++i) {

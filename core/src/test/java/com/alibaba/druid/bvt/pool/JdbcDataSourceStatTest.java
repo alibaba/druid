@@ -15,15 +15,16 @@
  */
 package com.alibaba.druid.bvt.pool;
 
-import java.util.Properties;
-
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.Constants;
 import com.alibaba.druid.stat.JdbcDataSourceStat;
+import org.junit.jupiter.api.Test;
 
-public class JdbcDataSourceStatTest extends TestCase {
+import java.util.Properties;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class JdbcDataSourceStatTest {
+    @Test
     public void test_max() throws Exception {
         JdbcDataSourceStat stat = new JdbcDataSourceStat("", "");
 
@@ -31,9 +32,10 @@ public class JdbcDataSourceStatTest extends TestCase {
             stat.createSqlStat("select " + i);
         }
 
-        Assert.assertEquals(1000, stat.getSqlStatMap().size());
+        assertEquals(1000, stat.getSqlStatMap().size());
     }
 
+    @Test
     public void test_max_10() throws Exception {
         Properties connectProperties = new Properties();
         connectProperties.put(Constants.DRUID_STAT_SQL_MAX_SIZE, 10);
@@ -43,9 +45,10 @@ public class JdbcDataSourceStatTest extends TestCase {
             stat.createSqlStat("select " + i);
         }
 
-        Assert.assertEquals(10, stat.getSqlStatMap().size());
+        assertEquals(10, stat.getSqlStatMap().size());
     }
 
+    @Test
     public void test_max_10_str() throws Exception {
         Properties connectProperties = new Properties();
         connectProperties.put(Constants.DRUID_STAT_SQL_MAX_SIZE, "10");
@@ -55,6 +58,6 @@ public class JdbcDataSourceStatTest extends TestCase {
             stat.createSqlStat("select " + i);
         }
 
-        Assert.assertEquals(10, stat.getSqlStatMap().size());
+        assertEquals(10, stat.getSqlStatMap().size());
     }
 }

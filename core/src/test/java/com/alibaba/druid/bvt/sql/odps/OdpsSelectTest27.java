@@ -19,15 +19,18 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class OdpsSelectTest27 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OdpsSelectTest27 {
+    @Test
     public void test_select() throws Exception {
         // 1095288847322
         String sql = "select case when aaa < 0.1 then 2 else 1 end as abc\n" +
-                "from bigdata_xy.dual;";//
+                "from bigdata_xy.dual;";
         assertEquals("SELECT CASE\n" +
                 "\t\tWHEN aaa < 0.1 THEN 2\n" +
                 "\t\tELSE 1\n" +
@@ -61,5 +64,4 @@ public class OdpsSelectTest27 extends TestCase {
 
 //        assertTrue(visitor.getColumns().contains(new Column("abc", "name")));
     }
-
 }

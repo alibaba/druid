@@ -15,14 +15,15 @@
  */
 package com.alibaba.druid.bvt.sql.oracle;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
+import org.junit.jupiter.api.Test;
 
-public class OraclePriorTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OraclePriorTest {
+    @Test
     public void test_oracle() throws Exception {
         String sql = "SELECT employee_id, last_name, manager_id FROM employees CONNECT BY PRIOR employee_id = manager_id;";
 
@@ -34,11 +35,12 @@ public class OraclePriorTest extends TestCase {
 
         String text = TestUtils.outputOracle(stmt);
 
-        Assert.assertEquals(expect, text);
+        assertEquals(expect, text);
 
         System.out.println(text);
     }
 
+    @Test
     public void test_oracle_2() throws Exception {
         String sql = "SELECT last_name, employee_id, manager_id, LEVEL\n" + "FROM employees\n"
                 + "START WITH employee_id = 100\n" + "CONNECT BY PRIOR employee_id = manager_id\n"
@@ -53,7 +55,7 @@ public class OraclePriorTest extends TestCase {
 
         String text = TestUtils.outputOracle(stmt);
 
-        Assert.assertEquals(expect, text);
+        assertEquals(expect, text);
 
         System.out.println(text);
     }

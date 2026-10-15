@@ -15,19 +15,18 @@
  */
 package com.alibaba.druid.bvt.sql.oracle.alter;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.jupiter.api.Test;
 
-public class OracleAlterTableTest_drop_constraint extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class OracleAlterTableTest_drop_constraint {
+    @Test
     public void test_alter_constraint() throws Exception {
         String sql = "alter table TUSER drop constraint UK_084c17821a8f47e8b31fbb126b6";
         OracleStatementParser parser = new OracleStatementParser(sql);
@@ -43,11 +42,10 @@ public class OracleAlterTableTest_drop_constraint extends TestCase {
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         String output = SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE);
-        Assert.assertEquals("ALTER TABLE TUSER" + //
+        assertEquals("ALTER TABLE TUSER" +
                 "\n\tDROP CONSTRAINT UK_084c17821a8f47e8b31fbb126b6", output);
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(0, visitor.getColumns().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(0, visitor.getColumns().size());
     }
-
 }

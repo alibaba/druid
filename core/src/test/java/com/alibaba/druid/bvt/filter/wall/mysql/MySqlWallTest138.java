@@ -15,28 +15,27 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import org.junit.jupiter.api.Test;
 
-public class MySqlWallTest138 extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MySqlWallTest138 {
+    @Test
     public void test_false() throws Exception {
         WallProvider provider = new MySqlWallProvider();
 
-        String sql = "INSERT INTO T01_CHECKIN_CUSTOMER" //
-                + "(WEB_USER_ID,NAME,COUNTRY,PROVINCE,CITY" //
-                + ",POSTCODE,PHONE,FAX,EMAIL,ADDRESS,FIRST_NAME,LAST_NAME,sex) " //
+        String sql = "INSERT INTO T01_CHECKIN_CUSTOMER"
+                + "(WEB_USER_ID,NAME,COUNTRY,PROVINCE,CITY"
+                + ",POSTCODE,PHONE,FAX,EMAIL,ADDRESS,FIRST_NAME,LAST_NAME,sex) "
                 + "select 2,null,'4225',null,'beijing','','1','','1223@123.com','beijing','booking','test',null "//
-                + "from dual " //
+                + "from dual "
                 + "where not exists   ("//
-                + "    select EMAIL" //
-                + "    from T01_CHECKIN_CUSTOMER" //
-                + "    where WEB_USER_ID=2 and EMAIL='1223@123.com'" //
+                + "    select EMAIL"
+                + "    from T01_CHECKIN_CUSTOMER"
+                + "    where WEB_USER_ID=2 and EMAIL='1223@123.com'"
                 + ")";
-        Assert.assertTrue(provider.checkValid(sql));
+        assertTrue(provider.checkValid(sql));
     }
-
 }

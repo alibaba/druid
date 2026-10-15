@@ -23,12 +23,13 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_59_neq extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "SELECT * from t where t !  = 1";
 
         System.out.println(sql);
-
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.MYSQL, true);
         SQLStatement stmt = statementList.get(0);

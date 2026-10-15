@@ -15,36 +15,39 @@
  */
 package com.alibaba.druid.bvt.pool;
 
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.stat.DruidDataSourceStatManager;
+import com.alibaba.druid.stat.JdbcStatManager;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.*;
 
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.stat.DruidDataSourceStatManager;
-import com.alibaba.druid.stat.JdbcStatManager;
-
-public class TestStat extends TestCase {
+public class TestStat {
     private DruidDataSource dataSource;
 
+    @BeforeEach
     protected void setUp() throws Exception {
         DruidDataSourceStatManager.clear();
-
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setName("com.alibaba.dragoon.monitor");
         dataSource.setMinIdle(0);
         dataSource.setPoolPreparedStatements(false);
-
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
         dataSource.close();
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        DruidDataSourceStatManager.clear();
     }
 
+    @Test
     public void test_stat() throws Exception {
         String sql = "SELECT 1";
 
@@ -55,8 +58,8 @@ public class TestStat extends TestCase {
 
         conn.close();
 
-        Assert.assertEquals(true, stmt.isClosed());
-        Assert.assertEquals(true, rs.isClosed());
+        assertEquals(true, stmt.isClosed());
+        assertEquals(true, rs.isClosed());
 
         rs.close();
         stmt.close();
@@ -64,7 +67,6 @@ public class TestStat extends TestCase {
         dataSource.shrink();
 
         JdbcStatManager.getInstance().getDataSourceList();
-        Assert.assertEquals(1, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
-
+        assertEquals(1, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 }

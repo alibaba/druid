@@ -29,7 +29,7 @@ import com.alibaba.druid.sql.dialect.clickhouse.visitor.CKOutputVisitor;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2OutputVisitor;
 import com.alibaba.druid.sql.dialect.h2.visitor.H2OutputVisitor;
 import com.alibaba.druid.sql.dialect.hologres.visitor.HologresOutputVisitor;
-import com.alibaba.druid.sql.dialect.infomix.visitor.InformixOutputVisitor;
+import com.alibaba.druid.sql.dialect.informix.visitor.InformixOutputVisitor;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
@@ -40,6 +40,7 @@ import com.alibaba.druid.sql.dialect.phoenix.visitor.PhoenixOutputVisitor;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGOutputVisitor;
 import com.alibaba.druid.sql.dialect.presto.visitor.PrestoOutputVisitor;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerOutputVisitor;
+import com.alibaba.druid.sql.dialect.synapse.visitor.SynapseOutputVisitor;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLSelectListCache;
@@ -408,6 +409,7 @@ public class ParameterizedOutputVisitorUtils {
         switch (dbType) {
             case oracle:
             case oceanbase_oracle:
+            case polardb2:
                 return new OracleParameterizedOutputVisitor(out);
             case mysql:
             case tidb:
@@ -433,6 +435,8 @@ public class ParameterizedOutputVisitorUtils {
             case sqlserver:
             case jtds:
                 return new SQLServerOutputVisitor(out, true);
+            case synapse:
+                return new SynapseOutputVisitor(out, true);
             case db2:
                 return new DB2OutputVisitor(out, true);
             case phoenix:

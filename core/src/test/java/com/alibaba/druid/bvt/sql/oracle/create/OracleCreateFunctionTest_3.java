@@ -24,6 +24,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleCreateFunctionTest_3 extends OracleTest {
     public void test_types() throws Exception {
         String sql = //
@@ -119,7 +121,7 @@ public class OracleCreateFunctionTest_3 extends OracleTest {
                         "\t\tIF VALUECURSOR % ISOPEN THEN\n" +
                         "\t\t\tCLOSE VALUECURSOR;\n" +
                         "\t\tEND IF;\n" +
-                        "END;",//
+                        "END;",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

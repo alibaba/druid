@@ -1,15 +1,14 @@
 package com.alibaba.druid.bvt.sql.odps;
 
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.SQLUtils;
+import org.junit.jupiter.api.Test;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class OdpsFormatCommentTest17 extends TestCase {
+public class OdpsFormatCommentTest17 {
+    @Test
     public void test_column_comment() throws Exception {
         String sql = "set xxx=aaa;--ssss";
-        Assert.assertEquals("SET xxx = aaa;-- ssss", SQLUtils.formatOdps(sql));
+        assertEquals("SET xxx = aaa;-- ssss", SQLUtils.formatOdps(sql));
     }
-
 }

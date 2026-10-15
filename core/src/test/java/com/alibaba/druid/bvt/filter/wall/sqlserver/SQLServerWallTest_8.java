@@ -15,12 +15,11 @@
  */
 package com.alibaba.druid.bvt.filter.wall.sqlserver;
 
-import junit.framework.TestCase;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.SQLServerWallProvider;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * SQLServerWallTest
@@ -29,14 +28,13 @@ import com.alibaba.druid.wall.spi.SQLServerWallProvider;
  * @version 1.0, 2012-3-18
  * @see
  */
-public class SQLServerWallTest_8 extends TestCase {
+public class SQLServerWallTest_8 {
+    @Test
     public void test_true() throws Exception {
         WallProvider provider = new SQLServerWallProvider();
 
         provider.getConfig().setMustParameterized(true);
 
-        Assert.assertFalse(provider.checkValid("select * from t where fid = 1"));
-
+        assertFalse(provider.checkValid("select * from t where fid = 1"));
     }
-
 }

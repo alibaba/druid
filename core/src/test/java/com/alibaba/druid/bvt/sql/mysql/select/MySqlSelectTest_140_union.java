@@ -10,6 +10,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class MySqlSelectTest_140_union extends MysqlTest {
     public void test_0() throws Exception {
         String sql = "select count(1) from\n" +
@@ -98,9 +100,7 @@ public class MySqlSelectTest_140_union extends MysqlTest {
                         "\tSELECT DISTINCT a0.aid\n" +
                         "\tFROM ysf_saas.ods_abif_aid_fetched_tags_bus_ads_v a0\n" +
                         "\tWHERE a0.pred_age_level IN (?)\n" +
-                        ") d;"
-                , ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, VisitorFeature.OutputParameterizedZeroReplaceNotUseOriginalSql));
+                        ") d;",
+                ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL, VisitorFeature.OutputParameterizedZeroReplaceNotUseOriginalSql));
     }
-
-
 }

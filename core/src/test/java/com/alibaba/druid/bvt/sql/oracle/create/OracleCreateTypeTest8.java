@@ -24,6 +24,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class OracleCreateTypeTest8 extends OracleTest {
     public void test_types() throws Exception {
         String sql = "CREATE OR REPLACE TYPE dmbanimp AUTHID CURRENT_USER AS OBJECT (\n" +
@@ -123,7 +125,6 @@ public class OracleCreateTypeTest8 extends OracleTest {
                 "                  ) RETURN NUMBER\n" +
                 ");";
 
-
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
@@ -142,7 +143,7 @@ public class OracleCreateTypeTest8 extends OracleTest {
                         "\tSTATIC FUNCTION dmbanStartStub (sctx IN OUT dmbanimp, rws_ptr IN RAW, query_sequence IN CLOB, seqdb_cursor SYS_REFCURSOR, subsequence_from IN PLS_INTEGER, subsequence_to IN PLS_INTEGER, filter_low_complexity IN PLS_INTEGER, mask_lower_case IN PLS_INTEGER, expect_value IN NUMBER, open_gap_cost IN PLS_INTEGER, extend_gap_cost IN PLS_INTEGER, mismatch_cost IN PLS_INTEGER, match_reward IN PLS_INTEGER, word_size IN PLS_INTEGER, xdropoff IN PLS_INTEGER, final_x_dropoff IN PLS_INTEGER) RETURN NUMBER, \n" +
                         "\tMEMBER FUNCTION dmbanFetchStub (self IN OUT dmbanimp, nrows IN NUMBER, outset OUT dmbaos) RETURN NUMBER, \n" +
                         "\tMEMBER FUNCTION dmbanCloseStub (self IN dmbanimp) RETURN NUMBER\n" +
-                        ");",//
+                        ");",
                 SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
