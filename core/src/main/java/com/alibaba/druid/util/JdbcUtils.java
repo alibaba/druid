@@ -686,7 +686,7 @@ public final class JdbcUtils implements JdbcConstants {
             return DbType.oscar;
         } else if (rawUrl.startsWith("jdbc:sundb:")) {
             return DbType.sundb;
-        } else if (rawUrl.startsWith("jdbc:gbasedbt-sqli:")||rawUrl.startsWith("jdbc:gbase8s:")) {
+        } else if (rawUrl.startsWith("jdbc:gbasedbt-sqli:") || rawUrl.startsWith("jdbc:gbase8s:")) {
             return DbType.gbase8s;
         } else {
             return null;

@@ -7,7 +7,6 @@ import junit.framework.TestCase;
 import java.sql.SQLException;
 
 public class IssueGbase8s extends TestCase {
-
     public void test_gbase8s_jdbc_utils() throws SQLException {
         // GBase8s jdbc url
         String url = "jdbc:gbasedbt-sqli://127.0.0.1:9088/testdb:GBASEDBTSERVER=servername;";
