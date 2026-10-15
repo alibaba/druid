@@ -67,6 +67,9 @@ public final class SQLSelectOrderByItem extends SQLExprImpl implements SQLReplac
     }
 
     public void setOpclass(SQLExpr opclass) {
+        if (opclass != null) {
+            opclass.setParent(this);
+        }
         this.opclass = opclass;
     }
 
@@ -170,6 +173,9 @@ public final class SQLSelectOrderByItem extends SQLExprImpl implements SQLReplac
         SQLSelectOrderByItem x = new SQLSelectOrderByItem();
         if (expr != null) {
             x.setExpr(expr.clone());
+        }
+        if (opclass != null) {
+            x.setOpclass(opclass.clone());
         }
         x.collate = collate;
         x.type = type;
