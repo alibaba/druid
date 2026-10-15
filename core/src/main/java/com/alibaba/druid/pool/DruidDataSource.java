@@ -304,7 +304,7 @@ public class DruidDataSource extends DruidAbstractDataSource
                 this.maxActive = maxActive;
             }
             if (minIdle != null) {
-                this.minIdle = minIdle;
+                setMinIdle(minIdle);
             }
 
             DruidDataSourceUtils.configFromProperties(this, properties);
