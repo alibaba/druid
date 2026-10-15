@@ -77,6 +77,49 @@ public class DruidDataSourceTest4 {
     }
 
     @Test
+    public void test_setMinIdle_negative_beforeInit() {
+        assertThrows(IllegalArgumentException.class, () -> dataSource.setMinIdle(-1));
+        assertEquals(0, dataSource.getMinIdle());
+        dataSource.setMinIdle(1);
+        assertEquals(1, dataSource.getMinIdle());
+    }
+
+    @Test
+    public void test_setMinIdle_negative_afterInit() throws Exception {
+        dataSource.init();
+        dataSource.setMinIdle(1);
+
+        assertThrows(IllegalArgumentException.class, () -> dataSource.setMinIdle(-1));
+        assertEquals(1, dataSource.getMinIdle());
+        dataSource.setMinIdle(0);
+        assertEquals(0, dataSource.getMinIdle());
+    }
+
+    @Test
+    public void test_configFromProperties_negativeMinIdle_beforeInit() {
+        Properties properties = new Properties();
+        properties.setProperty("druid.minIdle", "-1");
+
+        assertThrows(IllegalArgumentException.class, () -> dataSource.configFromProperties(properties));
+        assertEquals(0, dataSource.getMinIdle());
+    }
+
+    @Test
+    public void test_configFromProperties_negativeMinIdle_afterInit() throws Exception {
+        dataSource.init();
+        dataSource.setMinIdle(1);
+        Properties properties = new Properties();
+        properties.setProperty("druid.minIdle", "-1");
+
+        assertThrows(IllegalArgumentException.class, () -> dataSource.configFromProperties(properties));
+        assertEquals(1, dataSource.getMinIdle());
+
+        properties.setProperty("druid.minIdle", "0");
+        dataSource.configFromProperties(properties);
+        assertEquals(0, dataSource.getMinIdle());
+    }
+
+    @Test
     public void test_setExceptionSorter_error() throws Exception {
         dataSource.setExceptionSorter("xx");
     }
