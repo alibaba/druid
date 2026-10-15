@@ -169,6 +169,7 @@ public interface JdbcConstants {
 
     String GOLDENDB_DRIVER = "com.goldendb.jdbc.Driver";
 
+    DbType GBASE8S = DbType.gbase8s;
     String GBASE8S_DRIVER = "com.gbasedbt.jdbc.Driver";
 
     String OPENGAUSS_DRIVER = "org.opengauss.Driver";

@@ -548,7 +548,7 @@ public final class JdbcUtils implements JdbcConstants {
             return JdbcConstants.TAOS_DATA;
         } else if (rawUrl.startsWith("jdbc:TAOS-RS:")) {
             return JdbcConstants.TAOS_DATA_RS;
-        } else if (rawUrl.startsWith("jdbc:gbasedbt-sqli:")) {
+        } else if (rawUrl.startsWith("jdbc:gbasedbt-sqli:") || rawUrl.startsWith("jdbc:gbase8s:")) {
             return JdbcConstants.GBASE8S_DRIVER;
         } else if (rawUrl.startsWith("jdbc:sundb:")) {
             return JdbcConstants.SUNDB_DRIVER;
@@ -686,6 +686,8 @@ public final class JdbcUtils implements JdbcConstants {
             return DbType.oscar;
         } else if (rawUrl.startsWith("jdbc:sundb:")) {
             return DbType.sundb;
+        } else if (rawUrl.startsWith("jdbc:gbasedbt-sqli:")||rawUrl.startsWith("jdbc:gbase8s:")) {
+            return DbType.gbase8s;
         } else {
             return null;
         }
