@@ -1084,7 +1084,15 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     @Override
     public boolean visit(OracleAlterSessionStatement x) {
         print0(ucase ? "ALTER SESSION SET " : "alter session set ");
-        printAndAccept(x.getItems(), ", ");
+        for (int i = 0; i < x.getItems().size(); i++) {
+            if (i != 0) {
+                print0(", ");
+            }
+            SQLAssignItem item = x.getItems().get(i);
+            item.getTarget().accept(this);
+            print0(" = ");
+            item.getValue().accept(this);
+        }
         return false;
     }
 
