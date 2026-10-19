@@ -15,16 +15,20 @@
  */
 package com.alibaba.druid.bvt.sql.oracle.alter;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.OracleTest;
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OracleAlterSessionTest extends OracleTest {
+    @Test
     public void test_0() throws Exception {
         String sql = "alter session set current_schema=retl";
 
@@ -34,6 +38,7 @@ public class OracleAlterSessionTest extends OracleTest {
         print(statementList);
 
         assertEquals(1, statementList.size());
+        assertEquals("ALTER SESSION SET current_schema = retl", statemen.toString());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         statemen.accept(visitor);
@@ -49,5 +54,36 @@ public class OracleAlterSessionTest extends OracleTest {
         assertEquals(0, visitor.getColumns().size());
 
 //        assertTrue(visitor.getColumns().contains(new TableStat.Column("bonuses", "employee_id")));
+    }
+
+    @Test
+    public void test_nls_date_format() {
+        assertAlterSessionOutput("NLS_DATE_FORMAT = 'YYYY-MM-DD HH24:MI:SS'");
+    }
+
+    @Test
+    public void test_current_schema() {
+        assertAlterSessionOutput("CURRENT_SCHEMA = retl");
+    }
+
+    @Test
+    public void test_multiple_items() {
+        assertAlterSessionOutput("NLS_DATE_FORMAT = 'YYYY-MM-DD', CURRENT_SCHEMA = retl");
+    }
+
+    @Test
+    public void test_plsql_assignment() {
+        SQLStatement statement = SQLUtils.parseSingleStatement("BEGIN v_count := 1; END;", DbType.oracle);
+        String expected = "BEGIN\n\tv_count := 1;\nEND;";
+        assertEquals(expected, statement.toString());
+        assertEquals(expected, SQLUtils.parseSingleStatement(expected, DbType.oracle).toString());
+    }
+
+    private void assertAlterSessionOutput(String items) {
+        SQLStatement statement = SQLUtils.parseSingleStatement("alter session set " + items, DbType.oracle);
+        String expected = "ALTER SESSION SET " + items;
+        assertEquals(expected, statement.toString());
+        assertEquals("alter session set " + items, SQLUtils.toSQLString(statement, DbType.oracle, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+        assertEquals(expected, SQLUtils.parseSingleStatement(expected, DbType.oracle).toString());
     }
 }
