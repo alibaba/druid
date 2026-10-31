@@ -2745,12 +2745,21 @@ public class DruidDataSource extends DruidAbstractDataSource
 
             long lastDiscardCount = 0;
             int errorCount = 0;
-            while (!closing && !closed && !Thread.currentThread().isInterrupted()) {
+            while (!closing && !closed) {
                 // addLast
                 try {
                     lock.lockInterruptibly();
                 } catch (InterruptedException e2) {
-                    break;
+                    if (closing || closed) {
+                        return;
+                    }
+
+                    // An interruption that is not a shutdown signal (a JDBC driver connect
+                    // timeout, for example) must not disable the pool: clear it and keep going.
+                    Thread.interrupted();
+                    LOG.error("create connection thread interrupted while waiting for the lock, url: "
+                            + sanitizedUrl(jdbcUrl), e2);
+                    continue;
                 }
 
                 long discardCount = DruidDataSource.this.discardCount;
@@ -2786,10 +2795,13 @@ public class DruidDataSource extends DruidAbstractDataSource
                     lastCreateError = e;
                     lastErrorTimeMillis = System.currentTimeMillis();
 
-                    if ((!closing) && (!closed)) {
-                        LOG.error("create connection thread interrupted, url: " + sanitizedUrl(jdbcUrl), e);
+                    if (closing || closed) {
+                        return;
                     }
-                    break;
+
+                    Thread.interrupted();
+                    LOG.error("create connection thread interrupted, url: " + sanitizedUrl(jdbcUrl), e);
+                    continue;
                 } finally {
                     lock.unlock();
                 }
@@ -2822,7 +2834,13 @@ public class DruidDataSource extends DruidAbstractDataSource
                         try {
                             Thread.sleep(timeBetweenConnectErrorMillis);
                         } catch (InterruptedException interruptEx) {
-                            break;
+                            if (closing || closed) {
+                                return;
+                            }
+
+                            Thread.interrupted();
+                            LOG.error("create connection thread interrupted while waiting to retry, url: "
+                                    + sanitizedUrl(jdbcUrl), interruptEx);
                         }
                     }
                 } catch (RuntimeException e) {
