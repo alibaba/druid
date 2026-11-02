@@ -146,30 +146,46 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
         if (stmt.pooled) {
             try {
                 rawStatement.clearParameters();
-            } catch (SQLException ex) {
-                this.handleException(ex, null);
-                if (rawStatement.getConnection().isClosed()) {
-                    return;
-                }
-
-                LOG.error("clear parameter error", ex);
-            }
-
-            try {
                 rawStatement.clearBatch();
             } catch (SQLException ex) {
-                this.handleException(ex, null);
-                if (rawStatement.getConnection().isClosed()) {
-                    return;
+                PreparedStatementHolder stmtHolder = stmt.holder;
+                if (!stmtHolder.resetFailed) {
+                    stmtHolder.resetFailureFromCache = stmtHolder.isPooling();
+                    stmtHolder.resetFailed = true;
                 }
-
-                LOG.error("clear batch error", ex);
+                stmtHolder.decrementInUseCount();
+                SQLException closeException = null;
+                try {
+                    closeStatementAfterResetFailure(stmt, holder);
+                } catch (SQLException closeError) {
+                    if (closeError != ex) {
+                        ex.addSuppressed(closeError);
+                    }
+                    closeException = closeError;
+                }
+                try {
+                    throw this.handleException(ex, null);
+                } finally {
+                    if (closeException != null) {
+                        try {
+                            this.handleException(closeException, null);
+                        } catch (SQLException ignored) {
+                            // The reset exception retains the close failure as a suppressed exception.
+                        }
+                    }
+                }
             }
         }
 
         PreparedStatementHolder stmtHolder = stmt.holder;
         stmtHolder.inUseCount--;
-        if (stmt.pooled && holder.dataSource.poolPreparedStatements && stmt.exceptionCount == 0) {
+        if (stmtHolder.resetFailed) {
+            try {
+                closeStatementAfterResetFailure(stmt, holder);
+            } catch (SQLException ex) {
+                throw this.handleException(ex, null);
+            }
+        } else if (stmt.pooled && holder.dataSource.poolPreparedStatements && stmt.exceptionCount == 0) {
             holder.getStatementPool().put(stmtHolder);
 
             stmt.clearResultSet();
@@ -196,6 +212,28 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
             } finally {
                 holder.dataSource.incrementClosedPreparedStatementCount();
             }
+        }
+    }
+
+    private void closeStatementAfterResetFailure(DruidPooledPreparedStatement stmt,
+                                                DruidConnectionHolder holder) throws SQLException {
+        PreparedStatementHolder stmtHolder = stmt.holder;
+        stmt.clearResultSet();
+        holder.removeTrace(stmt);
+        try {
+            if (stmtHolder.isPooling()) {
+                holder.getStatementPool().remove(stmtHolder);
+            } else if (stmtHolder.resetFailureFromCache) {
+                holder.getStatementPool().closeRemovedStatement(stmtHolder);
+            } else if (!stmtHolder.isInUse()) {
+                try {
+                    stmt.closeInternal();
+                } finally {
+                    holder.dataSource.incrementClosedPreparedStatementCount();
+                }
+            }
+        } finally {
+            stmt.setClosed(true);
         }
     }
 
