@@ -333,7 +333,10 @@ public class SQLParserUtils {
         if (keepComments) {
             features = new SQLParserFeature[]{SQLParserFeature.KeepComments};
         } else {
-            features = new SQLParserFeature[]{};
+            // keepComments=false must actively opt out: the dialect lexer constructors set
+            // keepComments=true on their own, so an empty feature array leaves comments
+            // collected, attached to the AST and re-emitted by toString().
+            features = new SQLParserFeature[]{SQLParserFeature.SkipComments};
         }
 
         return createSQLStatementParser(sql, dbType, features);
