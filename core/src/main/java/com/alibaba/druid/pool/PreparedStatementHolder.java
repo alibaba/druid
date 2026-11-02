@@ -36,6 +36,8 @@ public final class PreparedStatementHolder {
 
     protected int inUseCount;
     private boolean pooling;
+    boolean resetFailed;
+    boolean resetFailureFromCache;
 
     public PreparedStatementHolder(PreparedStatementKey key, PreparedStatement stmt) {
         this.key = key;
