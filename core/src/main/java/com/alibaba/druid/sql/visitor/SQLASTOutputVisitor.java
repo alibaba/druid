@@ -11948,11 +11948,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     public void visitStatementList(List<SQLStatement> statementList) {
-        boolean printStmtSeperator;
+        boolean printStmtSeparator;
         if (DbType.sqlserver == dbType) {
-            printStmtSeperator = false;
+            printStmtSeparator = false;
         } else {
-            printStmtSeperator = DbType.oracle != dbType;
+            printStmtSeparator = DbType.oracle != dbType;
         }
 
         for (int i = 0, size = statementList.size(); i < size; i++) {
@@ -11960,7 +11960,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
             if (i > 0) {
                 SQLStatement preStmt = statementList.get(i - 1);
-                if (printStmtSeperator && !preStmt.isAfterSemi()) {
+                if (printStmtSeparator && !preStmt.isAfterSemi()) {
                     print(";");
                 }
 
@@ -11975,7 +11975,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                     }
                 }
 
-                if (printStmtSeperator) {
+                if (printStmtSeparator) {
                     println();
                 }
 
