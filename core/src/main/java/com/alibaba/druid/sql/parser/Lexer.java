@@ -76,6 +76,12 @@ public class Lexer {
     protected CommentHandler commentHandler;
     protected boolean endOfComment;
     protected boolean keepComments;
+    // SkipComments is authoritative over KeepComments regardless of the order in which
+    // config(...) is called: while it is enabled, keepComments is forced off and the
+    // value in effect before the suppression is remembered so it can be restored when
+    // SkipComments is turned back off.
+    private boolean keepCommentsSuppressed;
+    private boolean keepCommentsBeforeSuppress;
     protected int line;
     protected int lines;
     protected DbType dbType;
@@ -123,7 +129,12 @@ public class Lexer {
     }
 
     public void setKeepComments(boolean keepComments) {
-        this.keepComments = keepComments;
+        if (keepCommentsSuppressed) {
+            keepCommentsBeforeSuppress = keepComments;
+            this.keepComments = false;
+        } else {
+            this.keepComments = keepComments;
+        }
     }
 
     public CommentHandler getCommentHandler() {
@@ -3434,17 +3445,48 @@ public class Lexer {
         return posColumn;
     }
 
+    /**
+     * Configures this lexer with the given feature.
+     * <p>
+     * {@code SkipComments} takes precedence over {@code KeepComments}: while
+     * {@code SkipComments} is enabled, comments are neither yielded nor attached to the
+     * AST, and the outcome no longer depends on the order in which the two features are
+     * configured. Note that the feature bitmap still records the flags that were
+     * requested, so {@link #isEnabled} can report {@code KeepComments} while comments are
+     * in fact suppressed; {@link #isKeepComments()} reports the effective state.
+     */
     public void config(SQLParserFeature feature, boolean state) {
         features = SQLParserFeature.config(features, feature, state);
 
         if (feature == OptimizedForParameterized) {
             optimizedForParameterized = state;
         } else if (feature == KeepComments) {
-            this.keepComments = state;
+            // KeepComments cannot re-attach comments while SkipComments is in effect, no
+            // matter which of the two was configured last; when the suppression is later
+            // lifted, this request is what gets restored.
+            if (keepCommentsSuppressed) {
+                keepCommentsBeforeSuppress = state;
+                this.keepComments = false;
+            } else {
+                this.keepComments = state;
+            }
         } else if (feature == KeepSourceLocation) {
             this.keepSourceLocation = state;
         } else if (feature == SkipComments) {
             this.skipComment = state;
+            // SkipComments must also stop comments from being attached to the AST,
+            // otherwise they are still retained via keepComments (e.g. set by the
+            // dialect lexer constructors) and re-emitted on toString().
+            if (state) {
+                if (!keepCommentsSuppressed) {
+                    keepCommentsBeforeSuppress = this.keepComments;
+                    keepCommentsSuppressed = true;
+                }
+                this.keepComments = false;
+            } else if (keepCommentsSuppressed) {
+                keepCommentsSuppressed = false;
+                this.keepComments = keepCommentsBeforeSuppress;
+            }
         }
     }
 
