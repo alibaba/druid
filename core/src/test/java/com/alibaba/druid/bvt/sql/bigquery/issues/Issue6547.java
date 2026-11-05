@@ -3,11 +3,15 @@ package com.alibaba.druid.bvt.sql.bigquery.issues;
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
+import com.alibaba.druid.sql.ast.statement.SQLUnnestTableSource;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 /**
  * BigQuery UNNEST(...) WITH OFFSET, where the offset alias is optional.
@@ -31,6 +35,19 @@ public class Issue6547 {
     public void test_with_offset_alias() {
         assertEquals("SELECT * FROM UNNEST([10, 20, 30]) AS numbers WITH OFFSET AS off",
                 rt("SELECT * FROM UNNEST([10,20,30]) as numbers WITH OFFSET AS off"));
+    }
+
+    @Test
+    public void test_clone_with_offset_alias() {
+        SQLSelectStatement statement = (SQLSelectStatement) SQLUtils.parseSingleStatement(
+                "SELECT * FROM UNNEST([10,20,30]) AS numbers WITH OFFSET AS off", DbType.bigquery);
+        SQLUnnestTableSource source = (SQLUnnestTableSource) statement.getSelect().getQueryBlock().getFrom();
+        SQLUnnestTableSource clone = source.clone();
+
+        assertSame(source, source.getOffset().getParent());
+        assertNotSame(source.getOffset(), clone.getOffset());
+        assertSame(clone, clone.getOffset().getParent());
+        assertEquals(SQLUtils.toSQLString(source, DbType.bigquery), SQLUtils.toSQLString(clone, DbType.bigquery));
     }
 
     @Test
