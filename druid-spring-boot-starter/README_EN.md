@@ -1,5 +1,5 @@
 # Druid Spring Boot Starter
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.alibaba/druid-spring-boot-starter/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.alibaba/druid-spring-boot-starter/)
+[![Maven Central](https://img.shields.io/maven-central/v/com.alibaba/druid-spring-boot-starter)](https://central.sonatype.com/artifact/com.alibaba/druid-spring-boot-starter)
 
 ## English | [中文](https://github.com/alibaba/druid/blob/master/druid-spring-boot-starter/README.md)
 Spring Boot with Druid support, help you simplify Druid config in Spring Boot.
@@ -80,7 +80,7 @@ spring.datasource.druid.stat-view-servlet.deny=
 # With Spring monitoring properties, detail see Druid Wiki
 spring.datasource.druid.aop-patterns= # Spring monitoring AOP point, such as x.y.z.service.*, multiple separated by comma.
 ```
-The Druid Spring Boot Starter is not limited to support for the above configuration properties, and the configurable properties that provide the ```setter``` method in [``` DruidDataSource```](https://github.com/alibaba/druid/blob/master/src/main/java/com/alibaba/druid/pool/DruidDataSource.java) will be supported. You can refer to the WIKI document or configure it via the IDE input prompt. The format of the configuration file You can choose ```.properties``` or``` .yml```, the effect is the same, in the configuration of more cases recommend the use of ```.yml```.
+The Druid Spring Boot Starter is not limited to support for the above configuration properties, and the configurable properties that provide the ```setter``` method in [``` DruidDataSource```](https://github.com/alibaba/druid/blob/master/core/src/main/java/com/alibaba/druid/pool/DruidDataSource.java) will be supported. You can refer to the WIKI document or configure it via the IDE input prompt. The format of the configuration file You can choose ```.properties``` or``` .yml```, the effect is the same, in the configuration of more cases recommend the use of ```.yml```.
 
 ## How to Configuration Multiple DataSource
 1. Add config

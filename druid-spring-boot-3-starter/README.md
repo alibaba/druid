@@ -1,6 +1,6 @@
 # Druid Spring Boot 3 Starter
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.alibaba/druid-spring-boot-3-starter/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.alibaba/druid-spring-boot-3-starter/)
+[![Maven Central](https://img.shields.io/maven-central/v/com.alibaba/druid-spring-boot-3-starter)](https://central.sonatype.com/artifact/com.alibaba/druid-spring-boot-3-starter)
 
 ## 中文 | [English](#english)
 
