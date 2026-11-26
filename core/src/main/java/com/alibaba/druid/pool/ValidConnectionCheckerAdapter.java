@@ -37,17 +37,24 @@ public class ValidConnectionCheckerAdapter implements ValidConnectionChecker {
         return execValidQuery(conn, query, validationQueryTimeout);
     }
 
-    public static boolean execValidQuery(Connection conn, String query, int validationQueryTimeout) throws Exception {
-        // using raw connection for createStatement to speed up validation by skipping all filters.
-        Connection rawConn;
+    /**
+     * Extracts the underlying raw connection from possible wrappers (DruidPooledConnection, ConnectionProxyImpl).
+     * This helper is used by {@link #execValidQuery} and can be reused by subclasses to apply connection-level
+     * operations (e.g., network timeouts) on the same raw connection that will execute the validation query.
+     */
+    protected static Connection getRawConnection(Connection conn) {
         if (conn instanceof DruidPooledConnection) {
             conn = ((DruidPooledConnection) conn).getConnection();
         }
         if (conn instanceof ConnectionProxyImpl) {
-            rawConn = ((ConnectionProxyImpl) conn).getConnectionRaw();
-        } else {
-            rawConn = conn;
+            return ((ConnectionProxyImpl) conn).getConnectionRaw();
         }
+        return conn;
+    }
+
+    public static boolean execValidQuery(Connection conn, String query, int validationQueryTimeout) throws Exception {
+        // using raw connection for createStatement to speed up validation by skipping all filters.
+        Connection rawConn = getRawConnection(conn);
 
         Statement stmt = null;
         boolean isDruidStatementConnection;

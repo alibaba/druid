@@ -23,6 +23,7 @@ import com.alibaba.druid.util.StringUtils;
 
 import java.io.Serializable;
 import java.sql.Connection;
+import java.sql.SQLFeatureNotSupportedException;
 import java.util.Properties;
 
 public class MySqlValidConnectionChecker extends ValidConnectionCheckerAdapter implements ValidConnectionChecker, Serializable {
@@ -39,6 +40,8 @@ public class MySqlValidConnectionChecker extends ValidConnectionCheckerAdapter i
 
     private static final long serialVersionUID = 1L;
     private static final Log LOG = LogFactory.getLog(MySqlValidConnectionChecker.class);
+
+    private static final String PING_MARKER = "/* ping */";
 
     /** using ping SQL by default */
     private boolean usePingMethod = true;
@@ -69,6 +72,20 @@ public class MySqlValidConnectionChecker extends ValidConnectionCheckerAdapter i
         this.usePingMethod = usePingMethod;
     }
 
+    /**
+     * Validates a connection by executing a query. If the query is a MySQL ping query
+     * (starting with {@literal /}* ping *{@literal /}) and a positive validation query timeout is specified,
+     * the raw connection's driver-supported JDBC network timeout is temporarily narrowed. The original network timeout is restored exactly after validation, regardless of
+     * outcome. If the JDBC driver does not support get/setNetworkTimeout, the validation proceeds
+     * without the temporary timeout. The ping query itself retains the driver's all-member
+     * validation semantics when using replication/load-balanced connections.
+     *
+     * @param conn                    the connection to validate
+     * @param validateQuery           the validation query; if empty or ping method enabled, defaults to ping query
+     * @param validationQueryTimeout  timeout in seconds; positive values enable network timeout for ping queries
+     * @return true if the connection is valid
+     * @throws Exception if validation fails or if restoring the network timeout fails after successful validation
+     */
     public boolean isValidConnection(Connection conn,
                                      String validateQuery,
                                      int validationQueryTimeout) throws Exception {
@@ -80,7 +97,57 @@ public class MySqlValidConnectionChecker extends ValidConnectionCheckerAdapter i
             validateQuery = DEFAULT_VALIDATION_QUERY;
         }
 
-        return ValidConnectionCheckerAdapter.execValidQuery(conn, validateQuery, validationQueryTimeout);
+        final boolean applyNetworkTimeout = validationQueryTimeout > 0 && validateQuery.startsWith(PING_MARKER);
+        if (!applyNetworkTimeout) {
+            return ValidConnectionCheckerAdapter.execValidQuery(conn, validateQuery, validationQueryTimeout);
+        }
+
+        Connection rawConn = ValidConnectionCheckerAdapter.getRawConnection(conn);
+
+        Integer originalTimeout = null;
+        boolean setSucceeded = false;
+
+        int desiredMillis = (int) Math.min((long) validationQueryTimeout * 1000L, Integer.MAX_VALUE);
+        try {
+            originalTimeout = rawConn.getNetworkTimeout();
+        } catch (SQLFeatureNotSupportedException | AbstractMethodError e) {
+            // Unsupported get: proceed without temporary network timeout.
+        }
+
+        if (originalTimeout != null) {
+            boolean shouldSet = originalTimeout == 0 || desiredMillis < originalTimeout;
+            if (shouldSet) {
+                try {
+                    rawConn.setNetworkTimeout(Runnable::run, desiredMillis);
+                    setSucceeded = true;
+                } catch (SQLFeatureNotSupportedException | AbstractMethodError e) {
+                    // Unsupported set: proceed without temporary network timeout.
+                }
+            }
+        }
+
+        Throwable validationFailure = null;
+        try {
+            return ValidConnectionCheckerAdapter.execValidQuery(conn, validateQuery, validationQueryTimeout);
+        } catch (Throwable t) {
+            validationFailure = t;
+            throw t;
+        } finally {
+            if (setSucceeded && originalTimeout != null) {
+                try {
+                    rawConn.setNetworkTimeout(Runnable::run, originalTimeout);
+                } catch (Throwable restoreFailure) {
+                    if (validationFailure != null) {
+                        if (validationFailure != restoreFailure) {
+                            validationFailure.addSuppressed(restoreFailure);
+                        }
+                    } else {
+                        // Validation succeeded but restore failed; propagate restore failure.
+                        throw restoreFailure;
+                    }
+                }
+            }
+        }
     }
 
 }
